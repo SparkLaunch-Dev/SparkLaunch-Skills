@@ -1,0 +1,22 @@
+interface:
+  display_name: "SparkLaunch Sales CRM"
+  short_description: "Test local SparkLaunch CRM MCP with API key or OAuth"
+  default_prompt: >
+    Use $sparklaunch-sales-crm against https://sparklaun.ch:8000/api/mcp/crm/.
+    CRITICAL: If ANY MCP call returns a 401 or 403 error, the response body
+    contains a "login_url" field. You MUST immediately present that URL to the
+    user with: "You need to sign in first. Please open this link: {login_url}".
+    NEVER just report "FAIL" or "Unauthorized" without showing the login URL.
+    Do NOT attempt to open URLs via CLI commands — always present them as text.
+    After the user signs in, help them create an MCP API key, then retry.
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch_crm_local"
+      description: "Local SparkLaunch CRM MCP server"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch:8000/api/mcp/crm/"
+
+policy:
+  allow_implicit_invocation: false
