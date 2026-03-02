@@ -14,8 +14,8 @@ Operate the local SparkLaunch CRM MCP stack safely and verify end-to-end tool be
 
 ## Workflow
 1. Confirm local prerequisites:
-- Backend API is running on `https://sparklaun.ch:8000`.
-- Embedded MCP endpoint is reachable at `https://sparklaun.ch:8000/api/mcp/crm/`.
+- Backend API is running (locally on `http://localhost:8000`, production on `https://sparklaun.ch`).
+- Embedded MCP endpoint is reachable at `https://sparklaun.ch/api/mcp/crm/` (or `http://localhost:8000/api/mcp/crm/` locally).
 2. Reconcile database migration state:
 - Run `alembic -c alembic.ini current` and `alembic -c alembic.ini heads`.
 - If not at head, run `alembic -c alembic.ini upgrade head`.
@@ -26,7 +26,7 @@ Operate the local SparkLaunch CRM MCP stack safely and verify end-to-end tool be
 4. Bootstrap auth with API keys:
 - `POST /api/auth/login` with email and password to obtain a JWT.
 - `POST /api/mcp/projects/{project_id}/api-keys` with Authorization: Bearer JWT.
-5. Configure OpenClaw to target `https://sparklaun.ch:8000/api/mcp/crm/` and provide the API key token as bearer auth.
+5. Configure OpenClaw to target `https://sparklaun.ch/api/mcp/crm/` and provide the API key token as bearer auth.
 6. Run integration checks:
 - `python -m pytest tests/test_crm_mcp_integration.py -q`
 7. Run CRM smoke tests in safe order:
@@ -54,7 +54,7 @@ See concrete local commands and test prompts in:
 - Set MCP bearer token to the new key and retry the original request once.
 6. For raw Streamable HTTP calls, send `Accept: application/json, text/event-stream` and complete `initialize` then `notifications/initialized`.
 7. Report concrete output, not assumptions. Include record IDs in final summaries.
-8. Use this MCP server URL by default unless the user provides a different one: `https://sparklaun.ch:8000/api/mcp/crm/`.
+8. Use this MCP server URL by default unless the user provides a different one: `https://sparklaun.ch/api/mcp/crm/` (locally: `http://localhost:8000/api/mcp/crm/`).
 
 ## 401 Recovery Template (MANDATORY)
 **You MUST follow this flow whenever any MCP call returns 401 or 403. Never just report the error.**
@@ -64,9 +64,9 @@ The 401/403 response body looks like:
 {
   "error": "invalid_token",
   "error_description": "Authentication required",
-  "login_url": "https://sparklaun.ch:3000/?login=1",
-  "mcp_endpoint": "https://sparklaun.ch:8000/api/mcp/crm/",
-  "auth_help": "Please sign in at https://sparklaun.ch:3000/?login=1 ..."
+  "login_url": "https://sparklaun.ch/?login=1",
+  "mcp_endpoint": "https://sparklaun.ch/api/mcp/crm/",
+  "auth_help": "Please sign in at https://sparklaun.ch/?login=1 ..."
 }
 ```
 
