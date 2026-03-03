@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Campaigns MCP"
   short_description: "Operate Campaigns + QR/Shortlinks MCP safely"
-  default_prompt: "Use $sparklaunch-campaigns-mcp against https://sparklaun.ch/api/mcp/campaigns/ and recover 401/403 by showing login_url, creating a fresh API key, then retrying."
+  default_prompt: "Use $sparklaunch-campaigns against https://sparklaun.ch/api/mcp/campaigns/ and recover 401/403 by showing login_url, creating a fresh API key, then retrying."
 
 dependencies:
   tools:

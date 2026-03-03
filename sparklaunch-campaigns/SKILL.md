@@ -1,5 +1,5 @@
 ---
-name: sparklaunch-campaigns-mcp
+name: sparklaunch-campaigns
 description: >
   Use when the user needs to test, operate, or automate SparkLaunch Campaigns + QR/Shortlinks through the
   Streamable HTTP MCP endpoint at /api/mcp/campaigns/ (trailing slash required), including campaign_create,
@@ -29,6 +29,7 @@ Operate the SparkLaunch Campaigns MCP stack safely and verify end-to-end growth 
 5. Configure MCP client:
 - Endpoint: `https://sparklaun.ch/api/mcp/campaigns/` (local: `http://localhost:8000/api/mcp/campaigns/`).
 - Bearer token: project-scoped MCP API key (`slk_mcp_...`).
+- Required scopes on the key: `campaigns.read` and `campaigns.write`.
 6. Execute tools in safe order:
 - Start with `campaign_create`.
 - Then `shortlink_create`.
@@ -65,9 +66,13 @@ See concrete local commands in:
 ## Tool Map
 - `campaign_create(name, objective, destination_url, owner_workspace_id, tags[])`
 - `shortlink_create(campaign_id, destination_url, slug?, utm_params?, vanity_domain?)`
-- `qr_generate(shortlink_id, format, size, foreground_color, background)`
+- `qr_generate(shortlink_id, format, size, foreground_color?, background?, module_style?, eye_style?, include_logo?, use_project_theme?)`
 - `lead_capture_ingest(campaign_id, lead_payload)`
 - `campaign_stats(campaign_id, window)`
 - `campaign_pause(campaign_id)`
 - `campaign_archive(campaign_id)`
 - `shortlink_rotate(shortlink_id, destination_url, utm_params?)`
+
+`qr_generate` notes:
+- Defaults to `use_project_theme=true` so project QR settings are applied when style inputs are omitted.
+- Response includes `data_url` plus raw `image_base64`.

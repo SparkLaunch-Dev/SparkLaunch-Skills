@@ -1,5 +1,5 @@
 ---
-name: SparkLaunch-Sales-CRM
+name: sparklaunch-sales-crm
 description: >
   Use when the user wants to test or operate SparkLaunch Sales CRM through the embedded Streamable HTTP MCP
   endpoint at /api/mcp/crm/ (trailing slash required), including migration checks, project-scoped MCP API key
