@@ -3,9 +3,9 @@ interface:
   short_description: "Campaigns, shortlinks, QR, attribution"
   default_prompt: >
     Use $sparklaunch-campaigns against https://sparklaun.ch/api/mcp/campaigns/.
-    Authentication is API-key-first: request or use a project-scoped MCP API key,
-    do not ask the user to sign in when a key is available. On 401/403, verify key
-    scope and MCP session headers first, then use login_url fallback only if key
+    Authentication is API-key-first: request or use an MCP API key, and do not
+    ask the user to sign in when a key is available. On 401/403, verify key scope
+    and MCP session headers first, then use login_url fallback only if key
     creation is blocked.
 
 dependencies:

@@ -13,7 +13,7 @@ description: >
 Operate campaign acquisition workflows with reliable attribution wiring into CRM.
 
 ## Authentication Policy (Mandatory)
-1. Use a project-scoped MCP API key as bearer auth for all MCP calls.
+1. Use an MCP API key as bearer auth for all MCP calls.
 2. API keys must come from SparkLaunch Profile API key management.
 3. Do not ask the user to sign in if they already have (or can generate) an API key.
 4. Use login URL fallback only when the user cannot provide or create an API key.
@@ -29,7 +29,7 @@ Operate campaign acquisition workflows with reliable attribution wiring into CRM
 4. If `Session not found` occurs, re-run initialize + notification once and retry. If it still fails, report likely upstream session affinity issue and escalate.
 
 ## Standard Workflow
-1. Confirm destination URL, objective, and workspace/project context.
+1. Confirm destination URL and objective.
 2. Create campaign with `campaign_create`.
 3. Create shortlink with `shortlink_create` (include UTM params when available).
 4. Generate QR with `qr_generate`.
@@ -46,7 +46,8 @@ Always report:
 - `crm_lead_id` when ingesting leads
 
 ## Tool Notes
-- `qr_generate` should use project default QR theme when style args are omitted.
+- `campaign_create` automatically uses API key scope.
+- `qr_generate` should use the default QR theme for the active API key when style args are omitted.
 - `qr_generate` returns both `data_url` and raw `image_base64` when generation succeeds.
 
 ## Guardrails

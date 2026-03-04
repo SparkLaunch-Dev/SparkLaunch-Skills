@@ -3,10 +3,10 @@ interface:
   short_description: "Sales CRM MCP operations"
   default_prompt: >
     Use $sparklaunch-sales-crm against https://sparklaun.ch/api/mcp/crm/.
-    Authentication is API-key-first: use or request a project-scoped MCP API key,
-    and do not send login instructions when an API key path exists. If 401/403
-    occurs, validate token scope and session headers, reinitialize once if needed,
-    and only present login_url as a fallback when key generation is unavailable.
+    Authentication is API-key-first: use or request an MCP API key, and do not
+    send login instructions when an API key path exists. If 401/403 occurs,
+    validate token scope and session headers, reinitialize once if needed, and
+    only present login_url as a fallback when key generation is unavailable.
 
 dependencies:
   tools:

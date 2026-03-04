@@ -23,7 +23,8 @@ Skills define consistent, production-safe execution patterns so agents can:
 2. Do not instruct users to perform interactive login when a valid API key path exists.
 3. Use login URLs only as fallback recovery when API key issuance is unavailable.
 4. Do not include local-machine or localhost operational instructions in this repository.
-5. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
+5. Never brute-force identifiers, tokens, or credentials.
+6. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
 
 ## Required Skill Structure
 

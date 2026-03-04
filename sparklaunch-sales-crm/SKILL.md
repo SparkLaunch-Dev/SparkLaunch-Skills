@@ -10,10 +10,10 @@ description: >
 
 # SparkLaunch Sales CRM
 
-Operate Sales CRM safely with project-scoped API keys and predictable MCP workflows.
+Operate Sales CRM safely with MCP API keys and predictable MCP workflows.
 
 ## Authentication Policy (Mandatory)
-1. Use a project-scoped MCP API key as bearer auth for MCP calls.
+1. Use an MCP API key as bearer auth for MCP calls.
 2. API keys are managed in SparkLaunch Profile API key settings.
 3. If the user already has a key, never redirect them to a login URL.
 4. Use login URL fallback only when user cannot provide or generate an API key.
@@ -38,4 +38,5 @@ Operate Sales CRM safely with project-scoped API keys and predictable MCP workfl
 1. Check for duplicates before creating leads.
 2. Stop and explain missing scope/entitlement errors explicitly.
 3. Require confirmation for bulk/destructive actions.
-4. Keep user-facing errors concise and non-technical; route diagnostics to support Slack logs.
+4. Never brute-force identifiers or credentials.
+5. Keep user-facing errors concise and non-technical; route diagnostics to support Slack logs.
