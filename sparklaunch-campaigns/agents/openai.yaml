@@ -1,12 +1,17 @@
 interface:
-  display_name: "SparkLaunch Campaigns MCP"
-  short_description: "Operate Campaigns + QR/Shortlinks MCP safely"
-  default_prompt: "Use $sparklaunch-campaigns against https://sparklaun.ch/api/mcp/campaigns/ and recover 401/403 by showing login_url, creating a fresh API key, then retrying."
+  display_name: "SparkLaunch Campaigns + QR"
+  short_description: "Campaigns, shortlinks, QR, attribution"
+  default_prompt: >
+    Use $sparklaunch-campaigns against https://sparklaun.ch/api/mcp/campaigns/.
+    Authentication is API-key-first: request or use a project-scoped MCP API key,
+    do not ask the user to sign in when a key is available. On 401/403, verify key
+    scope and MCP session headers first, then use login_url fallback only if key
+    creation is blocked.
 
 dependencies:
   tools:
     - type: "mcp"
-      value: "sparklaunch_campaigns_local"
+      value: "sparklaunch_campaigns"
       description: "SparkLaunch Campaigns + QR MCP server"
       transport: "streamable_http"
       url: "https://sparklaun.ch/api/mcp/campaigns/"

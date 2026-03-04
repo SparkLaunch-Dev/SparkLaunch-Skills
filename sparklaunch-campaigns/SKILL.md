@@ -1,78 +1,57 @@
 ---
 name: sparklaunch-campaigns
 description: >
-  Use when the user needs to test, operate, or automate SparkLaunch Campaigns + QR/Shortlinks through the
-  Streamable HTTP MCP endpoint at /api/mcp/campaigns/ (trailing slash required), including campaign_create,
-  shortlink_create, qr_generate, lead_capture_ingest, campaign_stats, campaign_pause, campaign_archive, and
-  shortlink_rotate. Also use for Campaigns MCP auth recovery via /api/mcp/auth/login-url?service=campaigns and
-  /api/mcp/auth/status?service=campaigns, project-scoped MCP API key setup, migration checks, and attribution
-  verification into CRM lead inbox records. Do not use for generic marketing advice with no MCP operations.
+  Use when the user needs to operate SparkLaunch Campaigns + QR/Shortlinks through
+  the production Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/campaigns/,
+  including campaign_create, shortlink_create, qr_generate, lead_capture_ingest,
+  campaign_stats, campaign_pause, campaign_archive, and shortlink_rotate. Do not use
+  for generic marketing advice without MCP operations.
 ---
 
-# SparkLaunch Campaigns MCP
+# SparkLaunch Campaigns + QR
 
-Operate the SparkLaunch Campaigns MCP stack safely and verify end-to-end growth wiring (campaign -> shortlink -> QR -> lead -> CRM).
+Operate campaign acquisition workflows with reliable attribution wiring into CRM.
 
-## Workflow
-1. Confirm backend and MCP endpoint availability:
-- Backend API is running (`http://localhost:8000` locally or `https://sparklaun.ch`).
-- Campaigns MCP endpoint is reachable at `/api/mcp/campaigns/` (trailing slash required).
-2. Reconcile migration state before testing:
-- Run `alembic -c alembic.ini current` and `alembic -c alembic.ini heads`.
-- If behind head, run `alembic -c alembic.ini upgrade head`.
-3. Check auth status for Campaigns MCP:
-- `GET /api/mcp/auth/login-url?service=campaigns`
-- `GET /api/mcp/auth/status?service=campaigns`
-4. Bootstrap auth if needed:
-- `POST /api/auth/login` for JWT.
-- `POST /api/mcp/projects/{project_id}/api-keys` with JWT bearer token.
-5. Configure MCP client:
-- Endpoint: `https://sparklaun.ch/api/mcp/campaigns/` (local: `http://localhost:8000/api/mcp/campaigns/`).
-- Bearer token: project-scoped MCP API key (`slk_mcp_...`).
-- Required scopes on the key: `campaigns.read` and `campaigns.write`.
-6. Execute tools in safe order:
-- Start with `campaign_create`.
-- Then `shortlink_create`.
-- Then `qr_generate`.
-- Then `lead_capture_ingest`.
-- Then read checks with `campaign_stats`.
-- Use `shortlink_rotate`, `campaign_pause`, and `campaign_archive` only when requested.
-7. Summarize with explicit IDs and attribution fields:
-- `campaign_id`, `shortlink_id`, `qr_id`, `crm_lead_id`.
+## Authentication Policy (Mandatory)
+1. Use a project-scoped MCP API key as bearer auth for all MCP calls.
+2. API keys must come from SparkLaunch Profile API key management.
+3. Do not ask the user to sign in if they already have (or can generate) an API key.
+4. Use login URL fallback only when the user cannot provide or create an API key.
 
-See concrete local commands in:
-- [references/local-mcp-testing.md](references/local-mcp-testing.md)
+## Endpoint and Transport
+1. Default endpoint: `https://sparklaun.ch/api/mcp/campaigns/`.
+2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
+3. Session lifecycle:
+- call `initialize`
+- store `mcp-session-id` and `protocolVersion`
+- send `notifications/initialized` with same session and protocol headers
+- use same session id for `tools/list` and `tools/call`
+4. If `Session not found` occurs, re-run initialize + notification once and retry. If it still fails, report likely upstream session affinity issue and escalate.
 
-## Rules
-1. Treat MCP token context as source of truth for project scope.
-2. Ensure `owner_workspace_id` matches token project context.
-3. Validate destinations as absolute `http(s)` URLs before create/rotate operations.
-4. Require explicit user confirmation before pause/archive operations.
-5. Treat vanity domains as unsupported unless the backend explicitly enables them.
-6. Require `lead_payload.email` for ingest; reject empty or malformed emails.
-7. Always report concrete IDs and changed fields after write tools.
-8. On any MCP 401/403, run the mandatory recovery flow below immediately.
+## Standard Workflow
+1. Confirm destination URL, objective, and workspace/project context.
+2. Create campaign with `campaign_create`.
+3. Create shortlink with `shortlink_create` (include UTM params when available).
+4. Generate QR with `qr_generate`.
+5. Ingest leads with `lead_capture_ingest` when capture payload is available.
+6. Inspect outcomes with `campaign_stats`.
+7. Only run `shortlink_rotate`, `campaign_pause`, or `campaign_archive` when explicitly requested.
 
-## 401/403 Recovery (Mandatory)
-1. Read `login_url` from the MCP error body.
-2. Show the exact link to the user:
-- `You need to sign in first. Please open this link: {login_url}`
-3. Do not only report "Unauthorized" or "FAIL".
-4. Wait for user confirmation they signed in.
-5. Check auth with `GET /api/mcp/auth/status?service=campaigns`.
-6. Create a fresh key with `POST /api/mcp/projects/{project_id}/api-keys`.
-7. Retry the original MCP request once.
+## Output Contract
+Always report:
+- `campaign_id`
+- `shortlink_id`
+- `qr_id`
+- attribution fields `{campaign_id, shortlink_id, utm, referrer, first_touch, last_touch}` when available
+- `crm_lead_id` when ingesting leads
 
-## Tool Map
-- `campaign_create(name, objective, destination_url, owner_workspace_id, tags[])`
-- `shortlink_create(campaign_id, destination_url, slug?, utm_params?, vanity_domain?)`
-- `qr_generate(shortlink_id, format, size, foreground_color?, background?, module_style?, eye_style?, include_logo?, use_project_theme?)`
-- `lead_capture_ingest(campaign_id, lead_payload)`
-- `campaign_stats(campaign_id, window)`
-- `campaign_pause(campaign_id)`
-- `campaign_archive(campaign_id)`
-- `shortlink_rotate(shortlink_id, destination_url, utm_params?)`
+## Tool Notes
+- `qr_generate` should use project default QR theme when style args are omitted.
+- `qr_generate` returns both `data_url` and raw `image_base64` when generation succeeds.
 
-`qr_generate` notes:
-- Defaults to `use_project_theme=true` so project QR settings are applied when style inputs are omitted.
-- Response includes `data_url` plus raw `image_base64`.
+## Guardrails
+1. Validate all destination URLs as absolute `http(s)` URLs.
+2. Require `campaigns.read` and `campaigns.write` scopes.
+3. Require `lead_payload.email` for lead ingest.
+4. Never perform pause/archive without explicit user confirmation.
+5. User-facing errors must stay friendly; diagnostics belong in support Slack logs.
