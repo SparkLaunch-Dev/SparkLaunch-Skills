@@ -17,6 +17,14 @@ Skills define consistent, production-safe execution patterns so agents can:
 3. Prefer deterministic step sequences over broad narrative guidance.
 4. Keep prompts and examples production-oriented and endpoint-accurate.
 
+## Common MCP Execution Pattern
+
+1. Start with API key authentication, not interactive login.
+2. Use production endpoints with explicit `Accept` and `Content-Type` headers.
+3. Run MCP session lifecycle in order: `initialize` -> `notifications/initialized` -> tool calls on the same `mcp-session-id`.
+4. If session state fails, reinitialize once, then escalate.
+5. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
+
 ## Global Skill Policies
 
 1. Authentication must be API-key-first for MCP operations.
@@ -25,6 +33,15 @@ Skills define consistent, production-safe execution patterns so agents can:
 4. Do not include local-machine or localhost operational instructions in this repository.
 5. Never brute-force identifiers, tokens, or credentials.
 6. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
+
+## Perspective Rules
+
+Skills must be written from the perspective of an external operator who does not know SparkLaunch internals.
+
+1. Avoid internal implementation terms unless strictly required by a tool contract.
+2. Do not teach internal data-model details that users do not need to complete tasks.
+3. Focus instructions on tool intent, required inputs, expected outputs, and recovery steps.
+4. Keep user messaging concrete, brief, and non-technical.
 
 ## Required Skill Structure
 
@@ -47,7 +64,19 @@ Every skill should define validation for:
 - validation/internal error paths
 - regression checks for critical contracts
 
+## Future Skill Checklist
+
+When adding a new MCP skill:
+
+1. Confirm trigger scope is explicit and narrow.
+2. Ensure default prompt is API-key-first and production-endpoint oriented.
+3. Ensure tool workflow avoids internal identifier guessing/brute-forcing.
+4. Document transport/session expectations (`initialize`, session id reuse).
+5. Include error-handling guidance: user-friendly output, Slack diagnostics.
+6. Verify naming is descriptive and consistent with existing skill folders.
+
 ## Current Skills
 
-- `sparklaunch-sales-crm`
+- `sparklaunch-sales`
 - `sparklaunch-campaigns`
+- `sparklaunch-logo-generation`

@@ -1,8 +1,8 @@
 interface:
-  display_name: "SparkLaunch Sales CRM"
-  short_description: "Sales CRM MCP operations"
+  display_name: "SparkLaunch Sales"
+  short_description: "Sales MCP operations"
   default_prompt: >
-    Use $sparklaunch-sales-crm against https://sparklaun.ch/api/mcp/crm/.
+    Use $sparklaunch-sales against https://sparklaun.ch/api/mcp/server/.
     Authentication is API-key-first: use or request an MCP API key, and do not
     send login instructions when an API key path exists. If 401/403 occurs,
     validate token scope and session headers, reinitialize once if needed, and
@@ -11,10 +11,10 @@ interface:
 dependencies:
   tools:
     - type: "mcp"
-      value: "sparklaunch_sales_crm"
-      description: "SparkLaunch Sales CRM MCP server"
+      value: "sparklaunch_sales"
+      description: "SparkLaunch Sales MCP server"
       transport: "streamable_http"
-      url: "https://sparklaun.ch/api/mcp/crm/"
+      url: "https://sparklaun.ch/api/mcp/server/"
 
 policy:
   allow_implicit_invocation: false

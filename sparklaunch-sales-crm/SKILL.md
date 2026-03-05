@@ -1,16 +1,16 @@
 ---
-name: sparklaunch-sales-crm
+name: sparklaunch-sales
 description: >
-  Use when the user needs to operate SparkLaunch Sales CRM through the production
-  Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/crm/, including
+  Use when the user needs to operate SparkLaunch Sales workflows through the production
+  Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/server/, including
   crm.get_dashboard, crm.search_leads, crm.create_lead, crm.list_deals,
   crm.move_deal, crm.log_activity, and crm.add_contact_note. Do not use for
   generic sales strategy requests without MCP operations.
 ---
 
-# SparkLaunch Sales CRM
+# SparkLaunch Sales
 
-Operate Sales CRM safely with MCP API keys and predictable MCP workflows.
+Operate SparkLaunch Sales tools safely with MCP API keys and predictable MCP workflows.
 
 ## Authentication Policy (Mandatory)
 1. Use an MCP API key as bearer auth for MCP calls.
@@ -19,7 +19,7 @@ Operate Sales CRM safely with MCP API keys and predictable MCP workflows.
 4. Use login URL fallback only when user cannot provide or generate an API key.
 
 ## Endpoint and Transport
-1. Default endpoint: `https://sparklaun.ch/api/mcp/crm/`.
+1. Default endpoint: `https://sparklaun.ch/api/mcp/server/`.
 2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
 3. Session lifecycle:
 - call `initialize`
