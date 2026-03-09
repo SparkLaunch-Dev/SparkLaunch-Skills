@@ -80,3 +80,7 @@ When adding a new MCP skill:
 - `sparklaunch-sales`
 - `sparklaunch-campaigns`
 - `sparklaunch-logo-generation`
+- `sparklaunch-color-palettes`
+- `sparklaunch-idea-validation`
+- `sparklaunch-landing-pages`
+- `sparklaunch-projects`

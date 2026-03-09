@@ -1,0 +1,21 @@
+﻿interface:
+  display_name: "SparkLaunch Landing Pages"
+  short_description: "Create and publish landing pages via MCP server"
+  default_prompt: >
+    Use $sparklaunch-landing-pages against https://sparklaun.ch/api/mcp/server/.
+    Authentication is API-key-first: use or request an MCP API key, and do not
+    send login instructions when an API key path exists. Use landing.create_project
+    and landing.generate_content with landing.write scope to create pages, landing.publish
+    to go live, and landing.get_project, landing.list_projects, landing.get_analytics,
+    or landing.get_leads with landing.read scope to monitor. Do not ask for internal IDs.
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch_landing_pages"
+      description: "SparkLaunch landing page tools on MCP server"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch/api/mcp/server/"
+
+policy:
+  allow_implicit_invocation: false

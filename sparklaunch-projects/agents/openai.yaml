@@ -1,0 +1,21 @@
+﻿interface:
+  display_name: "SparkLaunch Projects"
+  short_description: "Create and manage business projects via MCP server"
+  default_prompt: >
+    Use $sparklaunch-projects against https://sparklaun.ch/api/mcp/server/.
+    Authentication is API-key-first: use or request an MCP API key, and do not
+    send login instructions when an API key path exists. Use projects.create
+    with projects.write scope to create new business projects, projects.update
+    to modify them, and projects.get or projects.list with projects.read scope
+    to view project details. Do not ask for internal IDs.
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch_projects"
+      description: "SparkLaunch project management tools on MCP server"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch/api/mcp/server/"
+
+policy:
+  allow_implicit_invocation: false

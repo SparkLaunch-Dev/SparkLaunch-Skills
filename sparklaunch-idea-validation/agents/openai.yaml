@@ -1,0 +1,21 @@
+﻿interface:
+  display_name: "SparkLaunch Idea Validation"
+  short_description: "Validate startup ideas via MCP server"
+  default_prompt: >
+    Use $sparklaunch-idea-validation against https://sparklaun.ch/api/mcp/server/.
+    Authentication is API-key-first: use or request an MCP API key, and do not
+    send login instructions when an API key path exists. Use validation.create_project
+    and validation.start_analysis with validation.write scope to create and analyze ideas,
+    and validation.get_project or validation.list_projects with validation.read scope
+    to view results. Do not ask for internal IDs.
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch_idea_validation"
+      description: "SparkLaunch idea validation tools on MCP server"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch/api/mcp/server/"
+
+policy:
+  allow_implicit_invocation: false
