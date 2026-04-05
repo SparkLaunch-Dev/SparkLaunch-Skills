@@ -2,7 +2,7 @@
 name: sparklaunch-landing-pages
 description: >
   Use when the user needs to create, publish, or manage AI-powered landing pages
-  through the production Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/server/,
+  through the production Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/,
   specifically the landing.create_project, landing.generate_content, landing.publish,
   landing.get_project, landing.list_projects, landing.get_analytics, and
   landing.get_leads tools. Do not use for generic web design advice when no MCP
@@ -16,11 +16,13 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
 ## Authentication Policy (Mandatory)
 1. Use an MCP API key as bearer auth for all MCP calls.
 2. API keys must come from SparkLaunch Profile API key management.
-3. Do not ask the user to sign in if they already have (or can create) an API key.
-4. Use login URL fallback only when API key creation is unavailable.
+3. MCP API keys are project-scoped; landing-page reads and writes stay inside the SparkLaunch project bound to that key.
+4. If the user needs a new SparkLaunch project first, use the SparkLaunch app or `POST /api/mcp/auth/bootstrap/project` with a site JWT before MCP runtime calls.
+5. Do not ask the user to sign in if they already have (or can create) an API key.
+6. Use login URL fallback only when API key creation is unavailable.
 
 ## Endpoint and Transport
-1. Endpoint: `https://sparklaun.ch/api/mcp/server/`.
+1. Endpoint: `https://sparklaun.ch/api/mcp/`.
 2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
 3. Session lifecycle:
 - call `initialize`
@@ -30,7 +32,7 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
 4. If `Session not found` appears, reinitialize once and retry once. If it repeats, escalate as session-state infrastructure issue.
 
 ## Available Tools
-- `landing.create_project` - Create a new landing page project with template and CTA config
+- `landing.create_project` - Create a landing-page project inside the SparkLaunch project already bound to the MCP API key
 - `landing.generate_content` - Generate AI-powered landing page content (hero, features, FAQ, etc.)
 - `landing.publish` - Publish a landing page project to its live subdomain URL
 - `landing.get_project` - Get a landing page project with status, URLs, and lead count

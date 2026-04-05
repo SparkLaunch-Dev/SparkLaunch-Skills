@@ -1,20 +1,26 @@
 interface:
   display_name: "SparkLaunch Sales"
-  short_description: "Sales MCP operations"
+  short_description: "Sales and CRM workspace MCP operations"
   default_prompt: >
-    Use $sparklaunch-sales against https://sparklaun.ch/api/mcp/server/.
-    Authentication is API-key-first: use or request an MCP API key, and do not
-    send login instructions when an API key path exists. If 401/403 occurs,
-    validate token scope and session headers, reinitialize once if needed, and
-    only present login_url as a fallback when key generation is unavailable.
+    Use $sparklaunch-sales against https://sparklaun.ch/api/mcp/.
+    Authentication is API-key-first with a project-scoped MCP API key. If the
+    user needs a new SparkLaunch project first, use the app or POST
+    /api/mcp/auth/bootstrap/project with a site JWT before runtime MCP calls.
+    If 401/403 occurs, validate token scope and session headers, reinitialize
+    once if needed, and only present login_url as a fallback when key generation
+    is unavailable. For CRM contact-workspace workflows, prefer
+    crm.get_contact_workspace as the verification read, treat summary generation
+    as explicit via crm.refresh_contact_summary only, and keep business-card
+    ingest, card deletion, and contact updates aligned with the same governed
+    workspace contract.
 
 dependencies:
   tools:
     - type: "mcp"
       value: "sparklaunch_sales"
-      description: "SparkLaunch Sales MCP server"
+      description: "SparkLaunch Sales tools on MCP runtime"
       transport: "streamable_http"
-      url: "https://sparklaun.ch/api/mcp/server/"
+      url: "https://sparklaun.ch/api/mcp/"
 
 policy:
   allow_implicit_invocation: false

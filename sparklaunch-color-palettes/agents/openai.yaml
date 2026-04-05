@@ -1,21 +1,22 @@
 ﻿interface:
   display_name: "SparkLaunch Color Palettes"
-  short_description: "Generate brand color palettes via MCP server"
+  short_description: "Generate brand color palettes via MCP runtime"
   default_prompt: >
-    Use $sparklaunch-color-palettes against https://sparklaun.ch/api/mcp/server/.
-    Authentication is API-key-first: use or request an MCP API key, and do not
-    send login instructions when an API key path exists. Use branding.generate_palette
-    with branding.write scope to generate palettes, and branding.list_palettes or
-    branding.get_palette with branding.read scope to view them. Do not ask for
-    internal IDs.
+    Use $sparklaunch-color-palettes against https://sparklaun.ch/api/mcp/.
+    Authentication is API-key-first with a project-scoped MCP API key. If the user
+    needs a new SparkLaunch project first, use the app or POST
+    /api/mcp/auth/bootstrap/project with a site JWT before runtime MCP calls.
+    Use branding.generate_palette with branding.write scope to generate palettes,
+    and branding.list_palettes or branding.get_palette with branding.read scope
+    to view them. Do not ask for internal IDs.
 
 dependencies:
   tools:
     - type: "mcp"
       value: "sparklaunch_color_palettes"
-      description: "SparkLaunch color palette tools on MCP server"
+      description: "SparkLaunch color palette tools on MCP runtime"
       transport: "streamable_http"
-      url: "https://sparklaun.ch/api/mcp/server/"
+      url: "https://sparklaun.ch/api/mcp/"
 
 policy:
   allow_implicit_invocation: false

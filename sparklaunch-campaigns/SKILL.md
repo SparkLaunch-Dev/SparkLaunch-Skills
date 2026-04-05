@@ -2,7 +2,7 @@
 name: sparklaunch-campaigns
 description: >
   Use when the user needs to operate SparkLaunch Campaigns + QR/Shortlinks through
-  the production Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/campaigns/,
+  the production Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/,
   including campaign_create, shortlink_create, qr_generate, lead_capture_ingest,
   campaign_stats, campaign_pause, campaign_archive, and shortlink_rotate. Do not use
   for generic marketing advice without MCP operations.
@@ -15,11 +15,13 @@ Operate campaign acquisition workflows with reliable attribution wiring into CRM
 ## Authentication Policy (Mandatory)
 1. Use an MCP API key as bearer auth for all MCP calls.
 2. API keys must come from SparkLaunch Profile API key management.
-3. Do not ask the user to sign in if they already have (or can generate) an API key.
-4. Use login URL fallback only when the user cannot provide or create an API key.
+3. MCP API keys are project-scoped; all campaign work stays inside the SparkLaunch project bound to that key.
+4. If the user needs a new SparkLaunch project first, use the SparkLaunch app or `POST /api/mcp/auth/bootstrap/project` with a site JWT before MCP runtime calls.
+5. Do not ask the user to sign in if they already have (or can generate) an API key.
+6. Use login URL fallback only when the user cannot provide or create an API key.
 
 ## Endpoint and Transport
-1. Default endpoint: `https://sparklaun.ch/api/mcp/campaigns/`.
+1. Default endpoint: `https://sparklaun.ch/api/mcp/`.
 2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
 3. Session lifecycle:
 - call `initialize`
@@ -47,6 +49,7 @@ Always report:
 
 ## Tool Notes
 - `campaign_create` automatically uses API key scope.
+- All tools operate only within the SparkLaunch project bound to the current MCP API key.
 - `qr_generate` should use the default QR theme for the active API key when style args are omitted.
 - `qr_generate` returns both `data_url` and raw `image_base64` when generation succeeds.
 

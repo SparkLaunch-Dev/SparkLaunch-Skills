@@ -19,20 +19,22 @@ Skills define consistent, production-safe execution patterns so agents can:
 
 ## Common MCP Execution Pattern
 
-1. Start with API key authentication, not interactive login.
-2. Use production endpoints with explicit `Accept` and `Content-Type` headers.
+1. Start with project-scoped MCP API key authentication for runtime calls, not interactive login.
+2. Use the canonical production runtime endpoint `https://sparklaun.ch/api/mcp/`; treat `/api/mcp/server/` and `/api/mcp/campaigns/` as compatibility aliases only.
 3. Run MCP session lifecycle in order: `initialize` -> `notifications/initialized` -> tool calls on the same `mcp-session-id`.
 4. If session state fails, reinitialize once, then escalate.
 5. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
 
 ## Global Skill Policies
 
-1. Authentication must be API-key-first for MCP operations.
-2. Do not instruct users to perform interactive login when a valid API key path exists.
-3. Use login URLs only as fallback recovery when API key issuance is unavailable.
-4. Do not include local-machine or localhost operational instructions in this repository.
-5. Never brute-force identifiers, tokens, or credentials.
-6. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
+1. Authentication must be API-key-first for MCP runtime operations.
+2. MCP API keys are project-scoped; do not assume one key can access multiple SparkLaunch projects.
+3. New SparkLaunch project bootstrap belongs to the app or the control-plane auth flow (`GET /api/mcp/auth/status`, `POST /api/mcp/auth/bootstrap/project`) with a site JWT, not to runtime tool calls.
+4. Do not instruct users to perform interactive login when a valid API key path exists.
+5. Use login URLs only as fallback recovery when API key issuance is unavailable.
+6. Do not include local-machine or localhost operational instructions in this repository.
+7. Never brute-force identifiers, tokens, or credentials.
+8. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
 
 ## Perspective Rules
 
@@ -77,7 +79,7 @@ When adding a new MCP skill:
 
 ## Current Skills
 
-- `sparklaunch-sales`
+- `sparklaunch-sales` for lead, deal, and CRM contact-workspace operations over the canonical SparkLaunch MCP runtime
 - `sparklaunch-campaigns`
 - `sparklaunch-logo-generation`
 - `sparklaunch-color-palettes`
