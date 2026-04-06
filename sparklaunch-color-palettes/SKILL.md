@@ -28,7 +28,9 @@ Generate and manage AI-powered brand color palettes through SparkLaunch MCP.
 - store `mcp-session-id` and protocol version
 - send `notifications/initialized` with the same session headers
 - reuse that session id for `tools/list` and `tools/call`
-4. If `Session not found` appears, reinitialize once and retry once. If it repeats, escalate as session-state infrastructure issue.
+4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
+5. If `Session not found` appears, reinitialize once and retry once.
+6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/branding/generate-palettes` with multipart form data, then save the chosen palette with `POST /api/branding/save-palette?token=<JWT>`.
 
 ## Available Tools
 - `branding.generate_palette` - Generate 3 AI color palettes from a text description
@@ -41,6 +43,7 @@ Generate and manage AI-powered brand color palettes through SparkLaunch MCP.
 3. Present the 3 generated palettes with color swatches (hex codes and feelings).
 4. If the user wants to see saved palettes, call `branding.list_palettes`.
 5. If the user wants details on a specific palette, call `branding.get_palette`.
+6. If MCP is degraded, keep the same prompt and continue through the REST palette path rather than asking the user to restate the brief.
 
 ## Output Contract
 Always report for generated palettes:

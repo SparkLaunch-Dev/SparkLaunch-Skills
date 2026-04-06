@@ -28,7 +28,9 @@ Operate campaign acquisition workflows with reliable attribution wiring into CRM
 - store `mcp-session-id` and `protocolVersion`
 - send `notifications/initialized` with same session and protocol headers
 - use same session id for `tools/list` and `tools/call`
-4. If `Session not found` occurs, re-run initialize + notification once and retry. If it still fails, report likely upstream session affinity issue and escalate.
+4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
+5. If `Session not found` occurs, re-run initialize + notification once and retry.
+6. If it still fails, mark MCP as degraded, preserve any read results already collected, and stop instead of looping retries.
 
 ## Standard Workflow
 1. Confirm destination URL and objective.

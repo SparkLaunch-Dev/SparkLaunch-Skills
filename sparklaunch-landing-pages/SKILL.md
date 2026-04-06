@@ -29,7 +29,9 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
 - store `mcp-session-id` and protocol version
 - send `notifications/initialized` with the same session headers
 - reuse that session id for `tools/list` and `tools/call`
-4. If `Session not found` appears, reinitialize once and retry once. If it repeats, escalate as session-state infrastructure issue.
+4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
+5. If `Session not found` appears, reinitialize once and retry once.
+6. If it repeats and a SparkLaunch JWT is available, switch to the REST landing flow instead of looping MCP retries.
 
 ## Available Tools
 - `landing.create_project` - Create a landing-page project inside the SparkLaunch project already bound to the MCP API key
@@ -48,11 +50,12 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
    - CTA type: `waitlist`, `book_call`, or `newsletter`
    - Target ICP (optional)
 2. Call `landing.create_project` to create the landing page project.
-3. Call `landing.generate_content` to produce AI-powered copy (hero, features, social proof, FAQ, CTA, footer).
-4. Present the generated content to the user for review.
-5. When ready, call `landing.publish` to make the page live.
-6. Share the production URL with the user.
-7. Use `landing.get_analytics` and `landing.get_leads` to monitor performance.
+3. Call `landing.generate_content` to produce AI-powered copy when the route is available and the runtime is healthy.
+4. Persist generated or manual content through `PATCH /api/landing-pages/projects/{project_id}/versions/draft?token=<JWT>` before publish.
+5. Present the draft content to the user for review.
+6. When ready, call `landing.publish` or the REST publish route to make the page live.
+7. Share the production URL with the user.
+8. Use `landing.get_analytics` and `landing.get_leads` to monitor performance.
 
 ## Output Contract
 For created projects, always report:
@@ -102,4 +105,5 @@ For analytics, present:
 3. Keep user-facing failures friendly and concise.
 4. Treat login URLs as fallback only after API key path is blocked.
 5. When project or publish limit is reached, clearly communicate and suggest upgrading.
-6. Content generation uses the project's favorite color palette when available.
+6. Content generation returns content, not a guaranteed saved draft. Persist the draft explicitly before publish.
+7. If the content-generation route is unavailable on a deployment, create manual draft content and continue with draft patch plus publish.

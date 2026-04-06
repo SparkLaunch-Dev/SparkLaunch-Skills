@@ -30,7 +30,9 @@ Operate SparkLaunch Sales tools safely with MCP API keys and predictable MCP wor
 - persist `mcp-session-id` and protocol version
 - send `notifications/initialized`
 - reuse the same session for `tools/list` and `tools/call`
-4. On `Session not found`, re-initialize and retry once; escalate if repeated.
+4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
+5. On `Session not found`, re-initialize and retry once.
+6. If it repeats, mark MCP as degraded, preserve any successful reads or writes already completed, and stop instead of looping retries.
 
 ## Standard Workflow
 1. Start with the narrowest read call that gives grounded context:

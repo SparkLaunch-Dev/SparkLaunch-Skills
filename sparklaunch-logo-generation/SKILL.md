@@ -27,7 +27,9 @@ Generate production-ready logo assets through SparkLaunch MCP.
 - store `mcp-session-id` and protocol version
 - send `notifications/initialized` with the same session headers
 - reuse that session id for `tools/list` and `tools/call`
-4. If `Session not found` appears, reinitialize once and retry once. If it repeats, escalate as session-state infrastructure issue.
+4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
+5. If `Session not found` appears, reinitialize once and retry once.
+6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/logos/?token=<JWT>` then `POST /api/logos/{logo_id}/generate?token=<JWT>`.
 
 ## Standard Workflow
 1. Confirm the business name and desired design attributes.
@@ -36,6 +38,7 @@ Generate production-ready logo assets through SparkLaunch MCP.
 - optional `selected_colors` object
 3. Call `crm.generate_logo`.
 4. Return generated outputs to the user.
+5. If MCP is degraded, keep the same business name, style, and colors when switching to the REST flow so outputs stay comparable.
 
 ## Output Contract
 Always report:

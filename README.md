@@ -22,8 +22,10 @@ Skills define consistent, production-safe execution patterns so agents can:
 1. Start with project-scoped MCP API key authentication for runtime calls, not interactive login.
 2. Use the canonical production runtime endpoint `https://sparklaun.ch/api/mcp/`; treat `/api/mcp/server/` and `/api/mcp/campaigns/` as compatibility aliases only.
 3. Run MCP session lifecycle in order: `initialize` -> `notifications/initialized` -> tool calls on the same `mcp-session-id`.
-4. If session state fails, reinitialize once, then escalate.
-5. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
+4. Treat MCP session health as deployment-sensitive: `initialize` succeeding does not guarantee later `tools/call` requests will keep the session.
+5. If a post-initialize request returns `Session not found`, reinitialize once, retry once, then switch to the documented REST fallback when one exists.
+6. If no documented REST fallback exists, mark MCP as degraded, preserve partial outputs, and stop instead of looping retries.
+7. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
 
 ## Global Skill Policies
 
@@ -35,6 +37,7 @@ Skills define consistent, production-safe execution patterns so agents can:
 6. Do not include local-machine or localhost operational instructions in this repository.
 7. Never brute-force identifiers, tokens, or credentials.
 8. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
+9. Recipe reports must label artifact source and status as one of: `platform-generated`, `platform-created/manual-content`, `manual fallback`, `pending async generation`, or `failed`.
 
 ## Perspective Rules
 

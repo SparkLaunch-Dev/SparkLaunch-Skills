@@ -30,7 +30,9 @@ View and update the SparkLaunch business project already bound to a project-scop
 - store `mcp-session-id` and protocol version
 - send `notifications/initialized` with the same session headers
 - reuse that session id for `tools/list` and `tools/call`
-4. If `Session not found` appears, reinitialize once and retry once. If it repeats, escalate as session-state infrastructure issue.
+4. Treat `initialize` success as necessary but not sufficient. Some deployments may still lose session state on the next request.
+5. If `Session not found` appears, reinitialize once and retry once.
+6. If it repeats, mark MCP as degraded. Use only the documented control-plane REST routes for bootstrap or auth discovery; otherwise stop instead of looping retries.
 
 ## Available Tools
 - `projects.get` - Get details for the project bound to the current API key
@@ -45,6 +47,7 @@ View and update the SparkLaunch business project already bound to a project-scop
 3. Present the current scoped project summary to the user.
 4. To update existing details, call `projects.update` with only the changed fields.
 5. Re-read with `projects.get` when the user needs confirmation of the saved state.
+6. If runtime MCP is degraded and the task is not bootstrap or auth discovery, tell the user the project key is valid but the runtime session is unstable.
 
 ## Output Contract
 For retrieved or updated projects, always report:

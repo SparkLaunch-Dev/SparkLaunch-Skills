@@ -32,6 +32,16 @@ Use this recipe when the user wants to turn a rough startup brief into a name sh
 6. Pick the strongest palette from the returned options and pass its colors into `crm.generate_logo`.
 7. Optionally create a business-name PDF report with `POST /api/business-names/projects/{business_name_project_id}/report?token=<JWT>`.
 
+## Path Status
+
+- Business-name project create + generate: `Working with caveats`
+- Domain check: `Verified working`
+- Palette generation via MCP: `Working with caveats`
+- Palette generation via REST fallback: `Verified working`
+- Logo generation via MCP: `Working with caveats`
+- Logo generation via REST fallback: `Verified working`
+- Manual brand recommendation: `Manual fallback allowed`
+
 ### Example Business Naming Body
 
 ```json
@@ -46,6 +56,20 @@ Use this recipe when the user wants to turn a rough startup brief into a name sh
 }
 ```
 
+### Example Naming Generate Response Excerpt
+
+```json
+{
+  "project_id": 456,
+  "status": "completed",
+  "generated_names": [
+    "Nimbus Ops",
+    "DispatchPilot",
+    "FieldCurrent"
+  ]
+}
+```
+
 ### Example Domain Check Body
 
 ```json
@@ -54,6 +78,40 @@ Use this recipe when the user wants to turn a rough startup brief into a name sh
   "tlds": [".com", ".ai", ".co", ".io"]
 }
 ```
+
+### Verified Palette REST Fallback
+
+Use `POST /api/branding/generate-palettes` as multipart form data with:
+
+- `generation_method`: `description`
+- `prompt`: concise aesthetic brief
+- `token`: SparkLaunch JWT
+- optional `project_id`
+
+Save the chosen result with `POST /api/branding/save-palette?token=<JWT>`.
+
+### Verified Logo REST Fallback Body
+
+```json
+{
+  "business_name": "Nimbus Ops",
+  "attributes": "credible, modern, efficient, not playful",
+  "prompt_style": "symbolic",
+  "selected_colors": {
+    "primary": "#0F4C81",
+    "secondary": "#5FA8D3",
+    "accent": "#F4B942"
+  },
+  "project_id": 123
+}
+```
+
+## Operating Notes
+
+1. Treat naming payload fields as stricter than the current public recipe implies. In practice, `project_name` and `business_description` should both be present.
+2. If the first naming request fails with a generic validation message, confirm field names and aliases before changing strategy.
+3. If MCP is degraded after initialization, skip straight to the documented REST fallback for palettes or logos instead of repeating MCP retries.
+4. Keep a credible framing layer. Prefer the narrowest plausible market wedge and a believable promise over hype.
 
 ## Output Contract
 
@@ -65,9 +123,18 @@ Return:
 - selected palette id and hex values
 - logo id and image delivery fields
 - business-name report URL if generated
+- artifact status labels for naming, palette, and logo
 
 ## Failure Handling
 
 - Naming and domain steps can fail independently; keep successful outputs instead of restarting the whole recipe.
-- If palette generation succeeds but logo generation fails, preserve the chosen palette and ask whether to retry the logo with a narrower prompt.
+- If naming fails, preserve the current working business name from bootstrap or validation only if the user approved continuing without a generated shortlist.
+- If palette generation succeeds but logo generation fails, preserve the chosen palette and retry through the REST logo path before falling back to a manual logo concept.
+- If both platform palette paths fail, provide a manual palette direction labeled `manual fallback`.
 - Keep the user-safe platform error text intact and note that SparkLaunch already routed diagnostics to support.
+
+## Troubleshooting
+
+- `Please enter your full name.`: likely generic validation wrapping. Re-check the business-name payload shape before assuming a founder-name field is needed.
+- Empty or generic name list: tighten `industry`, `target_audience`, `keywords`, and `style_preferences` rather than blindly regenerating.
+- Palette MCP session errors: use the multipart REST fallback and save the selected palette explicitly.

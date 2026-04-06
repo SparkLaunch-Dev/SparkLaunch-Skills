@@ -4,6 +4,8 @@ This catalog stores prompt-ready workflows for agents operating against SparkLau
 
 Prefer the canonical MCP runtime at `/api/mcp/` whenever the tool exists there. Use authenticated SparkLaunch app APIs only for steps that do not yet have MCP parity.
 
+Treat the recipes as operational playbooks, not product promises. Each recipe should distinguish what is verified working, what works with caveats, and what can fall back to REST or manual artifact creation.
+
 ## How To Use
 
 1. Match the user request to the closest recipe.
@@ -11,6 +13,23 @@ Prefer the canonical MCP runtime at `/api/mcp/` whenever the tool exists there. 
 3. Execute the workflow in the documented order.
 4. Return the documented report shape instead of a loose status dump.
 5. If a step fails, preserve partial outputs and continue only when the recipe explicitly allows it.
+
+## Status Labels
+
+Use these labels inside recipes and final reports:
+
+- `Verified working` - confirmed flow with a documented request and response shape
+- `Working with caveats` - usable, but transport, async timing, or schema behavior is brittle
+- `Environment-dependent` - route exists in platform contracts but was not stable on every deployment tested
+- `Manual fallback allowed` - the platform step may fail without blocking the whole founder outcome
+
+## MCP Transport Reality
+
+1. Start with MCP when the recipe says the tool is available there.
+2. Call `initialize`, store `mcp-session-id`, send `notifications/initialized`, and reuse the same session headers.
+3. If any later MCP request returns `Session not found`, reinitialize once and retry once.
+4. If the retry also fails, mark MCP as degraded in the final report and switch to the recipe's REST fallback path.
+5. Do not keep retrying a broken session beyond that point.
 
 ## Catalog
 
@@ -28,7 +47,9 @@ Prefer the canonical MCP runtime at `/api/mcp/` whenever the tool exists there. 
 - `/api/mcp/` is the canonical MCP runtime.
 - `POST /api/mcp/auth/bootstrap/project?token=<JWT>` is the control-plane bootstrap path for new projects.
 - Business naming and GTM planning still use authenticated SparkLaunch app APIs today.
-- Landing-page draft persistence currently requires `PATCH /api/landing-pages/projects/{project_id}/versions/draft?token=<JWT>` after MCP content generation.
+- Validation has both MCP and REST paths, but the REST path is asynchronous and requires polling.
+- Landing-page draft persistence requires `PATCH /api/landing-pages/projects/{project_id}/versions/draft?token=<JWT>` even when content came from MCP.
+- Palette and logo generation can fall back to authenticated REST if MCP session handling is unstable.
 - User-facing failures should stay concise and helpful. SparkLaunch routes backend diagnostics to the support Slack channel for MCP, validation, business naming, GTM, landing pages, and domain-checking flows.
 
 ## Shared Report Template

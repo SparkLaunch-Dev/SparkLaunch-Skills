@@ -40,6 +40,18 @@ Use this recipe when the user needs a brand-new SparkLaunch project before any M
    - `notifications/initialized`
 9. Optionally verify scope and project binding with `projects.get` or `projects.list`.
 
+## Path Status
+
+- Project bootstrap REST path: `Verified working`
+- Optional MCP runtime verification after bootstrap: `Working with caveats`
+
+## Known-Good Transport
+
+1. Treat the JWT bootstrap route as the source of truth for project creation.
+2. Use MCP initialization only to verify the new runtime key, not as a precondition for returning success.
+3. If `initialize` succeeds but the next MCP request returns `Session not found`, reinitialize once.
+4. If the second attempt still fails, return the created project and key anyway, mark MCP runtime as degraded, and stop there.
+
 ### Example Bootstrap Body
 
 ```json
@@ -66,6 +78,22 @@ Use this recipe when the user needs a brand-new SparkLaunch project before any M
 }
 ```
 
+### Example Bootstrap Response Excerpt
+
+```json
+{
+  "project": {
+    "id": 123,
+    "name": "Nimbus Ops",
+    "plan": "growth"
+  },
+  "api_key": {
+    "prefix": "slk_mcp_AbCdEf",
+    "token": "slk_mcp_secret_value"
+  }
+}
+```
+
 ## Output Contract
 
 Return:
@@ -81,4 +109,5 @@ Return:
 - If JWT auth fails, stop immediately and ask for a fresh login token.
 - If bootstrap returns a user-facing 4xx, relay the platform message without adding stack traces or guessing.
 - If bootstrap returns a 5xx, tell the user project creation failed and that support diagnostics were already routed by SparkLaunch.
+- If project creation succeeds but MCP runtime verification fails, still return the project and key. Mark the runtime as degraded instead of reporting the entire bootstrap as failed.
 - Do not fabricate a project or key when creation fails.
