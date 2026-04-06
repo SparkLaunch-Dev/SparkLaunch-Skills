@@ -217,7 +217,7 @@ Use this recipe when the user says some version of: `I want to start a business 
       "cta_text": "Join the waitlist"
     }
   },
-  "assets_manifest": {}
+  "assets_manifest": []
 }
 ```
 

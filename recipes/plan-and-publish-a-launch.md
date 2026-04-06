@@ -96,7 +96,7 @@ Use this recipe when the user has a project and wants to move from strategy into
       "cta_text": "Join the waitlist"
     }
   },
-  "assets_manifest": {}
+  "assets_manifest": []
 }
 ```
 
