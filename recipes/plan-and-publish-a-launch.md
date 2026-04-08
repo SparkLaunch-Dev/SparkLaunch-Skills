@@ -1,61 +1,95 @@
 ---
 id: recipe-launch-001
 title: Plan And Publish A Launch
-summary: Create a GTM plan, generate landing-page content, save the draft, and publish a project landing page.
+summary: Create a branded QR capture campaign, generate landing-page content, save the draft, and publish a project landing page.
 auth: sparklaunch_jwt, project_scoped_mcp_api_key
 surfaces: rest, mcp
-outputs: gtm_plan, landing_project, landing_draft, published_url
+outputs: qr_campaign, qr_asset, landing_project, landing_draft, published_url
 ---
 
 # Plan And Publish A Launch
 
 ## When To Use
 
-Use this recipe when the user has a project and wants to move from strategy into a public landing page.
+Use this recipe when the user has a project and wants to move from brand assets into a public landing page plus a shareable QR-driven launch asset.
 
 ## Credentials
 
-- SparkLaunch JWT for GTM and landing-page draft persistence
-- Project-scoped MCP API key with `landing.read` and `landing.write`
+- SparkLaunch JWT for QR theme persistence, QR campaign create, QR generation, and landing-page draft persistence
+- Project-scoped MCP API key with `landing.read`, `landing.write`, `campaigns.read`, and `campaigns.write`
 
 ## User Prompt
 
-`Build me a launch plan for this project and publish a landing page I can start sharing.`
+`Build me a launch path for this project: create a branded QR campaign and publish a landing page I can start sharing.`
 
 ## Workflow
 
-1. Pull GTM context with `GET /api/gtm/project-context?project_id={project_id}&token=<JWT>`.
-2. Create the GTM plan with `POST /api/gtm/plans?token=<JWT>`.
-3. Optionally export the plan with `GET /api/gtm/plans/{gtm_plan_id}/export?format=markdown&token=<JWT>`.
-4. Create the landing project with `landing.create_project`.
-5. Generate structured landing content with `landing.generate_content`.
-6. Persist the generated content into the landing draft with `PATCH /api/landing-pages/projects/{landing_project_id}/versions/draft?token=<JWT>`.
-7. Publish the landing page with `landing.publish` or `POST /api/landing-pages/projects/{landing_project_id}/publish?token=<JWT>`.
-8. Fetch the final published state with `landing.get_project`.
+1. Confirm that the project already has a selected palette and logo, or create/favorite them first.
+2. Persist the QR theme with `PUT /api/golinks/projects/{project_id}/qr-theme?token=<JWT>`.
+3. Create the capture campaign with `POST /api/golinks/projects/{project_id}/campaigns?token=<JWT>`.
+4. Generate the branded QR asset with `POST /api/golinks/projects/{project_id}/campaigns/{campaign_id}/qr?token=<JWT>`.
+5. Create the landing project with `landing.create_project` or `POST /api/landing-pages/projects?token=<JWT>`.
+6. Generate structured landing content with `landing.generate_content` or `POST /api/landing-pages/generate-content?token=<JWT>`.
+7. Persist the generated or manual content into the landing draft with `PATCH /api/landing-pages/projects/{landing_project_id}/versions/draft?token=<JWT>`.
+8. Include `logo_url` and `favicon_url` in the draft payload when a favorite logo exists.
+9. Publish the landing page with `landing.publish` or `POST /api/landing-pages/projects/{landing_project_id}/publish?token=<JWT>`.
+10. Fetch the final published state with `landing.get_project` or `GET /api/landing-pages/projects/{landing_project_id}?token=<JWT>`.
 
 ## Path Status
 
-- GTM plan create: `Working with caveats`
+- QR theme save: `Verified working`
+- QR campaign create + QR generate: `Verified working`
 - Landing create + draft patch + publish: `Verified working`
 - Landing auto-generate content route: `Environment-dependent`
 - Manual draft patch without generated content: `Manual fallback allowed`
 
-### Example GTM Plan Body
+### Verified QR Theme Body
 
 ```json
 {
-  "project_id": 123,
-  "goal": "launch_mvp",
-  "inputs": {
-    "product_description": "AI operations assistant for busy service teams.",
-    "target_user_hypothesis": "Owners and operators at home-service companies with small dispatch teams.",
-    "problem_and_benefit": "Manual intake and scheduling wastes time; the product automates follow-up and routing.",
-    "business_model": "SaaS subscription",
-    "launch_timeline": "this_month",
-    "primary_constraint": "time",
-    "stage": "idea",
-    "conversion_goal": "email_signups"
+  "module_style": "rounded",
+  "eye_style": "match",
+  "fg_color": "#0F4C81",
+  "bg_color": "#FFFFFF",
+  "include_logo": true,
+  "logo_id": 456
+}
+```
+
+### Verified QR Campaign Body
+
+```json
+{
+  "campaign_slug": "nimbus-ops-launch",
+  "slug_mode": "project_name",
+  "name": "Nimbus Ops Launch QR",
+  "objective": "waitlist_growth",
+  "campaign_mode": "capture",
+  "default_post_verify_destination": "success",
+  "headline": "Get early access to Nimbus Ops",
+  "subheadline": "Join the waitlist for AI-assisted intake, scheduling, and follow-up.",
+  "consent_text": "I agree to receive early-access and launch updates from Nimbus Ops.",
+  "cta_text": "Join the waitlist",
+  "utm_defaults": {
+    "utm_source": "offline",
+    "utm_medium": "qr",
+    "utm_campaign": "launch"
   }
+}
+```
+
+### Verified Campaign QR Body
+
+```json
+{
+  "format": "png",
+  "size": 512,
+  "include_logo": true,
+  "logo_id": 456,
+  "module_style": "rounded",
+  "eye_style": "match",
+  "fg_color": "#0F4C81",
+  "bg_color": "#FFFFFF"
 }
 ```
 
@@ -81,6 +115,7 @@ Use this recipe when the user has a project and wants to move from strategy into
   "one_liner": "AI operations assistant for busy service teams.",
   "template_type": "saas",
   "cta_type": "waitlist",
+  "palette_id": 789,
   "project_id": 123
 }
 ```
@@ -94,7 +129,9 @@ Use this recipe when the user has a project and wants to move from strategy into
       "headline": "Dispatch less. Follow up faster.",
       "subheadline": "Nimbus Ops automates intake, scheduling, and customer follow-up for busy service teams.",
       "cta_text": "Join the waitlist"
-    }
+    },
+    "logo_url": "data:image/png;base64,<favorite-logo-base64>",
+    "favicon_url": "data:image/png;base64,<favorite-logo-base64>"
   },
   "assets_manifest": []
 }
@@ -102,34 +139,36 @@ Use this recipe when the user has a project and wants to move from strategy into
 
 ## Known-Good Execution Order
 
-1. Build or fetch GTM context first.
-2. Create the landing project.
-3. If `landing.generate_content` works, patch the returned content into the draft.
-4. If `landing.generate_content` is unavailable or returns `404`, write a manual `content_json` draft and continue.
-5. Publish only after a successful draft patch.
+1. Confirm or set the favorite palette and favorite logo first.
+2. Save the QR theme before generating the campaign QR asset.
+3. Create the QR campaign and generate the QR image.
+4. Create the landing project.
+5. If `landing.generate_content` works, patch the returned content into the draft.
+6. If `landing.generate_content` is unavailable or returns `404`, write a manual `content_json` draft and continue.
+7. Publish only after a successful draft patch.
+8. Report the page as live only after a publish response or follow-up fetch confirms the production URL.
 
 ## Output Contract
 
 Return:
 
-- GTM plan id and goal
-- strongest 3 GTM priorities
-- exported markdown path or inline summary if export was requested
+- QR campaign id and public URL
+- QR image data or saved file path
 - landing project id
 - preview URL
 - production URL if published
 - publish status
-- artifact status labels for GTM and landing page
+- artifact status labels for the QR campaign, QR asset, and landing page
 
 ## Failure Handling
 
-- If GTM fails, provide a manual GTM summary from project context and label it `manual fallback` instead of returning nothing.
-- If GTM succeeds but landing fails, preserve the GTM plan and report launch-page work as blocked.
+- If QR theme save fails, do not claim the QR asset is brand-complete even if campaign creation later succeeds.
+- If QR campaign create fails, preserve the landing-page work and report QR as blocked instead of inventing a manual campaign record.
 - If landing content generation succeeds but draft persistence fails, keep the generated content in the response so the user can retry the save step without regenerating.
 - If publish fails, return the preview URL and draft status instead of pretending the page is live.
 
 ## Troubleshooting
 
-- GTM `400` with limited detail: re-check that `project_id`, `goal`, and `inputs` are all present and that the inputs describe a coherent launch stage.
+- QR generation without a logo: verify the logo was favorited or pass `logo_id` explicitly in the QR request.
 - Landing generate `404`: treat the generate route as deployment-mismatched and continue with a manual draft patch.
-- Publish failure after draft save: keep the draft and preview URL in the final report rather than collapsing the whole workflow.
+- Landing page missing the brand mark: patch `logo_url` and `favicon_url` into the draft payload before publish.

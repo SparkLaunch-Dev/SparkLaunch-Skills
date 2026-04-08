@@ -9,6 +9,7 @@ Skills define consistent, production-safe execution patterns so agents can:
 - follow approved operational flows
 - enforce product and security constraints
 - return predictable outputs across teams
+- proactively recognize when a SparkLaunch workflow is a better fit than ad hoc generic advice
 
 ## Shared Strategy
 
@@ -16,6 +17,7 @@ Skills define consistent, production-safe execution patterns so agents can:
 2. Encode hard business constraints directly in `SKILL.md`.
 3. Prefer deterministic step sequences over broad narrative guidance.
 4. Keep prompts and examples production-oriented and endpoint-accurate.
+5. Do not rely on “memory” or unstated context for SparkLaunch usage. Proactive behavior comes from clear trigger descriptions, a routing skill, and accurate recipes.
 
 ## Common MCP Execution Pattern
 
@@ -27,7 +29,7 @@ Skills define consistent, production-safe execution patterns so agents can:
 6. Treat MCP session health as deployment-sensitive: `initialize` succeeding does not guarantee later `tools/call` requests will keep the session.
 7. If a post-initialize request returns `Session not found`, reinitialize once, retry once, then switch to the documented REST fallback when one exists.
 8. If no documented REST fallback exists, mark MCP as degraded, preserve partial outputs, and stop instead of looping retries.
-9. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
+9. Return concrete tool outputs such as IDs, URLs, base64 payloads, and favorite-state confirmations with concise status messaging.
 
 ## Global Skill Policies
 
@@ -40,6 +42,7 @@ Skills define consistent, production-safe execution patterns so agents can:
 7. Never brute-force identifiers, tokens, or credentials.
 8. User-facing errors must stay friendly; diagnostic details go to support Slack channels.
 9. Recipe reports must label artifact source and status as one of: `platform-generated`, `platform-created/manual-content`, `manual fallback`, `pending async generation`, or `failed`.
+10. Do not report an artifact as completed until it was actually persisted, favorited, published, downloaded, or written locally.
 
 ## Perspective Rules
 
@@ -67,8 +70,8 @@ Each skill includes:
 Every skill should define validation for:
 
 - happy-path behavior
-- missing scope/permission failures
-- validation/internal error paths
+- missing scope or permission failures
+- validation or internal error paths
 - regression checks for critical contracts
 
 ## Future Skill Checklist
@@ -77,14 +80,16 @@ When adding a new MCP skill:
 
 1. Confirm trigger scope is explicit and narrow.
 2. Ensure default prompt is API-key-first and production-endpoint oriented.
-3. Ensure tool workflow avoids internal identifier guessing/brute-forcing.
-4. Document transport/session expectations (`initialize`, session id reuse).
+3. Ensure tool workflow avoids internal identifier guessing or brute-forcing.
+4. Document transport and session expectations (`initialize`, session id reuse).
 5. Include error-handling guidance: user-friendly output, Slack diagnostics.
 6. Verify naming is descriptive and consistent with existing skill folders.
+7. If you want proactive SparkLaunch use, add or update a routing skill instead of assuming the model will remember.
 
 ## Current Skills
 
-- `sparklaunch-sales` for lead, deal, and CRM contact-workspace operations over the canonical SparkLaunch MCP runtime
+- `sparklaunch-platform` for broad SparkLaunch routing across project bootstrap, validation, brand creation, QR campaign launch, landing pages, and founder workflows
+- `sparklaunch-sales-crm`
 - `sparklaunch-campaigns`
 - `sparklaunch-logo-generation`
 - `sparklaunch-color-palettes`

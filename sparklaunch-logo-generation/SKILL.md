@@ -31,6 +31,7 @@ Generate production-ready logo assets through SparkLaunch MCP.
 4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
 5. If `Session not found` appears, reinitialize once and retry once.
 6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/logos/?token=<JWT>` then `POST /api/logos/{logo_id}/generate?token=<JWT>`.
+7. If the selected logo will be used in landing pages or QR campaigns, mark it favorite with `POST /api/logos/{logo_id}/favorite?token=<JWT>` before reporting the logo step as complete.
 
 ## Standard Workflow
 1. Confirm the business name and desired design attributes.
@@ -38,8 +39,9 @@ Generate production-ready logo assets through SparkLaunch MCP.
 - `prompt_style`: `symbolic`, `geometric`, or `mascot`
 - optional `selected_colors` object
 3. Call `crm.generate_logo`.
-4. Return generated outputs to the user.
-5. If MCP is degraded, keep the same business name, style, and colors when switching to the REST flow so outputs stay comparable.
+4. If the logo is the chosen launch mark, favorite it before handing control to downstream landing-page or campaign workflows.
+5. Return generated outputs to the user.
+6. If MCP is degraded, keep the same business name, style, and colors when switching to the REST flow so outputs stay comparable.
 
 ## Output Contract
 Always report:
@@ -50,9 +52,11 @@ Always report:
 - `mime_type`
 - `image_base64`
 - `data_url`
+- `is_favorite` when known
 
 ## Guardrails
 1. Require `logos.write` scope.
 2. Never ask the user for workspace IDs, project IDs, or internal ownership IDs.
 3. Keep user-facing failures friendly and concise.
 4. Treat login URLs as fallback only after API key path is blocked.
+5. Do not tell the user a logo is the selected launch logo until it has been favorited or explicitly confirmed through the REST selection route.

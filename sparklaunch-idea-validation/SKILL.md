@@ -33,6 +33,7 @@ Validate startup ideas with AI-powered market analysis, competitor analysis, and
 5. If `Session not found` appears, reinitialize once and retry once.
 6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/validation/projects`, `POST /api/validation/projects/{id}/analyze`, then poll `GET /api/validation/projects/{id}`.
 7. When using REST fallback, explain that the analysis becomes asynchronous and may remain `analyzing` for several minutes.
+8. REST analyze does not take `sections='all'`; use an empty body or `{ "deep_research": false }`.
 
 ## Available Tools
 - `validation.create_project` - Create a validation project inside the SparkLaunch project already bound to the MCP API key
@@ -55,6 +56,7 @@ Validate startup ideas with AI-powered market analysis, competitor analysis, and
    - **TAM/SAM/SOM**: Total addressable, serviceable, and obtainable market sizing
 5. If the user wants to see previously created projects, call `validation.list_projects`.
 6. If MCP is degraded, use the REST fallback instead of abandoning the workflow when JWT auth is available.
+7. In founder workflows, treat validation as blocking. Wait for completion before moving into naming, brand, QR, or landing work unless the user explicitly approves a partial run.
 
 ## Output Contract
 For created projects, report:
@@ -87,3 +89,4 @@ The `sections` parameter for `validation.start_analysis` accepts:
 5. When project limit is reached, clearly communicate the limit and suggest upgrading.
 6. Analysis may take some time to complete. Communicate this expectation to the user.
 7. If a validation route returns `Please enter your full name.`, treat it as a likely generic validation wrapper and re-check request fields before changing the user-facing guidance.
+8. Do not describe downstream assets as validated unless the validation project actually completed.

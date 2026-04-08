@@ -1,7 +1,7 @@
 ---
 id: recipe-validation-001
 title: Validate An Idea And Generate A Report
-summary: Create a project-scoped validation record, run analysis, and return a founder-facing validation summary with optional PDF export.
+summary: Create a project-scoped validation record, run analysis, wait for completion when downstream assets depend on it, and return a founder-facing validation summary with optional PDF export.
 auth: sparklaunch_jwt_optional, project_scoped_mcp_api_key
 surfaces: mcp, rest
 outputs: validation_project, analysis_results, validation_report_optional
@@ -16,7 +16,7 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 ## Credentials
 
 - Project-scoped MCP API key with `validation.read` and `validation.write`
-- Optional SparkLaunch JWT if the caller wants the PDF report export
+- Optional SparkLaunch JWT if the caller wants the PDF report export or needs the REST fallback path
 
 ## User Prompt
 
@@ -25,9 +25,11 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 ## Workflow
 
 1. Confirm the MCP key is scoped to the correct SparkLaunch project.
-2. Create the validation workspace with `validation.create_project`.
-3. Run the full analysis with `validation.start_analysis(validation_project_id, sections="all")`.
-4. Fetch the completed record with `validation.get_project`.
+2. Create the validation workspace with `validation.create_project` or `POST /api/validation/projects?token=<JWT>`.
+3. Start analysis.
+   - MCP: `validation.start_analysis(validation_project_id, sections="all")`
+   - REST: `POST /api/validation/projects/{validation_project_id}/analyze?token=<JWT>`
+4. Fetch the completed record with `validation.get_project` or `GET /api/validation/projects/{validation_project_id}?token=<JWT>`.
 5. If the user wants a downloadable report and a SparkLaunch JWT is available, call `POST /api/validation/projects/{validation_project_id}/report?token=<JWT>`.
 6. Summarize the output into a founder-ready report, not raw JSON.
 
@@ -43,6 +45,7 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 2. If any post-initialize MCP call returns `Session not found`, reinitialize once and retry once.
 3. If it still fails, switch to the REST fallback path below and mark MCP as degraded in the final report.
 4. Note the semantic difference: MCP analysis is expected to return completed sections inline, while REST analysis starts an async run that must be polled.
+5. If this validation result is a blocking dependency for a larger founder workflow, wait for completion before continuing into naming, brand, QR, or landing work.
 
 ## Verified Request Bodies
 
@@ -75,7 +78,7 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 
 ```json
 {
-  "sections": "all"
+  "deep_research": false
 }
 ```
 
@@ -94,10 +97,12 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 ## REST Fallback Path
 
 1. `POST /api/validation/projects?token=<JWT>` with the REST create body.
-2. `POST /api/validation/projects/{validation_project_id}/analyze?token=<JWT>` with `{"sections":"all"}`.
-3. Poll `GET /api/validation/projects/{validation_project_id}?token=<JWT>` every 10 seconds for up to 8 minutes.
-4. Stop polling early if the project returns completed analysis fields.
-5. If still analyzing at timeout, return the `validation_project_id`, `analysis_run_id`, current status, and any report URL that was already generated.
+2. `POST /api/validation/projects/{validation_project_id}/analyze?token=<JWT>` with `{ "deep_research": false }`.
+3. Poll `GET /api/validation/projects/{validation_project_id}?token=<JWT>` every 15 seconds.
+4. Use an 8-minute timeout for standalone validation work.
+5. Use a 20-minute timeout when validation is the blocking first step in a founder workflow.
+6. Stop polling early if the project returns completed analysis fields.
+7. If still analyzing at timeout, return the `validation_project_id`, `analysis_run_id`, current status, and any report URL that was already generated.
 
 ## Output Contract
 
@@ -117,6 +122,7 @@ Return:
 - If MCP initialize succeeds but tool calls later lose session, stop retrying after one reinit and switch to REST.
 - If analysis fails, return the platform's friendly error and note whether the validation workspace was still created.
 - If the analysis is still running after timeout, treat it as partial success instead of hard failure.
+- If this validation is blocking a larger founder workflow, do not claim downstream artifacts are validated unless the validation actually completed.
 - If the report export fails after analysis succeeded, keep the analysis result and mark the PDF as optional follow-up.
 - Never expose internal model, stack, or database details in the user-facing recap.
 

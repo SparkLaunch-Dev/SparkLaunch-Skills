@@ -32,6 +32,7 @@ Generate and manage AI-powered brand color palettes through SparkLaunch MCP.
 4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
 5. If `Session not found` appears, reinitialize once and retry once.
 6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/branding/generate-palettes` with multipart form data, then save the chosen palette with `POST /api/branding/save-palette?token=<JWT>`.
+7. If the palette will be used for landing pages, QR campaigns, or other downstream launch assets, mark the selected palette favorite with `POST /api/branding/palettes/{palette_id}/favorite?token=<JWT>&project_id={project_id}` before reporting the brand step as complete.
 
 ## Available Tools
 - `branding.generate_palette` - Generate 3 AI color palettes from a text description
@@ -42,9 +43,10 @@ Generate and manage AI-powered brand color palettes through SparkLaunch MCP.
 1. Confirm the brand description or aesthetic the user wants.
 2. Call `branding.generate_palette` with a descriptive prompt.
 3. Present the 3 generated palettes with color swatches (hex codes and feelings).
-4. If the user wants to see saved palettes, call `branding.list_palettes`.
-5. If the user wants details on a specific palette, call `branding.get_palette`.
-6. If MCP is degraded, keep the same prompt and continue through the REST palette path rather than asking the user to restate the brief.
+4. If the selected palette will drive downstream assets, confirm it is persisted and then favorite it.
+5. If the user wants to see saved palettes, call `branding.list_palettes`.
+6. If the user wants details on a specific palette, call `branding.get_palette`.
+7. If MCP is degraded, keep the same prompt and continue through the REST palette path rather than asking the user to restate the brief.
 
 ## Output Contract
 Always report for generated palettes:
@@ -53,6 +55,7 @@ Always report for generated palettes:
 - `description`
 - `colors` (each with `hex` and `feeling`)
 - `created_at`
+- `is_favorite` when known
 
 For each color in a palette, display:
 - Color name (primary, secondary, accent, neutral_light, neutral_dark)
@@ -70,3 +73,4 @@ For each color in a palette, display:
 3. Keep user-facing failures friendly and concise.
 4. Treat login URLs as fallback only after API key path is blocked.
 5. When palette limit is reached, clearly communicate the limit and suggest upgrading.
+6. Do not tell the user a palette is ready for landing-page or QR use until it was saved or confirmed persisted and marked favorite.

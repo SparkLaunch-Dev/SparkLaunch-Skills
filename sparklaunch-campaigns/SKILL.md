@@ -32,15 +32,17 @@ Operate campaign acquisition workflows with reliable attribution wiring into CRM
 4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
 5. If `Session not found` occurs, re-run initialize + notification once and retry.
 6. If it still fails, mark MCP as degraded, preserve any read results already collected, and stop instead of looping retries.
+7. For founder launch workflows that require a persisted QR theme or a branded capture campaign, prefer the verified REST route family: `PUT /api/golinks/projects/{project_id}/qr-theme`, `POST /api/golinks/projects/{project_id}/campaigns`, and `POST /api/golinks/projects/{project_id}/campaigns/{campaign_id}/qr`.
 
 ## Standard Workflow
-1. Confirm destination URL and objective.
-2. Create campaign with `campaign_create`.
-3. Create shortlink with `shortlink_create` (include UTM params when available).
-4. Generate QR with `qr_generate`.
-5. Ingest leads with `lead_capture_ingest` when capture payload is available.
-6. Inspect outcomes with `campaign_stats`.
-7. Only run `shortlink_rotate`, `campaign_pause`, or `campaign_archive` when explicitly requested.
+1. Confirm destination URL or capture objective.
+2. If the workflow is a founder launch flow, confirm whether the user needs a capture campaign plus branded QR rather than a redirect campaign.
+3. Create campaign with `campaign_create` or the REST campaign route.
+4. Create shortlink with `shortlink_create` when a shortlink is part of the ask.
+5. Generate QR with `qr_generate` or the REST campaign QR route.
+6. Ingest leads with `lead_capture_ingest` when capture payload is available.
+7. Inspect outcomes with `campaign_stats`.
+8. Only run `shortlink_rotate`, `campaign_pause`, or `campaign_archive` when explicitly requested.
 
 ## Output Contract
 Always report:
@@ -55,6 +57,7 @@ Always report:
 - All tools operate only within the SparkLaunch project bound to the current MCP API key.
 - `qr_generate` should use the default QR theme for the active API key when style args are omitted.
 - `qr_generate` returns both `data_url` and raw `image_base64` when generation succeeds.
+- When the user needs a branded QR asset tied to a favorite logo and palette, save the QR theme first or pass explicit style fields so the output matches the selected brand.
 
 ## Guardrails
 1. Validate all destination URLs as absolute `http(s)` URLs.

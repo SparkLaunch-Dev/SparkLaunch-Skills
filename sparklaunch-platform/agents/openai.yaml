@@ -1,0 +1,13 @@
+interface:
+  display_name: "SparkLaunch Platform"
+  short_description: "Route broad founder and launch work to the right SparkLaunch recipe or skill"
+  default_prompt: >
+    Use $sparklaunch-platform when the user wants to start, validate, brand,
+    launch, or operate a business in SparkLaunch and the first job is picking
+    the right SparkLaunch recipe or narrower skill. Choose the recipe first,
+    then execute with API-key-first MCP runtime calls and JWT control-plane
+    routes where required. Do not report artifacts until they are persisted,
+    favorited, published, downloaded, or written locally.
+
+policy:
+  allow_implicit_invocation: true
