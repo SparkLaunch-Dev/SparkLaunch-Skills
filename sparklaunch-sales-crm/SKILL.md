@@ -27,9 +27,10 @@ Operate SparkLaunch Sales tools safely with MCP API keys and predictable MCP wor
 2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
 3. Session lifecycle:
 - call `initialize`
-- persist `mcp-session-id` and protocol version
+- persist protocol version
 - send `notifications/initialized`
-- reuse the same session for `tools/list` and `tools/call`
+- if `initialize` returns `mcp-session-id`, reuse it for `tools/list` and `tools/call`
+- if no `mcp-session-id` is returned, treat the runtime as stateless and continue without a session header
 4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
 5. On `Session not found`, re-initialize and retry once.
 6. If it repeats, mark MCP as degraded, preserve any successful reads or writes already completed, and stop instead of looping retries.

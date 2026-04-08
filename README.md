@@ -21,11 +21,13 @@ Skills define consistent, production-safe execution patterns so agents can:
 
 1. Start with project-scoped MCP API key authentication for runtime calls, not interactive login.
 2. Use the canonical production runtime endpoint `https://sparklaun.ch/api/mcp/`; treat `/api/mcp/server/` and `/api/mcp/campaigns/` as compatibility aliases only.
-3. Run MCP session lifecycle in order: `initialize` -> `notifications/initialized` -> tool calls on the same `mcp-session-id`.
-4. Treat MCP session health as deployment-sensitive: `initialize` succeeding does not guarantee later `tools/call` requests will keep the session.
-5. If a post-initialize request returns `Session not found`, reinitialize once, retry once, then switch to the documented REST fallback when one exists.
-6. If no documented REST fallback exists, mark MCP as degraded, preserve partial outputs, and stop instead of looping retries.
-7. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
+3. Run MCP session lifecycle in order: `initialize` -> `notifications/initialized` -> tool calls.
+4. Persist the negotiated protocol version from `initialize` and send it on later requests.
+5. If `initialize` returns an `mcp-session-id`, reuse it on later requests. If it does not, treat the runtime as stateless and continue without a session header.
+6. Treat MCP session health as deployment-sensitive: `initialize` succeeding does not guarantee later `tools/call` requests will keep the session.
+7. If a post-initialize request returns `Session not found`, reinitialize once, retry once, then switch to the documented REST fallback when one exists.
+8. If no documented REST fallback exists, mark MCP as degraded, preserve partial outputs, and stop instead of looping retries.
+9. Return concrete tool outputs (IDs, URLs, base64 payloads) with concise status messaging.
 
 ## Global Skill Policies
 

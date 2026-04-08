@@ -27,9 +27,10 @@ View and update the SparkLaunch business project already bound to a project-scop
 2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
 3. Session lifecycle:
 - call `initialize`
-- store `mcp-session-id` and protocol version
+- store protocol version
 - send `notifications/initialized` with the same session headers
-- reuse that session id for `tools/list` and `tools/call`
+- if `initialize` returns `mcp-session-id`, reuse it for `tools/list` and `tools/call`
+- if no `mcp-session-id` is returned, treat the runtime as stateless and continue without a session header
 4. Treat `initialize` success as necessary but not sufficient. Some deployments may still lose session state on the next request.
 5. If `Session not found` appears, reinitialize once and retry once.
 6. If it repeats, mark MCP as degraded. Use only the documented control-plane REST routes for bootstrap or auth discovery; otherwise stop instead of looping retries.

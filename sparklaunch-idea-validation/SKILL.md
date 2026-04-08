@@ -25,9 +25,10 @@ Validate startup ideas with AI-powered market analysis, competitor analysis, and
 2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
 3. Session lifecycle:
 - call `initialize`
-- store `mcp-session-id` and protocol version
+- store protocol version
 - send `notifications/initialized` with the same session headers
-- reuse that session id for `tools/list` and `tools/call`
+- if `initialize` returns `mcp-session-id`, reuse it for `tools/list` and `tools/call`
+- if no `mcp-session-id` is returned, treat the runtime as stateless and continue without a session header
 4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
 5. If `Session not found` appears, reinitialize once and retry once.
 6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/validation/projects`, `POST /api/validation/projects/{id}/analyze`, then poll `GET /api/validation/projects/{id}`.

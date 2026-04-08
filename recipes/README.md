@@ -26,10 +26,11 @@ Use these labels inside recipes and final reports:
 ## MCP Transport Reality
 
 1. Start with MCP when the recipe says the tool is available there.
-2. Call `initialize`, store `mcp-session-id`, send `notifications/initialized`, and reuse the same session headers.
-3. If any later MCP request returns `Session not found`, reinitialize once and retry once.
-4. If the retry also fails, mark MCP as degraded in the final report and switch to the recipe's REST fallback path.
-5. Do not keep retrying a broken session beyond that point.
+2. Call `initialize`, store the negotiated protocol version, send `notifications/initialized`, and reuse that protocol header on later requests.
+3. If `initialize` returns an `mcp-session-id`, reuse it. If it does not, treat the runtime as stateless and continue without a session header.
+4. If any later MCP request returns `Session not found`, reinitialize once and retry once.
+5. If the retry also fails, mark MCP as degraded in the final report and switch to the recipe's REST fallback path.
+6. Do not keep retrying a broken session beyond that point.
 
 ## Catalog
 
