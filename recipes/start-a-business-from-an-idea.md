@@ -1,8 +1,8 @@
 ---
 id: recipe-founder-001
 title: Start A Business From An Idea
-summary: Bootstrap a project, wait for validation to finish, generate name and brand assets, create a branded QR campaign, publish a landing page, and return a comprehensive founder report plus asset bundle.
-auth: sparklaunch_jwt, project_scoped_mcp_api_key_created_during_recipe
+summary: Bootstrap a project, wait for validation to finish, generate name and brand assets, create a branded QR campaign, publish a landing page, and return a comprehensive founder report plus asset bundle focused on credibility and investability.
+auth: sparklaunch_jwt, user_scoped_mcp_api_key
 surfaces: rest, mcp
 outputs: project, validation, business_name_shortlist, domain_check, palette, logo, qr_campaign, landing_page, founder_report, founder_bundle
 ---
@@ -15,8 +15,9 @@ Use this recipe when the user says some version of: `I want to start a business 
 
 ## Credentials
 
-- SparkLaunch JWT to bootstrap the project and call the current validation, business-name, branding, logo, QR campaign, and landing-page REST routes
-- No existing MCP key is required because this recipe should create one during bootstrap
+- SparkLaunch JWT for REST routes (validation, business-name, branding, logo, QR campaign, landing page) and for minting the MCP key
+- One user-scoped MCP API key. Mint it once per user with `POST /api/mcp/auth/api-keys?token=<JWT>` (see [create-a-user-scoped-mcp-key.md](./create-a-user-scoped-mcp-key.md)); the same key works for every SparkLaunch project this user owns or collaborates on
+- Send `X-SparkLaunch-Project-Id: <project_id>` on every `/api/mcp/` tool call to target this project
 
 ## User Prompt
 
@@ -49,10 +50,11 @@ Use this recipe when the user says some version of: `I want to start a business 
 
 ## Workflow
 
-1. Bootstrap the SparkLaunch project.
-   - Call `POST /api/mcp/auth/bootstrap/project?token=<JWT>`.
-   - Include `mcp_api_key` so the same request returns the first scoped MCP token.
-2. Initialize the MCP session against `/api/mcp/` if you intend to use MCP for validation, palette generation, logo generation, or landing operations.
+1. Ensure the caller has a user-scoped MCP API key, then create the SparkLaunch project.
+   - If the caller does not already have one, mint a user-scoped MCP API key with `POST /api/mcp/auth/api-keys?token=<JWT>` (only required once per user).
+   - Initialize the MCP session against `/api/mcp/` (`initialize`, then `notifications/initialized`).
+   - Create the SparkLaunch project by calling the `projects.create` MCP tool with the project name, one-liner, business description, industry, and stage. Record the returned `project_id`.
+   - Send `X-SparkLaunch-Project-Id: <project_id>` on every subsequent MCP tool call in this recipe.
 3. Create the validation project and start analysis.
    - Prefer the REST path in founder workflows because the validation record and report export are part of the final deliverable set.
    - `POST /api/validation/projects?token=<JWT>`
@@ -78,6 +80,7 @@ Use this recipe when the user says some version of: `I want to start a business 
    - Persist the QR theme with `PUT /api/golinks/projects/{project_id}/qr-theme?token=<JWT>`.
    - Create the campaign with `POST /api/golinks/projects/{project_id}/campaigns?token=<JWT>`.
    - Generate the branded QR asset with `POST /api/golinks/projects/{project_id}/campaigns/{campaign_id}/qr?token=<JWT>`.
+   - Prefer a capture-mode campaign that produces measurable demand signals.
 9. Create the landing page.
    - `landing.create_project` or `POST /api/landing-pages/projects?token=<JWT>`
    - `landing.generate_content` or `POST /api/landing-pages/generate-content?token=<JWT>`
@@ -91,13 +94,13 @@ Use this recipe when the user says some version of: `I want to start a business 
    - Download the chosen palette image with `GET /api/branding/palettes/{palette_id}/download?token=<JWT>`.
    - Download the favorite logo with `GET /api/logos/{logo_id}/download?token=<JWT>`.
    - Save the QR image payload and landing-page content JSON.
-   - Build a comprehensive founder report from the actual SparkLaunch outputs, then export it to PDF when local rendering is available.
+   - Build a comprehensive founder report from the actual SparkLaunch outputs, explicitly separating what is already credible from what still needs proof before stronger launch or investor outreach, then export it to PDF when local rendering is available.
    - Bundle the report plus the downloaded assets into a `.zip` file.
 11. Produce the final founder report using [templates/founder-workflow-report.md](./templates/founder-workflow-report.md).
 
 ## Verified Request Bodies
 
-### Example Bootstrap Body
+### Example `projects.create` MCP Tool Call Arguments
 
 ```json
 {
@@ -105,23 +108,30 @@ Use this recipe when the user says some version of: `I want to start a business 
   "one_liner": "AI operations assistant for busy service teams.",
   "business_description": "Nimbus Ops helps service businesses automate intake, scheduling, and customer follow-up.",
   "industry": "operations software",
-  "stage": "idea",
-  "mcp_api_key": {
-    "name": "Founder Launch Recipe Key",
-    "scopes": [
-      "projects.read",
-      "projects.write",
-      "validation.read",
-      "validation.write",
-      "branding.read",
-      "branding.write",
-      "logos.write",
-      "landing.read",
-      "landing.write",
-      "campaigns.read",
-      "campaigns.write"
-    ]
-  }
+  "stage": "idea"
+}
+```
+
+The returned `project_id` goes into the `X-SparkLaunch-Project-Id` header on every follow-up MCP tool call in this recipe.
+
+### Example User-Scoped MCP Key Mint Body
+
+```json
+{
+  "name": "Founder Launch Recipe Key",
+  "scopes": [
+    "projects.read",
+    "projects.write",
+    "validation.read",
+    "validation.write",
+    "branding.read",
+    "branding.write",
+    "logos.write",
+    "landing.read",
+    "landing.write",
+    "campaigns.read",
+    "campaigns.write"
+  ]
 }
 ```
 
@@ -312,7 +322,7 @@ Use this recipe when the user says some version of: `I want to start a business 
 
 ## Verified Working Path
 
-1. Create the project with `POST /api/mcp/auth/bootstrap/project?token=<JWT>` and mint the first MCP key.
+1. Mint a user-scoped MCP key once per user with `POST /api/mcp/auth/api-keys?token=<JWT>`, then create the SparkLaunch project with the `projects.create` MCP tool and reuse the returned project id in the `X-SparkLaunch-Project-Id` header on every follow-up MCP call.
 2. Run validation and wait for completion before continuing.
 3. Run naming through the JWT business-name routes and record domain availability for the recommended final name.
 4. Generate the palette, ensure it is saved, and mark it favorite.
@@ -370,6 +380,7 @@ Return a single founder-ready report with these sections:
 - Selected logo and favorite status
 - QR campaign and QR asset summary
 - Landing page status
+- Investment readiness snapshot
 - Risks and open questions
 - Recommended next 7-day actions
 - Artifact inventory with source and status labels
@@ -380,6 +391,7 @@ Return a single founder-ready report with these sections:
 
 - If MCP initialize succeeds but tool calls later lose session, stop retrying after one reinit and switch to REST for that step.
 - If validation remains `analyzing` after timeout, treat it as partial success and stop the founder workflow before downstream generation unless the user explicitly approves continuing.
+- If the assets are created but the proof story is still weak, say so directly instead of presenting the startup as ready for investor outreach.
 - If naming succeeds but the preferred domain is not available, report that clearly and either recommend the next-best available candidate or keep the current working name with a domain warning.
 - If palette generation succeeds but no palette is saved or favorited, do not claim it is ready for landing-page use. Save it first or label the palette step incomplete.
 - If logo generation succeeds but favorite selection fails, do not claim the landing page is brand-complete. Report the logo as generated but not selected.

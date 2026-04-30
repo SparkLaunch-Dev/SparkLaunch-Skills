@@ -3,13 +3,18 @@
   short_description: "Create and publish landing pages via MCP runtime"
   default_prompt: >
     Use $sparklaunch-landing-pages against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a project-scoped MCP API key. If the user
-    needs a new SparkLaunch project first, use the app or POST
-    /api/mcp/auth/bootstrap/project with a site JWT before runtime MCP calls.
+    Authentication is API-key-first with a user-scoped MCP API key minted via
+    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
+    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
+    on every MCP tool call to select the target project. Use the projects.create
+    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
+    X-SparkLaunch-Project-Id on follow-up calls.
     Use landing.create_project and landing.generate_content with landing.write scope
-    to create landing workspaces inside the current SparkLaunch project, landing.publish
+    to create landing workspaces inside the selected SparkLaunch project, landing.publish
     to go live, and landing.get_project, landing.list_projects, landing.get_analytics,
-    or landing.get_leads with landing.read scope to monitor. Do not ask for internal IDs.
+    or landing.get_leads with landing.read scope to monitor. Prefer landing pages
+    with measurable conversion goals over brochure-style pages with no signal capture.
+    Do not ask for internal IDs.
 
 dependencies:
   tools:

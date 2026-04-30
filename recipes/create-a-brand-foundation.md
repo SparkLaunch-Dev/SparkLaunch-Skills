@@ -2,7 +2,7 @@
 id: recipe-brand-001
 title: Create A Brand Foundation
 summary: Generate a naming shortlist, pressure-test domains, create and persist a favorite palette, and generate and favorite a logo for the active business concept.
-auth: sparklaunch_jwt, project_scoped_mcp_api_key
+auth: sparklaunch_jwt, user_scoped_mcp_api_key
 surfaces: rest, mcp
 outputs: business_name_project, domain_check, palette, logo
 ---
@@ -16,7 +16,8 @@ Use this recipe when the user wants to turn a rough startup brief into a name sh
 ## Credentials
 
 - SparkLaunch JWT for business naming, domain checks, palette save/favorite, logo favorite, and optional business-name report export
-- Project-scoped MCP API key with `branding.read`, `branding.write`, and `logos.write`
+- User-scoped MCP API key with `branding.read`, `branding.write`, and `logos.write` (one key works across all of the caller's projects; see [create-a-user-scoped-mcp-key.md](./create-a-user-scoped-mcp-key.md))
+- Send `X-SparkLaunch-Project-Id: <project_id>` on every `/api/mcp/` tool call to target this project
 
 ## User Prompt
 
@@ -139,6 +140,7 @@ Use `POST /api/branding/generate-palettes` as multipart form data with:
 4. Keep a credible framing layer. Prefer the narrowest plausible market wedge and a believable promise over hype.
 5. A generated palette is not ready for downstream use until it is saved or confirmed persisted and then marked favorite.
 6. A generated logo is not the selected launch logo until it is favorited.
+7. If there is no completed validation yet, label the brand recommendation as pre-validation or route back to validation before presenting the identity as strongly grounded.
 
 ## Output Contract
 

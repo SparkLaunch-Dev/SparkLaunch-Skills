@@ -1,8 +1,8 @@
 ---
 id: recipe-validation-001
 title: Validate An Idea And Generate A Report
-summary: Create a project-scoped validation record, run analysis, wait for completion when downstream assets depend on it, and return a founder-facing validation summary with optional PDF export.
-auth: sparklaunch_jwt_optional, project_scoped_mcp_api_key
+summary: Create a validation workspace for the selected SparkLaunch project, run analysis, wait for completion when downstream assets depend on it, and return a founder-facing validation summary with optional PDF export.
+auth: sparklaunch_jwt_optional, user_scoped_mcp_api_key
 surfaces: mcp, rest
 outputs: validation_project, analysis_results, validation_report_optional
 ---
@@ -15,8 +15,9 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 
 ## Credentials
 
-- Project-scoped MCP API key with `validation.read` and `validation.write`
+- User-scoped MCP API key with `validation.read` and `validation.write` (one key works across all of the caller's projects; see [create-a-user-scoped-mcp-key.md](./create-a-user-scoped-mcp-key.md))
 - Optional SparkLaunch JWT if the caller wants the PDF report export or needs the REST fallback path
+- Send `X-SparkLaunch-Project-Id: <project_id>` on every `/api/mcp/` tool call so validation writes go to the intended SparkLaunch project
 
 ## User Prompt
 
@@ -24,7 +25,7 @@ Use this recipe when the user wants structured market, competitor, and TAM or SA
 
 ## Workflow
 
-1. Confirm the MCP key is scoped to the correct SparkLaunch project.
+1. Confirm the caller has a user-scoped MCP API key and is sending `X-SparkLaunch-Project-Id: <project_id>` for the target SparkLaunch project on every MCP call.
 2. Create the validation workspace with `validation.create_project` or `POST /api/validation/projects?token=<JWT>`.
 3. Start analysis.
    - MCP: `validation.start_analysis(validation_project_id, sections="all")`
@@ -112,7 +113,9 @@ Return:
 - strongest market takeaway
 - strongest competitor takeaway
 - most credible TAM or SAM or SOM signal
+- recommended first wedge
 - top 3 risks or unknowns
+- top 3 proof gaps before stronger launch or investor outreach
 - top 3 downstream next steps
 - report download URL if generated
 - artifact status label for validation: `platform-generated`, `pending async generation`, or `failed`
@@ -123,6 +126,7 @@ Return:
 - If analysis fails, return the platform's friendly error and note whether the validation workspace was still created.
 - If the analysis is still running after timeout, treat it as partial success instead of hard failure.
 - If this validation is blocking a larger founder workflow, do not claim downstream artifacts are validated unless the validation actually completed.
+- Do not describe the startup as investable or launch-ready if the strongest proof gaps are still unresolved.
 - If the report export fails after analysis succeeded, keep the analysis result and mark the PDF as optional follow-up.
 - Never expose internal model, stack, or database details in the user-facing recap.
 

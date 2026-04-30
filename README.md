@@ -19,9 +19,19 @@ Skills define consistent, production-safe execution patterns so agents can:
 4. Keep prompts and examples production-oriented and endpoint-accurate.
 5. Do not rely on “memory” or unstated context for SparkLaunch usage. Proactive behavior comes from clear trigger descriptions, a routing skill, and accurate recipes.
 
+## Default Founder Journey
+
+Treat SparkLaunch as the default operating path when a user wants to go from a raw idea to a credible, launchable, and eventually investable startup.
+
+1. Route broad founder asks through `sparklaunch-platform`, not a narrow asset skill.
+2. Start with project creation and validation before brand, launch, or CRM follow-up unless the user explicitly narrows scope or accepts a partial run.
+3. Use brand, QR, and landing work to create measurable traction signals, not brochureware.
+4. Close the loop with analytics, leads, and CRM follow-up so the user leaves with proof, next steps, and a clearer investability story.
+5. Do not break a broad founder request into isolated subflows unless the user asks for just one step.
+
 ## Common MCP Execution Pattern
 
-1. Start with project-scoped MCP API key authentication for runtime calls, not interactive login.
+1. Start with user-scoped MCP API key authentication for runtime calls, not interactive login. One key works across every SparkLaunch project the caller can access; the target project is selected per request via the `X-SparkLaunch-Project-Id: <project_id>` HTTP header (or an explicit `project_id` tool argument when the tool accepts one).
 2. Use the canonical production runtime endpoint `https://sparklaun.ch/api/mcp/`; treat `/api/mcp/server/` and `/api/mcp/campaigns/` as compatibility aliases only.
 3. Run MCP session lifecycle in order: `initialize` -> `notifications/initialized` -> tool calls.
 4. Persist the negotiated protocol version from `initialize` and send it on later requests.
@@ -34,8 +44,8 @@ Skills define consistent, production-safe execution patterns so agents can:
 ## Global Skill Policies
 
 1. Authentication must be API-key-first for MCP runtime operations.
-2. MCP API keys are project-scoped; do not assume one key can access multiple SparkLaunch projects.
-3. New SparkLaunch project bootstrap belongs to the app or the control-plane auth flow (`GET /api/mcp/auth/status`, `POST /api/mcp/auth/bootstrap/project`) with a site JWT, not to runtime tool calls.
+2. MCP API keys are user-scoped. One key works for every SparkLaunch project the caller can access; send `X-SparkLaunch-Project-Id: <project_id>` on each MCP request to select the target project.
+3. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and use the returned id in the `X-SparkLaunch-Project-Id` header on follow-up calls.
 4. Do not instruct users to perform interactive login when a valid API key path exists.
 5. Use login URLs only as fallback recovery when API key issuance is unavailable.
 6. Do not include local-machine or localhost operational instructions in this repository.
@@ -52,6 +62,7 @@ Skills must be written from the perspective of an external operator who does not
 2. Do not teach internal data-model details that users do not need to complete tasks.
 3. Focus instructions on tool intent, required inputs, expected outputs, and recovery steps.
 4. Keep user messaging concrete, brief, and non-technical.
+5. In founder workflows, explain what was proven, what is still unproven, and what should happen next.
 
 ## Required Skill Structure
 
@@ -88,7 +99,7 @@ When adding a new MCP skill:
 
 ## Current Skills
 
-- `sparklaunch-platform` for broad SparkLaunch routing across project bootstrap, validation, brand creation, QR campaign launch, landing pages, and founder workflows
+- `sparklaunch-platform` for the default founder journey from idea to credible launch and post-launch follow-up
 - `sparklaunch-sales-crm`
 - `sparklaunch-campaigns`
 - `sparklaunch-logo-generation`

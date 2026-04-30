@@ -15,10 +15,11 @@ Validate startup ideas with AI-powered market analysis, competitor analysis, and
 ## Authentication Policy (Mandatory)
 1. Use an MCP API key as bearer auth for all MCP calls.
 2. API keys must come from SparkLaunch Profile API key management.
-3. MCP API keys are project-scoped; validation reads and analysis runs stay inside the SparkLaunch project bound to that key.
-4. If the user needs a new SparkLaunch project first, use the SparkLaunch app or `POST /api/mcp/auth/bootstrap/project` with a site JWT before MCP runtime calls.
-5. Do not ask the user to sign in if they already have (or can create) an API key.
-6. Use login URL fallback only when API key creation is unavailable.
+3. MCP API keys are user-scoped. One key works for every SparkLaunch project the caller can access; validation reads and analysis runs target whichever project is selected per request.
+4. Select the target project on every MCP tool call by sending the `X-SparkLaunch-Project-Id: <project_id>` header. Tools that accept an explicit `project_id` argument override the header for that call.
+5. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and put the returned id in `X-SparkLaunch-Project-Id` on follow-up calls.
+6. Do not ask the user to sign in if they already have (or can create) an API key.
+7. Use login URL fallback only when API key creation is unavailable.
 
 ## Endpoint and Transport
 1. Endpoint: `https://sparklaun.ch/api/mcp/`.
@@ -36,10 +37,10 @@ Validate startup ideas with AI-powered market analysis, competitor analysis, and
 8. REST analyze does not take `sections='all'`; use an empty body or `{ "deep_research": false }`.
 
 ## Available Tools
-- `validation.create_project` - Create a validation project inside the SparkLaunch project already bound to the MCP API key
+- `validation.create_project` - Create a validation project inside the SparkLaunch project selected for the current request
 - `validation.start_analysis` - Run AI analysis (market, competitor, TAM/SAM/SOM)
 - `validation.get_project` - Get a validation project with results
-- `validation.list_projects` - List validation projects in the current project
+- `validation.list_projects` - List validation projects in the selected SparkLaunch project
 
 ## Standard Workflow
 1. Gather the business idea details from the user:
@@ -54,9 +55,13 @@ Validate startup ideas with AI-powered market analysis, competitor analysis, and
    - **Market Analysis**: Market size, target audience, trends, opportunities, challenges
    - **Competitor Analysis**: Direct/indirect competitors, advantages, market gaps
    - **TAM/SAM/SOM**: Total addressable, serviceable, and obtainable market sizing
-5. If the user wants to see previously created projects, call `validation.list_projects`.
-6. If MCP is degraded, use the REST fallback instead of abandoning the workflow when JWT auth is available.
-7. In founder workflows, treat validation as blocking. Wait for completion before moving into naming, brand, QR, or landing work unless the user explicitly approves a partial run.
+5. Translate the result into founder-facing guidance:
+   - the narrowest credible wedge
+   - what appears most promising
+   - what still needs proof before launch or investor outreach
+6. If the user wants to see previously created projects, call `validation.list_projects`.
+7. If MCP is degraded, use the REST fallback instead of abandoning the workflow when JWT auth is available.
+8. In founder workflows, treat validation as blocking. Wait for completion before moving into naming, brand, QR, or landing work unless the user explicitly approves a partial run.
 
 ## Output Contract
 For created projects, report:
@@ -69,6 +74,8 @@ For analysis results, present clearly:
 - Key competitors with strengths/weaknesses
 - TAM/SAM/SOM figures with methodology
 - Citations and data sources
+- Recommended wedge for the first launch
+- Top proof gaps that still block a stronger investability story
 
 ## Analysis Sections
 The `sections` parameter for `validation.start_analysis` accepts:

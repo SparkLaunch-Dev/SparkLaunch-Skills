@@ -1,8 +1,8 @@
 ---
 id: recipe-launch-001
 title: Plan And Publish A Launch
-summary: Create a branded QR capture campaign, generate landing-page content, save the draft, and publish a project landing page.
-auth: sparklaunch_jwt, project_scoped_mcp_api_key
+summary: Create a branded QR capture campaign, generate landing-page content, save the draft, and publish a traction-oriented project landing page.
+auth: sparklaunch_jwt, user_scoped_mcp_api_key
 surfaces: rest, mcp
 outputs: qr_campaign, qr_asset, landing_project, landing_draft, published_url
 ---
@@ -16,7 +16,8 @@ Use this recipe when the user has a project and wants to move from brand assets 
 ## Credentials
 
 - SparkLaunch JWT for QR theme persistence, QR campaign create, QR generation, and landing-page draft persistence
-- Project-scoped MCP API key with `landing.read`, `landing.write`, `campaigns.read`, and `campaigns.write`
+- User-scoped MCP API key with `landing.read`, `landing.write`, `campaigns.read`, and `campaigns.write` (one key works across all of the caller's projects; see [create-a-user-scoped-mcp-key.md](./create-a-user-scoped-mcp-key.md))
+- Send `X-SparkLaunch-Project-Id: <project_id>` on every `/api/mcp/` tool call to target this project
 
 ## User Prompt
 
@@ -25,15 +26,16 @@ Use this recipe when the user has a project and wants to move from brand assets 
 ## Workflow
 
 1. Confirm that the project already has a selected palette and logo, or create/favorite them first.
-2. Persist the QR theme with `PUT /api/golinks/projects/{project_id}/qr-theme?token=<JWT>`.
-3. Create the capture campaign with `POST /api/golinks/projects/{project_id}/campaigns?token=<JWT>`.
-4. Generate the branded QR asset with `POST /api/golinks/projects/{project_id}/campaigns/{campaign_id}/qr?token=<JWT>`.
-5. Create the landing project with `landing.create_project` or `POST /api/landing-pages/projects?token=<JWT>`.
-6. Generate structured landing content with `landing.generate_content` or `POST /api/landing-pages/generate-content?token=<JWT>`.
-7. Persist the generated or manual content into the landing draft with `PATCH /api/landing-pages/projects/{landing_project_id}/versions/draft?token=<JWT>`.
-8. Include `logo_url` and `favicon_url` in the draft payload when a favorite logo exists.
-9. Publish the landing page with `landing.publish` or `POST /api/landing-pages/projects/{landing_project_id}/publish?token=<JWT>`.
-10. Fetch the final published state with `landing.get_project` or `GET /api/landing-pages/projects/{landing_project_id}?token=<JWT>`.
+2. Confirm the primary conversion event the user wants to measure: waitlist sign-up, demo request, or newsletter signup.
+3. Persist the QR theme with `PUT /api/golinks/projects/{project_id}/qr-theme?token=<JWT>`.
+4. Create the capture campaign with `POST /api/golinks/projects/{project_id}/campaigns?token=<JWT>`.
+5. Generate the branded QR asset with `POST /api/golinks/projects/{project_id}/campaigns/{campaign_id}/qr?token=<JWT>`.
+6. Create the landing project with `landing.create_project` or `POST /api/landing-pages/projects?token=<JWT>`.
+7. Generate structured landing content with `landing.generate_content` or `POST /api/landing-pages/generate-content?token=<JWT>`.
+8. Persist the generated or manual content into the landing draft with `PATCH /api/landing-pages/projects/{landing_project_id}/versions/draft?token=<JWT>`.
+9. Include `logo_url` and `favicon_url` in the draft payload when a favorite logo exists.
+10. Publish the landing page with `landing.publish` or `POST /api/landing-pages/projects/{landing_project_id}/publish?token=<JWT>`.
+11. Fetch the final published state with `landing.get_project` or `GET /api/landing-pages/projects/{landing_project_id}?token=<JWT>`.
 
 ## Path Status
 
@@ -140,13 +142,14 @@ Use this recipe when the user has a project and wants to move from brand assets 
 ## Known-Good Execution Order
 
 1. Confirm or set the favorite palette and favorite logo first.
-2. Save the QR theme before generating the campaign QR asset.
-3. Create the QR campaign and generate the QR image.
-4. Create the landing project.
-5. If `landing.generate_content` works, patch the returned content into the draft.
-6. If `landing.generate_content` is unavailable or returns `404`, write a manual `content_json` draft and continue.
-7. Publish only after a successful draft patch.
-8. Report the page as live only after a publish response or follow-up fetch confirms the production URL.
+2. Choose a CTA path that creates measurable demand signals instead of a brochure-only page.
+3. Save the QR theme before generating the campaign QR asset.
+4. Create the QR campaign and generate the QR image.
+5. Create the landing project.
+6. If `landing.generate_content` works, patch the returned content into the draft.
+7. If `landing.generate_content` is unavailable or returns `404`, write a manual `content_json` draft and continue.
+8. Publish only after a successful draft patch.
+9. Report the page as live only after a publish response or follow-up fetch confirms the production URL.
 
 ## Output Contract
 
@@ -157,6 +160,7 @@ Return:
 - landing project id
 - preview URL
 - production URL if published
+- primary conversion goal
 - publish status
 - artifact status labels for the QR campaign, QR asset, and landing page
 
@@ -166,6 +170,7 @@ Return:
 - If QR campaign create fails, preserve the landing-page work and report QR as blocked instead of inventing a manual campaign record.
 - If landing content generation succeeds but draft persistence fails, keep the generated content in the response so the user can retry the save step without regenerating.
 - If publish fails, return the preview URL and draft status instead of pretending the page is live.
+- If the page is live but the CTA path or signal capture is unclear, mark the launch as published but not yet traction-ready.
 
 ## Troubleshooting
 

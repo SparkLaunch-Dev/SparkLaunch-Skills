@@ -3,9 +3,12 @@
   short_description: "Generate brand color palettes via MCP runtime"
   default_prompt: >
     Use $sparklaunch-color-palettes against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a project-scoped MCP API key. If the user
-    needs a new SparkLaunch project first, use the app or POST
-    /api/mcp/auth/bootstrap/project with a site JWT before runtime MCP calls.
+    Authentication is API-key-first with a user-scoped MCP API key minted via
+    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
+    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
+    on every MCP tool call to select the target project. Use the projects.create
+    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
+    X-SparkLaunch-Project-Id on follow-up calls.
     Use branding.generate_palette with branding.write scope to generate palettes,
     and branding.list_palettes or branding.get_palette with branding.read scope
     to view them. Do not ask for internal IDs.

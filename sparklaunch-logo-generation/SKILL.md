@@ -14,10 +14,11 @@ Generate production-ready logo assets through SparkLaunch MCP.
 ## Authentication Policy (Mandatory)
 1. Use an MCP API key as bearer auth for all MCP calls.
 2. API keys must come from SparkLaunch Profile API key management.
-3. MCP API keys are project-scoped; logo generation runs inside the SparkLaunch project bound to that key.
-4. If the user needs a new SparkLaunch project first, use the SparkLaunch app or `POST /api/mcp/auth/bootstrap/project` with a site JWT before MCP runtime calls.
-5. Do not ask the user to sign in if they already have (or can create) an API key.
-6. Use login URL fallback only when API key creation is unavailable.
+3. MCP API keys are user-scoped. One key works for every SparkLaunch project the caller can access; logo generation runs against whichever project is selected per request.
+4. Select the target project on every MCP tool call by sending the `X-SparkLaunch-Project-Id: <project_id>` header. Tools that accept an explicit `project_id` argument override the header for that call.
+5. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and put the returned id in `X-SparkLaunch-Project-Id` on follow-up calls.
+6. Do not ask the user to sign in if they already have (or can create) an API key.
+7. Use login URL fallback only when API key creation is unavailable.
 
 ## Endpoint and Transport
 1. Endpoint: `https://sparklaun.ch/api/mcp/`.

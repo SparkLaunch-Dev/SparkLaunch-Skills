@@ -3,11 +3,14 @@
   short_description: "View and update the scoped business project via MCP runtime"
   default_prompt: >
     Use $sparklaunch-projects against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a project-scoped MCP API key. Use
-    projects.get, projects.list, and projects.update only for the SparkLaunch
-    project already bound to that key. If the user needs to start a brand-new
-    SparkLaunch project, use the app or POST /api/mcp/auth/bootstrap/project
-    with a site JWT instead of runtime project tools. Do not ask for internal IDs.
+    Authentication is API-key-first with a user-scoped MCP API key minted via
+    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
+    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
+    on every MCP tool call to select the target project. Use projects.list to
+    enumerate accessible projects, projects.get and projects.update against the
+    project in the header, and projects.create to bootstrap a brand-new SparkLaunch
+    project (then put the returned id in X-SparkLaunch-Project-Id on follow-up
+    calls). Do not ask for internal IDs.
 
 dependencies:
   tools:

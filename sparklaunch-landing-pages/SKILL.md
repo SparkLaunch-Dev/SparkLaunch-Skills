@@ -16,10 +16,11 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
 ## Authentication Policy (Mandatory)
 1. Use an MCP API key as bearer auth for all MCP calls.
 2. API keys must come from SparkLaunch Profile API key management.
-3. MCP API keys are project-scoped; landing-page reads and writes stay inside the SparkLaunch project bound to that key.
-4. If the user needs a new SparkLaunch project first, use the SparkLaunch app or `POST /api/mcp/auth/bootstrap/project` with a site JWT before MCP runtime calls.
-5. Do not ask the user to sign in if they already have (or can create) an API key.
-6. Use login URL fallback only when API key creation is unavailable.
+3. MCP API keys are user-scoped. One key works for every SparkLaunch project the caller can access; landing-page reads and writes target whichever project is selected per request.
+4. Select the target project on every MCP tool call by sending the `X-SparkLaunch-Project-Id: <project_id>` header. Tools that accept an explicit `project_id` argument override the header for that call.
+5. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and put the returned id in `X-SparkLaunch-Project-Id` on follow-up calls.
+6. Do not ask the user to sign in if they already have (or can create) an API key.
+7. Use login URL fallback only when API key creation is unavailable.
 
 ## Endpoint and Transport
 1. Endpoint: `https://sparklaun.ch/api/mcp/`.
@@ -35,11 +36,11 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
 6. If it repeats and a SparkLaunch JWT is available, switch to the REST landing flow instead of looping MCP retries.
 
 ## Available Tools
-- `landing.create_project` - Create a landing-page project inside the SparkLaunch project already bound to the MCP API key
+- `landing.create_project` - Create a landing-page project inside the SparkLaunch project selected for the current request
 - `landing.generate_content` - Generate AI-powered landing page content (hero, features, FAQ, etc.)
 - `landing.publish` - Publish a landing page project to its live subdomain URL
 - `landing.get_project` - Get a landing page project with status, URLs, and lead count
-- `landing.list_projects` - List landing page projects in the current SparkLaunch project
+- `landing.list_projects` - List landing page projects in the selected SparkLaunch project
 - `landing.get_analytics` - Get analytics summary (views, clicks, submissions)
 - `landing.get_leads` - Get captured leads for a landing page
 
@@ -55,10 +56,11 @@ Create, publish, and manage AI-powered startup landing pages through SparkLaunch
 4. If a favorite palette exists, prefer it or pass `palette_id` explicitly on the REST generate-content route.
 5. Persist generated or manual content through `PATCH /api/landing-pages/projects/{project_id}/versions/draft?token=<JWT>` before publish.
 6. If a favorite logo exists, patch `logo_url` and `favicon_url` into the draft payload before publish.
-7. Present the draft content to the user for review.
-8. When ready, call `landing.publish` or the REST publish route to make the page live.
-9. Share the production URL with the user only after publish or a follow-up read confirms it.
-10. Use `landing.get_analytics` and `landing.get_leads` to monitor performance.
+7. Prefer a CTA and page framing that creates a measurable demand signal such as waitlist, demo request, or newsletter sign-up.
+8. Present the draft content to the user for review.
+9. When ready, call `landing.publish` or the REST publish route to make the page live.
+10. Share the production URL with the user only after publish or a follow-up read confirms it.
+11. Use `landing.get_analytics` and `landing.get_leads` to monitor performance.
 
 ## Output Contract
 For created projects, always report:
@@ -73,6 +75,7 @@ For created projects, always report:
 For published projects, additionally report:
 - `production_url`
 - `published_at`
+- the primary conversion goal when known
 
 For generated content, present sections clearly:
 - Hero (headline, subheadline, CTA text)
@@ -111,3 +114,4 @@ For analytics, present:
 6. Content generation returns content, not a guaranteed saved draft. Persist the draft explicitly before publish.
 7. If the content-generation route is unavailable on a deployment, create manual draft content and continue with draft patch plus publish.
 8. Do not assume the landing page automatically picked up the selected logo. Explicitly patch `logo_url` and `favicon_url` when brand completeness matters.
+9. Do not describe a page as traction-ready unless the CTA, draft persistence, and publish state were all confirmed.

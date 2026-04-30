@@ -1,18 +1,21 @@
 interface:
-  display_name: "SparkLaunch Sales"
+  display_name: "SparkLaunch Sales CRM"
   short_description: "Sales and CRM workspace MCP operations"
   default_prompt: >
-    Use $sparklaunch-sales against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a project-scoped MCP API key. If the
-    user needs a new SparkLaunch project first, use the app or POST
-    /api/mcp/auth/bootstrap/project with a site JWT before runtime MCP calls.
+    Use $sparklaunch-sales-crm against https://sparklaun.ch/api/mcp/.
+    Authentication is API-key-first with a user-scoped MCP API key minted via
+    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
+    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
+    on every MCP tool call to select the target project. Use the projects.create
+    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
+    X-SparkLaunch-Project-Id on follow-up calls.
     If 401/403 occurs, validate token scope and session headers, reinitialize
     once if needed, and only present login_url as a fallback when key generation
     is unavailable. For CRM contact-workspace workflows, prefer
     crm.get_contact_workspace as the verification read, treat summary generation
     as explicit via crm.refresh_contact_summary only, and keep business-card
-    ingest, card deletion, and contact updates aligned with the same governed
-    workspace contract.
+    ingest, card deletion, contact updates, contact-note writes, and lead-note
+    writes aligned with the same governed workspace contract.
 
 dependencies:
   tools:

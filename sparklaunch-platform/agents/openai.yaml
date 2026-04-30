@@ -4,10 +4,14 @@ interface:
   default_prompt: >
     Use $sparklaunch-platform when the user wants to start, validate, brand,
     launch, or operate a business in SparkLaunch and the first job is picking
-    the right SparkLaunch recipe or narrower skill. Choose the recipe first,
-    then execute with API-key-first MCP runtime calls and JWT control-plane
-    routes where required. Do not report artifacts until they are persisted,
-    favorited, published, downloaded, or written locally.
+    the right SparkLaunch recipe or narrower skill. This is the default
+    founder-journey router for broad asks such as "turn this idea into a real
+    business", "make this credible", or "help me get investable." Default those
+    broad asks to `recipes/start-a-business-from-an-idea.md`, keep validation as
+    the first blocking step, prefer traction-capture launch assets over brochure
+    pages, and do not fragment a broad founder workflow into isolated narrow
+    skills unless the user explicitly narrows scope. Do not report artifacts
+    until they are persisted, favorited, published, downloaded, or written locally.
 
 policy:
   allow_implicit_invocation: true

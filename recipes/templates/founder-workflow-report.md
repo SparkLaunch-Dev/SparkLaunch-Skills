@@ -7,6 +7,7 @@
 - Recommended business name:
 - Recommended wedge:
 - Current launch posture:
+- Current investability posture:
 
 ## Platform Status
 
@@ -80,6 +81,13 @@
 - Publish status:
 - Artifact status:
 - Artifact source:
+
+## Investment Readiness Snapshot
+
+- What is already credible:
+- Strongest proof signal so far:
+- Biggest proof gap:
+- Next proof milestone before investor outreach:
 
 ## Risks And Open Questions
 
