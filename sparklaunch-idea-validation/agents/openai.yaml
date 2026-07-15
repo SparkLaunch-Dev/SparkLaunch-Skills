@@ -4,7 +4,7 @@
   default_prompt: >
     Use $sparklaunch-idea-validation against https://sparklaun.ch/api/mcp/.
     Authentication is API-key-first with a user-scoped MCP API key minted via
-    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
+    POST /api/mcp/auth/api-keys with Authorization: Bearer <JWT>. One key works for every SparkLaunch
     project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
     on every MCP tool call to select the target project. Use the projects.create
     MCP tool to bootstrap a new SparkLaunch project and put the returned id in

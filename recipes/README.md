@@ -57,7 +57,7 @@ Use these labels inside recipes and final reports:
 ## Current Boundary Notes
 
 - `/api/mcp/` is the canonical MCP runtime.
-- `POST /api/mcp/auth/api-keys?token=<JWT>` is the user-scoped MCP key mint path. One key works for every SparkLaunch project the caller can access.
+- `POST /api/mcp/auth/api-keys` with `Authorization: Bearer <JWT>` is the user-scoped MCP key mint path. One key works for every SparkLaunch project the caller can access.
 - `X-SparkLaunch-Project-Id: <project_id>` is the per-request project selector for every `/api/mcp/` tool call (tools that accept an explicit `project_id` argument override the header for that call).
 - The `projects.create` MCP tool is the in-MCP path for creating a new SparkLaunch project; use the returned project id in the `X-SparkLaunch-Project-Id` header on follow-up calls.
 - Validation has both MCP and REST paths, but the REST path is asynchronous and requires polling.
