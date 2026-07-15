@@ -49,7 +49,7 @@ If the user wants a broad founder outcome instead of one narrow operation, this 
 ## Operational Rules
 
 1. Use a user-scoped MCP API key for runtime tool execution. One key works across every SparkLaunch project the caller can access; select the target project per request via the `X-SparkLaunch-Project-Id: <project_id>` header (or a `project_id` tool argument).
-2. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. Create new SparkLaunch projects from the MCP client via the `projects.create` tool, and use the returned id in `X-SparkLaunch-Project-Id` on follow-up calls. Use JWT REST routes only for REST-only flows (validation PDF export, business-name REST, QR campaign routes, landing-page draft persistence).
+2. Mint the user-scoped key with `POST /api/mcp/auth/api-keys` and send the SparkLaunch JWT in the `Authorization: Bearer <JWT>` header. Create new SparkLaunch projects from the MCP client via the `projects.create` tool, and use the returned id in `X-SparkLaunch-Project-Id` on follow-up calls. Use JWT REST routes only for REST-only flows (validation PDF export, business-name REST, QR campaign routes, landing-page draft persistence).
 3. Treat validation as blocking in founder workflows unless the user explicitly approves a partial run.
 4. Do not insert GTM planning into the default founder flow. Use the QR campaign launch path instead.
 5. Do not fragment a broad founder workflow into isolated mini-skills unless the user explicitly narrows the task.

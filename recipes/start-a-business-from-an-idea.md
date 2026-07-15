@@ -16,7 +16,7 @@ Use this recipe when the user says some version of: `I want to start a business 
 ## Credentials
 
 - SparkLaunch JWT for REST routes (validation, business-name, branding, logo, QR campaign, landing page) and for minting the MCP key
-- One user-scoped MCP API key. Mint it once per user with `POST /api/mcp/auth/api-keys?token=<JWT>` (see [create-a-user-scoped-mcp-key.md](./create-a-user-scoped-mcp-key.md)); the same key works for every SparkLaunch project this user owns or collaborates on
+- One user-scoped MCP API key. Mint it once per user with `POST /api/mcp/auth/api-keys` and `Authorization: Bearer <JWT>` (see [create-a-user-scoped-mcp-key.md](./create-a-user-scoped-mcp-key.md)); the same key works for every SparkLaunch project this user owns or collaborates on
 - Send `X-SparkLaunch-Project-Id: <project_id>` on every `/api/mcp/` tool call to target this project
 
 ## User Prompt
@@ -51,7 +51,7 @@ Use this recipe when the user says some version of: `I want to start a business 
 ## Workflow
 
 1. Ensure the caller has a user-scoped MCP API key, then create the SparkLaunch project.
-   - If the caller does not already have one, mint a user-scoped MCP API key with `POST /api/mcp/auth/api-keys?token=<JWT>` (only required once per user).
+   - If the caller does not already have one, mint a user-scoped MCP API key with `POST /api/mcp/auth/api-keys` and `Authorization: Bearer <JWT>` (only required once per user).
    - Initialize the MCP session against `/api/mcp/` (`initialize`, then `notifications/initialized`).
    - Create the SparkLaunch project by calling the `projects.create` MCP tool with the project name, one-liner, business description, industry, and stage. Record the returned `project_id`.
    - Send `X-SparkLaunch-Project-Id: <project_id>` on every subsequent MCP tool call in this recipe.
@@ -322,7 +322,7 @@ The returned `project_id` goes into the `X-SparkLaunch-Project-Id` header on eve
 
 ## Verified Working Path
 
-1. Mint a user-scoped MCP key once per user with `POST /api/mcp/auth/api-keys?token=<JWT>`, then create the SparkLaunch project with the `projects.create` MCP tool and reuse the returned project id in the `X-SparkLaunch-Project-Id` header on every follow-up MCP call.
+1. Mint a user-scoped MCP key once per user with `POST /api/mcp/auth/api-keys` and `Authorization: Bearer <JWT>`, then create the SparkLaunch project with the `projects.create` MCP tool and reuse the returned project id in the `X-SparkLaunch-Project-Id` header on every follow-up MCP call.
 2. Run validation and wait for completion before continuing.
 3. Run naming through the JWT business-name routes and record domain availability for the recommended final name.
 4. Generate the palette, ensure it is saved, and mark it favorite.
