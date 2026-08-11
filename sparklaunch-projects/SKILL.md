@@ -18,7 +18,7 @@ View, create, and update SparkLaunch business projects with a user-scoped MCP ke
 2. API keys must come from SparkLaunch Profile API key management.
 3. MCP API keys are user-scoped. One key works for every SparkLaunch project the caller can access; the target project is selected per request.
 4. Select the target project on every MCP tool call by sending the `X-SparkLaunch-Project-Id: <project_id>` header. Tools that accept an explicit `project_id` argument override the header for that call.
-5. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and put the returned id in `X-SparkLaunch-Project-Id` on follow-up calls.
+5. Mint the user-scoped key with `POST /api/mcp/auth/api-keys` and send the SparkLaunch JWT in the `Authorization: Bearer <JWT>` header. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and put the returned id in `X-SparkLaunch-Project-Id` on follow-up calls.
 6. Do not ask the user to sign in if they already have (or can create) an API key.
 7. Use login URL fallback only when API key creation is unavailable.
 

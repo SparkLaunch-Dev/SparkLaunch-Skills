@@ -25,8 +25,8 @@ Use this recipe the first time a SparkLaunch user wants an MCP client (Claude De
 ## Workflow
 
 1. Confirm the caller has a SparkLaunch JWT.
-2. List accessible projects with `GET /api/mcp/auth/status?token=<JWT>`. Use this to confirm which projects the user can target.
-3. Mint the MCP API key with `POST /api/mcp/auth/api-keys?token=<JWT>`. Body:
+2. List accessible projects with `GET /api/mcp/auth/status` and `Authorization: Bearer <JWT>`. Use this to confirm which projects the user can target.
+3. Mint the MCP API key with `POST /api/mcp/auth/api-keys` and `Authorization: Bearer <JWT>`. Body:
    ```json
    {
      "name": "Claude Desktop",
@@ -66,7 +66,7 @@ Use this recipe the first time a SparkLaunch user wants an MCP client (Claude De
 
 ## Known-Good Transport
 
-1. Treat `POST /api/mcp/auth/api-keys?token=<JWT>` as the only source of truth for minting MCP keys. There is no per-project key mint endpoint.
+1. Treat `POST /api/mcp/auth/api-keys` with `Authorization: Bearer <JWT>` as the only source of truth for minting MCP keys. There is no per-project key mint endpoint.
 2. Use MCP `initialize` only to verify that the new key is accepted. Do not treat failure there as a setup failure; reinitialize once and continue.
 3. Always attach `X-SparkLaunch-Project-Id` on tool calls that operate on project data. Tools that accept an explicit `project_id` argument override the header for that single call.
 4. Reuse the key for every project. Never create a new key per project.
@@ -142,4 +142,4 @@ Return:
 - If key creation returns a 5xx, tell the user key creation failed and that support diagnostics were already routed by SparkLaunch.
 - If key creation succeeds but MCP session initialization fails, still return the key. Mark the runtime as degraded rather than reporting the entire setup as failed.
 - Do not fabricate a key when creation fails.
-- To revoke a lost or compromised key, call `POST /api/mcp/auth/api-keys/{id}/revoke?token=<JWT>`.
+- To revoke a lost or compromised key, call `POST /api/mcp/auth/api-keys/{id}/revoke` with `Authorization: Bearer <JWT>`.
