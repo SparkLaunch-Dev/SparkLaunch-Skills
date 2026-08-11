@@ -1,0 +1,77 @@
+﻿---
+name: sparklaunch-color-palettes
+description: >
+  Use when the user needs to generate or manage AI color palettes through the
+  production Streamable HTTP endpoint at https://sparklaun.ch/api/mcp/,
+  specifically the branding.generate_palette, branding.list_palettes, and
+  branding.get_palette tools. Do not use for generic color or design advice
+  when no MCP tool execution is requested.
+---
+
+# SparkLaunch Color Palettes
+
+Generate and manage AI-powered brand color palettes through SparkLaunch MCP.
+
+## Authentication Policy (Mandatory)
+1. Use an MCP API key as bearer auth for all MCP calls.
+2. API keys must come from SparkLaunch Profile API key management.
+3. MCP API keys are user-scoped. One key works for every SparkLaunch project the caller can access; palette reads and writes target whichever project is selected per request.
+4. Select the target project on every MCP tool call by sending the `X-SparkLaunch-Project-Id: <project_id>` header. Tools that accept an explicit `project_id` argument override the header for that call.
+5. Mint the user-scoped key with `POST /api/mcp/auth/api-keys?token=<JWT>`. To create a brand-new SparkLaunch project from an MCP client, call the `projects.create` MCP tool and put the returned id in `X-SparkLaunch-Project-Id` on follow-up calls.
+6. Do not ask the user to sign in if they already have (or can create) an API key.
+7. Use login URL fallback only when API key creation is unavailable.
+
+## Endpoint and Transport
+1. Endpoint: `https://sparklaun.ch/api/mcp/`.
+2. Required headers: `Authorization: Bearer <MCP_API_KEY>`, `Accept: application/json`, `Content-Type: application/json`.
+3. Session lifecycle:
+- call `initialize`
+- store protocol version
+- send `notifications/initialized` with the same session headers
+- if `initialize` returns `mcp-session-id`, reuse it for `tools/list` and `tools/call`
+- if no `mcp-session-id` is returned, treat the runtime as stateless and continue without a session header
+4. Treat `initialize` success as necessary but not sufficient. The next tool call can still lose session state.
+5. If `Session not found` appears, reinitialize once and retry once.
+6. If it repeats and a SparkLaunch JWT is available, switch to the REST fallback: `POST /api/branding/generate-palettes` with multipart form data, then save the chosen palette with `POST /api/branding/save-palette?token=<JWT>`.
+7. If the palette will be used for landing pages, QR campaigns, or other downstream launch assets, mark the selected palette favorite with `POST /api/branding/palettes/{palette_id}/favorite?token=<JWT>&project_id={project_id}` before reporting the brand step as complete.
+
+## Available Tools
+- `branding.generate_palette` - Generate 3 AI color palettes from a text description
+- `branding.list_palettes` - List saved palettes in the project
+- `branding.get_palette` - Get a specific palette by ID
+
+## Standard Workflow
+1. Confirm the brand description or aesthetic the user wants.
+2. Call `branding.generate_palette` with a descriptive prompt.
+3. Present the 3 generated palettes with color swatches (hex codes and feelings).
+4. If the selected palette will drive downstream assets, confirm it is persisted and then favorite it.
+5. If the user wants to see saved palettes, call `branding.list_palettes`.
+6. If the user wants details on a specific palette, call `branding.get_palette`.
+7. If MCP is degraded, keep the same prompt and continue through the REST palette path rather than asking the user to restate the brief.
+
+## Output Contract
+Always report for generated palettes:
+- `palette_id`
+- `name`
+- `description`
+- `colors` (each with `hex` and `feeling`)
+- `created_at`
+- `is_favorite` when known
+
+For each color in a palette, display:
+- Color name (primary, secondary, accent, neutral_light, neutral_dark)
+- Hex code
+- Mood/feeling descriptor
+
+## Palette Limits
+- Free plan: 5 AI-generated palettes per project
+- Startup/Growth/Fundraise Pro: Unlimited
+- Custom (user-created) palettes do not count toward limits
+
+## Guardrails
+1. Require `branding.write` scope for generation, `branding.read` for listing/viewing.
+2. Never ask the user for workspace IDs, project IDs, or internal ownership IDs.
+3. Keep user-facing failures friendly and concise.
+4. Treat login URLs as fallback only after API key path is blocked.
+5. When palette limit is reached, clearly communicate the limit and suggest upgrading.
+6. Do not tell the user a palette is ready for landing-page or QR use until it was saved or confirmed persisted and marked favorite.

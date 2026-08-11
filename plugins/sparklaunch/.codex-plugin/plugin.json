@@ -1,0 +1,42 @@
+{
+  "name": "sparklaunch",
+  "version": "0.1.0",
+  "description": "SparkLaunch skills for project setup, idea validation, branding, launch assets, campaigns, landing pages, and CRM follow-up.",
+  "author": {
+    "name": "SparkLaunch",
+    "url": "https://sparklaun.ch/"
+  },
+  "homepage": "https://sparklaun.ch/",
+  "repository": "https://github.com/SparkLaunch-Dev/SparkLaunch-Skills.git",
+  "license": "[TODO: license]",
+  "keywords": [
+    "sparklaunch",
+    "startup",
+    "founder",
+    "launch",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SparkLaunch",
+    "shortDescription": "Founder workflows from idea to launch signals",
+    "longDescription": "Use SparkLaunch skills to create or select a project, validate a startup idea, generate brand assets, publish measurable launch surfaces, and follow up through campaigns, landing pages, and CRM workflows.",
+    "developerName": "SparkLaunch",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://sparklaun.ch/",
+    "defaultPrompt": [
+      "Turn my startup idea into a SparkLaunch project",
+      "Validate this business idea with SparkLaunch",
+      "Create launch assets and a follow-up plan"
+    ],
+    "brandColor": "#6366F1",
+    "composerIcon": "./assets/sparklaunch.png",
+    "logo": "./assets/sparklaunch.png",
+    "screenshots": []
+  }
+}

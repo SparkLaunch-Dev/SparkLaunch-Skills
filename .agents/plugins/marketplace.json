@@ -1,0 +1,20 @@
+{
+  "name": "sparklaunch-skills",
+  "interface": {
+    "displayName": "SparkLaunch Skills"
+  },
+  "plugins": [
+    {
+      "name": "sparklaunch",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sparklaunch"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
