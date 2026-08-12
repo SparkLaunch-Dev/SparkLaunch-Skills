@@ -572,7 +572,7 @@
     },
     {
       "description": "Create a private idea-validation workspace in a selected project.",
-      "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in project 42.",
+      "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in project 99.",
       "file_attachment_urls": null,
       "tools_triggered": "validation.create_project",
       "expected_output": "Creates one validation record in the selected project and reports its id and status.",
@@ -580,7 +580,7 @@
     },
     {
       "description": "Generate saved brand palette options from a concrete brief.",
-      "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 42.",
+      "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 99.",
       "file_attachment_urls": null,
       "tools_triggered": "branding.generate_palette",
       "expected_output": "Returns saved palette options with ids, names, hex values, and feeling labels.",
@@ -588,7 +588,7 @@
     },
     {
       "description": "List private landing-page projects without requiring seeded records.",
-      "user_prompt": "List the landing-page projects in SparkLaunch project 42.",
+      "user_prompt": "List the landing-page projects in SparkLaunch project 99.",
       "file_attachment_urls": null,
       "tools_triggered": "landing.list_projects",
       "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without changing them.",
@@ -596,7 +596,7 @@
     },
     {
       "description": "Search private CRM leads without creating or updating records.",
-      "user_prompt": "Find leads mentioning bookkeeping in project 42 and show at most 10.",
+      "user_prompt": "Find leads mentioning bookkeeping in project 99 and show at most 10.",
       "file_attachment_urls": null,
       "tools_triggered": "crm.search_leads",
       "expected_output": "Returns matching private leads and a result count without modifying CRM data.",

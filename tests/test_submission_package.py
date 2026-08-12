@@ -25,14 +25,21 @@ def test_submission_package_is_complete():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert fixture == {"status": "local_placeholder", "project_id": 42}
+    assert fixture["status"] in {"local_placeholder", "provisioned"}
+    assert isinstance(fixture["project_id"], int)
+    assert fixture["project_id"] > 0
+    if fixture["status"] == "local_placeholder":
+        assert fixture["project_id"] == 42
     scoped = [
         case
         for case in generated["test_cases"]
         if case["tools_triggered"] != "projects.list"
     ]
     assert len(scoped) == 4
-    assert all("project 42" in case["user_prompt"] for case in scoped)
+    assert all(
+        f"project {fixture['project_id']}" in case["user_prompt"]
+        for case in scoped
+    )
 
 
 def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries():
