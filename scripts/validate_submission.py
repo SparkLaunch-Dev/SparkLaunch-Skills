@@ -238,7 +238,7 @@ def validate() -> list[str]:
             errors.append("marketplace sparklaunch source is invalid")
         if entry.get("policy") != {
             "installation": "AVAILABLE",
-            "authentication": "ON_INSTALL",
+            "authentication": "ON_USE",
         }:
             errors.append("marketplace sparklaunch policy is invalid")
         if entry.get("category") != "Productivity":

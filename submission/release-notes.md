@@ -4,7 +4,7 @@ Status: local production candidate; not yet deployed or submitted.
 
 ## Reviewer-visible changes
 
-- Connect SparkLaunch to ChatGPT through OAuth authorization code with PKCE instead of collecting credentials in chat.
+- Load SparkLaunch tools before connection and start OAuth authorization code with PKCE on first use in hosted ChatGPT or Codex desktop instead of collecting credentials in chat.
 - Discover, list, create, inspect, and update authorized projects through explicit `project_id` tool arguments.
 - Use one canonical MCP endpoint with 46 tools covering projects, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, leads, and CRM workflows.
 - Receive typed results and structured authentication, authorization, validation, conflict, dependency, and internal error outcomes.

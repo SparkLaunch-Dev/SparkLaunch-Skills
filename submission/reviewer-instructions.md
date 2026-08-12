@@ -5,7 +5,7 @@ These instructions apply to the SparkLaunch 0.2.0 candidate and the canonical MC
 ## Access
 
 1. Use the synthetic reviewer account supplied through the approved private reviewer channel. Credentials and authorization artifacts must never be added to this file, a prompt, a screenshot, or retained evidence.
-2. Connect SparkLaunch from ChatGPT. The connection must start the SparkLaunch OAuth consent flow and must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.
+2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. The plugin uses first-use authentication, so the action must be loaded before connection and then start the SparkLaunch browser sign-in/consent flow; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header. Codex returns only to its temporary `127.0.0.1` callback listener.
 3. Approve only the scopes shown for the planned scenarios. Reconnect if ChatGPT reports an OAuth challenge or insufficient scope.
 4. Invoke `projects.list`, select the disposable reviewer project, and pass its explicit `project_id` to every scoped operation.
 
@@ -32,7 +32,7 @@ Also exercise these safety boundaries:
 2. Request a public or destructive operation. Verify ChatGPT shows the exact server confirmation preview, then decline once before approving a disposable action with the same arguments, key, and confirmation token.
 3. Generate a logo or QR asset and verify the result is an expiring HTTPS file reference with no raw base64, data URL, bucket path, or credential.
 4. Read a synthetic CRM contact or lead and verify the response contains only the fields needed for the requested workflow.
-5. Revoke or disconnect SparkLaunch and confirm another MCP call requires authorization.
+5. Revoke or disconnect SparkLaunch and confirm another MCP call starts authorization again instead of making the tools disappear.
 
 ## Negative review
 

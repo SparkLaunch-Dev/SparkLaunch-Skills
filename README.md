@@ -16,7 +16,7 @@ The default broad workflow is:
 
 ## Shared Safety Contract
 
-1. Authentication is OAuth-connected and managed by ChatGPT. Skills never request credentials, OAuth codes, or transport headers.
+1. Authentication is OAuth-connected and managed by the host. It starts on the first SparkLaunch action so tools remain discoverable before a user has connected; skills never request credentials, OAuth codes, or transport headers.
 2. `projects.list` is the source of truth for accessible projects. Project-scoped tools receive an explicit `project_id` argument.
 3. Every write receives one stable `idempotency_key` for the exact intended mutation. Uncertain writes are not repeated with new keys.
 4. Destructive or public-state tools return a one-time confirmation preview. The user must explicitly approve it before the exact call is resubmitted with its confirmation token.

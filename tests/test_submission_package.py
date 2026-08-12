@@ -15,6 +15,15 @@ def test_packaged_skills_are_exact_deterministic_mirrors():
 
 def test_submission_package_is_complete():
     assert validate() == []
+    marketplace = json.loads(
+        (ROOT / ".agents" / "plugins" / "marketplace.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    sparklaunch = next(
+        entry for entry in marketplace["plugins"] if entry["name"] == "sparklaunch"
+    )
+    assert sparklaunch["policy"]["authentication"] == "ON_USE"
     generated = json.loads((ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8"))
     assert generated == build_submission()
     assert all(
