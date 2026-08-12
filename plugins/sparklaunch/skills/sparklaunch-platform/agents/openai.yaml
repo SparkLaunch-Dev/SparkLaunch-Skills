@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Platform"
   short_description: "Route founder work from idea through launch"
-  icon_small: "./assets/sparklaunch-small.svg"
+  icon_small: "./assets/sparklaunch-small.png"
   icon_large: "./assets/sparklaunch.png"
   brand_color: "#6366F1"
   default_prompt: "Use $sparklaunch-platform to choose and run the right connected SparkLaunch founder workflow."

@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Logo Generation"
   short_description: "Generate a project logo and download file"
-  icon_small: "./assets/sparklaunch-small.svg"
+  icon_small: "./assets/sparklaunch-small.png"
   icon_large: "./assets/sparklaunch.png"
   brand_color: "#6366F1"
   default_prompt: "Use $sparklaunch-logo-generation to turn my brand brief into a connected SparkLaunch logo file."

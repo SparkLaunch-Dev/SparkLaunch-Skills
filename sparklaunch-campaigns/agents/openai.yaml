@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Campaigns And QR"
   short_description: "Create measurable campaigns, links, and QR files"
-  icon_small: "./assets/sparklaunch-small.svg"
+  icon_small: "./assets/sparklaunch-small.png"
   icon_large: "./assets/sparklaunch.png"
   brand_color: "#6366F1"
   default_prompt: "Use $sparklaunch-campaigns to create a measurable campaign and QR file for my connected project."

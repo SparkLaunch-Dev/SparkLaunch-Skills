@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Idea Validation"
   short_description: "Analyze a startup idea and its market evidence"
-  icon_small: "./assets/sparklaunch-small.svg"
+  icon_small: "./assets/sparklaunch-small.png"
   icon_large: "./assets/sparklaunch.png"
   brand_color: "#6366F1"
   default_prompt: "Use $sparklaunch-idea-validation to validate my idea in the selected connected project."

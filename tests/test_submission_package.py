@@ -4,7 +4,7 @@ from zipfile import ZipFile
 
 from scripts.build_submission_bundle import build_bundle
 from scripts.generate_submission import ROOT, build_submission, main as generate_submission
-from scripts.sync_plugin import expected_pairs, sync
+from scripts.sync_plugin import SKILLS, expected_pairs, sync
 from scripts.validate_submission import validate
 
 
@@ -89,17 +89,25 @@ def test_plugin_brand_assets_are_canonical_and_theme_ready():
         )
     )
     interface = manifest["interface"]
-    assert interface["composerIcon"] == "./assets/sparklaunch-small.svg"
+    assert interface["composerIcon"] == "./assets/sparklaunch-small.png"
     assert interface["logo"] == "./assets/sparklaunch.png"
     assert interface["logoDark"] == "./assets/sparklaunch.png"
 
     assets = ROOT / "plugins" / "sparklaunch" / "assets"
     for name in (
+        "sparklaunch-small.png",
         "sparklaunch.png",
         "sparklaunch-wordmark-light.png",
         "sparklaunch-wordmark-dark.png",
     ):
         assert (assets / name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+
+    expected_small = (assets / "sparklaunch-small.png").read_bytes()
+    expected_large = (assets / "sparklaunch.png").read_bytes()
+    for skill in SKILLS:
+        skill_assets = ROOT / skill / "assets"
+        assert (skill_assets / "sparklaunch-small.png").read_bytes() == expected_small
+        assert (skill_assets / "sparklaunch.png").read_bytes() == expected_large
 
 
 def test_submission_bundle_is_complete_and_deterministic(tmp_path):
@@ -119,7 +127,7 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "submission/reviewer-instructions.md" in names
         assert "submission/reviewer-fixture.json" in names
         assert "plugins/sparklaunch/assets/sparklaunch.png" in names
-        assert "plugins/sparklaunch/assets/sparklaunch-small.svg" in names
+        assert "plugins/sparklaunch/assets/sparklaunch-small.png" in names
         assert "plugins/sparklaunch/assets/sparklaunch-wordmark-light.png" in names
         assert "plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)

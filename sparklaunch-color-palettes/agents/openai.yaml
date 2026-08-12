@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Color Palettes"
   short_description: "Generate and inspect project color palettes"
-  icon_small: "./assets/sparklaunch-small.svg"
+  icon_small: "./assets/sparklaunch-small.png"
   icon_large: "./assets/sparklaunch.png"
   brand_color: "#6366F1"
   default_prompt: "Use $sparklaunch-color-palettes to generate brand palette options for my connected project."

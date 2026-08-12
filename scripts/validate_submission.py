@@ -52,11 +52,12 @@ EXPECTED_PLUGIN_INTERFACE = {
 }
 
 EXPECTED_PLUGIN_ASSETS = {
-    "composerIcon": "./assets/sparklaunch-small.svg",
+    "composerIcon": "./assets/sparklaunch-small.png",
     "logo": "./assets/sparklaunch.png",
     "logoDark": "./assets/sparklaunch.png",
 }
 EXPECTED_PLUGIN_PNG_DIMENSIONS = {
+    "assets/sparklaunch-small.png": (192, 192),
     "assets/sparklaunch.png": (1024, 1024),
     "assets/sparklaunch-wordmark-light.png": (1338, 280),
     "assets/sparklaunch-wordmark-dark.png": (1338, 280),
@@ -197,6 +198,28 @@ def validate() -> list[str]:
             errors.append("plugin manifest contains a TODO placeholder")
         if manifest.get("mcpServers") != "./.mcp.json":
             errors.append("plugin manifest must reference ./.mcp.json")
+    skill_icon_sources = {
+        "sparklaunch-small.png": plugin / "assets" / "sparklaunch-small.png",
+        "sparklaunch.png": plugin / "assets" / "sparklaunch.png",
+    }
+    for name, plugin_source in skill_icon_sources.items():
+        try:
+            expected_icon = plugin_source.read_bytes()
+        except OSError as exc:
+            errors.append(f"missing plugin skill icon source {plugin_source.relative_to(ROOT)}: {exc}")
+            continue
+        for skill in SKILLS:
+            canonical_asset = ROOT / skill / "assets" / name
+            try:
+                matches_plugin = canonical_asset.read_bytes() == expected_icon
+            except OSError as exc:
+                errors.append(f"missing canonical skill icon {skill}/assets/{name}: {exc}")
+                continue
+            if not matches_plugin:
+                errors.append(
+                    f"canonical skill icon differs from plugin branding: "
+                    f"{skill}/assets/{name}"
+                )
     mcp = _load_json(plugin / ".mcp.json", errors)
     endpoint = (((mcp or {}).get("mcpServers") or {}).get("sparklaunch") or {}).get("url")
     if endpoint != CANONICAL_MCP_URL:

@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.2.0+codex.20260812204439",
+  "version": "0.2.0+codex.20260812205248",
   "description": "Connected founder workflows for project setup, idea validation, branding, campaigns, landing pages, analytics, and CRM.",
   "author": {
     "name": "SparkLaunch",
@@ -39,7 +39,7 @@
       "Review my launch signals and CRM follow-up priorities"
     ],
     "brandColor": "#6366F1",
-    "composerIcon": "./assets/sparklaunch-small.svg",
+    "composerIcon": "./assets/sparklaunch-small.png",
     "logo": "./assets/sparklaunch.png",
     "logoDark": "./assets/sparklaunch.png",
     "screenshots": []

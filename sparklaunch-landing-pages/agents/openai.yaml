@@ -1,7 +1,7 @@
 interface:
   display_name: "SparkLaunch Landing Pages"
   short_description: "Create, publish, and measure landing pages"
-  icon_small: "./assets/sparklaunch-small.svg"
+  icon_small: "./assets/sparklaunch-small.png"
   icon_large: "./assets/sparklaunch.png"
   brand_color: "#6366F1"
   default_prompt: "Use $sparklaunch-landing-pages to create a measurable landing page for my connected project."
