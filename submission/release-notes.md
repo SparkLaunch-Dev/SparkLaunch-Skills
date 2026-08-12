@@ -12,6 +12,7 @@ Status: local production candidate; not yet deployed or submitted.
 - Retry writes safely with stable idempotency keys and approve public-world, destructive, or overwriting actions through exact one-time confirmation previews.
 - Receive generated logos and QR assets through expiring HTTPS file references rather than raw base64 or data URLs.
 - Use eight concise founder-workflow skills backed by the same connected SparkLaunch MCP server.
+- Display the canonical SparkLaunch launch mark in the composer and the production app icon across light and dark plugin surfaces, with reviewer-ready horizontal wordmarks included in the submission bundle.
 - Rebuild the reviewer candidate deterministically with a bundled proprietary license and recorded archive digest.
 
 ## Compatibility

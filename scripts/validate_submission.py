@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import struct
 import sys
 import tempfile
 from pathlib import Path
@@ -46,7 +47,19 @@ EXPECTED_PLUGIN_INTERFACE = {
     "brandColor",
     "composerIcon",
     "logo",
+    "logoDark",
     "screenshots",
+}
+
+EXPECTED_PLUGIN_ASSETS = {
+    "composerIcon": "./assets/sparklaunch-small.svg",
+    "logo": "./assets/sparklaunch.png",
+    "logoDark": "./assets/sparklaunch.png",
+}
+EXPECTED_PLUGIN_PNG_DIMENSIONS = {
+    "assets/sparklaunch.png": (1024, 1024),
+    "assets/sparklaunch-wordmark-light.png": (1338, 280),
+    "assets/sparklaunch-wordmark-dark.png": (1338, 280),
 }
 
 
@@ -56,6 +69,23 @@ def _load_json(path: Path, errors: list[str]):
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         errors.append(f"invalid JSON {path.relative_to(ROOT)}: {exc}")
         return None
+
+
+def _png_dimensions(path: Path, errors: list[str]) -> tuple[int, int] | None:
+    try:
+        header = path.read_bytes()[:24]
+    except OSError as exc:
+        errors.append(f"missing plugin brand asset {path.relative_to(ROOT)}: {exc}")
+        return None
+    valid_header = (
+        len(header) == 24
+        and header[:8] == b"\x89PNG\r\n\x1a\n"
+        and header[12:16] == b"IHDR"
+    )
+    if not valid_header:
+        errors.append(f"plugin brand asset is not a valid PNG: {path.relative_to(ROOT)}")
+        return None
+    return struct.unpack(">II", header[16:24])
 
 
 def validate() -> list[str]:
@@ -148,10 +178,21 @@ def validate() -> list[str]:
             errors.append("plugin defaultPrompt must contain one to three prompts")
         elif any(not isinstance(prompt, str) or not prompt.strip() or len(prompt) > 128 for prompt in prompts):
             errors.append("plugin defaultPrompt entries must be non-empty and at most 128 characters")
-        for key in ("composerIcon", "logo"):
+        for key, expected_relative in EXPECTED_PLUGIN_ASSETS.items():
             relative = str(interface.get(key, ""))
             if not relative.startswith("./") or not (plugin / relative[2:]).is_file():
                 errors.append(f"plugin {key} must reference an included asset")
+            elif relative != expected_relative:
+                errors.append(f"plugin {key} must reference {expected_relative}")
+        for relative, expected_dimensions in EXPECTED_PLUGIN_PNG_DIMENSIONS.items():
+            path = plugin / relative
+            dimensions = _png_dimensions(path, errors)
+            if dimensions is not None and dimensions != expected_dimensions:
+                errors.append(
+                    f"plugin brand asset {relative} must be "
+                    f"{expected_dimensions[0]}x{expected_dimensions[1]}, got "
+                    f"{dimensions[0]}x{dimensions[1]}"
+                )
         if "TODO" in json.dumps(manifest):
             errors.append("plugin manifest contains a TODO placeholder")
         if manifest.get("mcpServers") != "./.mcp.json":

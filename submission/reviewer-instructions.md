@@ -15,6 +15,13 @@ The checked-in positive prompts use project `42` as a deterministic local fixtur
 
 Staging preflight credentials and the staging reviewer project are provisioned outside this package and stored only in the approved private credential channel. Do not replace project `42` with a staging project id in a production submission bundle. Bind the generated import only after the production MCP revision and its matching disposable production reviewer account/project have been separately approved and provisioned.
 
+### Brand assets
+
+- Upload `plugins/sparklaunch/assets/sparklaunch.png` as the square ChatGPT app logo. It is the canonical 1024x1024 SparkLaunch app icon and is also used for both light and dark plugin surfaces.
+- Use `plugins/sparklaunch/assets/sparklaunch-wordmark-light.png` when a horizontal SparkLaunch wordmark is requested for a light surface.
+- Use `plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png` when a horizontal SparkLaunch wordmark is requested for a dark surface.
+- Do not substitute generated artwork, stretch either wordmark, or crop the square app logo during submission.
+
 ## Positive review
 
 Run the five positive prompts in `chatgpt-app-submission.json`. Confirm that each invokes only its exact declared tool and that persisted state belongs to the disposable reviewer project.

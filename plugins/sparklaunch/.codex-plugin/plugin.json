@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.2.0",
+  "version": "0.2.0+codex.20260812204439",
   "description": "Connected founder workflows for project setup, idea validation, branding, campaigns, landing pages, analytics, and CRM.",
   "author": {
     "name": "SparkLaunch",
@@ -41,6 +41,7 @@
     "brandColor": "#6366F1",
     "composerIcon": "./assets/sparklaunch-small.svg",
     "logo": "./assets/sparklaunch.png",
+    "logoDark": "./assets/sparklaunch.png",
     "screenshots": []
   }
 }

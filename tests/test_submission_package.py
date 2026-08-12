@@ -77,6 +77,29 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "supplied through the approved private reviewer channel" in reviewer
     assert "must never be added to this file" in reviewer
     assert "support@sparklaun.ch" in reviewer
+    assert "plugins/sparklaunch/assets/sparklaunch.png" in reviewer
+    assert "sparklaunch-wordmark-light.png" in reviewer
+    assert "sparklaunch-wordmark-dark.png" in reviewer
+
+
+def test_plugin_brand_assets_are_canonical_and_theme_ready():
+    manifest = json.loads(
+        (ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    interface = manifest["interface"]
+    assert interface["composerIcon"] == "./assets/sparklaunch-small.svg"
+    assert interface["logo"] == "./assets/sparklaunch.png"
+    assert interface["logoDark"] == "./assets/sparklaunch.png"
+
+    assets = ROOT / "plugins" / "sparklaunch" / "assets"
+    for name in (
+        "sparklaunch.png",
+        "sparklaunch-wordmark-light.png",
+        "sparklaunch-wordmark-dark.png",
+    ):
+        assert (assets / name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
 
 
 def test_submission_bundle_is_complete_and_deterministic(tmp_path):
@@ -95,4 +118,8 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "submission/release-notes.md" in names
         assert "submission/reviewer-instructions.md" in names
         assert "submission/reviewer-fixture.json" in names
+        assert "plugins/sparklaunch/assets/sparklaunch.png" in names
+        assert "plugins/sparklaunch/assets/sparklaunch-small.svg" in names
+        assert "plugins/sparklaunch/assets/sparklaunch-wordmark-light.png" in names
+        assert "plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png" in names
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
