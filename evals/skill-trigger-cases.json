@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "projects-list",
+      "prompt": "Show me every SparkLaunch project I can access and help me choose one.",
+      "expected_skills": ["sparklaunch-projects"],
+      "rationale": "Requests the connected projects.list workflow."
+    },
+    {
+      "id": "projects-create",
+      "prompt": "Create a new SparkLaunch project for my robotics marketplace.",
+      "expected_skills": ["sparklaunch-projects"],
+      "rationale": "Requests a persisted projects.create operation."
+    },
+    {
+      "id": "validation-run",
+      "prompt": "Validate my startup idea in SparkLaunch and analyze the market, competitors, and market size.",
+      "expected_skills": ["sparklaunch-idea-validation"],
+      "rationale": "Requests the connected validation creation and analysis workflow."
+    },
+    {
+      "id": "validation-inspect",
+      "prompt": "Retrieve the completed analysis for my SparkLaunch validation project.",
+      "expected_skills": ["sparklaunch-idea-validation"],
+      "rationale": "Requests a saved validation project read."
+    },
+    {
+      "id": "palette-generate",
+      "prompt": "Generate and save color palette options for my selected SparkLaunch project.",
+      "expected_skills": ["sparklaunch-color-palettes"],
+      "rationale": "Requests branding.generate_palette."
+    },
+    {
+      "id": "palette-list",
+      "prompt": "List the color palettes already saved in my SparkLaunch project.",
+      "expected_skills": ["sparklaunch-color-palettes"],
+      "rationale": "Requests branding.list_palettes."
+    },
+    {
+      "id": "logo-generate",
+      "prompt": "Generate a private logo asset for my connected SparkLaunch project.",
+      "expected_skills": ["sparklaunch-logo-generation"],
+      "rationale": "Requests crm.generate_logo."
+    },
+    {
+      "id": "logo-brand-direction",
+      "prompt": "Use my brand colors and business name to create a SparkLaunch logo file.",
+      "expected_skills": ["sparklaunch-logo-generation"],
+      "rationale": "Requests the connected logo generation workflow and file result."
+    },
+    {
+      "id": "campaign-create-qr",
+      "prompt": "Create a SparkLaunch launch campaign, short link, and QR asset for my landing page.",
+      "expected_skills": ["sparklaunch-campaigns"],
+      "rationale": "Requests campaign, short-link, and QR MCP operations."
+    },
+    {
+      "id": "campaign-stats-pause",
+      "prompt": "Check my SparkLaunch campaign statistics, then prepare to pause the campaign if I approve.",
+      "expected_skills": ["sparklaunch-campaigns"],
+      "rationale": "Requests a campaign read followed by a confirmed public-state change."
+    },
+    {
+      "id": "landing-create-publish",
+      "prompt": "Create content for a SparkLaunch landing page and ask before publishing it.",
+      "expected_skills": ["sparklaunch-landing-pages"],
+      "rationale": "Requests private landing-page creation followed by confirmed publication."
+    },
+    {
+      "id": "landing-analytics",
+      "prompt": "Show views, clicks, and lead submissions for my SparkLaunch landing page.",
+      "expected_skills": ["sparklaunch-landing-pages"],
+      "rationale": "Requests connected landing analytics and lead reads."
+    },
+    {
+      "id": "crm-contact-search",
+      "prompt": "Find Jordan in my SparkLaunch CRM and show the saved contact workspace.",
+      "expected_skills": ["sparklaunch-sales-crm"],
+      "rationale": "Requests private CRM search and workspace retrieval."
+    },
+    {
+      "id": "crm-note",
+      "prompt": "Add this approved follow-up note to the selected lead in my SparkLaunch CRM.",
+      "expected_skills": ["sparklaunch-sales-crm"],
+      "rationale": "Requests a bounded CRM write."
+    },
+    {
+      "id": "platform-full-journey",
+      "prompt": "Use SparkLaunch to take my idea through project setup, validation, branding, and a measurable launch.",
+      "expected_skills": ["sparklaunch-platform"],
+      "rationale": "Requests the broad connected founder workflow and routing skill."
+    },
+    {
+      "id": "platform-route",
+      "prompt": "Help me choose the right SparkLaunch workflow for launching and following up with leads.",
+      "expected_skills": ["sparklaunch-platform"],
+      "rationale": "Requests routing across multiple narrower SparkLaunch skills."
+    },
+    {
+      "id": "negative-generic-startup-advice",
+      "prompt": "What are the usual stages of building a startup?",
+      "expected_skills": [],
+      "rationale": "Generic advice does not request a connected SparkLaunch operation."
+    },
+    {
+      "id": "negative-color-theory",
+      "prompt": "Explain complementary colors and visual contrast.",
+      "expected_skills": [],
+      "rationale": "Generic color advice should not persist a SparkLaunch palette."
+    },
+    {
+      "id": "negative-logo-critique",
+      "prompt": "What makes a logo memorable?",
+      "expected_skills": [],
+      "rationale": "Generic logo advice does not request SparkLaunch logo generation."
+    },
+    {
+      "id": "negative-html",
+      "prompt": "Write a standalone HTML page for a school project.",
+      "expected_skills": [],
+      "rationale": "Generic web development is outside SparkLaunch landing-page operations."
+    },
+    {
+      "id": "negative-sales-strategy",
+      "prompt": "Explain consultative selling techniques.",
+      "expected_skills": [],
+      "rationale": "Generic sales strategy does not request a SparkLaunch CRM operation."
+    },
+    {
+      "id": "negative-url-shorteners",
+      "prompt": "Compare popular URL shortening services.",
+      "expected_skills": [],
+      "rationale": "A comparison does not request creation of a SparkLaunch campaign or short link."
+    },
+    {
+      "id": "negative-market-sizing",
+      "prompt": "Explain the difference between TAM, SAM, and SOM.",
+      "expected_skills": [],
+      "rationale": "An explanation does not request a saved SparkLaunch validation analysis."
+    },
+    {
+      "id": "negative-unrelated",
+      "prompt": "What is the weather forecast for Phoenix tomorrow?",
+      "expected_skills": [],
+      "rationale": "The request is unrelated to every SparkLaunch workflow."
+    }
+  ]
+}

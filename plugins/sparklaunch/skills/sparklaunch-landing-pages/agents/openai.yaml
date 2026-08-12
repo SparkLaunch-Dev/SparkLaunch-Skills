@@ -1,30 +1,16 @@
-﻿interface:
+interface:
   display_name: "SparkLaunch Landing Pages"
-  short_description: "Create and publish landing pages via MCP runtime"
+  short_description: "Create, publish, and measure landing pages"
   icon_small: "./assets/sparklaunch-small.svg"
   icon_large: "./assets/sparklaunch.png"
-  default_prompt: >
-    Use $sparklaunch-landing-pages against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a user-scoped MCP API key minted via
-    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
-    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
-    on every MCP tool call to select the target project. Use the projects.create
-    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
-    X-SparkLaunch-Project-Id on follow-up calls.
-    Use landing.create_project and landing.generate_content with landing.write scope
-    to create landing workspaces inside the selected SparkLaunch project, landing.publish
-    to go live, and landing.get_project, landing.list_projects, landing.get_analytics,
-    or landing.get_leads with landing.read scope to monitor. Prefer landing pages
-    with measurable conversion goals over brochure-style pages with no signal capture.
-    Do not ask for internal IDs.
-
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-landing-pages to create a measurable landing page for my connected project."
 dependencies:
   tools:
     - type: "mcp"
-      value: "sparklaunch_landing_pages"
-      description: "SparkLaunch landing page tools on MCP runtime"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch landing page tools"
       transport: "streamable_http"
       url: "https://sparklaun.ch/api/mcp/"
-
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

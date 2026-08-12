@@ -1,19 +1,16 @@
 interface:
   display_name: "SparkLaunch Platform"
-  short_description: "Route broad founder and launch work to the right SparkLaunch recipe or skill"
+  short_description: "Route founder work from idea through launch"
   icon_small: "./assets/sparklaunch-small.svg"
   icon_large: "./assets/sparklaunch.png"
-  default_prompt: >
-    Use $sparklaunch-platform when the user wants to start, validate, brand,
-    launch, or operate a business in SparkLaunch and the first job is picking
-    the right SparkLaunch recipe or narrower skill. This is the default
-    founder-journey router for broad asks such as "turn this idea into a real
-    business", "make this credible", or "help me get investable." Default those
-    broad asks to `recipes/start-a-business-from-an-idea.md`, keep validation as
-    the first blocking step, prefer traction-capture launch assets over brochure
-    pages, and do not fragment a broad founder workflow into isolated narrow
-    skills unless the user explicitly narrows scope. Do not report artifacts
-    until they are persisted, favorited, published, downloaded, or written locally.
-
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-platform to choose and run the right connected SparkLaunch founder workflow."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch project, validation, brand, launch, campaign, and CRM tools"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch/api/mcp/"
 policy:
   allow_implicit_invocation: true

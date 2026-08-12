@@ -1,28 +1,16 @@
 interface:
-  display_name: "SparkLaunch Campaigns + QR"
-  short_description: "Campaigns, shortlinks, QR, attribution"
+  display_name: "SparkLaunch Campaigns And QR"
+  short_description: "Create measurable campaigns, links, and QR files"
   icon_small: "./assets/sparklaunch-small.svg"
   icon_large: "./assets/sparklaunch.png"
-  default_prompt: >
-    Use $sparklaunch-campaigns against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a user-scoped MCP API key minted via
-    POST /api/mcp/auth/api-keys with Authorization: Bearer <JWT>. One key works for every SparkLaunch
-    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
-    on every MCP tool call to select the target project. Use the projects.create
-    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
-    X-SparkLaunch-Project-Id on follow-up calls.
-    In founder launch workflows, prefer capture-oriented campaign and QR flows
-    that produce measurable demand signals, not redirect-only brochure assets.
-    On 401/403, verify key scope and MCP session headers first, then use login_url
-    fallback only if key creation is blocked.
-
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-campaigns to create a measurable campaign and QR file for my connected project."
 dependencies:
   tools:
     - type: "mcp"
-      value: "sparklaunch_campaigns"
-      description: "SparkLaunch Campaigns + QR tools on MCP runtime"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch campaign and QR tools"
       transport: "streamable_http"
       url: "https://sparklaun.ch/api/mcp/"
-
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

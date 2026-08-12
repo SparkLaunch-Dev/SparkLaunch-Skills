@@ -1,25 +1,16 @@
 interface:
   display_name: "SparkLaunch Logo Generation"
-  short_description: "Generate logos via MCP runtime"
+  short_description: "Generate a project logo and download file"
   icon_small: "./assets/sparklaunch-small.svg"
   icon_large: "./assets/sparklaunch.png"
-  default_prompt: >
-    Use $sparklaunch-logo-generation against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a user-scoped MCP API key minted via
-    POST /api/mcp/auth/api-keys?token=<JWT>. One key works for every SparkLaunch
-    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
-    on every MCP tool call to select the target project. Use the projects.create
-    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
-    X-SparkLaunch-Project-Id on follow-up calls.
-    Use crm.generate_logo with logos.write scope and do not ask for internal IDs.
-
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-logo-generation to turn my brand brief into a connected SparkLaunch logo file."
 dependencies:
   tools:
     - type: "mcp"
-      value: "sparklaunch_logo_generation"
-      description: "SparkLaunch logo generation tools on MCP runtime"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch logo generation tool"
       transport: "streamable_http"
       url: "https://sparklaun.ch/api/mcp/"
-
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

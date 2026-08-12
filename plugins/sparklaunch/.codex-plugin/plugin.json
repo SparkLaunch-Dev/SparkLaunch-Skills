@@ -1,14 +1,15 @@
 {
   "name": "sparklaunch",
-  "version": "0.1.0",
-  "description": "SparkLaunch skills for project setup, idea validation, branding, launch assets, campaigns, landing pages, and CRM follow-up.",
+  "version": "0.2.0",
+  "description": "Connected founder workflows for project setup, idea validation, branding, campaigns, landing pages, analytics, and CRM.",
   "author": {
     "name": "SparkLaunch",
+    "email": "support@sparklaun.ch",
     "url": "https://sparklaun.ch/"
   },
   "homepage": "https://sparklaun.ch/",
   "repository": "https://github.com/SparkLaunch-Dev/SparkLaunch-Skills.git",
-  "license": "[TODO: license]",
+  "license": "Proprietary",
   "keywords": [
     "sparklaunch",
     "startup",
@@ -17,10 +18,11 @@
     "mcp"
   ],
   "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "SparkLaunch",
-    "shortDescription": "Founder workflows from idea to launch signals",
-    "longDescription": "Use SparkLaunch skills to create or select a project, validate a startup idea, generate brand assets, publish measurable launch surfaces, and follow up through campaigns, landing pages, and CRM workflows.",
+    "shortDescription": "Build and operate a startup",
+    "longDescription": "Connect SparkLaunch to select or create a business project, validate an idea, generate palette and logo assets, publish measurable campaigns and landing pages, inspect analytics, and operate private CRM workflows with explicit write confirmations.",
     "developerName": "SparkLaunch",
     "category": "Productivity",
     "capabilities": [
@@ -29,13 +31,15 @@
       "Write"
     ],
     "websiteURL": "https://sparklaun.ch/",
+    "privacyPolicyURL": "https://sparklaun.ch/privacy-policy",
+    "termsOfServiceURL": "https://sparklaun.ch/terms-and-conditions",
     "defaultPrompt": [
-      "Turn my startup idea into a SparkLaunch project",
-      "Validate this business idea with SparkLaunch",
-      "Create launch assets and a follow-up plan"
+      "Validate my startup idea and identify the strongest wedge",
+      "Create a measurable launch campaign and landing page",
+      "Review my launch signals and CRM follow-up priorities"
     ],
     "brandColor": "#6366F1",
-    "composerIcon": "./assets/sparklaunch.png",
+    "composerIcon": "./assets/sparklaunch-small.svg",
     "logo": "./assets/sparklaunch.png",
     "screenshots": []
   }

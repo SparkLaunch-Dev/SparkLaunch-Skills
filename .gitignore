@@ -1,1 +1,4 @@
 *\local-mcp-testing.md
+/dist/
+__pycache__/
+*.py[cod]

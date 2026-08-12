@@ -1,34 +1,16 @@
 interface:
   display_name: "SparkLaunch Sales CRM"
-  short_description: "Sales and CRM workspace MCP operations"
+  short_description: "Operate leads, contacts, deals, and CRM notes"
   icon_small: "./assets/sparklaunch-small.svg"
   icon_large: "./assets/sparklaunch.png"
-  default_prompt: >
-    Use $sparklaunch-sales-crm against https://sparklaun.ch/api/mcp/.
-    Authentication is API-key-first with a user-scoped MCP API key minted via
-    POST /api/mcp/auth/api-keys with Authorization: Bearer <JWT>. One key works for every SparkLaunch
-    project the caller can access; send X-SparkLaunch-Project-Id: <project_id>
-    on every MCP tool call to select the target project. Use the projects.create
-    MCP tool to bootstrap a new SparkLaunch project and put the returned id in
-    X-SparkLaunch-Project-Id on follow-up calls.
-    If 401/403 occurs, validate token scope and session headers, reinitialize
-    once if needed, and only present login_url as a fallback when key generation
-    is unavailable. For CRM contact-workspace workflows, prefer
-    crm.get_contact_workspace as the verification read, treat summary generation
-    as explicit via crm.refresh_contact_summary only, and keep business-card
-    ingest, card deletion, contact updates, contact-note writes, and lead-note
-    writes aligned with the same governed workspace contract. For lead writes,
-    only send real email addresses, put labels in the tags array, set lead_type
-    explicitly to lead, contact, or investor, and set source to the real
-    acquisition source instead of the MCP transport.
-
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-sales-crm to review my connected CRM pipeline and identify the next grounded action."
 dependencies:
   tools:
     - type: "mcp"
-      value: "sparklaunch_sales"
-      description: "SparkLaunch Sales tools on MCP runtime"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch CRM tools"
       transport: "streamable_http"
       url: "https://sparklaun.ch/api/mcp/"
-
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true
