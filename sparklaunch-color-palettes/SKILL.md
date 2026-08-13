@@ -13,10 +13,11 @@ Generate and inspect private brand palettes through the connected SparkLaunch ap
 ## Rules
 
 1. Use ChatGPT-managed OAuth. Never ask for credentials or transport headers.
-2. If challenged, ask the user to connect or reconnect SparkLaunch.
-3. Use `projects.list` when needed, then pass the selected `project_id` to every palette tool.
-4. `branding.generate_palette` is a write and requires a stable `idempotency_key`. Do not retry with a new key after an uncertain result.
-5. Use `branding.list_palettes` or `branding.get_palette` to verify saved results.
+2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
+4. Use `projects.list` when needed, then pass the selected `project_id` to every palette tool.
+5. `branding.generate_palette` is a write and requires a stable `idempotency_key`. Do not retry with a new key after an uncertain result.
+6. Use `branding.list_palettes` or `branding.get_palette` to verify saved results.
 
 ## Workflow
 

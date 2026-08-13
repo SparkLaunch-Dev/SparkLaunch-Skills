@@ -13,9 +13,10 @@ Operate private SparkLaunch CRM data with explicit project selection and write s
 ## Connection And Scope
 
 1. Use the OAuth connection managed by ChatGPT. Never request credentials or authorization headers.
-2. If challenged, ask the user to connect or reconnect SparkLaunch.
-3. Resolve the target with `projects.list`, then pass `project_id` to every CRM tool.
-4. Start with the narrowest useful read: `crm.get_dashboard`, `crm.search_leads`, `crm.get_lead_workspace`, `crm.search_contacts`, or `crm.get_contact_workspace`.
+2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
+4. Resolve the target with `projects.list`, then pass `project_id` to every CRM tool.
+5. Start with the narrowest useful read: `crm.get_dashboard`, `crm.search_leads`, `crm.get_lead_workspace`, `crm.search_contacts`, or `crm.get_contact_workspace`.
 
 ## Writes
 

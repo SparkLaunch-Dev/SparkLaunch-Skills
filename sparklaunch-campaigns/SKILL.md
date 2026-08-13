@@ -13,10 +13,12 @@ Operate measurable campaign acquisition workflows and their CRM attribution.
 ## Connection And Scope
 
 1. Use ChatGPT-managed OAuth. Never request credentials or transport headers.
-2. Resolve the target with `projects.list`, then pass `project_id` to every campaign tool.
-3. Every write requires a stable `idempotency_key` for that exact mutation.
-4. `campaign_create` and `shortlink_create` affect public URLs. `campaign_pause`, `campaign_archive`, and `shortlink_rotate` also overwrite public behavior. Show the returned confirmation preview and wait for explicit approval before calling again with the same arguments, key, and `confirmation_token`.
-5. Never automatically retry an uncertain write.
+2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
+4. Resolve the target with `projects.list`, then pass `project_id` to every campaign tool.
+5. Every write requires a stable `idempotency_key` for that exact mutation.
+6. `campaign_create` and `shortlink_create` affect public URLs. `campaign_pause`, `campaign_archive`, and `shortlink_rotate` also overwrite public behavior. Show the returned confirmation preview and wait for explicit approval before calling again with the same arguments, key, and `confirmation_token`.
+7. Never automatically retry an uncertain write.
 
 ## Workflow
 

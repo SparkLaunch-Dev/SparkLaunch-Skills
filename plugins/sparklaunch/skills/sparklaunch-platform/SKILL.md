@@ -24,11 +24,12 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 ## Connected-App Rules
 
 1. Use the SparkLaunch connection supplied by ChatGPT. Never ask for credentials or authorization headers.
-2. If a tool returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after connection succeeds.
-3. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
-4. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
-5. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
-6. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.
+2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded tool returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after connection succeeds.
+4. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
+5. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
+6. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
+7. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.
 
 ## Founder Journey
 

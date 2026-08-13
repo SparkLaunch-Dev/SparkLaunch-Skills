@@ -13,6 +13,23 @@ def test_packaged_skills_are_exact_deterministic_mirrors():
     assert sync(write=False) == []
 
 
+def test_every_skill_distinguishes_connector_absence_from_oauth():
+    required = (
+        "SparkLaunch isn't loaded in this conversation.",
+        "Start a new ChatGPT conversation",
+        "OAuth challenge",
+    )
+    for skill in SKILLS:
+        canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
+        assert all(marker in canonical for marker in required), skill
+
+    recipe = (ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md").read_text(
+        encoding="utf-8"
+    )
+    assert all(marker in recipe for marker in required)
+    assert "disable and re-enable or reinstall" in recipe
+
+
 def test_submission_package_is_complete():
     assert validate() == []
     marketplace = json.loads(

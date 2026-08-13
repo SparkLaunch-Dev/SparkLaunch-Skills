@@ -13,10 +13,12 @@ Generate a logo and return its short-lived file reference through the connected 
 ## Rules
 
 1. Use ChatGPT-managed OAuth. Never ask for credentials or transport headers.
-2. Resolve the project with `projects.list`, then pass `project_id` to `crm.generate_logo`.
-3. Collect business name, design attributes, `prompt_style` (`symbolic`, `geometric`, or `mascot`), and optional selected colors.
-4. Supply a stable `idempotency_key`; never automatically repeat an uncertain generation with a new key.
-5. The result contains `logo.file` with a short-lived HTTPS download URL. Do not request, return, or reconstruct raw base64 or data URLs.
+2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
+4. Resolve the project with `projects.list`, then pass `project_id` to `crm.generate_logo`.
+5. Collect business name, design attributes, `prompt_style` (`symbolic`, `geometric`, or `mascot`), and optional selected colors.
+6. Supply a stable `idempotency_key`; never automatically repeat an uncertain generation with a new key.
+7. The result contains `logo.file` with a short-lived HTTPS download URL. Do not request, return, or reconstruct raw base64 or data URLs.
 
 ## Workflow
 

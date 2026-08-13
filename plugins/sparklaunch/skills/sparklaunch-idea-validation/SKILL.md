@@ -13,9 +13,11 @@ Create and review private market, competitor, and TAM/SAM/SOM analysis.
 ## Rules
 
 1. Use ChatGPT-managed OAuth. Never request credentials or authorization headers.
-2. Resolve the target with `projects.list`, then pass `project_id` to every validation tool.
-3. `validation.create_project` and `validation.start_analysis` are writes; use a distinct stable `idempotency_key` for each exact mutation.
-4. Do not retry an uncertain write with a new key. Re-read with `validation.get_project` instead.
+2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
+4. Resolve the target with `projects.list`, then pass `project_id` to every validation tool.
+5. `validation.create_project` and `validation.start_analysis` are writes; use a distinct stable `idempotency_key` for each exact mutation.
+6. Do not retry an uncertain write with a new key. Re-read with `validation.get_project` instead.
 
 ## Workflow
 
