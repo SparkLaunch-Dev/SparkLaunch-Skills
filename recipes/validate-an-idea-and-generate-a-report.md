@@ -15,10 +15,11 @@ summary: Create, analyze, and verify a SparkLaunch validation project through th
 ## Steps
 
 1. Use [connect-sparklaunch-to-chatgpt.md](./connect-sparklaunch-to-chatgpt.md) if the project is not selected.
-2. Call `validation.create_project` with a stable idempotency key.
-3. Call `validation.start_analysis` with a different stable key and `sections="all"` unless the user narrowed scope.
-4. Call `validation.get_project` until the record reports completed results. Do not spin or claim completion from a queued state.
-5. Summarize market evidence, competitors, TAM/SAM/SOM methodology, citations returned by the tool, the narrowest credible wedge, and unresolved proof gaps.
+2. If this business project was just created, do not call `validation.create_project` or `validation.start_analysis`: the included Idea Validation research was queued automatically, and either call would create a duplicate initial run.
+3. Poll `validation.list_projects` about once per minute for up to 20 minutes until the automatic workspace appears, then poll `validation.get_project` until it reports completed or failed. A typical run takes 10-15 minutes.
+4. Only when the user explicitly requests an additional or narrowed validation workspace, call `validation.create_project` with a stable idempotency key and `validation.start_analysis` with a different stable key and the requested sections.
+5. If a long-running write loses its transport response, re-read with the same project identifiers. Do not repeat it with a new idempotency key or infer failure from the transport alone.
+6. Summarize market evidence, competitors, TAM/SAM/SOM methodology, citations returned by the tool, the narrowest credible wedge, and unresolved proof gaps.
 
 ## Completion Evidence
 

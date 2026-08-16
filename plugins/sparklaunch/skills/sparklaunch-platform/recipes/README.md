@@ -20,3 +20,5 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 5. Do not use hidden REST routes, query-token URLs, or legacy project headers as fallback behavior.
 6. Keep configured assets, published state, observed traffic, conversions, and CRM persistence as separate proof layers.
 7. Do not expose secrets, raw base64, data URLs, private diagnostics, or more personal data than requested.
+8. Project creation automatically queues its included Idea Validation research. Allow 10-15 minutes, poll at a bounded cadence, and do not create a duplicate initial validation workspace.
+9. OAuth scopes are maximum connection permissions; project plan and role restrictions can still deny a tool and should not be described as a reconnection problem.

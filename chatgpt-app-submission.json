@@ -447,7 +447,7 @@
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieve one accessible private SparkLaunch business project without changing it.",
+        "read_only_justification": "Retrieve one accessible private SparkLaunch business project, including the current role and effective plan/role/token permissions, without changing it.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }

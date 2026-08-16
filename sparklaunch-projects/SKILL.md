@@ -29,10 +29,11 @@ Manage the user's accessible SparkLaunch projects through the connected app.
 ## Workflow
 
 1. Call `projects.list` when the target project is not already unambiguous.
-2. If creating a project, call `projects.create` with the known name and business fields, then retain the returned project id.
-3. Call `projects.get` with that explicit id before edits when the current state matters.
-4. For `projects.update`, use a stable `idempotency_key`. The first call returns a confirmation preview; show it and wait for explicit approval before retrying with the same arguments, key, and `confirmation_token`.
-5. Re-read with `projects.get` to verify important updates.
+2. If creating a project, require a useful business description, call `projects.create` with the known name and business fields, then retain the returned project id. Project creation automatically queues the included Idea Validation research.
+3. Tell the user that the automatic research normally takes 10-15 minutes. Poll `validation.list_projects` with the returned project id at a bounded cadence (about once per minute, for up to 20 minutes). Do not create or start a duplicate initial run with `validation.create_project` or `validation.start_analysis`.
+4. Call `projects.get` with that explicit id before edits when the current state matters. Its `effective_permissions` are the plan/role/token intersection for that project; if the required permission is absent, explain the plan/role boundary before proposing or confirming the write.
+5. For `projects.update`, use a stable `idempotency_key`. The first call returns a confirmation preview; show it and wait for explicit approval before retrying with the same arguments, key, and `confirmation_token`.
+6. Re-read with `projects.get` to verify important updates.
 
 Never change subscription plans through project updates. Never automatically repeat an uncertain write.
 

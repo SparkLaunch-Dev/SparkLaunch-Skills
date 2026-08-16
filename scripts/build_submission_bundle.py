@@ -14,6 +14,8 @@ FIXED_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
 EXACT_FILES = (
     Path("README.md"),
     Path("chatgpt-app-submission.json"),
+    Path("evals/CONTROLLED-E2E.md"),
+    Path("evals/controlled-e2e-matrix.json"),
     Path("evals/skill-trigger-cases.json"),
     Path(".agents/plugins/marketplace.json"),
 )

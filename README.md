@@ -8,8 +8,8 @@ SparkLaunch helps founders select or create a business project, validate an idea
 
 The default broad workflow is:
 
-1. Connect SparkLaunch and select an accessible project.
-2. Complete idea validation.
+1. Connect SparkLaunch and select an accessible project, or create one with a complete business description.
+2. When a project is created, wait for its automatically queued Idea Validation research to complete (normally 10-15 minutes).
 3. Generate palette and logo options.
 4. Create a campaign, QR file, and landing page.
 5. Review observed signals and grounded CRM context.
@@ -24,6 +24,7 @@ The default broad workflow is:
 6. Generated logo and QR outputs use short-lived HTTPS file references, never raw base64 or data URLs.
 7. Configured assets, published state, traffic, conversions, CRM persistence, and revenue are reported as separate proof layers.
 8. User-facing errors stay concise. Secrets, private diagnostics, internal ownership IDs, and unnecessary personal data are never surfaced.
+9. OAuth scopes are the connection's maximum authorization. The selected project's plan and the user's project role may further restrict a tool; a plan/role denial is not a reason to reconnect OAuth.
 
 ## Repository Layout
 

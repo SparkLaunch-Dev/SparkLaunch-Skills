@@ -18,8 +18,9 @@ Establish the user-managed SparkLaunch connection and select a project without c
 5. If the loaded action returns an OAuth challenge, ask the user to connect or reconnect the app and wait for completion.
 6. Call `projects.list` again. It returns every project accessible to the connected user.
 7. If there is one clear match, select it. Otherwise present a concise table and ask the user to choose.
-8. Pass the selected `project_id` argument to every project-scoped tool in the rest of the workflow.
-9. If the user needs a new project, call `projects.create` with a stable `idempotency_key`, then retain its returned project id.
+8. Call `projects.get` for the selected project and retain its `effective_permissions`. Pass the selected `project_id` argument to every project-scoped tool, and do not propose or confirm a write whose required permission is absent.
+9. If the user needs a new project, require a useful business description, call `projects.create` with a stable `idempotency_key`, then retain its returned project id. Creation automatically queues the included Idea Validation research; tell the user it normally takes 10-15 minutes and do not launch a duplicate initial validation.
+10. To review or disconnect grants, direct the user to SparkLaunch **Profile > AI Agent Connections**. Disconnecting is a separate, explicit user action; do not revoke a grant merely to diagnose a tool failure.
 
 ## Guardrails
 
@@ -28,6 +29,7 @@ Establish the user-managed SparkLaunch connection and select a project without c
 - Never invent a project id or expose internal user/workspace ids.
 - A successful connection does not prove access to a particular project; `projects.list` is the source of truth.
 - An active SparkLaunch grant does not prove that ChatGPT loaded the connector into this conversation.
+- Granted OAuth permissions are the maximum authorization. A selected project's plan or the user's project role may further restrict writes; that is not an OAuth reconnection failure.
 
 ## Completion Evidence
 

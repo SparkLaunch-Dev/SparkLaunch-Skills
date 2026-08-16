@@ -26,9 +26,11 @@ summary: Create confirmed public campaign surfaces, a QR file, and a measurable 
 ## Guardrails
 
 - Do not auto-confirm public actions.
+- Before presenting a write or confirmation, use `projects.get` and verify that `effective_permissions` contains the required permission. Explain a plan/role limitation without asking the user to reconnect.
 - Do not retry an uncertain write with a new key.
 - The current ChatGPT tool set does not expose direct QR-theme or landing-draft patch operations; do not claim those settings were persisted.
 - Never expose raw QR base64 or a data URL.
+- Generated landing copy must not contain invented testimonials, customer identities, adoption counts, or performance claims. Leave social proof empty until the user supplies verified evidence.
 
 ## Completion Evidence
 

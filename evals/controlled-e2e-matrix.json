@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "purpose": "Controlled end-to-end coverage for the SparkLaunch ChatGPT plugin and production MCP connection.",
+  "controls": {
+    "fixture_name_prefix": "SparkLaunch MCP E2E QA",
+    "synthetic_contact_domain": "example.com",
+    "automatic_validation_typical_minutes": "10-15",
+    "automatic_validation_poll_seconds": 60,
+    "automatic_validation_timeout_minutes": 20,
+    "expected_oauth_scope_count": 15,
+    "preflight_effective_permissions": true,
+    "open_and_cancel_disconnect_dialog": true,
+    "never_auto_confirm": true,
+    "never_perform_real_outreach": true,
+    "never_retry_uncertain_write_with_new_key": true,
+    "retain_private_fixture_when_no_delete_tool_exists": true
+  },
+  "cases": [
+    {
+      "id": "E2E-CONNECTION-PROJECTS",
+      "recipes": ["connect-sparklaunch-to-chatgpt.md"],
+      "tools": ["projects.list", "projects.create", "projects.get", "projects.update"],
+      "live_level": "private_write_and_confirmation_preview",
+      "expected": "OAuth connects with the expected 15-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, and update stops at confirmation without approval."
+    },
+    {
+      "id": "E2E-AUTOMATIC-VALIDATION",
+      "recipes": ["validate-an-idea-and-generate-a-report.md", "start-a-business-from-an-idea.md"],
+      "tools": ["validation.list_projects", "validation.get_project"],
+      "live_level": "asynchronous_readback",
+      "expected": "Creating a business project automatically queues one included validation; it appears and reaches a terminal state within the bounded polling window without a duplicate start call."
+    },
+    {
+      "id": "E2E-ADDITIONAL-VALIDATION",
+      "recipes": ["validate-an-idea-and-generate-a-report.md"],
+      "tools": ["validation.create_project", "validation.start_analysis"],
+      "live_level": "private_write_when_explicitly_selected",
+      "expected": "An explicitly requested additional validation is idempotent; after a lost or delayed response, readback determines the persisted outcome."
+    },
+    {
+      "id": "E2E-BRAND",
+      "recipes": ["create-a-brand-foundation.md"],
+      "tools": ["branding.generate_palette", "branding.list_palettes", "branding.get_palette", "crm.generate_logo"],
+      "live_level": "private_generated_assets",
+      "expected": "Three palettes persist and can be read back; logo generation returns a completed saved record and a short-lived HTTPS PNG reference."
+    },
+    {
+      "id": "E2E-LANDING",
+      "recipes": ["plan-and-publish-a-launch.md", "review-launch-signals-and-follow-up.md"],
+      "tools": ["landing.create_project", "landing.generate_content", "landing.get_project", "landing.list_projects", "landing.get_analytics", "landing.get_leads", "landing.publish"],
+      "live_level": "private_draft_reads_and_public_confirmation_preview",
+      "expected": "Draft creation and reads agree, generated copy contains no invented social proof, analytics and leads distinguish zero from missing, and publish stops at the exact public-state preview without approval."
+    },
+    {
+      "id": "E2E-CAMPAIGNS",
+      "recipes": ["plan-and-publish-a-launch.md", "review-launch-signals-and-follow-up.md"],
+      "tools": ["campaign_create", "shortlink_create", "qr_generate", "campaign_stats", "lead_capture_ingest", "campaign_pause", "campaign_archive", "shortlink_rotate"],
+      "live_level": "plan_entitlement_and_confirmation_boundaries",
+      "expected": "Read and private boundaries are explicit; public or destructive mutations stop at confirmation; plan or role denial is reported as such rather than as an OAuth reconnect request."
+    },
+    {
+      "id": "E2E-CRM-READS",
+      "recipes": ["review-launch-signals-and-follow-up.md"],
+      "tools": ["crm.search_leads", "crm.get_lead", "crm.get_lead_workspace", "crm.search_contacts", "crm.get_contact", "crm.get_contact_workspace", "crm.list_deals", "crm.get_dashboard", "crm.get_activities"],
+      "live_level": "private_read",
+      "expected": "Every read is project-isolated, returns bounded structured data, and treats empty results as successful zero-state evidence."
+    },
+    {
+      "id": "E2E-CRM-WRITES",
+      "recipes": ["review-launch-signals-and-follow-up.md"],
+      "tools": ["crm.create_lead", "crm.update_lead", "crm.add_lead_note", "crm.log_activity", "crm.add_contact_note", "crm.update_contact", "crm.refresh_contact_summary", "crm.move_deal", "crm.ingest_business_card", "crm.delete_business_card"],
+      "live_level": "synthetic_private_write_or_confirmation_preview",
+      "expected": "Synthetic records use no real outreach; plan and role restrictions are distinguished from OAuth scopes; overwrite and delete operations require exact confirmation; uploaded-card tests use a dedicated non-sensitive fixture."
+    }
+  ]
+}

@@ -8,7 +8,7 @@ summary: Run the connected project, validation, brand, launch, measurement, and 
 ## Sequence
 
 1. Connect and select or create the project with [connect-sparklaunch-to-chatgpt.md](./connect-sparklaunch-to-chatgpt.md).
-2. Complete [validate-an-idea-and-generate-a-report.md](./validate-an-idea-and-generate-a-report.md). Treat validation as blocking unless the user explicitly accepts a partial run.
+2. Wait for the project's automatically queued Idea Validation using [validate-an-idea-and-generate-a-report.md](./validate-an-idea-and-generate-a-report.md). A normal run takes 10-15 minutes; treat validation as blocking unless the user explicitly accepts a partial run.
 3. Generate palette and logo options with [create-a-brand-foundation.md](./create-a-brand-foundation.md).
 4. Create the campaign, QR file, and landing-page surface with [plan-and-publish-a-launch.md](./plan-and-publish-a-launch.md).
 5. Review measured signals and CRM context with [review-launch-signals-and-follow-up.md](./review-launch-signals-and-follow-up.md).

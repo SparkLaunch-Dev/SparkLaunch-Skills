@@ -30,11 +30,12 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 5. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
 6. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
 7. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.
+8. Treat OAuth scopes as the connection maximum. A project plan or role can further restrict execution; explain that restriction instead of asking the user to reconnect.
 
 ## Founder Journey
 
-1. Select or create the SparkLaunch project.
-2. Complete idea validation before claiming the idea is validated.
+1. Select a SparkLaunch project, or create one and retain its returned id.
+2. For a newly created project, wait for the automatically queued Idea Validation research (normally 10-15 minutes) rather than creating a duplicate validation run. Complete validation before claiming the idea is validated.
 3. Generate the selected brand assets.
 4. Create a measurable campaign or landing-page surface.
 5. Review analytics and CRM context before recommending follow-up.

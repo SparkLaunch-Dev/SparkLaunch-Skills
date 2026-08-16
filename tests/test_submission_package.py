@@ -91,6 +91,82 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
     assert sum(not case["expected_skills"] for case in cases) == 8
 
 
+def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
+    matrix = json.loads(
+        (ROOT / "evals" / "controlled-e2e-matrix.json").read_text(encoding="utf-8")
+    )
+    submission = json.loads(
+        (ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8")
+    )
+    covered_tools = {
+        tool
+        for case in matrix["cases"]
+        for tool in case["tools"]
+    }
+    covered_recipes = {
+        recipe
+        for case in matrix["cases"]
+        for recipe in case["recipes"]
+    }
+
+    assert covered_tools == set(submission["tools"])
+    assert covered_recipes == {
+        "connect-sparklaunch-to-chatgpt.md",
+        "validate-an-idea-and-generate-a-report.md",
+        "create-a-brand-foundation.md",
+        "plan-and-publish-a-launch.md",
+        "review-launch-signals-and-follow-up.md",
+        "start-a-business-from-an-idea.md",
+    }
+    controls = matrix["controls"]
+    assert controls["automatic_validation_typical_minutes"] == "10-15"
+    assert controls["automatic_validation_poll_seconds"] >= 60
+    assert controls["automatic_validation_timeout_minutes"] >= 20
+    assert controls["expected_oauth_scope_count"] == 15
+    assert controls["preflight_effective_permissions"] is True
+    assert controls["open_and_cancel_disconnect_dialog"] is True
+    assert controls["never_auto_confirm"] is True
+    assert controls["never_perform_real_outreach"] is True
+    assert controls["never_retry_uncertain_write_with_new_key"] is True
+
+
+def test_project_and_validation_guidance_uses_automatic_initial_research():
+    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(encoding="utf-8")
+    validation_skill = (ROOT / "sparklaunch-idea-validation" / "SKILL.md").read_text(encoding="utf-8")
+    validation_recipe = (
+        ROOT / "recipes" / "validate-an-idea-and-generate-a-report.md"
+    ).read_text(encoding="utf-8")
+
+    for document in (project_skill, validation_skill, validation_recipe):
+        assert "automatically" in document
+        assert "10-15 minutes" in document
+        assert "duplicate" in document
+    assert "do not call `validation.create_project` or `validation.start_analysis`" in validation_recipe
+
+
+def test_landing_recipe_forbids_invented_social_proof():
+    launch_recipe = (ROOT / "recipes" / "plan-and-publish-a-launch.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "invented testimonials" in launch_recipe
+    assert "verified evidence" in launch_recipe
+
+
+def test_project_guidance_preflights_effective_permissions_before_writes():
+    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(encoding="utf-8")
+    connect_recipe = (
+        ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md"
+    ).read_text(encoding="utf-8")
+    launch_recipe = (
+        ROOT / "recipes" / "plan-and-publish-a-launch.md"
+    ).read_text(encoding="utf-8")
+
+    for document in (project_skill, connect_recipe, launch_recipe):
+        assert "effective_permissions" in document
+    assert "do not propose or confirm a write" in connect_recipe
+
+
 def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     release_notes = (ROOT / "submission" / "release-notes.md").read_text(
         encoding="utf-8"
@@ -149,6 +225,8 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "plugins/sparklaunch/LICENSE" in names
         assert "chatgpt-app-submission.json" in names
         assert "evals/skill-trigger-cases.json" in names
+        assert "evals/controlled-e2e-matrix.json" in names
+        assert "evals/CONTROLLED-E2E.md" in names
         assert "submission/release-notes.md" in names
         assert "submission/reviewer-instructions.md" in names
         assert "submission/reviewer-fixture.json" in names
