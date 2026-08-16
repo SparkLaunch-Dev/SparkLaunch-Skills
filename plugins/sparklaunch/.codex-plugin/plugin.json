@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "SparkLaunch",
     "shortDescription": "Build and operate a startup",
-    "longDescription": "Connect SparkLaunch to select or create a business project, validate an idea, generate palette and logo assets, publish measurable campaigns and landing pages, inspect analytics, and operate private CRM workflows with explicit write confirmations.",
+    "longDescription": "Connect SparkLaunch to select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect analytics, and operate private CRM workflows. Authentication starts on first protected use. Disconnect in SparkLaunch Profile under AI Agent Connections.",
     "developerName": "SparkLaunch",
     "category": "Productivity",
     "capabilities": [
@@ -34,7 +34,7 @@
     "privacyPolicyURL": "https://sparklaun.ch/privacy-policy",
     "termsOfServiceURL": "https://sparklaun.ch/terms-and-conditions",
     "defaultPrompt": [
-      "Validate my startup idea and identify the strongest wedge",
+      "Connect my SparkLaunch account and list my projects",
       "Create a measurable launch campaign and landing page",
       "Review my launch signals and CRM follow-up priorities"
     ],

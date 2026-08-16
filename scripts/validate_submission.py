@@ -198,6 +198,13 @@ def validate() -> list[str]:
             errors.append("plugin manifest contains a TODO placeholder")
         if manifest.get("mcpServers") != "./.mcp.json":
             errors.append("plugin manifest must reference ./.mcp.json")
+        interface = manifest.get("interface") or {}
+        long_description = str(interface.get("longDescription") or "")
+        if "first protected use" not in long_description or "AI Agent Connections" not in long_description:
+            errors.append("plugin details must explain how to connect and disconnect SparkLaunch")
+        prompts = interface.get("defaultPrompt") or []
+        if not any(str(prompt).startswith("Connect my SparkLaunch account") for prompt in prompts):
+            errors.append("plugin details must provide a SparkLaunch connection starter")
     skill_icon_sources = {
         "sparklaunch-small.png": plugin / "assets" / "sparklaunch-small.png",
         "sparklaunch.png": plugin / "assets" / "sparklaunch.png",
@@ -221,9 +228,12 @@ def validate() -> list[str]:
                     f"{skill}/assets/{name}"
                 )
     mcp = _load_json(plugin / ".mcp.json", errors)
-    endpoint = (((mcp or {}).get("mcpServers") or {}).get("sparklaunch") or {}).get("url")
+    server = ((mcp or {}).get("mcpServers") or {}).get("sparklaunch") or {}
+    endpoint = server.get("url")
     if endpoint != CANONICAL_MCP_URL:
         errors.append("plugin MCP mapping must use the canonical production endpoint")
+    if server.get("oauth_resource") != CANONICAL_MCP_URL:
+        errors.append("plugin MCP mapping must bind OAuth to the canonical production resource")
     if set((mcp or {}).get("mcpServers") or {}) != {"sparklaunch"}:
         errors.append("plugin MCP mapping must contain only the sparklaunch server")
 
