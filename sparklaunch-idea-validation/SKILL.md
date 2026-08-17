@@ -15,10 +15,11 @@ Create and review private market, competitor, and TAM/SAM/SOM analysis.
 1. Use ChatGPT-managed OAuth. Never request credentials or authorization headers.
 2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
 3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
-4. Resolve the target with `projects.list`, then pass `project_id` to every validation tool.
-5. A newly created SparkLaunch business project automatically queues one included Idea Validation workspace and analysis. Do not create or start a duplicate initial run.
-6. `validation.create_project` and `validation.start_analysis` are for an explicitly requested additional or narrowed validation workspace; they are writes and require a distinct stable `idempotency_key` for each exact mutation.
-7. Do not retry an uncertain write with a new key. Re-read with `validation.get_project` instead.
+4. If a loaded action reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch from this AI Agent, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+5. Resolve the target with `projects.list`, then pass `project_id` to every validation tool. Use `projects.get` to confirm `effective_permissions` includes `validation.write` before an additional validation write; explain a plan or role limitation without requesting OAuth reconnection.
+6. A newly created SparkLaunch business project automatically queues one included Idea Validation workspace and analysis. Do not create or start a duplicate initial run.
+7. `validation.create_project` and `validation.start_analysis` are for an explicitly requested additional or narrowed validation workspace; they are writes and require a distinct stable `idempotency_key` for each exact mutation.
+8. Do not retry an uncertain write with a new key. Re-read with `validation.get_project` instead.
 
 ## Workflow
 

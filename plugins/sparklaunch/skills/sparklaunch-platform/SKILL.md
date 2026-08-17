@@ -26,11 +26,12 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 1. Use the SparkLaunch connection supplied by ChatGPT. Never ask for credentials or authorization headers.
 2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
 3. If a loaded tool returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after connection succeeds.
-4. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
-5. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
-6. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
-7. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.
-8. Treat OAuth scopes as the connection maximum. A project plan or role can further restrict execution; explain that restriction instead of asking the user to reconnect.
+4. If a loaded tool reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch from this AI Agent, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+5. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
+6. Before proposing or confirming a write, use `projects.get` and verify `effective_permissions` contains the required permission. A project plan or role can further restrict execution; explain that restriction instead of asking the user to reconnect.
+7. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
+8. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
+9. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.
 
 ## Founder Journey
 

@@ -16,10 +16,10 @@ The default broad workflow is:
 
 ## Shared Safety Contract
 
-1. Authentication is OAuth-connected and managed by the host. It starts on the first protected SparkLaunch action in a conversation where the connector is loaded; skills never request credentials, OAuth codes, or transport headers. If required actions are absent, the skill stops and directs the user to open a new ChatGPT conversation with SparkLaunch selected instead of misreporting connector absence as an OAuth challenge.
+1. Authentication is OAuth-connected and managed by the host. It starts on the first protected SparkLaunch action in a conversation where the connector is loaded; skills never request credentials, OAuth codes, or transport headers. If required actions are absent, the skill stops and directs the user to open a new ChatGPT conversation with SparkLaunch selected instead of misreporting connector absence as an OAuth challenge. If a loaded connection is expired or revoked, the skill stops before writes, asks the user to reconnect from the AI Agent, and retries only after reconnection succeeds and any uncertain prior result is checked.
 2. `projects.list` is the source of truth for accessible projects. Project-scoped tools receive an explicit `project_id` argument.
 3. Every write receives one stable `idempotency_key` for the exact intended mutation. Uncertain writes are not repeated with new keys.
-4. Destructive or public-state tools return a one-time confirmation preview. The user must explicitly approve it before the exact call is resubmitted with its confirmation token.
+4. Before a write or confirmation, the skill checks `projects.get.effective_permissions` when project-scoped authorization applies. Destructive or public-state tools return a one-time confirmation preview only after server-side authorization preflight succeeds. The user must explicitly approve it before the exact call is resubmitted with its confirmation token.
 5. Skills do not use query-token REST URLs, compatibility endpoints, legacy project headers, or hidden fallback routes.
 6. Generated logo and QR outputs use short-lived HTTPS file references, never raw base64 or data URLs.
 7. Configured assets, published state, traffic, conversions, CRM persistence, and revenue are reported as separate proof layers.

@@ -18,6 +18,8 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
         "SparkLaunch isn't loaded in this conversation.",
         "Start a new ChatGPT conversation",
         "OAuth challenge",
+        "expired or revoked",
+        "effective_permissions",
     )
     for skill in SKILLS:
         canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
