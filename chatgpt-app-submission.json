@@ -348,12 +348,12 @@
       "annotations": {
         "readOnlyHint": false,
         "openWorldHint": false,
-        "destructiveHint": false
+        "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Generate structured landing-page copy from the supplied private product brief without publishing it and therefore changes SparkLaunch state.",
+        "read_only_justification": "Generate structured landing-page copy from the supplied private product brief and optionally replace a selected private draft without publishing it and therefore changes SparkLaunch state.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
-        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
     "landing.get_analytics": {
