@@ -11,7 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BACKEND = ROOT.parent / "SparkLaunch" / "backend"
 if not BACKEND.is_dir():
-    raise SystemExit(f"SparkLaunch backend not found beside skills repository: {BACKEND}")
+    raise SystemExit(
+        "SparkLaunch backend not found beside the skills repository. Clone "
+        "SparkLaunch and SparkLaunch-Skills as sibling directories before running "
+        f"submission generation or the full test suite. Expected: {BACKEND}"
+    )
 sys.path.insert(0, str(BACKEND))
 
 from mcp_tool_contracts import MCP_TOOL_CONTRACTS  # noqa: E402
@@ -60,7 +64,7 @@ def _tool_entry(name, contract):
 def build_submission(reviewer_project_id: int | None = None):
     project_id = reviewer_project_id or _reviewer_project_id()
     return {
-        "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+        "$schema": "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
         "schema_version": 1,
         "app_info": {
             "display_name": "SparkLaunch",

@@ -6,6 +6,7 @@ Status: local production candidate; not yet deployed or submitted.
 
 - Load SparkLaunch tools before connection and start OAuth authorization code with PKCE on first use in hosted ChatGPT or Codex desktop instead of collecting credentials in chat.
 - Discover, list, create, inspect, and update authorized projects through explicit `project_id` tool arguments.
+- Keep `projects.get` compatible with the declared nullable-string contract when the underlying project stores one or more business-model values as JSON.
 - Use one canonical MCP endpoint with 46 tools covering projects, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, leads, and CRM workflows.
 - Receive typed results and structured authentication, authorization, validation, conflict, dependency, and internal error outcomes.
 - Send only closed, allowlisted nested objects for campaign leads, UTM parameters, logo colors, and ChatGPT-hosted business-card files.
@@ -14,6 +15,7 @@ Status: local production candidate; not yet deployed or submitted.
 - Use eight concise founder-workflow skills backed by the same connected SparkLaunch MCP server.
 - Display the canonical SparkLaunch launch mark in the MCP entry and all eight individual skill rows, plus the production app icon across light and dark plugin surfaces and reviewer-ready horizontal wordmarks in the submission bundle.
 - Rebuild the reviewer candidate deterministically with a bundled proprietary license and recorded archive digest.
+- Publish every changed candidate under a new plugin cache version and document the sibling application checkout required for contract generation and full package tests.
 
 ## Compatibility
 

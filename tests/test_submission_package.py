@@ -43,6 +43,10 @@ def test_submission_package_is_complete():
     assert sparklaunch["policy"]["authentication"] == "ON_USE"
     generated = json.loads((ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8"))
     assert generated == build_submission()
+    assert generated["$schema"] == (
+        "https://developers.openai.com/plugins/schemas/"
+        "chatgpt-app-submission.v1.json"
+    )
     assert all(
         case["tools_triggered"] in generated["tools"]
         for case in generated["test_cases"]
@@ -66,6 +70,15 @@ def test_submission_package_is_complete():
         f"project {fixture['project_id']}" in case["user_prompt"]
         for case in scoped
     )
+
+
+def test_readme_documents_cross_repository_validation_and_cache_versioning():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+    assert "Clone the application and skills repositories as sibling directories" in readme
+    assert "../SparkLaunch/backend" in readme
+    assert "standalone `SparkLaunch-Skills` clone" in readme
+    assert "cached by plugin version" in readme
 
 
 def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries():

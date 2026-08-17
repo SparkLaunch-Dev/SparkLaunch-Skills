@@ -35,6 +35,21 @@ The default broad workflow is:
 
 The canonical skill folders are the only files edited by hand. Run `scripts/sync_plugin.py --write` to update packaged mirrors and `scripts/validate_submission.py` to check encodings, parity, metadata, tool references, and submission artifacts.
 
+## Development And Validation
+
+Clone the application and skills repositories as sibling directories when running the full package tests or regenerating the ChatGPT submission:
+
+```text
+parent/
+  SparkLaunch/
+    backend/
+  SparkLaunch-Skills/
+```
+
+`scripts/generate_submission.py` imports the canonical MCP tool contracts from `../SparkLaunch/backend`, so `python scripts/generate_submission.py --check` and `python -m pytest tests -q` require that sibling checkout. A standalone `SparkLaunch-Skills` clone can still run `python scripts/validate_submission.py` for package-only validation.
+
+Every published plugin change must also update `plugins/sparklaunch/.codex-plugin/plugin.json` to a new version. Git marketplace installs are cached by plugin version, so publishing changed files under an existing version can leave an older cached package active.
+
 ## Current Skills
 
 - `sparklaunch-platform`: broad founder-workflow router
