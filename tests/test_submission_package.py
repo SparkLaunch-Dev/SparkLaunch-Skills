@@ -182,6 +182,56 @@ def test_project_guidance_preflights_effective_permissions_before_writes():
     assert "do not propose or confirm a write" in connect_recipe
 
 
+def test_logo_guidance_documents_the_selected_colors_transport_shape():
+    logo_skill = (ROOT / "sparklaunch-logo-generation" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    brand_recipe = (ROOT / "recipes" / "create-a-brand-foundation.md").read_text(
+        encoding="utf-8"
+    )
+
+    for document in (logo_skill, brand_recipe):
+        assert "`selected_colors`" in document
+        assert '`{"hex":"#6E4E3A","feeling":"grounded"}`' in document
+        assert "never pass an array" in document.lower()
+        assert "`neutral_light` to `background`" in document
+        assert "`neutral_dark` to `foreground`" in document
+
+
+def test_connection_recipe_classifies_bare_oauth_403_without_reusing_the_url():
+    recipe = (ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert "only `403 Forbidden`" in recipe
+    assert "start a fresh connection" in recipe
+    assert "not proof that the account is connected, expired, or revoked" in recipe
+
+
+def test_founder_report_template_only_requests_supported_tool_evidence():
+    template = (
+        ROOT / "recipes" / "templates" / "founder-workflow-report.md"
+    ).read_text(encoding="utf-8")
+
+    for unsupported in (
+        "Recommended business name",
+        "MCP key created",
+        "Naming And Domain",
+        "Favorite status",
+        "Founder report PDF",
+        "Asset zip",
+    ):
+        assert unsupported not in template
+    for supported in (
+        "Effective permissions",
+        "Validation project id",
+        "Selected palette id",
+        "Short-lived download reference",
+        "Confirmation-gated actions",
+    ):
+        assert supported in template
+
+
 def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     release_notes = (ROOT / "submission" / "release-notes.md").read_text(
         encoding="utf-8"

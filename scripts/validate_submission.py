@@ -341,7 +341,7 @@ def validate() -> list[str]:
     except (OSError, UnicodeError) as exc:
         errors.append(f"submission reviewer documentation is missing or invalid: {exc}")
     else:
-        for marker in ("0.2.0", "46 tools", "OAuth", "project_id", "idempotency", "file references"):
+        for marker in ("0.2.1", "46 tools", "OAuth", "project_id", "idempotency", "file references"):
             if marker not in release_notes:
                 errors.append(f"release notes missing marker: {marker}")
         for marker in (

@@ -1,4 +1,4 @@
-# SparkLaunch 0.2.0 ChatGPT Candidate
+# SparkLaunch 0.2.1 ChatGPT Candidate
 
 Status: local production candidate; not yet deployed or submitted.
 
@@ -10,7 +10,9 @@ Status: local production candidate; not yet deployed or submitted.
 - Use one canonical MCP endpoint with 46 tools covering projects, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, leads, and CRM workflows.
 - Receive typed results and structured authentication, authorization, validation, conflict, dependency, and internal error outcomes.
 - Send only closed, allowlisted nested objects for campaign leads, UTM parameters, logo colors, and ChatGPT-hosted business-card files.
+- Show the exact accepted `selected_colors` object shape and palette-role mapping before logo generation instead of allowing an ambiguous color list.
 - Retry writes safely with stable idempotency keys and approve public-world, destructive, or overwriting actions through exact one-time confirmation previews.
+- Classify a bare authorization-page 403 as an incomplete or blocked request and tell the user to start a fresh current-plugin connection rather than reusing the stale URL.
 - Receive generated logos and QR assets through expiring HTTPS file references rather than raw base64 or data URLs.
 - Use eight concise founder-workflow skills backed by the same connected SparkLaunch MCP server.
 - Display the canonical SparkLaunch launch mark in the MCP entry and all eight individual skill rows, plus the production app icon across light and dark plugin surfaces and reviewer-ready horizontal wordmarks in the submission bundle.
