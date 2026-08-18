@@ -32,7 +32,7 @@ REGISTRY_SCHEMA_URL = (
     "https://static.modelcontextprotocol.io/schemas/2025-12-11/"
     "server.schema.json"
 )
-REGISTRY_SERVER_NAME = "io.github.sparklaunch-dev/sparklaunch"
+REGISTRY_SERVER_NAME = "io.github.SparkLaunch-Dev/sparklaunch"
 SEMANTIC_VERSION_RE = re.compile(
     r"^(0|[1-9]\d*)\."
     r"(0|[1-9]\d*)\."
