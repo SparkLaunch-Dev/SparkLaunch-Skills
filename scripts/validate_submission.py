@@ -33,6 +33,14 @@ REGISTRY_SCHEMA_URL = (
     "server.schema.json"
 )
 REGISTRY_SERVER_NAME = "io.github.sparklaunch-dev/sparklaunch"
+SEMANTIC_VERSION_RE = re.compile(
+    r"^(0|[1-9]\d*)\."
+    r"(0|[1-9]\d*)\."
+    r"(0|[1-9]\d*)"
+    r"(?:-((?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)"
+    r"(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*))?"
+    r"(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$"
+)
 EXPECTED_ANNOTATIONS = {"readOnlyHint", "openWorldHint", "destructiveHint"}
 EXPECTED_JUSTIFICATIONS = {
     "read_only_justification",
@@ -108,9 +116,8 @@ def _validate_registry_descriptor(
     if not isinstance(description, str) or not 1 <= len(description) <= 100:
         errors.append("MCP Registry description must contain 1 to 100 characters")
     registry_version = registry.get("version")
-    if not isinstance(registry_version, str) or not re.fullmatch(
-        r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?",
-        registry_version,
+    if not isinstance(registry_version, str) or not SEMANTIC_VERSION_RE.fullmatch(
+        registry_version
     ):
         errors.append("MCP Registry descriptor must use a semantic service version")
     if registry.get("websiteUrl") != "https://sparklaun.ch/":

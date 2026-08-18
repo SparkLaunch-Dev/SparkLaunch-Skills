@@ -172,6 +172,45 @@ def test_registry_validator_rejects_invalid_fields(
     assert expected_error in errors
 
 
+@pytest.mark.parametrize("description", ["x", "x" * 100])
+def test_registry_validator_accepts_description_boundaries(tmp_path, description):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry["description"] = description
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    "version",
+    ["0.0.0", "1.0.0-alpha.1", "1.0.0+build.5", "1.0.0-alpha+build"],
+)
+def test_registry_validator_accepts_semantic_versions(tmp_path, version):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry["version"] = version
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    "version",
+    ["01.0.0", "1.01.0", "1.0.01", "1.0.0-.", "1.0.0-alpha..1", "1.0.0-01"],
+)
+def test_registry_validator_rejects_invalid_semantic_versions(tmp_path, version):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry["version"] = version
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert "MCP Registry descriptor must use a semantic service version" in errors
+
+
 def test_registry_validator_accepts_a_standalone_clone_without_the_application(tmp_path):
     registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
     errors = []
@@ -207,6 +246,18 @@ def test_registry_validator_rejects_an_invalid_application_version(
     _validate_registry_descriptor(registry, application_version_path, errors)
 
     assert expected_error in errors
+
+
+def test_registry_validator_rejects_an_invalid_utf8_application_version(tmp_path):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    application_version_path = tmp_path / "mcp_server_version.py"
+    application_version_path.write_bytes(b"\xff\xfe")
+    errors = []
+
+    _validate_registry_descriptor(registry, application_version_path, errors)
+
+    assert len(errors) == 1
+    assert errors[0].startswith("SparkLaunch application MCP version is unreadable:")
 
 
 def test_readme_documents_cross_repository_validation_and_cache_versioning():
