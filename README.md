@@ -50,6 +50,31 @@ parent/
 
 Every published plugin change must also update `plugins/sparklaunch/.codex-plugin/plugin.json` to a new version. Git marketplace installs are cached by plugin version, so publishing changed files under an existing version can leave an older cached package active.
 
+## Official MCP Registry
+
+The root `server.json` publishes the production service as the remote
+Streamable HTTP server `io.github.sparklaunch-dev/sparklaunch`. The descriptor
+version must match `../SparkLaunch/backend/mcp_server_version.py`; bump both for
+every new Registry publication because published versions are immutable.
+
+The descriptor intentionally omits `repository`: the public skills repository
+is not the private MCP server source, and the official Registry supports a
+closed-source server when its remote endpoint is publicly accessible. Validate
+and publish from this repository with the latest official publisher:
+
+```text
+mcp-publisher validate
+mcp-publisher login github
+mcp-publisher publish
+```
+
+GitHub authentication for the `SparkLaunch-Dev` namespace must use an
+organization Owner account. After publication, verify discovery through:
+
+```text
+https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sparklaunch-dev/sparklaunch
+```
+
 ## Current Skills
 
 - `sparklaunch-platform`: broad founder-workflow router

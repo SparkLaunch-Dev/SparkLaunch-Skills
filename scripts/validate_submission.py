@@ -8,6 +8,7 @@ import struct
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -27,6 +28,11 @@ FORBIDDEN = {
 }
 
 CANONICAL_MCP_URL = "https://sparklaun.ch/api/mcp/"
+REGISTRY_SCHEMA_URL = (
+    "https://static.modelcontextprotocol.io/schemas/2025-12-11/"
+    "server.schema.json"
+)
+REGISTRY_SERVER_NAME = "io.github.sparklaunch-dev/sparklaunch"
 EXPECTED_ANNOTATIONS = {"readOnlyHint", "openWorldHint", "destructiveHint"}
 EXPECTED_JUSTIFICATIONS = {
     "read_only_justification",
@@ -64,12 +70,72 @@ EXPECTED_PLUGIN_PNG_DIMENSIONS = {
 }
 
 
-def _load_json(path: Path, errors: list[str]):
+def _load_json(path: Path, errors: list[str]) -> dict[str, Any] | None:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        value = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         errors.append(f"invalid JSON {path.relative_to(ROOT)}: {exc}")
         return None
+    if not isinstance(value, dict):
+        errors.append(f"JSON object required: {path.relative_to(ROOT)}")
+        return None
+    return value
+
+
+def _validate_registry_descriptor(
+    registry: dict[str, Any],
+    application_version_path: Path,
+    errors: list[str],
+) -> None:
+    expected_fields = {
+        "$schema",
+        "name",
+        "title",
+        "description",
+        "version",
+        "websiteUrl",
+        "remotes",
+    }
+    if set(registry) != expected_fields:
+        errors.append("MCP Registry descriptor fields are incomplete or unexpected")
+    if registry.get("$schema") != REGISTRY_SCHEMA_URL:
+        errors.append("MCP Registry descriptor must use the pinned official schema")
+    if registry.get("name") != REGISTRY_SERVER_NAME:
+        errors.append("MCP Registry descriptor has the wrong server namespace")
+    if registry.get("title") != "SparkLaunch":
+        errors.append("MCP Registry descriptor must use the SparkLaunch title")
+    description = registry.get("description")
+    if not isinstance(description, str) or not 1 <= len(description) <= 100:
+        errors.append("MCP Registry description must contain 1 to 100 characters")
+    registry_version = registry.get("version")
+    if not isinstance(registry_version, str) or not re.fullmatch(
+        r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?",
+        registry_version,
+    ):
+        errors.append("MCP Registry descriptor must use a semantic service version")
+    if registry.get("websiteUrl") != "https://sparklaun.ch/":
+        errors.append("MCP Registry descriptor has the wrong website URL")
+    if registry.get("remotes") != [
+        {"type": "streamable-http", "url": CANONICAL_MCP_URL}
+    ]:
+        errors.append("MCP Registry descriptor must expose only the canonical remote")
+
+    if not application_version_path.is_file():
+        return
+    try:
+        version_text = application_version_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"SparkLaunch application MCP version is unreadable: {exc}")
+        return
+    version_match = re.search(
+        r'^SPARKLAUNCH_MCP_SERVER_VERSION\s*=\s*["\']([^"\']+)["\']',
+        version_text,
+        re.MULTILINE,
+    )
+    if not version_match:
+        errors.append("SparkLaunch application MCP version is unreadable")
+    elif version_match.group(1) != registry_version:
+        errors.append("MCP Registry version does not match the SparkLaunch application")
 
 
 def _png_dimensions(path: Path, errors: list[str]) -> tuple[int, int] | None:
@@ -115,6 +181,14 @@ def validate() -> list[str]:
             if pattern.search(text):
                 errors.append(f"{label} remains in {path.relative_to(ROOT)}")
 
+    registry = _load_json(ROOT / "server.json", errors)
+    if registry is not None:
+        _validate_registry_descriptor(
+            registry,
+            ROOT.parent / "SparkLaunch" / "backend" / "mcp_server_version.py",
+            errors,
+        )
+
     for skill in SKILLS:
         skill_path = ROOT / skill / "SKILL.md"
         text = skill_path.read_text(encoding="utf-8")
@@ -157,7 +231,7 @@ def validate() -> list[str]:
 
     plugin = ROOT / "plugins" / "sparklaunch"
     manifest = _load_json(plugin / ".codex-plugin" / "plugin.json", errors)
-    if manifest:
+    if manifest is not None:
         for key in ("name", "version", "description", "homepage", "repository", "license"):
             if not str(manifest.get(key, "")).strip():
                 errors.append(f"plugin manifest missing {key}")
@@ -255,7 +329,7 @@ def validate() -> list[str]:
             errors.append("marketplace sparklaunch category is invalid")
 
     submission = _load_json(ROOT / "chatgpt-app-submission.json", errors)
-    if submission:
+    if submission is not None:
         if submission.get("schema_version") != 1:
             errors.append("submission schema_version must be 1")
         if len(submission.get("test_cases") or []) != 5:
@@ -317,7 +391,7 @@ def validate() -> list[str]:
     reviewer_fixture = _load_json(
         ROOT / "submission" / "reviewer-fixture.json", errors
     )
-    if reviewer_fixture:
+    if reviewer_fixture is not None:
         fixture_status = reviewer_fixture.get("status")
         fixture_project_id = reviewer_fixture.get("project_id")
         if fixture_status not in {"local_placeholder", "provisioned"}:
