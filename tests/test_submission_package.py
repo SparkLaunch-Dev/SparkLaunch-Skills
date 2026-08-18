@@ -1,11 +1,22 @@
 import json
 import hashlib
+from runpy import run_path
 from zipfile import ZipFile
 
+import pytest
+
+import scripts.validate_submission as submission_validator
 from scripts.build_submission_bundle import build_bundle
 from scripts.generate_submission import ROOT, build_submission, main as generate_submission
 from scripts.sync_plugin import SKILLS, expected_pairs, sync
-from scripts.validate_submission import validate
+from scripts.validate_submission import (
+    CANONICAL_MCP_URL,
+    REGISTRY_SCHEMA_URL,
+    REGISTRY_SERVER_NAME,
+    _load_json,
+    _validate_registry_descriptor,
+    validate,
+)
 
 
 def test_packaged_skills_are_exact_deterministic_mirrors():
@@ -72,6 +83,181 @@ def test_submission_package_is_complete():
         f"project {fixture['project_id']}" in case["user_prompt"]
         for case in scoped
     )
+
+
+def test_mcp_registry_descriptor_matches_the_public_remote_and_application_version():
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    version = registry.pop("version")
+
+    assert registry == {
+        "$schema": REGISTRY_SCHEMA_URL,
+        "name": REGISTRY_SERVER_NAME,
+        "title": "SparkLaunch",
+        "description": (
+            "Founder workflows for idea validation, branding, campaigns, "
+            "landing pages, analytics, and CRM."
+        ),
+        "websiteUrl": "https://sparklaun.ch/",
+        "remotes": [
+            {"type": "streamable-http", "url": CANONICAL_MCP_URL}
+        ],
+    }
+    assert len(registry["description"]) <= 100
+    application_version = run_path(
+        ROOT.parent / "SparkLaunch" / "backend" / "mcp_server_version.py"
+    )["SPARKLAUNCH_MCP_SERVER_VERSION"]
+    assert version == application_version
+
+
+@pytest.mark.parametrize("payload", ["null", "[]", "[{}]", '"sparklaunch"'])
+def test_json_loader_rejects_non_object_documents(tmp_path, monkeypatch, payload):
+    monkeypatch.setattr(submission_validator, "ROOT", tmp_path)
+    descriptor_path = tmp_path / "server.json"
+    descriptor_path.write_text(payload, encoding="utf-8")
+    errors = []
+
+    assert _load_json(descriptor_path, errors) is None
+    assert errors == ["JSON object required: server.json"]
+
+
+def test_json_loader_rejects_malformed_documents(tmp_path, monkeypatch):
+    monkeypatch.setattr(submission_validator, "ROOT", tmp_path)
+    descriptor_path = tmp_path / "server.json"
+    descriptor_path.write_text("{", encoding="utf-8")
+    errors = []
+
+    assert _load_json(descriptor_path, errors) is None
+    assert len(errors) == 1
+    assert errors[0].startswith("invalid JSON server.json:")
+
+
+def test_registry_validator_rejects_an_empty_descriptor(tmp_path):
+    errors = []
+
+    _validate_registry_descriptor({}, tmp_path / "missing-version.py", errors)
+
+    assert "MCP Registry descriptor fields are incomplete or unexpected" in errors
+    assert "MCP Registry descriptor must use the pinned official schema" in errors
+    assert "MCP Registry descriptor has the wrong server namespace" in errors
+    assert "MCP Registry descriptor must use a semantic service version" in errors
+    assert "MCP Registry descriptor must expose only the canonical remote" in errors
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "expected_error"),
+    [
+        ("$schema", "https://example.com/schema.json", "MCP Registry descriptor must use the pinned official schema"),
+        ("name", "com.example/sparklaunch", "MCP Registry descriptor has the wrong server namespace"),
+        ("title", "Other", "MCP Registry descriptor must use the SparkLaunch title"),
+        ("description", "", "MCP Registry description must contain 1 to 100 characters"),
+        ("description", "x" * 101, "MCP Registry description must contain 1 to 100 characters"),
+        ("description", 123, "MCP Registry description must contain 1 to 100 characters"),
+        ("version", "1.0", "MCP Registry descriptor must use a semantic service version"),
+        ("websiteUrl", "https://example.com/", "MCP Registry descriptor has the wrong website URL"),
+        ("remotes", [], "MCP Registry descriptor must expose only the canonical remote"),
+    ],
+)
+def test_registry_validator_rejects_invalid_fields(
+    tmp_path,
+    field,
+    value,
+    expected_error,
+):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry[field] = value
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert expected_error in errors
+
+
+@pytest.mark.parametrize("description", ["x", "x" * 100])
+def test_registry_validator_accepts_description_boundaries(tmp_path, description):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry["description"] = description
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    "version",
+    ["0.0.0", "1.0.0-alpha.1", "1.0.0+build.5", "1.0.0-alpha+build"],
+)
+def test_registry_validator_accepts_semantic_versions(tmp_path, version):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry["version"] = version
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    "version",
+    ["01.0.0", "1.01.0", "1.0.01", "1.0.0-.", "1.0.0-alpha..1", "1.0.0-01"],
+)
+def test_registry_validator_rejects_invalid_semantic_versions(tmp_path, version):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    registry["version"] = version
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert "MCP Registry descriptor must use a semantic service version" in errors
+
+
+def test_registry_validator_accepts_a_standalone_clone_without_the_application(tmp_path):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    errors = []
+
+    _validate_registry_descriptor(registry, tmp_path / "missing-version.py", errors)
+
+    assert errors == []
+
+
+@pytest.mark.parametrize(
+    ("application_version", "expected_error"),
+    [
+        (
+            'SPARKLAUNCH_MCP_SERVER_VERSION = "2.0.0"',
+            "MCP Registry version does not match the SparkLaunch application",
+        ),
+        (
+            "SPARKLAUNCH_MCP_SERVER_VERSION = get_version()",
+            "SparkLaunch application MCP version is unreadable",
+        ),
+    ],
+)
+def test_registry_validator_rejects_an_invalid_application_version(
+    tmp_path,
+    application_version,
+    expected_error,
+):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    application_version_path = tmp_path / "mcp_server_version.py"
+    application_version_path.write_text(application_version, encoding="utf-8")
+    errors = []
+
+    _validate_registry_descriptor(registry, application_version_path, errors)
+
+    assert expected_error in errors
+
+
+def test_registry_validator_rejects_an_invalid_utf8_application_version(tmp_path):
+    registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
+    application_version_path = tmp_path / "mcp_server_version.py"
+    application_version_path.write_bytes(b"\xff\xfe")
+    errors = []
+
+    _validate_registry_descriptor(registry, application_version_path, errors)
+
+    assert len(errors) == 1
+    assert errors[0].startswith("SparkLaunch application MCP version is unreadable:")
 
 
 def test_readme_documents_cross_repository_validation_and_cache_versioning():
