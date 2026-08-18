@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch 0.2.0 candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`.
+These instructions apply to the SparkLaunch `0.2.1+codex.20260817230400` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`.
 
 ## Access
 
@@ -9,11 +9,11 @@ These instructions apply to the SparkLaunch 0.2.0 candidate and the canonical MC
 3. Approve only the scopes shown for the planned scenarios. Reconnect if ChatGPT reports an OAuth challenge or insufficient scope.
 4. Invoke `projects.list`, select the disposable reviewer project, and pass its explicit `project_id` to every scoped operation.
 
-The checked-in positive prompts use project `42` as a deterministic local fixture. Before the final import is uploaded, run `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and then rebuild the bundle. This updates `submission/reviewer-fixture.json` and all four scoped prompts together; do not assume project `42` exists in the reviewer account.
+The checked-in positive prompts use the provisioned reviewer project `99`, recorded in `submission/reviewer-fixture.json`. Before the final import is uploaded, confirm that this project still belongs to the approved disposable production reviewer account. If it must change, run `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and then rebuild the bundle. This updates the fixture and all four scoped prompts together; never invent or hand-edit a replacement project id.
 
 ### Environment binding
 
-Staging preflight credentials and the staging reviewer project are provisioned outside this package and stored only in the approved private credential channel. Do not replace project `42` with a staging project id in a production submission bundle. Bind the generated import only after the production MCP revision and its matching disposable production reviewer account/project have been separately approved and provisioned.
+Staging preflight credentials and the staging reviewer project are provisioned outside this package and stored only in the approved private credential channel. Do not replace the production reviewer fixture with a staging project id. Bind the generated import only after the production MCP revision and its matching disposable production reviewer account/project have been separately approved and provisioned.
 
 ### Brand assets
 

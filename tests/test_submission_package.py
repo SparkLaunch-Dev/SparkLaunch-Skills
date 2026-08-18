@@ -425,14 +425,34 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     reviewer = (ROOT / "submission" / "reviewer-instructions.md").read_text(
         encoding="utf-8"
     )
-    assert "not yet deployed or submitted" in release_notes
-    assert "Production deployment" in release_notes
+    manifest = json.loads(
+        (ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    fixture = json.loads(
+        (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
+    )
+    assert manifest["version"] in release_notes
+    assert manifest["version"] in reviewer
+    assert "production MCP service is deployed" in release_notes
+    assert "has not yet been submitted or approved by ChatGPT" in release_notes
+    assert f"project `{fixture['project_id']}`" in reviewer
     assert "supplied through the approved private reviewer channel" in reviewer
     assert "must never be added to this file" in reviewer
     assert "support@sparklaun.ch" in reviewer
     assert "plugins/sparklaunch/assets/sparklaunch.png" in reviewer
     assert "sparklaunch-wordmark-light.png" in reviewer
     assert "sparklaunch-wordmark-dark.png" in reviewer
+
+
+def test_public_repository_has_license_and_security_guidance():
+    license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
+    security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
+
+    assert "Proprietary" in license_text
+    assert "support@sparklaun.ch" in security
+    assert "Do not open a public issue" in security
 
 
 def test_plugin_brand_assets_are_canonical_and_theme_ready():

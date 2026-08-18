@@ -238,7 +238,9 @@ def validate() -> list[str]:
 
     plugin = ROOT / "plugins" / "sparklaunch"
     manifest = _load_json(plugin / ".codex-plugin" / "plugin.json", errors)
+    plugin_version = ""
     if manifest is not None:
+        plugin_version = str(manifest.get("version") or "").strip()
         for key in ("name", "version", "description", "homepage", "repository", "license"):
             if not str(manifest.get(key, "")).strip():
                 errors.append(f"plugin manifest missing {key}")
@@ -422,11 +424,16 @@ def validate() -> list[str]:
     except (OSError, UnicodeError) as exc:
         errors.append(f"submission reviewer documentation is missing or invalid: {exc}")
     else:
-        for marker in ("0.2.1", "46 tools", "OAuth", "project_id", "idempotency", "file references"):
+        for marker in (plugin_version, "46 tools", "OAuth", "project_id", "idempotency", "file references"):
             if marker not in release_notes:
                 errors.append(f"release notes missing marker: {marker}")
+        if "production MCP service is deployed" not in release_notes:
+            errors.append("release notes must distinguish the live production service")
+        if "has not yet been submitted or approved by ChatGPT" not in release_notes:
+            errors.append("release notes must preserve the unsubmitted ChatGPT boundary")
         for marker in (
             CANONICAL_MCP_URL,
+            plugin_version,
             "projects.list",
             "confirmation preview",
             "five positive prompts",
@@ -436,6 +443,9 @@ def validate() -> list[str]:
         ):
             if marker not in reviewer:
                 errors.append(f"reviewer instructions missing marker: {marker}")
+        fixture_project_id = (reviewer_fixture or {}).get("project_id")
+        if isinstance(fixture_project_id, int) and f"project `{fixture_project_id}`" not in reviewer:
+            errors.append("reviewer instructions do not match the reviewer fixture")
         if (reviewer_fixture or {}).get("status") == "local_placeholder" and "--reviewer-project-id" not in reviewer:
             errors.append("reviewer instructions must explain how to replace the local fixture")
 
@@ -447,6 +457,14 @@ def validate() -> list[str]:
     else:
         if "Proprietary" not in license_text:
             errors.append("plugin LICENSE does not match the manifest")
+    root_license_path = ROOT / "LICENSE"
+    try:
+        root_license_text = root_license_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"repository LICENSE is missing or invalid: {exc}")
+    else:
+        if "Proprietary" not in root_license_text:
+            errors.append("repository LICENSE does not match the plugin license")
 
     try:
         with tempfile.TemporaryDirectory() as directory:

@@ -14,6 +14,14 @@ The default broad workflow is:
 4. Create a campaign, QR file, and landing page.
 5. Review observed signals and grounded CRM context.
 
+## Install And Connect
+
+- **ChatGPT:** SparkLaunch availability in ChatGPT is separate from this public repository and the MCP Registry listing. When the SparkLaunch app is available to your account, start a new conversation with SparkLaunch selected. OAuth begins on the first protected action.
+- **Codex:** Add `https://github.com/SparkLaunch-Dev/SparkLaunch-Skills` as a Git plugin marketplace and install the `sparklaunch` plugin. Open a new task after installation so the current plugin actions are loaded.
+- **Other MCP clients:** Discover `io.github.SparkLaunch-Dev/sparklaunch` through the official MCP Registry or configure the Streamable HTTP endpoint `https://sparklaun.ch/api/mcp/`. The client must support the server's OAuth flow; never paste tokens into prompts or configuration shared with other people.
+
+See [Connect SparkLaunch to ChatGPT](./recipes/connect-sparklaunch-to-chatgpt.md) for connection, reconnection, project selection, and disconnection guidance.
+
 ## Shared Safety Contract
 
 1. Authentication is OAuth-connected and managed by the host. It starts on the first protected SparkLaunch action in a conversation where the connector is loaded; skills never request credentials, OAuth codes, or transport headers. If required actions are absent, the skill stops and directs the user to open a new ChatGPT conversation with SparkLaunch selected instead of misreporting connector absence as an OAuth challenge. If a loaded connection is expired or revoked, the skill stops before writes, asks the user to reconnect from the AI Agent, and retries only after reconnection succeeds and any uncertain prior result is checked.
@@ -60,20 +68,27 @@ every new Registry publication because published versions are immutable.
 The descriptor intentionally omits `repository`: the public skills repository
 is not the private MCP server source, and the official Registry supports a
 closed-source server when its remote endpoint is publicly accessible. Validate
-and publish from this repository with the latest official publisher:
+from this repository with the latest official publisher:
 
 ```text
 mcp-publisher validate
-mcp-publisher login github
-mcp-publisher publish
 ```
 
-GitHub authentication for the `SparkLaunch-Dev` namespace must use an
-organization Owner account. After publication, verify discovery through:
+Publish an approved new version with the repository's **Publish to MCP Registry**
+GitHub Actions workflow. It downloads the pinned publisher release, verifies its
+checksum, validates `server.json`, authenticates with GitHub OIDC, and publishes
+without a stored Registry credential. Registry versions are immutable, so deploy
+and observe the matching application-owned version before dispatching the workflow.
+
+Version `1.0.0` is currently published and active. Verify discovery through:
 
 ```text
 https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.SparkLaunch-Dev/sparklaunch
 ```
+
+MCP Registry publication, GitHub availability, production deployment, and
+ChatGPT app review are separate release states. Do not describe one as proof of
+another.
 
 ## Current Skills
 
@@ -87,3 +102,11 @@ https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.SparkLaun
 - `sparklaunch-sales-crm`: lead, contact, deal, activity, and business-card workflows
 
 See [recipes/README.md](./recipes/README.md) for the supported multi-step workflows.
+
+## Support, Security, And License
+
+- Support: [support@sparklaun.ch](mailto:support@sparklaun.ch)
+- Security reports: [SECURITY.md](./SECURITY.md)
+- Privacy: [SparkLaunch Privacy Policy](https://sparklaun.ch/privacy-policy)
+- Terms: [SparkLaunch Terms and Conditions](https://sparklaun.ch/terms-and-conditions)
+- License: [SparkLaunch Proprietary License Notice](./LICENSE)

@@ -1,6 +1,6 @@
-# SparkLaunch 0.2.1 ChatGPT Candidate
+# SparkLaunch 0.2.1+codex.20260817230400 ChatGPT Candidate
 
-Status: local production candidate; not yet deployed or submitted.
+Status: the production MCP service is deployed and official MCP Registry version `1.0.0` is published and active. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
 
 ## Reviewer-visible changes
 
@@ -28,4 +28,4 @@ Status: local production candidate; not yet deployed or submitted.
 
 - The candidate does not add a custom widget, MCP resource, prompt, business-name generator, direct QR-theme editor, or arbitrary landing-draft editor.
 - Configured links, published pages, observed traffic, captured leads, conversion, revenue, and retention remain separate proof layers.
-- Production deployment and the irreversible ChatGPT submission action require separate approval and fresh live evidence.
+- Future production deployments, new immutable MCP Registry versions, and the irreversible ChatGPT submission action each require separate approval and fresh evidence.
