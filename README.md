@@ -53,7 +53,7 @@ Every published plugin change must also update `plugins/sparklaunch/.codex-plugi
 ## Official MCP Registry
 
 The root `server.json` publishes the production service as the remote
-Streamable HTTP server `io.github.sparklaunch-dev/sparklaunch`. The descriptor
+Streamable HTTP server `io.github.SparkLaunch-Dev/sparklaunch`. The descriptor
 version must match `../SparkLaunch/backend/mcp_server_version.py`; bump both for
 every new Registry publication because published versions are immutable.
 
@@ -72,7 +72,7 @@ GitHub authentication for the `SparkLaunch-Dev` namespace must use an
 organization Owner account. After publication, verify discovery through:
 
 ```text
-https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.sparklaunch-dev/sparklaunch
+https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.SparkLaunch-Dev/sparklaunch
 ```
 
 ## Current Skills
