@@ -4,7 +4,7 @@
   "app_info": {
     "display_name": "SparkLaunch",
     "subtitle": "Build and operate a startup",
-    "description": "SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, and operate private CRM workflows.",
+    "description": "SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, and prepare entitlement-gated incorporation cases with secure participant tasks.",
     "category": "BUSINESS"
   },
   "tools": {
@@ -330,6 +330,102 @@
         "read_only_justification": "Overwrite the supplied profile and workspace fields on a private CRM lead and therefore changes SparkLaunch state.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "incorporation.cancel_case": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Cancel an exact unfiled incorporation version or request safe Filing Operations review after confirmation and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "incorporation.check_entitlement": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Check the selected project's incorporation eligibility and purchase recovery without changing it.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "incorporation.get_case": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read safe incorporation case and participant progress for the selected project.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "incorporation.prepare_action_center": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Lock an exact incorporation version and prepare secure participant tasks after confirmation and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "incorporation.start_case": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Create or resume the selected project's entitled incorporation case without filing externally and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "incorporation.submit_to_sparklaunch": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Create or read an internal SparkLaunch Filing Operations receipt; no Delaware or NWRA transmission occurs and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "incorporation.update_draft": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Replace the selected case's ordinary incorporation draft at the expected version and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "incorporation.validate": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Validate one authorized incorporation draft version without changing durable state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
     },
     "landing.create_project": {

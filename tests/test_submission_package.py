@@ -6,8 +6,14 @@ from zipfile import ZipFile
 import pytest
 
 import scripts.validate_submission as submission_validator
+import scripts.generate_submission as submission_generator
 from scripts.build_submission_bundle import build_bundle
-from scripts.generate_submission import ROOT, build_submission, main as generate_submission
+from scripts.generate_submission import (
+    MCP_TOOL_CONTRACTS,
+    ROOT,
+    build_submission,
+    main as generate_submission,
+)
 from scripts.sync_plugin import SKILLS, expected_pairs, sync
 from scripts.validate_submission import (
     CANONICAL_MCP_URL,
@@ -17,9 +23,21 @@ from scripts.validate_submission import (
     _validate_registry_descriptor,
     validate,
 )
+from mcp_oauth_service import MCP_OAUTH_SUPPORTED_SCOPES
 
 
 def test_packaged_skills_are_exact_deterministic_mirrors():
+    assert SKILLS == (
+        "sparklaunch-platform",
+        "sparklaunch-projects",
+        "sparklaunch-idea-validation",
+        "sparklaunch-color-palettes",
+        "sparklaunch-logo-generation",
+        "sparklaunch-campaigns",
+        "sparklaunch-landing-pages",
+        "sparklaunch-sales-crm",
+        "sparklaunch-incorporation",
+    )
     assert len(expected_pairs()) > 40
     assert sync(write=False) == []
 
@@ -56,6 +74,8 @@ def test_submission_package_is_complete():
     assert sparklaunch["policy"]["authentication"] == "ON_USE"
     generated = json.loads((ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8"))
     assert generated == build_submission()
+    assert len(generated["tools"]) == 54
+    assert "incorporation" in generated["app_info"]["description"].lower()
     assert generated["$schema"] == (
         "https://developers.openai.com/plugins/schemas/"
         "chatgpt-app-submission.v1.json"
@@ -73,6 +93,8 @@ def test_submission_package_is_complete():
     assert fixture["project_id"] > 0
     if fixture["status"] == "local_placeholder":
         assert fixture["project_id"] == 42
+    assert fixture["incorporation_data"] == "synthetic_only"
+    assert fixture["provider_calls_allowed"] is False
     scoped = [
         case
         for case in generated["test_cases"]
@@ -85,6 +107,23 @@ def test_submission_package_is_complete():
     )
 
 
+def test_reviewer_project_regeneration_preserves_incorporation_safety_controls(
+    tmp_path, monkeypatch
+):
+    fixture_path = tmp_path / "submission" / "reviewer-fixture.json"
+    fixture_path.parent.mkdir()
+    monkeypatch.setattr(submission_generator, "ROOT", tmp_path)
+    monkeypatch.setattr(submission_generator, "REVIEWER_FIXTURE_PATH", fixture_path)
+
+    assert submission_generator.main(["--reviewer-project-id", "123"]) == 0
+    assert json.loads(fixture_path.read_text(encoding="utf-8")) == {
+        "status": "provisioned",
+        "project_id": 123,
+        "incorporation_data": "synthetic_only",
+        "provider_calls_allowed": False,
+    }
+
+
 def test_mcp_registry_descriptor_matches_the_public_remote_and_application_version():
     registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
     version = registry.pop("version")
@@ -94,19 +133,79 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
         "name": REGISTRY_SERVER_NAME,
         "title": "SparkLaunch",
         "description": (
-            "Founder workflows for idea validation, branding, campaigns, "
-            "landing pages, analytics, and CRM."
+            "Founder workflows for idea validation, branding, launches, CRM, "
+            "and incorporation."
         ),
         "websiteUrl": "https://sparklaun.ch/",
         "remotes": [
             {"type": "streamable-http", "url": CANONICAL_MCP_URL}
         ],
     }
+    assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
     application_version = run_path(
         ROOT.parent / "SparkLaunch" / "backend" / "mcp_server_version.py"
     )["SPARKLAUNCH_MCP_SERVER_VERSION"]
+    assert version == "1.1.0"
     assert version == application_version
+
+
+def test_incorporation_tools_and_scopes_match_the_runtime_contract():
+    expected = {
+        "incorporation.check_entitlement": "incorporation.read",
+        "incorporation.start_case": "incorporation.write",
+        "incorporation.get_case": "incorporation.read",
+        "incorporation.update_draft": "incorporation.write",
+        "incorporation.validate": "incorporation.read",
+        "incorporation.prepare_action_center": "incorporation.write",
+        "incorporation.submit_to_sparklaunch": "incorporation.submit",
+        "incorporation.cancel_case": "incorporation.write",
+    }
+
+    assert {
+        name: contract.required_scope
+        for name, contract in MCP_TOOL_CONTRACTS.items()
+        if name.startswith("incorporation.")
+    } == expected
+
+
+def test_incorporation_skill_is_private_and_never_calls_filing_providers():
+    skill = (ROOT / "sparklaunch-incorporation" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    recipes = [
+        (ROOT / "recipes" / name).read_text(encoding="utf-8")
+        for name in (
+            "incorporate-a-single-founder-company.md",
+            "incorporate-with-collaborators.md",
+            "recover-incorporation-entitlement.md",
+            "resume-or-correct-incorporation.md",
+            "check-incorporation-status.md",
+        )
+    ]
+
+    for marker in (
+        "check entitlement first",
+        "stable `idempotency_key`",
+        "Read the case again",
+        "exactly once",
+        "private fields out of the conversation",
+        "their own Action Center",
+        "task-specific",
+        "submit to SparkLaunch Filing Operations",
+        "Never call Delaware, NWRA, or CorpTools",
+        "receipt does not mean",
+    ):
+        assert marker in skill
+
+    for document in (skill, *recipes):
+        assert "submit to SparkLaunch Filing Operations" in document
+        assert "Never call Delaware, NWRA, or CorpTools" in document
+        assert "receipt does not mean" in document
+        assert "private" in document.lower()
+        assert "https://corp.delaware.gov" not in document
+        assert "nwregisteredagent.com" not in document
+        assert "corptools.com" not in document
 
 
 @pytest.mark.parametrize("payload", ["null", "[]", "[{}]", '"sparklaunch"'])
@@ -274,6 +373,7 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         (ROOT / "evals" / "skill-trigger-cases.json").read_text(encoding="utf-8")
     )
     cases = evaluations["cases"]
+    assert len(cases) == 30
     expected_skills = {
         skill
         for case in cases
@@ -288,8 +388,22 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         "sparklaunch-platform",
         "sparklaunch-projects",
         "sparklaunch-sales-crm",
+        "sparklaunch-incorporation",
     }
     assert sum(not case["expected_skills"] for case in cases) == 8
+    incorporation_cases = {
+        case["id"]: case["expected_skills"]
+        for case in cases
+        if case["id"].startswith("incorporation-")
+    }
+    assert incorporation_cases == {
+        "incorporation-general": ["sparklaunch-incorporation"],
+        "incorporation-missing-plan": ["sparklaunch-incorporation"],
+        "incorporation-collaborators": ["sparklaunch-incorporation"],
+        "incorporation-resume-status": ["sparklaunch-incorporation"],
+        "incorporation-correction-conflict": ["sparklaunch-incorporation"],
+        "incorporation-negative-stays-projects": ["sparklaunch-projects"],
+    }
 
 
 def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
@@ -310,6 +424,7 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
         for recipe in case["recipes"]
     }
 
+    assert len(matrix["cases"]) == 13
     assert covered_tools == set(submission["tools"])
     assert covered_recipes == {
         "connect-sparklaunch-to-chatgpt.md",
@@ -318,17 +433,56 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
         "plan-and-publish-a-launch.md",
         "review-launch-signals-and-follow-up.md",
         "start-a-business-from-an-idea.md",
+        "incorporate-a-single-founder-company.md",
+        "incorporate-with-collaborators.md",
+        "recover-incorporation-entitlement.md",
+        "resume-or-correct-incorporation.md",
+        "check-incorporation-status.md",
     }
+    incorporation_cases = {
+        case["id"]: case for case in matrix["cases"] if case["id"].startswith("E2E-INCORPORATION-")
+    }
+    assert set(incorporation_cases) == {
+        "E2E-INCORPORATION-MISSING-ENTITLEMENT",
+        "E2E-INCORPORATION-SINGLE-FOUNDER",
+        "E2E-INCORPORATION-MULTI-PARTICIPANT",
+        "E2E-INCORPORATION-CORRECTION-RESUME",
+        "E2E-INCORPORATION-INTERNAL-SUBMISSION",
+    }
+    assert all(
+        "real provider" not in case["live_level"]
+        for case in incorporation_cases.values()
+    )
     controls = matrix["controls"]
     assert controls["automatic_validation_typical_minutes"] == "10-15"
     assert controls["automatic_validation_poll_seconds"] >= 60
     assert controls["automatic_validation_timeout_minutes"] >= 20
-    assert controls["expected_oauth_scope_count"] == 15
+    assert len(MCP_OAUTH_SUPPORTED_SCOPES) == 18
+    assert controls["expected_oauth_scope_count"] == len(MCP_OAUTH_SUPPORTED_SCOPES)
+    expected_grant_marker = f"expected {len(MCP_OAUTH_SUPPORTED_SCOPES)}-scope grant"
+    assert any(expected_grant_marker in case["expected"] for case in matrix["cases"])
+    assert "15-scope" not in json.dumps(matrix)
     assert controls["preflight_effective_permissions"] is True
     assert controls["open_and_cancel_disconnect_dialog"] is True
     assert controls["never_auto_confirm"] is True
     assert controls["never_perform_real_outreach"] is True
     assert controls["never_retry_uncertain_write_with_new_key"] is True
+    assert controls["never_call_delaware_nwra_or_corptools"] is True
+    assert controls["incorporation_submission_is_internal_only"] is True
+
+
+def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
+    runbook = (ROOT / "evals" / "CONTROLLED-E2E.md").read_text(encoding="utf-8")
+
+    for marker in (
+        "18 OAuth scopes",
+        "Never call Delaware, NWRA, or CorpTools",
+        "zero provider calls",
+        "submit to SparkLaunch Filing Operations",
+        "receipt does not mean",
+        "each person to their own Action Center",
+    ):
+        assert marker in runbook
 
 
 def test_project_and_validation_guidance_uses_automatic_initial_research():
@@ -433,6 +587,8 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
+    assert manifest["version"].startswith("0.3.0+codex.20260820")
+    assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -444,6 +600,17 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "plugins/sparklaunch/assets/sparklaunch.png" in reviewer
     assert "sparklaunch-wordmark-light.png" in reviewer
     assert "sparklaunch-wordmark-dark.png" in reviewer
+    for marker in (
+        "nine",
+        "54 tools",
+        "18 OAuth scopes",
+        "submit to SparkLaunch Filing Operations",
+        "receipt does not mean",
+        "zero provider calls",
+        "private Action Center",
+    ):
+        assert marker in release_notes
+        assert marker in reviewer
 
 
 def test_public_repository_has_license_and_security_guidance():

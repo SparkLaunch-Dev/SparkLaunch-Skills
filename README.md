@@ -4,7 +4,7 @@ This repository contains the canonical skills, recipes, and installable plugin p
 
 ## User Experience
 
-SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable launch surfaces, review campaign and landing-page signals, and operate private CRM workflows.
+SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable launch surfaces, review campaign and landing-page signals, operate private CRM workflows, and prepare entitlement-gated incorporation cases with person-specific Action Center tasks.
 
 The default broad workflow is:
 
@@ -100,6 +100,7 @@ another.
 - `sparklaunch-campaigns`: campaigns, short links, QR, attribution, and statistics
 - `sparklaunch-landing-pages`: landing creation, publishing, analytics, and leads
 - `sparklaunch-sales-crm`: lead, contact, deal, activity, and business-card workflows
+- `sparklaunch-incorporation`: entitlement, case preparation, private participant tasks, corrections, status, and internal Filing Operations submission
 
 See [recipes/README.md](./recipes/README.md) for the supported multi-step workflows.
 

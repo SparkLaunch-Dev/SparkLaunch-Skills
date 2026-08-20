@@ -98,6 +98,42 @@
       "rationale": "Requests routing across multiple narrower SparkLaunch skills."
     },
     {
+      "id": "incorporation-general",
+      "prompt": "Use SparkLaunch to incorporate my startup and guide me through the secure steps.",
+      "expected_skills": ["sparklaunch-incorporation"],
+      "rationale": "Requests the connected entitlement, case, Action Center, and internal submission workflow."
+    },
+    {
+      "id": "incorporation-missing-plan",
+      "prompt": "I do not have the SparkLaunch incorporation plan yet. Check what I need and help me recover access.",
+      "expected_skills": ["sparklaunch-incorporation"],
+      "rationale": "Requests authoritative Incorporation Package entitlement and purchase-recovery guidance."
+    },
+    {
+      "id": "incorporation-collaborators",
+      "prompt": "Set up our SparkLaunch incorporation case for two founders and a separate responsible party who must verify their own identity.",
+      "expected_skills": ["sparklaunch-incorporation"],
+      "rationale": "Requests shared ordinary draft preparation with private participant-specific Action Center tasks."
+    },
+    {
+      "id": "incorporation-resume-status",
+      "prompt": "Resume my existing SparkLaunch incorporation and tell me which people still have tasks before we can submit internally.",
+      "expected_skills": ["sparklaunch-incorporation"],
+      "rationale": "Requests safe case readback, participant progress, and resumption guidance."
+    },
+    {
+      "id": "incorporation-correction-conflict",
+      "prompt": "My incorporation draft changed while I was editing it. Re-read the latest version and help me apply the requested correction safely.",
+      "expected_skills": ["sparklaunch-incorporation"],
+      "rationale": "Requests stale-version recovery and a corrected successor incorporation draft."
+    },
+    {
+      "id": "incorporation-negative-stays-projects",
+      "prompt": "Invite Pat as a general collaborator on my SparkLaunch project; this is not for an incorporation case.",
+      "expected_skills": ["sparklaunch-projects"],
+      "rationale": "General project collaboration remains a projects workflow and must not trigger incorporation."
+    },
+    {
       "id": "negative-generic-startup-advice",
       "prompt": "What are the usual stages of building a startup?",
       "expected_skills": [],

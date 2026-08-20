@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.SparkLaunch-Dev/sparklaunch",
   "title": "SparkLaunch",
-  "description": "Founder workflows for idea validation, branding, campaigns, landing pages, analytics, and CRM.",
-  "version": "1.0.0",
+  "description": "Founder workflows for idea validation, branding, launches, CRM, and incorporation.",
+  "version": "1.1.0",
   "websiteUrl": "https://sparklaun.ch/",
   "remotes": [
     {

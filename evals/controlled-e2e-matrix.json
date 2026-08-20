@@ -7,13 +7,15 @@
     "automatic_validation_typical_minutes": "10-15",
     "automatic_validation_poll_seconds": 60,
     "automatic_validation_timeout_minutes": 20,
-    "expected_oauth_scope_count": 15,
+    "expected_oauth_scope_count": 18,
     "preflight_effective_permissions": true,
     "open_and_cancel_disconnect_dialog": true,
     "never_auto_confirm": true,
     "never_perform_real_outreach": true,
     "never_retry_uncertain_write_with_new_key": true,
-    "retain_private_fixture_when_no_delete_tool_exists": true
+    "retain_private_fixture_when_no_delete_tool_exists": true,
+    "never_call_delaware_nwra_or_corptools": true,
+    "incorporation_submission_is_internal_only": true
   },
   "cases": [
     {
@@ -21,7 +23,7 @@
       "recipes": ["connect-sparklaunch-to-chatgpt.md"],
       "tools": ["projects.list", "projects.create", "projects.get", "projects.update"],
       "live_level": "private_write_and_confirmation_preview",
-      "expected": "OAuth connects with the expected 15-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, and update stops at confirmation without approval."
+      "expected": "OAuth connects with the expected 18-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, and update stops at confirmation without approval."
     },
     {
       "id": "E2E-AUTOMATIC-VALIDATION",
@@ -71,6 +73,41 @@
       "tools": ["crm.create_lead", "crm.update_lead", "crm.add_lead_note", "crm.log_activity", "crm.add_contact_note", "crm.update_contact", "crm.refresh_contact_summary", "crm.move_deal", "crm.ingest_business_card", "crm.delete_business_card"],
       "live_level": "synthetic_private_write_or_confirmation_preview",
       "expected": "Synthetic records use no real outreach; plan and role restrictions are distinguished from OAuth scopes; overwrite and delete operations require exact confirmation; uploaded-card tests use a dedicated non-sensitive fixture."
+    },
+    {
+      "id": "E2E-INCORPORATION-MISSING-ENTITLEMENT",
+      "recipes": ["recover-incorporation-entitlement.md"],
+      "tools": ["incorporation.check_entitlement"],
+      "live_level": "private_read_and_zero_provider_calls",
+      "expected": "The authoritative missing or pending entitlement result returns safe package and project-bound recovery guidance without checkout, payment, case creation, email, or provider activity."
+    },
+    {
+      "id": "E2E-INCORPORATION-SINGLE-FOUNDER",
+      "recipes": ["incorporate-a-single-founder-company.md"],
+      "tools": ["incorporation.check_entitlement", "incorporation.start_case", "incorporation.update_draft", "incorporation.validate", "incorporation.prepare_action_center", "incorporation.get_case"],
+      "live_level": "isolated_private_case_and_confirmation_boundary",
+      "expected": "One entitled case is idempotently created, an ordinary single-founder draft is versioned and validated, Action Center preparation stops for exact approval before changing state, and no Delaware, NWRA, CorpTools, email, or provider call occurs."
+    },
+    {
+      "id": "E2E-INCORPORATION-MULTI-PARTICIPANT",
+      "recipes": ["incorporate-with-collaborators.md"],
+      "tools": ["incorporation.get_case", "incorporation.update_draft", "incorporation.validate", "incorporation.prepare_action_center"],
+      "live_level": "isolated_participant_privacy_and_confirmation_boundary",
+      "expected": "Shared ordinary data and safe progress remain project-scoped, each participant is directed to their own private Action Center, participant-only access grants no project role, and protected personal fields never enter tool or transcript output."
+    },
+    {
+      "id": "E2E-INCORPORATION-CORRECTION-RESUME",
+      "recipes": ["resume-or-correct-incorporation.md", "check-incorporation-status.md"],
+      "tools": ["incorporation.check_entitlement", "incorporation.start_case", "incorporation.get_case", "incorporation.update_draft", "incorporation.validate", "incorporation.cancel_case"],
+      "live_level": "isolated_version_recovery_and_confirmation_boundary",
+      "expected": "Stale writes fail closed, readback identifies the current version, a successor draft uses a new intent key, cancellation stops for exact approval, and uncertain or queued states never trigger blind retries."
+    },
+    {
+      "id": "E2E-INCORPORATION-INTERNAL-SUBMISSION",
+      "recipes": ["check-incorporation-status.md", "incorporate-a-single-founder-company.md", "incorporate-with-collaborators.md"],
+      "tools": ["incorporation.get_case", "incorporation.submit_to_sparklaunch"],
+      "live_level": "isolated_confirmed_internal_receipt_zero_provider_calls",
+      "expected": "After exact user confirmation, one durable SparkLaunch Filing Operations receipt is returned and replay-safe; provider-call counters remain zero and the receipt is never described as Delaware or NWRA transmission."
     }
   ]
 }

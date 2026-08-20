@@ -69,7 +69,7 @@ def build_submission(reviewer_project_id: int | None = None):
         "app_info": {
             "display_name": "SparkLaunch",
             "subtitle": "Build and operate a startup",
-            "description": "SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, and operate private CRM workflows.",
+            "description": "SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, and prepare entitlement-gated incorporation cases with secure participant tasks.",
             "category": "BUSINESS",
         },
         "tools": {
@@ -187,7 +187,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.reviewer_project_id is not None:
         REVIEWER_FIXTURE_PATH.write_text(
             json.dumps(
-                {"status": "provisioned", "project_id": args.reviewer_project_id},
+                {
+                    "status": "provisioned",
+                    "project_id": args.reviewer_project_id,
+                    "incorporation_data": "synthetic_only",
+                    "provider_calls_allowed": False,
+                },
                 indent=2,
             )
             + "\n",

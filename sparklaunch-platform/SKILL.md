@@ -3,8 +3,8 @@ name: sparklaunch-platform
 description: >
   Use when a connected SparkLaunch user wants a broad founder workflow spanning
   project setup, idea validation, branding, launch assets, campaigns, landing
-  pages, or CRM and the first task is choosing the right SparkLaunch recipe or
-  narrower skill.
+  pages, CRM, or incorporation and the first task is choosing the right
+  SparkLaunch recipe or narrower skill.
 ---
 
 # SparkLaunch Platform
@@ -20,6 +20,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 5. For campaigns, QR, or landing pages, use `recipes/plan-and-publish-a-launch.md` with `sparklaunch-campaigns` and `sparklaunch-landing-pages`.
 6. For leads, contacts, deals, or follow-up, use `sparklaunch-sales-crm`.
 7. For post-launch evidence, use `recipes/review-launch-signals-and-follow-up.md`.
+8. For an Incorporation Package, formation case, participant Action Center, correction, cancellation, or internal Filing Operations receipt, use `sparklaunch-incorporation` and its matching incorporation recipe.
 
 ## Connected-App Rules
 

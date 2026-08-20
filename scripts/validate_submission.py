@@ -345,8 +345,8 @@ def validate() -> list[str]:
             errors.append("submission must contain exactly five positive test cases")
         if len(submission.get("negative_test_cases") or []) != 3:
             errors.append("submission must contain exactly three negative test cases")
-        if len(submission.get("tools") or {}) != 46:
-            errors.append("submission must cover all 46 MCP tools")
+        if len(submission.get("tools") or {}) != 54:
+            errors.append("submission must cover all 54 MCP tools")
         for tool_name, tool in (submission.get("tools") or {}).items():
             annotations = tool.get("annotations") or {}
             if set(annotations) != EXPECTED_ANNOTATIONS or not all(
@@ -370,6 +370,8 @@ def validate() -> list[str]:
     cases = (evaluations or {}).get("cases") or []
     if (evaluations or {}).get("schema_version") != 1:
         errors.append("skill trigger evaluations schema_version must be 1")
+    if len(cases) != 30:
+        errors.append("skill trigger evaluations must contain exactly 30 cases")
     case_ids: set[str] = set()
     positive_counts = {skill: 0 for skill in SKILLS}
     negative_count = 0
@@ -392,8 +394,28 @@ def validate() -> list[str]:
     for skill, count in positive_counts.items():
         if count < 2:
             errors.append(f"skill trigger evaluations need two positive cases: {skill}")
-    if negative_count < len(SKILLS):
-        errors.append("skill trigger evaluations need at least one negative case per skill")
+    if negative_count != 8:
+        errors.append("skill trigger evaluations must preserve exactly eight broad negative cases")
+
+    matrix = _load_json(ROOT / "evals" / "controlled-e2e-matrix.json", errors)
+    matrix_cases = (matrix or {}).get("cases") or []
+    if (matrix or {}).get("version") != 1:
+        errors.append("controlled E2E matrix version must be 1")
+    if len(matrix_cases) != 13:
+        errors.append("controlled E2E matrix must contain exactly 13 cases")
+    covered_tools = {
+        tool
+        for case in matrix_cases
+        for tool in (case.get("tools") or [])
+        if isinstance(tool, str)
+    }
+    if covered_tools != set((submission or {}).get("tools") or {}):
+        errors.append("controlled E2E matrix must cover every submitted tool exactly by name")
+    controls = (matrix or {}).get("controls") or {}
+    if controls.get("never_call_delaware_nwra_or_corptools") is not True:
+        errors.append("controlled E2E matrix must block filing and registered-agent providers")
+    if controls.get("incorporation_submission_is_internal_only") is not True:
+        errors.append("controlled E2E matrix must preserve internal-only incorporation submission")
 
     release_notes_path = ROOT / "submission" / "release-notes.md"
     reviewer_path = ROOT / "submission" / "reviewer-instructions.md"
@@ -424,7 +446,17 @@ def validate() -> list[str]:
     except (OSError, UnicodeError) as exc:
         errors.append(f"submission reviewer documentation is missing or invalid: {exc}")
     else:
-        for marker in (plugin_version, "46 tools", "OAuth", "project_id", "idempotency", "file references"):
+        for marker in (
+            plugin_version,
+            "54 tools",
+            "OAuth",
+            "project_id",
+            "idempotency",
+            "file references",
+            "nine",
+            "submit to SparkLaunch Filing Operations",
+            "zero provider calls",
+        ):
             if marker not in release_notes:
                 errors.append(f"release notes missing marker: {marker}")
         if "production MCP service is deployed" not in release_notes:
@@ -440,6 +472,10 @@ def validate() -> list[str]:
             "three negative prompts",
             "privacy-policy",
             "terms-and-conditions",
+            "54 tools",
+            "18 OAuth scopes",
+            "submit to SparkLaunch Filing Operations",
+            "zero provider calls",
         ):
             if marker not in reviewer:
                 errors.append(f"reviewer instructions missing marker: {marker}")

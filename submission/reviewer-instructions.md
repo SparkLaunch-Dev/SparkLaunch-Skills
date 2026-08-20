@@ -1,48 +1,58 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch `0.2.1+codex.20260817230400` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`.
+These instructions apply to the SparkLaunch `0.3.0+codex.20260820131503` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The package contains nine skills, 54 tools, 30 trigger cases, and 13 controlled E2E cases under the expected 18 OAuth scopes.
 
 ## Access
 
 1. Use the synthetic reviewer account supplied through the approved private reviewer channel. Credentials and authorization artifacts must never be added to this file, a prompt, a screenshot, or retained evidence.
-2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. The plugin uses first-use authentication, so the action must be loaded before connection and then start the SparkLaunch browser sign-in/consent flow; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header. Codex returns only to its temporary `127.0.0.1` callback listener.
-3. Approve only the scopes shown for the planned scenarios. Reconnect if ChatGPT reports an OAuth challenge or insufficient scope.
-4. Invoke `projects.list`, select the disposable reviewer project, and pass its explicit `project_id` to every scoped operation.
+2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. First protected use starts SparkLaunch OAuth; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.
+3. Approve only the scopes shown for the planned scenarios. The incorporation tools use application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` scopes. Reconnect only for an actual OAuth challenge or missing requested scope, not for a project role, plan, entitlement, case, or version denial.
+4. Invoke `projects.list`, select the disposable reviewer project, and pass its explicit `project_id` to every scoped operation. Verify `projects.get.effective_permissions` before writes or confirmations.
 
-The checked-in positive prompts use the provisioned reviewer project `99`, recorded in `submission/reviewer-fixture.json`. Before the final import is uploaded, confirm that this project still belongs to the approved disposable production reviewer account. If it must change, run `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and then rebuild the bundle. This updates the fixture and all four scoped prompts together; never invent or hand-edit a replacement project id.
+The checked-in five positive prompts use provisioned reviewer project `99`, recorded in `submission/reviewer-fixture.json`. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Before final import, confirm the project still belongs to the approved disposable reviewer account. If it changes, run `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
 
 ### Environment binding
 
-Staging preflight credentials and the staging reviewer project are provisioned outside this package and stored only in the approved private credential channel. Do not replace the production reviewer fixture with a staging project id. Bind the generated import only after the production MCP revision and its matching disposable production reviewer account/project have been separately approved and provisioned.
+Staging credentials and reviewer projects are provisioned outside this package and stored only in the approved private credential channel. Do not replace a production reviewer fixture with a staging id. Bind the import only after the matching application service, disposable reviewer account, feature gate, and entitlement have been separately approved and provisioned.
 
 ### Brand assets
 
-- Upload `plugins/sparklaunch/assets/sparklaunch.png` as the square ChatGPT app logo. It is the canonical 1024x1024 SparkLaunch app icon and is also used for both light and dark plugin surfaces.
-- Use `plugins/sparklaunch/assets/sparklaunch-wordmark-light.png` when a horizontal SparkLaunch wordmark is requested for a light surface.
-- Use `plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png` when a horizontal SparkLaunch wordmark is requested for a dark surface.
-- Do not substitute generated artwork, stretch either wordmark, or crop the square app logo during submission.
+- Upload `plugins/sparklaunch/assets/sparklaunch.png` as the square app logo.
+- Use `plugins/sparklaunch/assets/sparklaunch-wordmark-light.png` on light surfaces and `plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png` on dark surfaces.
+- Do not substitute generated artwork, stretch a wordmark, or crop the app logo.
 
 ## Positive review
 
-Run the five positive prompts in `chatgpt-app-submission.json`. Confirm that each invokes only its exact declared tool and that persisted state belongs to the disposable reviewer project.
+Run the five positive prompts in `chatgpt-app-submission.json`. Confirm each invokes only its declared tool and that persisted state belongs to the disposable reviewer project.
 
-Also exercise these safety boundaries:
+Also exercise these boundaries:
 
 1. Repeat one private write with its original idempotency key and confirm no duplicate record is created.
-2. Request a public or destructive operation. Verify ChatGPT shows the exact server confirmation preview, then decline once before approving a disposable action with the same arguments, key, and confirmation token.
+2. Request a public, destructive, or overwrite operation. Verify the exact confirmation preview, decline once, then approve only a disposable action with unchanged arguments, key, and token.
 3. Generate a logo or QR asset and verify the result is an expiring HTTPS file reference with no raw base64, data URL, bucket path, or credential.
-4. Read a synthetic CRM contact or lead and verify the response contains only the fields needed for the requested workflow.
-5. Revoke or disconnect SparkLaunch and confirm another MCP call starts authorization again instead of making the tools disappear.
+4. Read a synthetic CRM contact or lead and verify only requested private fields are returned.
+5. Revoke or disconnect SparkLaunch and confirm another protected call starts authorization again.
+
+## Controlled incorporation review
+
+Run the five incorporation scenarios only when the matching service version and synthetic entitlement are explicitly available. Otherwise record the scenario as externally blocked instead of working around the gate.
+
+1. Check entitlement first. Missing access must return recovery guidance without checkout, payment, case creation, email, or provider activity.
+2. Use synthetic ordinary company and participant data only. Never enter SSN/TIN values, identity documents, biometrics, signatures, payment data, private attestations, invitation tokens, provider sessions, or private Action Center URLs in chat.
+3. For multiple participants, direct each person to their own private Action Center. A collaborator sees safe progress only and cannot complete another person's task.
+4. Use stable idempotency keys, exact versions, readback after uncertainty, and each confirmation token exactly once.
+5. Block every external provider adapter and require zero provider calls. Never call Delaware, NWRA, or CorpTools, and never perform filing, registered-agent, email, identity-provider, or background-worker actions from this review.
+6. The confirmed action may only **submit to SparkLaunch Filing Operations**. Require this warning: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof.
 
 ## Negative review
 
-Run all three negative prompts in `chatgpt-app-submission.json`. SparkLaunch must not trigger for generic startup education, unrelated calendar management, or financial transactions.
+Run all three negative prompts in `chatgpt-app-submission.json`. SparkLaunch must not trigger for generic startup education, unrelated calendar management, or financial transactions. Also verify the incorporation trigger boundary: a request to add a general project collaborator remains with `sparklaunch-projects`.
 
-Do not approve or infer unsupported behavior. The candidate has no banking access, calendar management, arbitrary internet browsing, custom widget, business-name generation, direct QR-theme editing, or arbitrary landing-draft editing.
+Do not approve or infer unsupported behavior. The candidate has no banking access, calendar management, arbitrary internet browsing, direct provider filing tool, participant impersonation, custom widget, business-name generation, direct QR-theme editor, or arbitrary landing-draft editor.
 
 ## Expected evidence
 
-Record the candidate revision, package digest, observation time, exact scenario outcome, and any discrepancy without retaining credentials, authorization artifacts, private customer data, or raw uploaded/generated files. Distinguish configured state, persisted state, published state, observed traffic, captured leads, and actual conversion.
+Record the candidate revision, package digest, service version, redacted fixture ids, observation time, exact scenario outcome, provider-call counter, and any discrepancy. Do not retain credentials, authorization artifacts, confirmation tokens, private customer data, provider session details, signed URLs, or raw uploaded/generated files. Distinguish package validity, deployment, internal persistence, internal receipt, external filing, provider acceptance, formation, published state, traffic, leads, and conversion.
 
 ## Support and legal
 
@@ -50,4 +60,4 @@ Record the candidate revision, package digest, observation time, exact scenario 
 - Privacy: `https://sparklaun.ch/privacy-policy`
 - Terms: `https://sparklaun.ch/terms-and-conditions`
 
-Stop review and contact support if OAuth redirects to an unregistered host, a project outside the reviewer account becomes visible, a write cannot be safely reconciled, or a credential/private diagnostic appears in output.
+Stop review and contact support if OAuth redirects to an unregistered host, a project outside the reviewer account becomes visible, a private participant value appears, a write cannot be safely reconciled, or any provider call occurs.

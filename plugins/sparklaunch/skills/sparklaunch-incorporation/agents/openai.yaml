@@ -1,0 +1,16 @@
+interface:
+  display_name: "SparkLaunch Incorporation"
+  short_description: "Prepare and manage incorporation safely"
+  icon_small: "./assets/sparklaunch-small.png"
+  icon_large: "./assets/sparklaunch.png"
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-incorporation to prepare or resume my incorporation through SparkLaunch."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch incorporation and Action Center tools"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch/api/mcp/"
+policy:
+  allow_implicit_invocation: true
