@@ -20,6 +20,7 @@ SKILLS = (
     "sparklaunch-campaigns",
     "sparklaunch-landing-pages",
     "sparklaunch-sales-crm",
+    "sparklaunch-incorporation",
 )
 
 

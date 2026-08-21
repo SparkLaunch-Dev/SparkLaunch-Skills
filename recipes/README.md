@@ -10,6 +10,11 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 | [plan-and-publish-a-launch.md](./plan-and-publish-a-launch.md) | Create a confirmed campaign, QR file, and landing-page launch surface |
 | [review-launch-signals-and-follow-up.md](./review-launch-signals-and-follow-up.md) | Separate measured signals from configured assets and prepare grounded CRM follow-up |
 | [start-a-business-from-an-idea.md](./start-a-business-from-an-idea.md) | Run the full connected founder journey |
+| [incorporate-a-single-founder-company.md](./incorporate-a-single-founder-company.md) | Prepare a single-founder company case and internal Filing Operations receipt |
+| [incorporate-with-collaborators.md](./incorporate-with-collaborators.md) | Coordinate shared company data and separate private tasks for multiple people |
+| [recover-incorporation-entitlement.md](./recover-incorporation-entitlement.md) | Recover a missing or pending Incorporation Package safely |
+| [resume-or-correct-incorporation.md](./resume-or-correct-incorporation.md) | Resume a case, resolve a version conflict, correct a successor version, or cancel |
+| [check-incorporation-status.md](./check-incorporation-status.md) | Read safe case, participant, receipt, and acceptance progress |
 
 ## Shared Rules
 
@@ -22,3 +27,4 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 7. Do not expose secrets, raw base64, data URLs, private diagnostics, or more personal data than requested.
 8. Project creation automatically queues its included Idea Validation research. Allow 10-15 minutes, poll at a bounded cadence, and do not create a duplicate initial validation workspace.
 9. OAuth scopes are maximum connection permissions; project plan and role restrictions can still deny a tool and should not be described as a reconnection problem.
+10. Incorporation starts with entitlement readback. Keep personal tasks in each participant's own Action Center, and never equate an internal SparkLaunch Filing Operations receipt with Delaware, NWRA, or CorpTools activity.

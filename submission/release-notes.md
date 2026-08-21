@@ -1,31 +1,30 @@
-# SparkLaunch 0.2.1+codex.20260817230400 ChatGPT Candidate
+# SparkLaunch 0.3.0+codex.20260820131503 ChatGPT Candidate
 
-Status: the production MCP service is deployed and official MCP Registry version `1.0.0` is published and active. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
+Status: the previously observed production MCP service is deployed and official MCP Registry version `1.0.0` is published. This candidate describes application service version `1.1.0`; its deployment, immutable Registry publication, and marketplace availability require separate approval and evidence. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
 
 ## Reviewer-visible changes
 
-- Load SparkLaunch tools before connection and start OAuth authorization code with PKCE on first use in hosted ChatGPT or Codex desktop instead of collecting credentials in chat.
-- Discover, list, create, inspect, and update authorized projects through explicit `project_id` tool arguments.
-- Keep `projects.get` compatible with the declared nullable-string contract when the underlying project stores one or more business-model values as JSON.
-- Use one canonical MCP endpoint with 46 tools covering projects, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, leads, and CRM workflows.
-- Receive typed results and structured authentication, authorization, validation, conflict, dependency, and internal error outcomes.
-- Send only closed, allowlisted nested objects for campaign leads, UTM parameters, logo colors, and ChatGPT-hosted business-card files.
-- Show the exact accepted `selected_colors` object shape and palette-role mapping before logo generation instead of allowing an ambiguous color list.
-- Retry writes safely with stable idempotency keys and approve public-world, destructive, or overwriting actions through exact one-time confirmation previews.
-- Classify a bare authorization-page 403 as an incomplete or blocked request and tell the user to start a fresh current-plugin connection rather than reusing the stale URL.
-- Receive generated logos and QR assets through expiring HTTPS file references rather than raw base64 or data URLs.
-- Use eight concise founder-workflow skills backed by the same connected SparkLaunch MCP server.
-- Display the canonical SparkLaunch launch mark in the MCP entry and all eight individual skill rows, plus the production app icon across light and dark plugin surfaces and reviewer-ready horizontal wordmarks in the submission bundle.
-- Rebuild the reviewer candidate deterministically with a bundled proprietary license and recorded archive digest.
-- Publish every changed candidate under a new plugin cache version and document the sibling application checkout required for contract generation and full package tests.
+- Expose nine concise founder-workflow skills through one connected SparkLaunch MCP server.
+- Generate review metadata from the application-owned registry of 54 tools covering projects, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, and incorporation.
+- Add eight incorporation tools with explicit `project_id` arguments and the application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` permissions within the expected 18 OAuth scopes.
+- Check entitlement before starting, resuming, or reporting on an incorporation case. Missing access returns safe package recovery guidance without checkout or payment collection.
+- Coordinate ordinary shared company data separately from private Action Center work. Each participant completes only their own identity/Veriff, compliance, consent, and signature tasks; another participant's private data or Action Center URL is never returned in conversation.
+- Use exact draft versions, stable idempotency keys, readback after uncertain writes, and exact one-time confirmation previews for Action Center preparation, internal submission, and cancellation.
+- Use task-specific incorporation timing instead of the unrelated Idea Validation estimate.
+- Limit the final connected action to **submit to SparkLaunch Filing Operations**. The exact receipt warning is: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof.
+- Add 30 skill-trigger cases and 13 controlled E2E cases. The five incorporation scenarios require synthetic data and zero provider calls to Delaware, NWRA, CorpTools, email, filing, or registered-agent adapters.
+- Preserve generated logo and QR assets as expiring HTTPS file references rather than raw base64 or data URLs.
+- Rebuild the reviewer candidate deterministically with canonical/mirror parity, a bundled proprietary license, and recorded archive digest.
 
 ## Compatibility
 
 - Existing user-scoped SparkLaunch MCP API keys and legacy runtime aliases remain supported for existing non-ChatGPT clients.
 - The public ChatGPT skills and reviewer workflow use OAuth and the canonical `https://sparklaun.ch/api/mcp/` endpoint only.
+- OAuth scopes are the maximum connection authority; project membership, role, plan, entitlement, case version, participant readiness, and confirmation still gate each action.
 
 ## Review boundaries
 
-- The candidate does not add a custom widget, MCP resource, prompt, business-name generator, direct QR-theme editor, or arbitrary landing-draft editor.
-- Configured links, published pages, observed traffic, captured leads, conversion, revenue, and retention remain separate proof layers.
-- Future production deployments, new immutable MCP Registry versions, and the irreversible ChatGPT submission action each require separate approval and fresh evidence.
+- The candidate does not add a custom widget, direct provider integration, external filing action, payment collector, identity-document collector, or participant impersonation path.
+- Package validation and controlled local E2E do not prove deployment, production provider behavior, Registry `1.1.0` publication, marketplace activation, external filing, conversion, or retention.
+- Reviewer credentials, confirmation tokens, private participant values, provider session details, and signed file references must remain outside this repository.
+- Future production deployment, Registry publication, ChatGPT submission, and any separately enabled external Filing Operations action each require explicit approval and fresh evidence.

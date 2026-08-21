@@ -1,7 +1,7 @@
 {
   "name": "sparklaunch",
-  "version": "0.2.1+codex.20260817230400",
-  "description": "Connected founder workflows for project setup, idea validation, branding, campaigns, landing pages, analytics, and CRM.",
+  "version": "0.3.0+codex.20260820131503",
+  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, and incorporation.",
   "author": {
     "name": "SparkLaunch",
     "email": "support@sparklaun.ch",
@@ -15,14 +15,15 @@
     "startup",
     "founder",
     "launch",
-    "mcp"
+    "mcp",
+    "incorporation"
   ],
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "SparkLaunch",
     "shortDescription": "Build and operate a startup",
-    "longDescription": "Connect SparkLaunch to select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect analytics, and operate private CRM workflows. Authentication starts on first protected use. Disconnect in SparkLaunch Profile under AI Agent Connections.",
+    "longDescription": "Connect SparkLaunch to select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect analytics, operate private CRM workflows, and prepare an entitlement-gated incorporation case with private Action Center tasks and an internal Filing Operations handoff. Authentication starts on first protected use. Disconnect in SparkLaunch Profile under AI Agent Connections.",
     "developerName": "SparkLaunch",
     "category": "Productivity",
     "capabilities": [
@@ -36,7 +37,7 @@
     "defaultPrompt": [
       "Connect my SparkLaunch account and list my projects",
       "Create a measurable launch campaign and landing page",
-      "Review my launch signals and CRM follow-up priorities"
+      "Prepare or resume my incorporation through SparkLaunch"
     ],
     "brandColor": "#6366F1",
     "composerIcon": "./assets/sparklaunch-small.png",
