@@ -1,12 +1,13 @@
-# SparkLaunch 0.3.1+codex.20260823112445 ChatGPT Candidate
+# SparkLaunch 0.3.2+codex.20260823121149 ChatGPT Candidate
 
-Status: the previously observed production MCP service is deployed and official MCP Registry version `1.0.0` is published. This candidate describes application service version `1.2.0`; its deployment, immutable Registry publication, and marketplace availability require separate approval and evidence. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
+Status: the previously observed production MCP service is deployed and official MCP Registry version `1.0.0` is published. This candidate describes application service version `1.3.0`; its deployment, immutable Registry publication, and marketplace availability require separate approval and evidence. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
 
 ## Reviewer-visible changes
 
 - Expose nine concise founder-workflow skills through one connected SparkLaunch MCP server.
-- Generate review metadata from the application-owned registry of 55 tools covering projects, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, and incorporation.
+- Generate review metadata from the application-owned registry of 59 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, and incorporation.
 - Add `projects.invite_collaborator` as an owner/admin-only, idempotent, confirmation-bound email invitation that uses the canonical acceptance workflow and reports invitation persistence separately from delivery.
+- Add `tasks.list`, `tasks.create`, `tasks.update`, and `tasks.delete` for project-isolated general tasks with accepted-member email assignment, optimistic versions, idempotency, exact overwrite/delete confirmation, and stale mobile-state cleanup. CRM and GTM tasks remain outside this generic contract.
 - Add eight incorporation tools with explicit `project_id` arguments and the application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` permissions within the expected 18 OAuth scopes.
 - Check entitlement before starting, resuming, or reporting on an incorporation case. Missing access returns safe package recovery guidance without checkout or payment collection.
 - Coordinate ordinary shared company data separately from private Action Center work. Each participant completes only their own identity/Veriff, compliance, consent, and signature tasks; another participant's private data or Action Center URL is never returned in conversation.
@@ -26,6 +27,6 @@ Status: the previously observed production MCP service is deployed and official 
 ## Review boundaries
 
 - The candidate does not add a custom widget, direct provider integration, external filing action, payment collector, identity-document collector, or participant impersonation path.
-- Package validation and controlled local E2E do not prove deployment, production email delivery, Registry `1.2.0` publication, marketplace activation, external filing, conversion, or retention.
+- Package validation and controlled local E2E do not prove deployment, production email delivery, Registry `1.3.0` publication, marketplace activation, external filing, conversion, or retention.
 - Reviewer credentials, confirmation tokens, private participant values, provider session details, and signed file references must remain outside this repository.
 - Future production deployment, Registry publication, ChatGPT submission, and any separately enabled external Filing Operations action each require explicit approval and fresh evidence.
