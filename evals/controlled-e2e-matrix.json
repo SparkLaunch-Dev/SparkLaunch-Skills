@@ -21,9 +21,9 @@
     {
       "id": "E2E-CONNECTION-PROJECTS",
       "recipes": ["connect-sparklaunch-to-chatgpt.md"],
-      "tools": ["projects.list", "projects.create", "projects.get", "projects.update"],
+      "tools": ["projects.list", "projects.create", "projects.get", "projects.update", "projects.invite_collaborator"],
       "live_level": "private_write_and_confirmation_preview",
-      "expected": "OAuth connects with the expected 18-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, and update stops at confirmation without approval."
+      "expected": "OAuth connects with the expected 18-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, and project update plus a synthetic collaborator invitation both stop at exact confirmation previews without approval or email delivery."
     },
     {
       "id": "E2E-AUTOMATIC-VALIDATION",

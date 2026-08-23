@@ -74,7 +74,7 @@ def test_submission_package_is_complete():
     assert sparklaunch["policy"]["authentication"] == "ON_USE"
     generated = json.loads((ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8"))
     assert generated == build_submission()
-    assert len(generated["tools"]) == 54
+    assert len(generated["tools"]) == 55
     assert "incorporation" in generated["app_info"]["description"].lower()
     assert generated["$schema"] == (
         "https://developers.openai.com/plugins/schemas/"
@@ -146,7 +146,7 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
     application_version = run_path(
         ROOT.parent / "SparkLaunch" / "backend" / "mcp_server_version.py"
     )["SPARKLAUNCH_MCP_SERVER_VERSION"]
-    assert version == "1.1.0"
+    assert version == "1.2.0"
     assert version == application_version
 
 
@@ -587,7 +587,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.3.0+codex.20260820")
+    assert manifest["version"].startswith("0.3.1+codex.20260823")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
@@ -602,7 +602,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "sparklaunch-wordmark-dark.png" in reviewer
     for marker in (
         "nine",
-        "54 tools",
+        "55 tools",
         "18 OAuth scopes",
         "submit to SparkLaunch Filing Operations",
         "receipt does not mean",

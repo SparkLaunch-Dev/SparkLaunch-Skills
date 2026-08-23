@@ -548,6 +548,18 @@
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
     },
+    "projects.invite_collaborator": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Create or reissue an email invitation for one collaborator on the selected private SparkLaunch project; access begins only after acceptance and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
     "projects.list": {
       "annotations": {
         "readOnlyHint": true,

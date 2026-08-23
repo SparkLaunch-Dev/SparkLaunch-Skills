@@ -345,8 +345,8 @@ def validate() -> list[str]:
             errors.append("submission must contain exactly five positive test cases")
         if len(submission.get("negative_test_cases") or []) != 3:
             errors.append("submission must contain exactly three negative test cases")
-        if len(submission.get("tools") or {}) != 54:
-            errors.append("submission must cover all 54 MCP tools")
+        if len(submission.get("tools") or {}) != 55:
+            errors.append("submission must cover all 55 MCP tools")
         for tool_name, tool in (submission.get("tools") or {}).items():
             annotations = tool.get("annotations") or {}
             if set(annotations) != EXPECTED_ANNOTATIONS or not all(
@@ -448,7 +448,7 @@ def validate() -> list[str]:
     else:
         for marker in (
             plugin_version,
-            "54 tools",
+            "55 tools",
             "OAuth",
             "project_id",
             "idempotency",
@@ -472,7 +472,7 @@ def validate() -> list[str]:
             "three negative prompts",
             "privacy-policy",
             "terms-and-conditions",
-            "54 tools",
+            "55 tools",
             "18 OAuth scopes",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",

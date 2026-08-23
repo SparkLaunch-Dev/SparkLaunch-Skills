@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch `0.3.0+codex.20260820131503` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The package contains nine skills, 54 tools, 30 trigger cases, and 13 controlled E2E cases under the expected 18 OAuth scopes.
+These instructions apply to the SparkLaunch `0.3.1+codex.20260823112445` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The package contains nine skills, 55 tools, 30 trigger cases, and 13 controlled E2E cases under the expected 18 OAuth scopes.
 
 ## Access
 
@@ -8,6 +8,7 @@ These instructions apply to the SparkLaunch `0.3.0+codex.20260820131503` candida
 2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. First protected use starts SparkLaunch OAuth; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.
 3. Approve only the scopes shown for the planned scenarios. The incorporation tools use application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` scopes. Reconnect only for an actual OAuth challenge or missing requested scope, not for a project role, plan, entitlement, case, or version denial.
 4. Invoke `projects.list`, select the disposable reviewer project, and pass its explicit `project_id` to every scoped operation. Verify `projects.get.effective_permissions` before writes or confirmations.
+5. For `projects.invite_collaborator`, use only a synthetic `example.com` recipient and stop at the exact project/email/role confirmation preview. Do not confirm it during review; no email or collaborator membership should be created.
 
 The checked-in five positive prompts use provisioned reviewer project `99`, recorded in `submission/reviewer-fixture.json`. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Before final import, confirm the project still belongs to the approved disposable reviewer account. If it changes, run `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
 
