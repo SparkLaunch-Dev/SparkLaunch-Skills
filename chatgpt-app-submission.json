@@ -4,7 +4,7 @@
   "app_info": {
     "display_name": "SparkLaunch",
     "subtitle": "Build and operate a startup",
-    "description": "SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, and prepare entitlement-gated incorporation cases with secure participant tasks.",
+    "description": "SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, and prepare entitlement-gated incorporation cases with secure participant tasks.",
     "category": "BUSINESS"
   },
   "tools": {
@@ -548,6 +548,18 @@
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
     },
+    "projects.invite_collaborator": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Create or reissue an email invitation for one collaborator on the selected private SparkLaunch project; access begins only after acceptance and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
     "projects.list": {
       "annotations": {
         "readOnlyHint": true,
@@ -605,6 +617,54 @@
       "justifications": {
         "read_only_justification": "Replace the public redirect destination for an existing short link and therefore changes SparkLaunch state.",
         "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "tasks.create": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Create one private general task in the selected SparkLaunch project and optionally assign it to an accepted project member and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "tasks.delete": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Permanently delete one private general task from the selected SparkLaunch project and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "tasks.list": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "List private general tasks in the selected SparkLaunch project without changing them.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "tasks.update": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Update, complete, cancel, assign, or unassign one private general task in the selected SparkLaunch project and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
