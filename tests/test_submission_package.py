@@ -1,5 +1,6 @@
 import json
 import hashlib
+from pathlib import Path
 from runpy import run_path
 from zipfile import ZipFile
 
@@ -24,6 +25,21 @@ from scripts.validate_submission import (
     validate,
 )
 from mcp_oauth_service import MCP_OAUTH_SUPPORTED_SCOPES
+
+
+def _validate_with_text_replaced(monkeypatch, path, old, new):
+    original_read_text = Path.read_text
+    target = path.resolve()
+
+    def read_text(candidate, *args, **kwargs):
+        text = original_read_text(candidate, *args, **kwargs)
+        if candidate.resolve() == target:
+            assert old in text
+            return text.replace(old, new, 1)
+        return text
+
+    monkeypatch.setattr(Path, "read_text", read_text)
+    return validate()
 
 
 def test_packaged_skills_are_exact_deterministic_mirrors():
@@ -82,6 +98,69 @@ def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
     assert "report `project_id`" not in project_skill
     assert "report `task_id`" not in project_skill
     assert "identifier or version columns" in project_skill
+
+
+def test_validator_rejects_a_skill_without_the_user_output_contract(monkeypatch):
+    skill = SKILLS[0]
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        ROOT / skill / "SKILL.md",
+        "only as internal tool-call state",
+        "only as opaque runtime state",
+    )
+
+    assert errors == [
+        f"skill must keep identifiers and versions out of user-facing output: {skill}"
+    ]
+
+
+def test_validator_rejects_recipe_readme_without_the_user_output_contract(monkeypatch):
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        ROOT / "recipes" / "README.md",
+        "only as internal tool-call state",
+        "only as opaque runtime state",
+    )
+
+    assert errors == [
+        "recipe must keep identifiers and versions out of user-facing output: "
+        f"{Path('recipes') / 'README.md'}"
+    ]
+
+
+def test_validator_rejects_an_ordinary_recipe_without_the_user_output_contract(
+    monkeypatch,
+):
+    recipe = ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md"
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        recipe,
+        "Retain identifiers and versions only for internal tool calls",
+        "Retain identifiers and versions only as opaque runtime state",
+    )
+
+    assert errors == [
+        "recipe must keep identifiers and versions out of user-facing output: "
+        f"{recipe.relative_to(ROOT)}"
+    ]
+
+
+def test_validator_rejects_positive_submission_output_without_user_friendly_presentation(
+    monkeypatch,
+):
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        ROOT / "chatgpt-app-submission.json",
+        "without exposing internal identifiers or versions",
+        "while exposing internal identifiers and versions",
+    )
+
+    assert errors == [
+        "positive submission case must require user-friendly record presentation"
+    ]
+
 
 def test_submission_package_is_complete():
     assert validate() == []
