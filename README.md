@@ -33,6 +33,7 @@ See [Connect SparkLaunch to ChatGPT](./recipes/connect-sparklaunch-to-chatgpt.md
 7. Configured assets, published state, traffic, conversions, CRM persistence, and revenue are reported as separate proof layers.
 8. User-facing errors stay concise. Secrets, private diagnostics, internal ownership IDs, and unnecessary personal data are never surfaced.
 9. OAuth scopes are the connection's maximum authorization. The selected project's plan and the user's project role may further restrict a tool; a plan/role denial is not a reason to reconnect OAuth.
+10. Identifiers and concurrency versions remain available only as opaque internal tool-call state. User-facing prose, tables, confirmations, and handoffs use human-readable names or descriptions and never expose identifier/version values, labels, parenthetical references, or columns.
 
 ## Repository Layout
 

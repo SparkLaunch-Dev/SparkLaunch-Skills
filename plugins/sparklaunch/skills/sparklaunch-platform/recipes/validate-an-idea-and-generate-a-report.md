@@ -23,4 +23,4 @@ summary: Create, analyze, and verify a SparkLaunch validation project through th
 
 ## Completion Evidence
 
-Record the SparkLaunch project id, validation project id, final status, sections completed, citation retrieval timestamps, freshness warnings, and evidence-backed recommendation. A locally written summary is not proof that a separate downloadable PDF exists; the current ChatGPT tool set does not generate that PDF.
+Record the business and validation-workspace names, final status, sections completed, citation retrieval timestamps, freshness warnings, and evidence-backed recommendation. Retain identifiers and versions only for internal tool calls; never show their values or labels to the user. A locally written summary is not proof that a separate downloadable PDF exists; the current ChatGPT tool set does not generate that PDF.

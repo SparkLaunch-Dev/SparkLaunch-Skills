@@ -28,3 +28,4 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 8. Project creation automatically queues its included Idea Validation research. Allow 10-15 minutes, poll at a bounded cadence, and do not create a duplicate initial validation workspace.
 9. OAuth scopes are maximum connection permissions; project plan and role restrictions can still deny a tool and should not be described as a reconnection problem.
 10. Incorporation starts with entitlement readback. Keep personal tasks in each participant's own Action Center, and never equate an internal SparkLaunch Filing Operations receipt with Delaware, NWRA, or CorpTools activity.
+11. Retain identifiers and concurrency versions only as internal tool-call state. Never repeat them to the user, place them in parentheses, label them, or include them as table/report columns. Use human-readable project and record names or descriptions instead.

@@ -30,4 +30,4 @@ summary: Generate saved palette and logo options for a selected SparkLaunch proj
 
 ## Completion Evidence
 
-Report the project id, selected palette id and colors, logo id and status, short-lived file metadata, and any selection step still requiring user judgment.
+Report the project name, selected palette name and colors, logo status, short-lived file metadata, and any selection step still requiring user judgment. Retain identifiers and versions only for internal tool calls; never show their values or labels to the user.

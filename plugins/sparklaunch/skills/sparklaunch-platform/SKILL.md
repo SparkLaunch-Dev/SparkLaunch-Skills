@@ -33,6 +33,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 7. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
 8. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
 9. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.
+10. Retain record identifiers and concurrency versions only as internal tool-call state. In every user-facing message, table, confirmation, and handoff, identify records by human-readable names or descriptions and omit identifier/version values, labels, parenthetical references, and columns.
 
 ## Founder Journey
 

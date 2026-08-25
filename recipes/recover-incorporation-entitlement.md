@@ -16,3 +16,5 @@ summary: Check the authoritative package state and guide safe purchase recovery 
 ## Filing Boundary
 
 Never call Delaware, NWRA, or CorpTools. Keep private and payment fields out of the conversation. Any later confirmed action can only submit to SparkLaunch Filing Operations. **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing.
+
+Retain identifiers and versions only for internal tool calls; refer to the project, entitlement, case, and receipt in human-readable terms.

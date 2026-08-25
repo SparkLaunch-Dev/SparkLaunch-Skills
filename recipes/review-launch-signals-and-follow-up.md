@@ -18,4 +18,4 @@ summary: Compare measured campaign and landing-page evidence with CRM context be
 
 ## Output
 
-Report the analysis window, campaign events, landing views/clicks/submissions, lead records reviewed, CRM actions completed, data gaps, and recommended follow-up. Never infer conversion, revenue, or retention from traffic alone.
+Report the analysis window, campaign events, landing views/clicks/submissions, lead records reviewed, CRM actions completed, data gaps, and recommended follow-up. Never infer conversion, revenue, or retention from traffic alone. Retain identifiers and versions only for internal tool calls; never show their values or labels to the user.

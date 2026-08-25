@@ -21,6 +21,7 @@ Generate a logo and return its short-lived file reference through the connected 
 7. When supplying `selected_colors`, pass an object keyed only by `primary`, `secondary`, `accent`, `background`, `foreground`, or `neutral`. Each included role is an object such as `{"hex":"#6E4E3A","feeling":"grounded"}`. Never pass an array. To reuse a generated palette, map `neutral_light` to `background` and `neutral_dark` to `foreground`; omit any role that is unknown.
 8. Supply a stable `idempotency_key`; never automatically repeat an uncertain generation with a new key.
 9. The result contains `logo.file` with a short-lived HTTPS download URL. Do not request, return, or reconstruct raw base64 or data URLs.
+10. Retain project and logo identifiers only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to the logo by business name and design description.
 
 ## Workflow
 
@@ -31,4 +32,4 @@ Generate a logo and return its short-lived file reference through the connected 
 
 ## Output
 
-Report `logo_id`, business name, prompt style, status, and the file name, MIME type, size, URL lifetime, and download reference.
+Report the business name, prompt style, status, and the file name, MIME type, size, URL lifetime, and download reference.

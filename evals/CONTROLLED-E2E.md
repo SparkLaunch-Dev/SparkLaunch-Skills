@@ -2,6 +2,8 @@
 
 Use this runbook for repeatable ChatGPT-plugin and MCP checks without confusing package validity, authorization, persistence, public state, or business outcomes.
 
+Across every scenario, inspect the assistant's visible response, table, confirmation, and handoff. Records must be named naturally without identifier/version values, labels, parenthetical references, or columns, while subsequent tool calls still use the exact retained internal routing and concurrency state.
+
 ## Evidence levels
 
 1. **Descriptor:** the installed plugin exposes the expected skills, recipes, tool schemas, OAuth scopes, annotations, and confirmation controls.

@@ -1,5 +1,6 @@
 import json
 import hashlib
+from pathlib import Path
 from runpy import run_path
 from zipfile import ZipFile
 
@@ -24,6 +25,21 @@ from scripts.validate_submission import (
     validate,
 )
 from mcp_oauth_service import MCP_OAUTH_SUPPORTED_SCOPES
+
+
+def _validate_with_text_replaced(monkeypatch, path, old, new):
+    original_read_text = Path.read_text
+    target = path.resolve()
+
+    def read_text(candidate, *args, **kwargs):
+        text = original_read_text(candidate, *args, **kwargs)
+        if candidate.resolve() == target:
+            assert old in text
+            return text.replace(old, new, 1)
+        return text
+
+    monkeypatch.setattr(Path, "read_text", read_text)
+    return validate()
 
 
 def test_packaged_skills_are_exact_deterministic_mirrors():
@@ -59,6 +75,91 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
     )
     assert all(marker in recipe for marker in required)
     assert "disable and re-enable or reinstall" in recipe
+
+
+def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
+    for skill in SKILLS:
+        canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
+        assert "only as internal tool-call state" in canonical, skill
+
+    recipe_contract = (
+        "Retain identifiers and versions only for internal tool calls"
+    )
+    for recipe in (ROOT / "recipes").rglob("*.md"):
+        text = recipe.read_text(encoding="utf-8")
+        if recipe.name == "README.md":
+            assert "only as internal tool-call state" in text
+        else:
+            assert recipe_contract in text, recipe.name
+
+    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "report `project_id`" not in project_skill
+    assert "report `task_id`" not in project_skill
+    assert "identifier or version columns" in project_skill
+
+
+def test_validator_rejects_a_skill_without_the_user_output_contract(monkeypatch):
+    skill = SKILLS[0]
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        ROOT / skill / "SKILL.md",
+        "only as internal tool-call state",
+        "only as opaque runtime state",
+    )
+
+    assert errors == [
+        f"skill must keep identifiers and versions out of user-facing output: {skill}"
+    ]
+
+
+def test_validator_rejects_recipe_readme_without_the_user_output_contract(monkeypatch):
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        ROOT / "recipes" / "README.md",
+        "only as internal tool-call state",
+        "only as opaque runtime state",
+    )
+
+    assert errors == [
+        "recipe must keep identifiers and versions out of user-facing output: "
+        f"{Path('recipes') / 'README.md'}"
+    ]
+
+
+def test_validator_rejects_an_ordinary_recipe_without_the_user_output_contract(
+    monkeypatch,
+):
+    recipe = ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md"
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        recipe,
+        "Retain identifiers and versions only for internal tool calls",
+        "Retain identifiers and versions only as opaque runtime state",
+    )
+
+    assert errors == [
+        "recipe must keep identifiers and versions out of user-facing output: "
+        f"{recipe.relative_to(ROOT)}"
+    ]
+
+
+def test_validator_rejects_positive_submission_output_without_user_friendly_presentation(
+    monkeypatch,
+):
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        ROOT / "chatgpt-app-submission.json",
+        "without exposing internal identifiers or versions",
+        "while exposing internal identifiers and versions",
+    )
+
+    assert errors == [
+        "positive submission case must require user-friendly record presentation"
+    ]
 
 
 def test_submission_package_is_complete():
@@ -564,12 +665,22 @@ def test_founder_report_template_only_requests_supported_tool_evidence():
         assert unsupported not in template
     for supported in (
         "Effective permissions",
-        "Validation project id",
-        "Selected palette id",
+        "Project name",
+        "Palette name",
         "Short-lived download reference",
         "Confirmation-gated actions",
     ):
         assert supported in template
+    for internal_label in (
+        "Project id:",
+        "Validation project id:",
+        "Selected palette id:",
+        "Logo id:",
+        "Campaign id",
+        "QR id",
+        "Landing project id:",
+    ):
+        assert internal_label not in template
 
 
 def test_reviewer_documents_are_credential_free_and_candidate_bounded():
@@ -587,7 +698,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.3.2+codex.20260823")
+    assert manifest["version"].startswith("0.3.3+codex.20260825")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer

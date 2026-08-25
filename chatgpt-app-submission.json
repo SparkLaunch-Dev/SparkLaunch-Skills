@@ -723,7 +723,7 @@
       "user_prompt": "Show me the SparkLaunch projects I can access so I can choose one.",
       "file_attachment_urls": null,
       "tools_triggered": "projects.list",
-      "expected_output": "Returns a concise list of accessible projects with ids, names, status, and plan.",
+      "expected_output": "Returns a concise list of accessible projects by name, status, and plan without exposing internal identifiers or versions.",
       "expected_output_url": null
     },
     {
@@ -731,7 +731,7 @@
       "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in project 99.",
       "file_attachment_urls": null,
       "tools_triggered": "validation.create_project",
-      "expected_output": "Creates one validation record in the selected project and reports its id and status.",
+      "expected_output": "Creates one validation record in the selected project and reports its human-readable name and status without exposing internal identifiers or versions.",
       "expected_output_url": null
     },
     {
@@ -739,7 +739,7 @@
       "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 99.",
       "file_attachment_urls": null,
       "tools_triggered": "branding.generate_palette",
-      "expected_output": "Returns saved palette options with ids, names, hex values, and feeling labels.",
+      "expected_output": "Returns saved palette options by name, hex values, and feeling labels without exposing internal identifiers or versions.",
       "expected_output_url": null
     },
     {
@@ -747,7 +747,7 @@
       "user_prompt": "List the landing-page projects in SparkLaunch project 99.",
       "file_attachment_urls": null,
       "tools_triggered": "landing.list_projects",
-      "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without changing them.",
+      "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without exposing internal identifiers or versions; no records are changed.",
       "expected_output_url": null
     },
     {
@@ -755,7 +755,7 @@
       "user_prompt": "Find leads mentioning bookkeeping in project 99 and show at most 10.",
       "file_attachment_urls": null,
       "tools_triggered": "crm.search_leads",
-      "expected_output": "Returns matching private leads and a result count without modifying CRM data.",
+      "expected_output": "Returns matching private leads and a result count without exposing internal identifiers or versions; no CRM data is modified.",
       "expected_output_url": null
     }
   ],

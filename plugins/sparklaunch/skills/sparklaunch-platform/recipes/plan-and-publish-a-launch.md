@@ -35,4 +35,4 @@ summary: Create confirmed public campaign surfaces, a QR file, and a measurable 
 
 ## Completion Evidence
 
-Report campaign, short-link, QR, and landing ids; short and production URLs; file metadata; confirmed publish status; and the conversion goal. Configuration is not evidence of traffic or conversion.
+Report the campaign and landing-page names, short and production URLs, file metadata, confirmed publish status, and conversion goal. Configuration is not evidence of traffic or conversion. Retain identifiers and versions only for internal tool calls; never show their values or labels to the user.

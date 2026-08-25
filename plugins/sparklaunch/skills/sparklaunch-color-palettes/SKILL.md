@@ -19,6 +19,7 @@ Generate and inspect private brand palettes through the connected SparkLaunch ap
 5. Use `projects.list` when needed, then pass the selected `project_id` to every palette tool. Use `projects.get` to confirm `effective_permissions` includes `branding.write` before generation; explain a plan or role limitation without requesting OAuth reconnection.
 6. `branding.generate_palette` is a write and requires a stable `idempotency_key`. Do not retry with a new key after an uncertain result.
 7. Use `branding.list_palettes` or `branding.get_palette` to verify saved results.
+8. Retain project and palette identifiers only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to palettes by name and colors.
 
 ## Workflow
 
@@ -29,4 +30,4 @@ Generate and inspect private brand palettes through the connected SparkLaunch ap
 
 ## Output
 
-Report `palette_id`, name, description, creation time, and each color's hex value and feeling. State whether the result was newly generated or retrieved.
+Report the palette name, description, creation time, and each color's hex value and feeling. State whether the result was newly generated or retrieved.

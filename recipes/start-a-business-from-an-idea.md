@@ -13,7 +13,7 @@ summary: Run the connected project, validation, brand, launch, measurement, and 
 4. Create the campaign, QR file, and landing-page surface with [plan-and-publish-a-launch.md](./plan-and-publish-a-launch.md).
 5. Review measured signals and CRM context with [review-launch-signals-and-follow-up.md](./review-launch-signals-and-follow-up.md).
 
-## State To Carry Forward
+## Internal State To Carry Forward
 
 - SparkLaunch `project_id`
 - Validation project id, final status, recommended wedge, and proof gaps
@@ -32,4 +32,4 @@ summary: Run the connected project, validation, brand, launch, measurement, and 
 
 ## Final Handoff
 
-Summarize what was actually persisted, what is public, what was measured, what remains unproven, and the single next action most likely to reduce the biggest proof gap.
+Summarize what was actually persisted, what is public, what was measured, what remains unproven, and the single next action most likely to reduce the biggest proof gap. Retain identifiers and versions only for internal tool calls; never show their values or labels to the user.

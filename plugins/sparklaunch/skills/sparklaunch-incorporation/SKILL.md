@@ -28,6 +28,7 @@ Guide a resumable incorporation case through the connected SparkLaunch tools. Ke
 4. If authorization is expired or revoked, stop before writes, ask the user to reconnect from the AI Agent, and check the target before retrying any uncertain operation.
 5. Use `projects.list` to select an explicit `project_id`. Use `projects.get` and verify `effective_permissions` before a project-scoped write or confirmation.
 6. Treat OAuth scope, project role, and commercial entitlement as separate gates. A denial at one gate does not prove failure at another.
+7. Retain project, case, participant, task, receipt, and version values only as internal tool-call state. Never repeat them to the user or include identifier/version labels, parenthetical references, or columns; refer to the company, case, person, task, and receipt in human-readable terms.
 
 ## Tool And Scope Contract
 
@@ -91,4 +92,4 @@ The receipt does not mean external filing, registered-agent acceptance, formatio
 
 ## Completion Evidence
 
-Report the selected project, entitlement state, case id, safe status, current version, blockers, participant progress, confirmation-gated actions, receipt id when present, and returned next action. Separate local/internal receipt evidence from external filing, acceptance, formation, Registry publication, deployment, conversion, and retention.
+Report the selected project name, entitlement state, safe status, blockers, participant progress, confirmation-gated actions, whether an internal receipt exists, and the returned next action. Separate local/internal receipt evidence from external filing, acceptance, formation, Registry publication, deployment, conversion, and retention.

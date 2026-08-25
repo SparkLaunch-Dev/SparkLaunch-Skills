@@ -22,6 +22,7 @@ Create and review private market, competitor, and TAM/SAM/SOM analysis.
 8. Keep the parent SparkLaunch `project_id` and the returned validation workspace `validation_project_id` as separate identifiers. Every `validation.get_project` call requires both.
 9. `validation.start_analysis` accepts work into a background queue and returns before research finishes. Poll the returned `validation_project_id`; do not treat the accepted response as completed research.
 10. Do not retry an uncertain write with a new key. Re-read with `validation.get_project` instead. A retryable error correlation id is for support and does not prove whether a write persisted.
+11. Retain project/workspace identifiers and versions only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to the business and validation workspace by their human-readable names.
 
 ## Workflow
 
@@ -35,4 +36,4 @@ The supported sections are `all`, `market`, `competitor`, and `tam_sam_som`.
 
 ## Output
 
-Report the validation project id, business name, status, sections generated, market and competitor findings, TAM/SAM/SOM method and figures, cited sources returned by the tool, citation retrieval timestamps, any freshness warning, recommended wedge, and unresolved evidence gaps. Never invent citations or claim completion from a queued, analyzing, or partial state.
+Report the business name, validation status, sections generated, market and competitor findings, TAM/SAM/SOM method and figures, cited sources returned by the tool, citation retrieval timestamps, any freshness warning, recommended wedge, and unresolved evidence gaps. Never invent citations or claim completion from a queued, analyzing, or partial state.

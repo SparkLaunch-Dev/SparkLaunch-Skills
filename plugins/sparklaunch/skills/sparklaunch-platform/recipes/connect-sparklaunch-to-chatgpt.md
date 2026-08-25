@@ -36,4 +36,4 @@ Establish the user-managed SparkLaunch connection and select a project without c
 
 ## Completion Evidence
 
-Report the connected state, selected `project_id`, project name, status, and plan. If connection or project access is still unresolved, name that blocker instead of continuing with scoped writes.
+Report the connected state, selected project name, status, and plan. If connection or project access is still unresolved, name that blocker instead of continuing with scoped writes. Retain identifiers and versions only for internal tool calls; never show their values or labels to the user.
