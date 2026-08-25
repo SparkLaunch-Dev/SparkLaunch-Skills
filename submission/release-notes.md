@@ -1,4 +1,4 @@
-# SparkLaunch 0.3.2+codex.20260823121149 ChatGPT Candidate
+# SparkLaunch 0.3.3+codex.20260825101731 ChatGPT Candidate
 
 Status: the previously observed production MCP service is deployed and official MCP Registry version `1.0.0` is published. This candidate describes application service version `1.3.0`; its deployment, immutable Registry publication, and marketplace availability require separate approval and evidence. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
 
@@ -16,6 +16,7 @@ Status: the previously observed production MCP service is deployed and official 
 - Limit the final connected action to **submit to SparkLaunch Filing Operations**. The exact receipt warning is: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof.
 - Add 30 skill-trigger cases and 13 controlled E2E cases. The five incorporation scenarios require synthetic data and zero provider calls to Delaware, NWRA, CorpTools, email, filing, or registered-agent adapters.
 - Preserve generated logo and QR assets as expiring HTTPS file references rather than raw base64 or data URLs.
+- Keep identifiers and concurrency versions as internal tool-call state while all user-facing skill, recipe, confirmation, table, and handoff language uses human-readable names or descriptions.
 - Rebuild the reviewer candidate deterministically with canonical/mirror parity, a bundled proprietary license, and recorded archive digest.
 
 ## Compatibility

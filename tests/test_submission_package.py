@@ -61,6 +61,28 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
     assert "disable and re-enable or reinstall" in recipe
 
 
+def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
+    for skill in SKILLS:
+        canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
+        assert "only as internal tool-call state" in canonical, skill
+
+    recipe_contract = (
+        "Retain identifiers and versions only for internal tool calls"
+    )
+    for recipe in (ROOT / "recipes").rglob("*.md"):
+        text = recipe.read_text(encoding="utf-8")
+        if recipe.name == "README.md":
+            assert "only as internal tool-call state" in text
+        else:
+            assert recipe_contract in text, recipe.name
+
+    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    assert "report `project_id`" not in project_skill
+    assert "report `task_id`" not in project_skill
+    assert "identifier or version columns" in project_skill
+
 def test_submission_package_is_complete():
     assert validate() == []
     marketplace = json.loads(
@@ -564,12 +586,22 @@ def test_founder_report_template_only_requests_supported_tool_evidence():
         assert unsupported not in template
     for supported in (
         "Effective permissions",
-        "Validation project id",
-        "Selected palette id",
+        "Project name",
+        "Palette name",
         "Short-lived download reference",
         "Confirmation-gated actions",
     ):
         assert supported in template
+    for internal_label in (
+        "Project id:",
+        "Validation project id:",
+        "Selected palette id:",
+        "Logo id:",
+        "Campaign id",
+        "QR id",
+        "Landing project id:",
+    ):
+        assert internal_label not in template
 
 
 def test_reviewer_documents_are_credential_free_and_candidate_bounded():
@@ -587,7 +619,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.3.2+codex.20260823")
+    assert manifest["version"].startswith("0.3.3+codex.20260825")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer

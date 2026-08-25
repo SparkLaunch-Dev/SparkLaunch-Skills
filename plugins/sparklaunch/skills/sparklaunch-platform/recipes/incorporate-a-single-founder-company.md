@@ -19,3 +19,5 @@ summary: Prepare one entitled founder's supported company case and internal Fili
 ## Filing Boundary
 
 Never call Delaware, NWRA, or CorpTools. Keep private fields out of the conversation. Say: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing or formation.
+
+Retain identifiers and versions only for internal tool calls; refer to the company, case, tasks, and receipt in human-readable terms.

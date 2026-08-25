@@ -1,6 +1,6 @@
 # Founder Workflow Report
 
-Use only fields returned by the connected SparkLaunch tools. Omit unsupported sections instead of inventing ids, URLs, files, selection states, or proof.
+Use only fields returned by the connected SparkLaunch tools. Omit unsupported sections instead of inventing URLs, files, selection states, or proof. Retain identifiers and versions only for internal tool calls; omit their values and labels from this user-facing report.
 
 ## Executive Summary
 
@@ -13,7 +13,6 @@ Use only fields returned by the connected SparkLaunch tools. Omit unsupported se
 ## Connection And Project
 
 - Connection status:
-- Project id:
 - Project name:
 - Plan and project role:
 - Effective permissions:
@@ -22,7 +21,6 @@ Use only fields returned by the connected SparkLaunch tools. Omit unsupported se
 
 ## Validation Summary
 
-- Validation project id:
 - Status:
 - Sections available:
 - Core market insight:
@@ -34,7 +32,6 @@ Use only fields returned by the connected SparkLaunch tools. Omit unsupported se
 
 ## Palette
 
-- Selected palette id:
 - Palette name:
 - Primary, secondary, and accent colors:
 - Neutral light and neutral dark colors:
@@ -42,7 +39,6 @@ Use only fields returned by the connected SparkLaunch tools. Omit unsupported se
 
 ## Logo
 
-- Logo id:
 - Prompt style:
 - Generation status:
 - File name and MIME type:
@@ -51,15 +47,15 @@ Use only fields returned by the connected SparkLaunch tools. Omit unsupported se
 
 ## Campaign And QR
 
-- Campaign id and status:
+- Campaign name and status:
 - Campaign destination:
 - Public short URL, if explicitly confirmed and created:
-- QR id and short-lived file reference:
+- QR short-lived file reference:
 - Observed clicks or conversions:
 
 ## Landing Page
 
-- Landing project id:
+- Landing page name:
 - Draft status:
 - Preview URL:
 - Production URL, if explicitly confirmed and published:

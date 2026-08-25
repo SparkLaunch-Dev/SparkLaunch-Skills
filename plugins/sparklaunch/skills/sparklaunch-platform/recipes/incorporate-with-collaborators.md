@@ -19,3 +19,5 @@ summary: Coordinate shared ordinary company data and separate private tasks for 
 ## Filing Boundary
 
 Never call Delaware, NWRA, or CorpTools. Keep private fields and private Action Center URLs out of the conversation. Say: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing or provider acceptance.
+
+Retain identifiers and versions only for internal tool calls; refer to the company, case, people, tasks, and receipt in human-readable terms.

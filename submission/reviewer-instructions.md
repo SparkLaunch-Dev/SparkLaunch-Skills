@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch `0.3.2+codex.20260823121149` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The package contains nine skills, 59 tools, 30 trigger cases, and 13 controlled E2E cases under the expected 18 OAuth scopes.
+These instructions apply to the SparkLaunch `0.3.3+codex.20260825101731` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The package contains nine skills, 59 tools, 30 trigger cases, and 13 controlled E2E cases under the expected 18 OAuth scopes.
 
 ## Access
 
@@ -29,6 +29,7 @@ Run the five positive prompts in `chatgpt-app-submission.json`. Confirm each inv
 
 Also exercise these boundaries:
 
+0. In every user-visible response, table, confirmation, and handoff, verify records are named naturally and no identifier/version values, labels, parenthetical references, or columns appear. Confirm follow-up tool calls still use the exact retained internal state.
 1. Repeat one private write with its original idempotency key and confirm no duplicate record is created.
 2. Request a public, destructive, or overwrite operation. Verify the exact confirmation preview, decline once, then approve only a disposable action with unchanged arguments, key, and token.
 3. Generate a logo or QR asset and verify the result is an expiring HTTPS file reference with no raw base64, data URL, bucket path, or credential.

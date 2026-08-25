@@ -235,6 +235,24 @@ def validate() -> list[str]:
             icon = str(interface.get(icon_key, ""))
             if not icon.startswith("./") or not (ROOT / skill / icon[2:]).is_file():
                 errors.append(f"missing {icon_key} asset: {skill}")
+        if "only as internal tool-call state" not in text:
+            errors.append(
+                f"skill must keep identifiers and versions out of user-facing output: {skill}"
+            )
+
+    recipe_contract = "Retain identifiers and versions only for internal tool calls"
+    for recipe in sorted((ROOT / "recipes").rglob("*.md")):
+        text = recipe.read_text(encoding="utf-8")
+        marker = (
+            "only as internal tool-call state"
+            if recipe.name == "README.md"
+            else recipe_contract
+        )
+        if marker not in text:
+            errors.append(
+                "recipe must keep identifiers and versions out of user-facing output: "
+                f"{recipe.relative_to(ROOT)}"
+            )
 
     plugin = ROOT / "plugins" / "sparklaunch"
     manifest = _load_json(plugin / ".codex-plugin" / "plugin.json", errors)
@@ -362,6 +380,12 @@ def validate() -> list[str]:
         for case in submission.get("test_cases") or []:
             if case.get("tools_triggered") not in (submission.get("tools") or {}):
                 errors.append("positive submission case references an unknown tool")
+            if "without exposing internal identifiers or versions" not in str(
+                case.get("expected_output", "")
+            ):
+                errors.append(
+                    "positive submission case must require user-friendly record presentation"
+                )
         for case in submission.get("negative_test_cases") or []:
             if case.get("tools_triggered") is not None:
                 errors.append("negative submission cases must not trigger a tool")

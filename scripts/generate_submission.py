@@ -82,7 +82,7 @@ def build_submission(reviewer_project_id: int | None = None):
                 "user_prompt": "Show me the SparkLaunch projects I can access so I can choose one.",
                 "file_attachment_urls": None,
                 "tools_triggered": "projects.list",
-                "expected_output": "Returns a concise list of accessible projects with ids, names, status, and plan.",
+                "expected_output": "Returns a concise list of accessible projects by name, status, and plan without exposing internal identifiers or versions.",
                 "expected_output_url": None,
             },
             {
@@ -90,7 +90,7 @@ def build_submission(reviewer_project_id: int | None = None):
                 "user_prompt": f"Create a validation project for an AI bookkeeping assistant for independent contractors in project {project_id}.",
                 "file_attachment_urls": None,
                 "tools_triggered": "validation.create_project",
-                "expected_output": "Creates one validation record in the selected project and reports its id and status.",
+                "expected_output": "Creates one validation record in the selected project and reports its human-readable name and status without exposing internal identifiers or versions.",
                 "expected_output_url": None,
             },
             {
@@ -98,7 +98,7 @@ def build_submission(reviewer_project_id: int | None = None):
                 "user_prompt": f"Generate a trustworthy, modern color palette for my contractor bookkeeping product in project {project_id}.",
                 "file_attachment_urls": None,
                 "tools_triggered": "branding.generate_palette",
-                "expected_output": "Returns saved palette options with ids, names, hex values, and feeling labels.",
+                "expected_output": "Returns saved palette options by name, hex values, and feeling labels without exposing internal identifiers or versions.",
                 "expected_output_url": None,
             },
             {
@@ -106,7 +106,7 @@ def build_submission(reviewer_project_id: int | None = None):
                 "user_prompt": f"List the landing-page projects in SparkLaunch project {project_id}.",
                 "file_attachment_urls": None,
                 "tools_triggered": "landing.list_projects",
-                "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without changing them.",
+                "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without exposing internal identifiers or versions; no records are changed.",
                 "expected_output_url": None,
             },
             {
@@ -114,7 +114,7 @@ def build_submission(reviewer_project_id: int | None = None):
                 "user_prompt": f"Find leads mentioning bookkeeping in project {project_id} and show at most 10.",
                 "file_attachment_urls": None,
                 "tools_triggered": "crm.search_leads",
-                "expected_output": "Returns matching private leads and a result count without modifying CRM data.",
+                "expected_output": "Returns matching private leads and a result count without exposing internal identifiers or versions; no CRM data is modified.",
                 "expected_output_url": None,
             },
         ],

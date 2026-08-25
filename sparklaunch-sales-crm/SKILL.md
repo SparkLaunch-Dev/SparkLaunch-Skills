@@ -18,6 +18,7 @@ Operate private SparkLaunch CRM data with explicit project selection and write s
 4. If a loaded action reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch from this AI Agent, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
 5. Resolve the target with `projects.list`, then pass `project_id` to every CRM tool. Use `projects.get` to confirm `effective_permissions` includes the required CRM permission before proposing or confirming a write; explain a plan or role limitation without requesting OAuth reconnection.
 6. Start with the narrowest useful read: `crm.get_dashboard`, `crm.search_leads`, `crm.get_lead_workspace`, `crm.search_contacts`, or `crm.get_contact_workspace`.
+7. Retain project, CRM record, activity, attachment, and concurrency identifiers/versions only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to people and records by human-readable name, organization, or title.
 
 ## Writes
 
@@ -41,4 +42,4 @@ Every write requires one stable `idempotency_key`. Destructive tools first retur
 
 ## Verification And Output
 
-Re-read the affected lead, contact, or dashboard after important writes. Report the entity id, source-of-truth read, actions actually completed, changed fields, summary warnings, and justified next step. Never expose personal data beyond what the user requested.
+Re-read the affected lead, contact, or dashboard after important writes. Report the human-readable record, source-of-truth read, actions actually completed, changed fields, summary warnings, and justified next step. Never expose personal data beyond what the user requested.

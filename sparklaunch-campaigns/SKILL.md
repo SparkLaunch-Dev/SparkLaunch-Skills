@@ -20,6 +20,7 @@ Operate measurable campaign acquisition workflows and their CRM attribution.
 6. Every write requires a stable `idempotency_key` for that exact mutation.
 7. `campaign_create` and `shortlink_create` affect public URLs. `campaign_pause`, `campaign_archive`, and `shortlink_rotate` also overwrite public behavior. Show the returned confirmation preview and wait for explicit approval before calling again with the same arguments, key, and `confirmation_token`.
 8. Never automatically retry an uncertain write.
+9. Retain campaign, short-link, QR, lead, and project identifiers and versions only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to records by campaign name, destination, short URL, or another human-readable description.
 
 ## Workflow
 
@@ -35,4 +36,4 @@ Operate measurable campaign acquisition workflows and their CRM attribution.
 
 ## Output
 
-Report campaign id, short-link id, QR id, short URL, generated-file metadata, CRM lead id, and attribution fields when available. Separate configured assets from observed traffic or conversions; creation alone is not traction.
+Report the campaign name and status, short URL, generated-file metadata, and attribution fields when available. Separate configured assets from observed traffic or conversions; creation alone is not traction.

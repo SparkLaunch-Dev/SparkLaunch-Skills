@@ -20,6 +20,7 @@ Create and operate conversion-focused SparkLaunch landing pages.
 6. Use stable, unique `idempotency_key` values for `landing.create_project` and `landing.generate_content`. A generation call without `landing_project_id` returns an unsaved preview. To replace the selected private draft, repeat the generation intent with `landing_project_id` through its confirmation preview and verify `saved_to_draft=true`.
 7. `landing.publish` changes public internet state. Its first call returns a confirmation preview naming the landing page, slug, preview URL, and exact public destination; show it and wait for explicit approval before repeating the exact call with the same key and returned `confirmation_token`.
 8. Never automatically retry an uncertain publish.
+9. Retain project, landing-page, lead, and draft identifiers and versions only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to landing pages by name, slug, or URL.
 
 ## Workflow
 
@@ -38,4 +39,4 @@ The tool can replace a draft only with the complete content returned by `landing
 
 ## Output
 
-For projects, report id, name, slug, status, template, CTA, preview URL, production URL, and publish time when present. For analytics, report views, clicks, submissions, time window, and trend data. For leads, reveal only the records the user requested.
+For projects, report name, slug, status, template, CTA, preview URL, production URL, and publish time when present. For analytics, report views, clicks, submissions, time window, and trend data. For leads, reveal only the records the user requested.

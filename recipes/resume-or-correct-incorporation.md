@@ -18,3 +18,5 @@ summary: Resume a safe case version, recover stale writes, repeat invalidated ta
 ## Filing Boundary
 
 Never call Delaware, NWRA, or CorpTools. Keep private participant fields out of the conversation and direct each person to their own Action Center. Any confirmed final handoff must submit to SparkLaunch Filing Operations. **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing was stopped, completed, or accepted.
+
+Retain identifiers and versions only for internal tool calls; refer to the company, case, tasks, and receipt in human-readable terms.
