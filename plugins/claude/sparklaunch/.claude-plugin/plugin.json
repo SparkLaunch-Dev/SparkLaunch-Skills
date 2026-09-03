@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "sparklaunch",
+  "displayName": "SparkLaunch",
+  "version": "0.5.0",
+  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, and incorporation.",
+  "author": {
+    "name": "SparkLaunch",
+    "email": "support@sparklaun.ch",
+    "url": "https://sparklaun.ch/"
+  },
+  "homepage": "https://sparklaun.ch/",
+  "repository": "https://github.com/SparkLaunch-Dev/SparkLaunch-Skills.git",
+  "license": "LicenseRef-SparkLaunch-Proprietary",
+  "keywords": [
+    "sparklaunch",
+    "startup",
+    "founder",
+    "launch",
+    "mcp",
+    "incorporation"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

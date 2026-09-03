@@ -70,9 +70,9 @@
     {
       "id": "E2E-CRM-WRITES",
       "recipes": ["review-launch-signals-and-follow-up.md"],
-      "tools": ["crm.create_lead", "crm.update_lead", "crm.add_lead_note", "crm.log_activity", "crm.add_contact_note", "crm.update_contact", "crm.refresh_contact_summary", "crm.move_deal", "crm.ingest_business_card", "crm.delete_business_card"],
+      "tools": ["crm.create_lead", "crm.update_lead", "crm.add_lead_note", "crm.log_activity", "crm.add_contact_note", "crm.update_contact", "crm.refresh_contact_summary", "crm.move_deal", "crm.ingest_business_card", "crm.prepare_business_card_import", "crm.get_business_card_import", "crm.delete_business_card"],
       "live_level": "synthetic_private_write_or_confirmation_preview",
-      "expected": "Synthetic records use no real outreach; plan and role restrictions are distinguished from OAuth scopes; overwrite and delete operations require exact confirmation; uploaded-card tests use a dedicated non-sensitive fixture."
+      "expected": "Synthetic records use no real outreach; plan and role restrictions are distinguished from OAuth scopes; overwrite and delete operations require exact confirmation; uploaded-card tests use a dedicated non-sensitive fixture; preparing a portable import creates only an expiring first-party handoff, the authenticated page imports only after an explicit Upload and import action, and status readback exposes no image or contact data."
     },
     {
       "id": "E2E-INCORPORATION-MISSING-ENTITLEMENT",

@@ -1,0 +1,27 @@
+{
+  "host": "claude",
+  "format": "claude-code-plugin",
+  "package_path": "plugins/claude/sparklaunch",
+  "connection_fragment": "connection.md",
+  "static_files": [
+    {
+      "source": "templates/plugin.json",
+      "destination": ".claude-plugin/plugin.json",
+      "render_package_version": true
+    },
+    {
+      "source": "templates/.mcp.json",
+      "destination": ".mcp.json",
+      "render_package_version": false
+    },
+    {
+      "source": "DISTRIBUTION.md",
+      "destination": "DISTRIBUTION.md",
+      "render_package_version": false
+    }
+  ],
+  "verification": {
+    "static": "python -m pytest tests/test_claude_adapter.py -q",
+    "native": "claude plugin validate plugins/claude/sparklaunch --strict"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "schema_version": 2,
+  "candidate": {
+    "plugin_version": "0.5.0+codex.20260902140918",
+    "production_mcp_url": "https://sparklaun.ch/api/mcp/",
+    "expected_tool_count": 61,
+    "expected_oauth_scope_count": 18,
+    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.5.0+codex.20260902140918.zip",
+    "bundle_sha256": "3CF952F74E328D839EA2A0F792D89592FA94A5381115912946B0807D90139248",
+    "deployment_status": "not_deployed_or_verified"
+  },
+  "public_production_readiness": {
+    "status": "verified",
+    "observed_at": "2026-09-01T03:36:35Z",
+    "evidence": {
+      "oauth_scope_count": 18,
+      "pkce": "S256",
+      "dynamic_client_registration": true,
+      "mcp_authentication_challenge": "valid",
+      "domain_challenge": "verified_by_openai_portal"
+    },
+    "proof_boundary": "This verifies public OAuth discovery, the unauthenticated MCP bearer challenge, and OpenAI portal verification of the production domain challenge. The authenticated production Scan Tools result is recorded separately."
+  },
+  "production_deployment": {
+    "status": "verified",
+    "observed_at": "2026-09-01T18:49:27Z",
+    "git_revision": "867ac0360949a81966d194ab2aaaa774e377d597",
+    "branch_matches_origin": true,
+    "public_backend_http_status": 200,
+    "public_frontend_http_status": 200,
+    "all_observed_deployment_targets_match_revision": true,
+    "required_runtime_configuration_verified": true,
+    "proof_boundary": "The exact revision and required runtime configuration were verified across all observed deployment targets, together with successful public backend and frontend responses. This does not prove OpenAI review or future deployment behavior."
+  },
+  "authenticated_production_scan": {
+    "status": "pending",
+    "historical_result_status": "verified",
+    "candidate_contract_status": "stale",
+    "candidate_expected_tool_count": 61,
+    "observed_at": "2026-09-01T18:53:55Z",
+    "tool_count": 59,
+    "portal_result": "successful",
+    "latest_runtime_probe": {
+      "status": "verified",
+      "observed_at": "2026-09-01T18:49:27Z",
+      "deployed_git_revision": "867ac0360949a81966d194ab2aaaa774e377d597",
+      "oauth_flow_verified": true,
+      "mcp_session_verified": true,
+      "tool_count": 59,
+      "reviewer_project_count": 1,
+      "incorporation_purchase_supported_in_chatgpt": false,
+      "temporary_grant_revoked": true
+    },
+    "latest_portal_refresh": {
+      "status": "verified",
+      "observed_at": "2026-09-01T18:53:55Z",
+      "oauth_permissions_granted": 18,
+      "tool_count": 59,
+      "annotation_justification_field_count": 177,
+      "scan_or_annotation_errors": 0,
+      "invite_collaborator_read_only": false,
+      "invite_collaborator_open_world": true,
+      "invite_collaborator_destructive": true,
+      "commerce_purchase_link_claim": false
+    },
+    "proof_boundary": "Historical evidence only: after explicit user authorization, the OpenAI portal completed a successful OAuth scan against deployed revision 867ac0360949a81966d194ab2aaaa774e377d597 and rendered 177 annotation-justification fields for its 59 tools without scan or annotation errors. The portal showed projects.invite_collaborator as read-only false, open-world true, and destructive true. The draft commerce purchase-link claim was removed to match the production entitlement response. Because the local candidate now contains 61 tools, a fresh deployed scan is pending; this record is preserved rather than rewritten and does not prove candidate deployment, OpenAI approval, or final submission."
+  },
+  "reviewer_access": {
+    "status": "verified",
+    "observed_at": "2026-09-01T18:54:52Z",
+    "project_isolation_verified": true,
+    "reviewer_materials_configured": true,
+    "reviewer_materials_stored_outside_repository": true,
+    "portal_positive_test_case_count": 5,
+    "portal_negative_test_case_count": 3,
+    "proof_boundary": "Reviewer access succeeded, the account was isolated to one disposable project, and all required review materials and test cases were configured outside this repository. No credential values are stored here."
+  },
+  "publisher_identity": {
+    "status": "verified",
+    "observed_at": "2026-09-01T03:36:35Z",
+    "organization_and_project_match": true,
+    "proof_boundary": "Identity verification and the submission organization and project context were verified in the current OpenAI portal draft. This is not final review approval."
+  },
+  "demo_recording": {
+    "status": "pending",
+    "url": null,
+    "observed_at": null,
+    "reviewer_access_verified": false,
+    "runbook": "submission/demo-recording-runbook.md",
+    "proof_boundary": "The final HTTPS URL must work for a reviewer without requesting access, signing in, or using a private network."
+  }
+}

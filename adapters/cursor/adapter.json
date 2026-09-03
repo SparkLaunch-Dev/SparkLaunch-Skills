@@ -1,0 +1,27 @@
+{
+  "host": "cursor",
+  "format": "agent-plugins-1.0.0",
+  "package_path": "plugins/cursor/sparklaunch",
+  "connection_fragment": "connection.md",
+  "static_files": [
+    {
+      "source": "templates/plugin.json",
+      "destination": "plugin.json",
+      "render_package_version": true
+    },
+    {
+      "source": "templates/mcp.json",
+      "destination": "mcp.json",
+      "render_package_version": false
+    },
+    {
+      "source": "DISTRIBUTION.md",
+      "destination": "DISTRIBUTION.md",
+      "render_package_version": false
+    }
+  ],
+  "verification": {
+    "static": "python -m pytest tests/test_cursor_adapter.py -q",
+    "native": "Install the generated package under ~/.cursor/plugins/local/sparklaunch, reload Cursor, and inspect Customize and MCP Logs"
+  }
+}

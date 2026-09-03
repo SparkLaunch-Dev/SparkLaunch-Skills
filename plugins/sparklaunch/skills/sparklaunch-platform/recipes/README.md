@@ -1,10 +1,10 @@
-# SparkLaunch ChatGPT Recipes
+# SparkLaunch Connected-Agent Recipes
 
 These recipes compose the connected SparkLaunch MCP tools into founder workflows.
 
 | Recipe | Use it for |
 | --- | --- |
-| [connect-sparklaunch-to-chatgpt.md](./connect-sparklaunch-to-chatgpt.md) | OAuth connection, accessible-project discovery, and project selection |
+| [connect-sparklaunch.md](./connect-sparklaunch.md) | Host-managed OAuth connection, accessible-project discovery, and project selection |
 | [validate-an-idea-and-generate-a-report.md](./validate-an-idea-and-generate-a-report.md) | Create and complete a private idea-validation analysis |
 | [create-a-brand-foundation.md](./create-a-brand-foundation.md) | Generate saved palette and logo options |
 | [plan-and-publish-a-launch.md](./plan-and-publish-a-launch.md) | Create a confirmed campaign, QR file, and landing-page launch surface |
@@ -18,7 +18,7 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 
 ## Shared Rules
 
-1. Use ChatGPT-managed OAuth; never collect credentials in the conversation.
+1. Use standards-based OAuth managed by the current host; never collect credentials in the conversation or configuration files.
 2. Discover projects with `projects.list` and pass an explicit `project_id` to scoped tools.
 3. Give each exact write one stable `idempotency_key`. Never retry uncertain writes with a new key.
 4. For `confirmation_required`, show the exact preview and wait for explicit approval before resubmitting the same arguments, key, and token.

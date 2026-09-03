@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "mcp_servers": {
+    "sparklaunch": {
+      "transport": "streamable_http",
+      "url": "https://sparklaun.ch/api/mcp/",
+      "headers": {},
+      "enabled": false,
+      "mode": "optional"
+    }
+  }
+}

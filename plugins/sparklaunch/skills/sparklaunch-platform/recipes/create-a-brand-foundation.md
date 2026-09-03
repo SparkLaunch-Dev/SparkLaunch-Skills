@@ -14,7 +14,7 @@ summary: Generate saved palette and logo options for a selected SparkLaunch proj
 
 ## Steps
 
-1. If the project is not selected, use [connect-sparklaunch-to-chatgpt.md](./connect-sparklaunch-to-chatgpt.md).
+1. If the project is not selected, use [connect-sparklaunch.md](./connect-sparklaunch.md).
 2. Call `branding.generate_palette` with a stable idempotency key.
 3. Present the saved options and retain the selected palette id.
 4. Call `crm.generate_logo` with the chosen business name, attributes, prompt style, optional `selected_colors` object, and a different stable idempotency key. `selected_colors` is keyed by `primary`, `secondary`, `accent`, `background`, `foreground`, or `neutral`, with values such as `{"hex":"#6E4E3A","feeling":"grounded"}`; never pass an array. When reusing a generated palette, map `neutral_light` to `background` and `neutral_dark` to `foreground`.
@@ -23,7 +23,7 @@ summary: Generate saved palette and logo options for a selected SparkLaunch proj
 
 ## Guardrails
 
-- The current ChatGPT tool set does not generate business names or set favorite palette/logo status. Do not claim those actions occurred.
+- The current connected tool set does not generate business names or set favorite palette/logo status. Do not claim those actions occurred.
 - Omit unknown logo color roles instead of inventing values or changing the accepted object into a list.
 - Never request or reconstruct raw base64 or data URLs.
 - A generated option is not automatically the user's selected brand; record the choice explicitly in the handoff.

@@ -1,14 +1,31 @@
+# ruff: noqa: E402
+
 import json
 import hashlib
+import os
+import sys
 from pathlib import Path
 from runpy import run_path
 from zipfile import ZipFile
 
 import pytest
 
-import scripts.validate_submission as submission_validator
+
+BACKEND = Path(
+    os.environ.get(
+        "SPARKLAUNCH_BACKEND",
+        Path(__file__).resolve().parents[2] / "SparkLaunch" / "backend",
+    )
+).resolve()
+if BACKEND.is_dir():
+    sys.path.insert(0, str(BACKEND))
+
 import scripts.generate_submission as submission_generator
-from scripts.build_submission_bundle import build_bundle
+import scripts.validate_portal_prerequisites as portal_prerequisite_validator
+import scripts.validate_submission as submission_validator
+from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
+from incorporation_contracts import parse_incorporation_draft
+from incorporation_validation import validate_incorporation_draft
 from scripts.generate_submission import (
     MCP_TOOL_CONTRACTS,
     ROOT,
@@ -175,7 +192,15 @@ def test_submission_package_is_complete():
     assert sparklaunch["policy"]["authentication"] == "ON_USE"
     generated = json.loads((ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8"))
     assert generated == build_submission()
-    assert len(generated["tools"]) == 59
+    assert len(generated["tools"]) == len(MCP_TOOL_CONTRACTS)
+    invite = generated["tools"]["projects.invite_collaborator"]
+    assert invite["annotations"] == {
+        "readOnlyHint": False,
+        "openWorldHint": True,
+        "destructiveHint": True,
+    }
+    assert "external recipient" in invite["justifications"]["open_world_justification"]
+    assert "irreversible sent message" in invite["justifications"]["destructive_justification"]
     assert "incorporation" in generated["app_info"]["description"].lower()
     assert generated["$schema"] == (
         "https://developers.openai.com/plugins/schemas/"
@@ -206,6 +231,36 @@ def test_submission_package_is_complete():
         f"project {fixture['project_id']}" in case["user_prompt"]
         for case in scoped
     )
+
+
+def test_packaged_synthetic_incorporation_draft_matches_runtime_contract():
+    path = (
+        ROOT
+        / "sparklaunch-incorporation"
+        / "references"
+        / "synthetic-single-founder-draft.json"
+    )
+    payload = json.loads(path.read_text(encoding="utf-8"))
+
+    parsed = parse_incorporation_draft(payload)
+    validation = validate_incorporation_draft(parsed)
+
+    assert parsed.company_name == "Example Launch Labs, Inc."
+    assert str(parsed.company_contact_email).endswith("@example.com")
+    assert parsed.business_address is None
+    assert all(founder.address is None for founder in parsed.founders)
+    assert validation.blocking_errors == []
+    serialized = json.dumps(payload).lower()
+    for forbidden in (
+        '"address"',
+        '"addresses"',
+        '"business_address"',
+        '"mailing_address"',
+        '"city"',
+        '"state_or_region"',
+        '"postal_code"',
+    ):
+        assert forbidden not in serialized
 
 
 def test_reviewer_project_regeneration_preserves_incorporation_safety_controls(
@@ -244,10 +299,10 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
     }
     assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
-    application_version = run_path(
-        ROOT.parent / "SparkLaunch" / "backend" / "mcp_server_version.py"
-    )["SPARKLAUNCH_MCP_SERVER_VERSION"]
-    assert version == "1.3.0"
+    application_version = run_path(BACKEND / "mcp_server_version.py")[
+        "SPARKLAUNCH_MCP_SERVER_VERSION"
+    ]
+    assert version == "1.4.0"
     assert version == application_version
 
 
@@ -307,6 +362,70 @@ def test_incorporation_skill_is_private_and_never_calls_filing_providers():
         assert "https://corp.delaware.gov" not in document
         assert "nwregisteredagent.com" not in document
         assert "corptools.com" not in document
+
+
+def test_incorporation_service_access_and_legal_capacity_boundary_is_packaged():
+    documents = (
+        ROOT / "sparklaunch-incorporation" / "SKILL.md",
+        ROOT / "recipes" / "incorporate-a-single-founder-company.md",
+        ROOT / "recipes" / "incorporate-with-collaborators.md",
+        ROOT / "recipes" / "resume-or-correct-incorporation.md",
+        ROOT
+        / "plugins"
+        / "sparklaunch"
+        / "skills"
+        / "sparklaunch-incorporation"
+        / "SKILL.md",
+        ROOT
+        / "plugins"
+        / "sparklaunch"
+        / "skills"
+        / "sparklaunch-platform"
+        / "recipes"
+        / "incorporate-a-single-founder-company.md",
+        ROOT
+        / "plugins"
+        / "sparklaunch"
+        / "skills"
+        / "sparklaunch-platform"
+        / "recipes"
+        / "incorporate-with-collaborators.md",
+        ROOT
+        / "plugins"
+        / "sparklaunch"
+        / "skills"
+        / "sparklaunch-platform"
+        / "recipes"
+        / "resume-or-correct-incorporation.md",
+        ROOT / "submission" / "reviewer-instructions.md",
+    )
+    markers = (
+        "service access begins at age 13",
+        "below their local age of majority",
+        "parent or legal guardian",
+        "Do not ask for age.",
+        "do not prove company formation",
+        "capacity to sign",
+        "payment authorization or completion",
+        "identity-verification completion",
+        "regulatory eligibility",
+        "provider eligibility",
+    )
+
+    for path in documents:
+        text = path.read_text(encoding="utf-8")
+        for marker in markers:
+            assert marker in text, f"{path}: missing {marker!r}"
+
+    canonical_skill = documents[0].read_text(encoding="utf-8")
+    packaged_skill = documents[4].read_text(encoding="utf-8")
+    for skill in (canonical_skill, packaged_skill):
+        assert (
+            "Read package access and entitlement state without price, purchase links, "
+            "checkout actions, or purchasing instructions."
+        ) in skill
+        assert "Purchasing is unavailable through this connected agent package" in skill
+        assert "package eligibility" not in skill.lower()
 
 
 @pytest.mark.parametrize("payload", ["null", "[]", "[{}]", '"sparklaunch"'])
@@ -698,7 +817,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.3.3+codex.20260825")
+    assert manifest["version"].startswith("0.5.0+codex.20260902")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
@@ -713,7 +832,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "sparklaunch-wordmark-dark.png" in reviewer
     for marker in (
         "nine",
-        "59 tools",
+        f"{len(MCP_TOOL_CONTRACTS)} tools",
         "18 OAuth scopes",
         "submit to SparkLaunch Filing Operations",
         "receipt does not mean",
@@ -722,6 +841,64 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     ):
         assert marker in release_notes
         assert marker in reviewer
+
+
+def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed():
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    runbook = (ROOT / "submission" / "demo-recording-runbook.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert evidence["candidate"]["expected_tool_count"] == len(MCP_TOOL_CONTRACTS)
+    assert evidence["candidate"]["expected_oauth_scope_count"] == 18
+    assert evidence["public_production_readiness"]["status"] == "verified"
+    assert evidence["public_production_readiness"]["evidence"]["domain_challenge"] == (
+        "verified_by_openai_portal"
+    )
+    assert evidence["authenticated_production_scan"]["status"] == "pending"
+    assert evidence["authenticated_production_scan"]["historical_result_status"] == (
+        "verified"
+    )
+    assert evidence["authenticated_production_scan"]["tool_count"] == 59
+    assert evidence["authenticated_production_scan"]["candidate_contract_status"] == (
+        "stale"
+    )
+    assert evidence["authenticated_production_scan"][
+        "candidate_expected_tool_count"
+    ] == len(MCP_TOOL_CONTRACTS)
+    historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
+    assert evidence["production_deployment"]["git_revision"] == historical_revision
+    assert evidence["production_deployment"][
+        "all_observed_deployment_targets_match_revision"
+    ] is True
+    assert evidence["production_deployment"][
+        "required_runtime_configuration_verified"
+    ] is True
+    assert evidence["authenticated_production_scan"]["latest_runtime_probe"][
+        "deployed_git_revision"
+    ] == historical_revision
+    assert evidence["reviewer_access"]["status"] == "verified"
+    assert evidence["reviewer_access"]["project_isolation_verified"] is True
+    assert evidence["reviewer_access"]["reviewer_materials_configured"] is True
+    assert evidence["reviewer_access"][
+        "reviewer_materials_stored_outside_repository"
+    ] is True
+    assert evidence["publisher_identity"]["status"] == "verified"
+    assert evidence["publisher_identity"]["organization_and_project_match"] is True
+    assert evidence["demo_recording"]["status"] == "pending"
+    assert "hosted ChatGPT first and Codex second" in runbook
+    assert portal_prerequisite_validator.validate(allow_pending=True) == []
+    assert {
+        error.removeprefix("external portal gate is still pending: ")
+        for error in portal_prerequisite_validator.validate(allow_pending=False)
+    } == {
+        "authenticated_production_scan",
+        "demo_recording",
+    }
 
 
 def test_public_repository_has_license_and_security_guidance():
@@ -767,20 +944,85 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
 
     assert first_digest == second_digest
     assert first_digest == hashlib.sha256(first.read_bytes()).hexdigest().upper()
+    assert portal_bundle_layout_errors(first) == []
     with ZipFile(first) as archive:
         names = set(archive.namelist())
-        assert "plugins/sparklaunch/.codex-plugin/plugin.json" in names
-        assert "plugins/sparklaunch/.mcp.json" in names
-        assert "plugins/sparklaunch/LICENSE" in names
-        assert "chatgpt-app-submission.json" in names
-        assert "evals/skill-trigger-cases.json" in names
-        assert "evals/controlled-e2e-matrix.json" in names
-        assert "evals/CONTROLLED-E2E.md" in names
-        assert "submission/release-notes.md" in names
-        assert "submission/reviewer-instructions.md" in names
-        assert "submission/reviewer-fixture.json" in names
-        assert "plugins/sparklaunch/assets/sparklaunch.png" in names
-        assert "plugins/sparklaunch/assets/sparklaunch-small.png" in names
-        assert "plugins/sparklaunch/assets/sparklaunch-wordmark-light.png" in names
-        assert "plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png" in names
+        plugin_root = ROOT / "plugins" / "sparklaunch"
+        expected_names = {
+            path.relative_to(plugin_root).as_posix()
+            for path in plugin_root.rglob("*")
+            if path.is_file()
+        }
+        assert names == expected_names
+        assert ".codex-plugin/plugin.json" in names
+        assert ".mcp.json" in names
+        assert "LICENSE" in names
+        assert "assets/sparklaunch.png" in names
+        assert "assets/sparklaunch-small.png" in names
+        assert "assets/sparklaunch-wordmark-light.png" in names
+        assert "assets/sparklaunch-wordmark-dark.png" in names
+        assert "skills/sparklaunch-platform/SKILL.md" in names
+        assert not any(name.startswith("plugins/sparklaunch/") for name in names)
+        assert "chatgpt-app-submission.json" not in names
+        assert not any(name.startswith(("evals/", "submission/")) for name in names)
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
+
+
+def test_clean_checkout_builds_candidate_before_portal_validation(
+    tmp_path,
+    monkeypatch,
+):
+    workflow = (ROOT / ".github/workflows/validate-host-packages.yml").read_text(
+        encoding="utf-8"
+    )
+    build_command = "python scripts/build_submission_bundle.py"
+    validation_command = (
+        "python scripts/validate_portal_prerequisites.py --allow-pending"
+    )
+    assert workflow.index(build_command) < workflow.index(validation_command)
+
+    clean_root = tmp_path / "clean-checkout"
+    evidence_target = clean_root / "submission/portal-prerequisites.json"
+    manifest_target = clean_root / "plugins/sparklaunch/.codex-plugin/plugin.json"
+    runbook_target = clean_root / "submission/demo-recording-runbook.md"
+    evidence_target.parent.mkdir(parents=True)
+    manifest_target.parent.mkdir(parents=True)
+    evidence_target.write_bytes(
+        (ROOT / "submission/portal-prerequisites.json").read_bytes()
+    )
+    manifest_target.write_bytes(
+        (ROOT / "plugins/sparklaunch/.codex-plugin/plugin.json").read_bytes()
+    )
+    runbook_target.write_bytes(
+        (ROOT / "submission/demo-recording-runbook.md").read_bytes()
+    )
+
+    evidence = json.loads(evidence_target.read_text(encoding="utf-8"))
+    bundle_target = clean_root / evidence["candidate"]["bundle_path"]
+    assert not bundle_target.exists()
+    _bundle, digest = build_bundle(bundle_target)
+    assert digest == evidence["candidate"]["bundle_sha256"]
+
+    monkeypatch.setattr(portal_prerequisite_validator, "ROOT", clean_root)
+    monkeypatch.setattr(
+        portal_prerequisite_validator,
+        "EVIDENCE_PATH",
+        evidence_target,
+    )
+    monkeypatch.setattr(
+        portal_prerequisite_validator,
+        "MANIFEST_PATH",
+        manifest_target,
+    )
+    assert portal_prerequisite_validator.validate(allow_pending=True) == []
+
+
+def test_portal_bundle_layout_validation_rejects_nested_plugin_root(tmp_path):
+    bundle = tmp_path / "nested.zip"
+    with ZipFile(bundle, "w") as archive:
+        archive.writestr("plugins/sparklaunch/.codex-plugin/plugin.json", "{}")
+
+    errors = portal_bundle_layout_errors(bundle)
+
+    assert any("exactly one root .codex-plugin/plugin.json" in error for error in errors)
+    assert any("non-plugin files" in error for error in errors)

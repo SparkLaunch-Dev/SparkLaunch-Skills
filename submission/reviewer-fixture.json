@@ -1,6 +1,6 @@
 {
-  "status": "provisioned",
-  "project_id": 99,
+  "status": "local_placeholder",
+  "project_id": 42,
   "incorporation_data": "synthetic_only",
   "provider_calls_allowed": false
 }

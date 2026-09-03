@@ -30,7 +30,7 @@ Run the matrix with a grant containing the expected 18 OAuth scopes, then call `
 ## Incorporation isolation controls
 
 - Run only with synthetic ordinary company and participant data. Keep SSN/TIN values, identity documents, biometrics, signatures, private attestations, payment data, invitation tokens, and private Action Center URLs out of prompts and retained evidence.
-- Check entitlement before every incorporation scenario. A purchase URL or user statement is not entitlement proof, and the missing-entitlement case must not perform checkout.
+- Check entitlement before every incorporation scenario. A browser result or user statement is not entitlement proof, and the missing-entitlement ChatGPT result must expose no price, purchase URL, checkout action, or purchasing instructions.
 - Direct each person to their own Action Center. Collaborators see only safe participant status and cannot complete another person's private work.
 - Use stable idempotency keys, exact version guards, and each confirmation token once. Read the case after an uncertain write before deciding whether the original call needs replay.
 - Never call Delaware, NWRA, or CorpTools. Block email, provider, worker, registered-agent, and filing adapters, and require zero provider calls for all five incorporation cases.

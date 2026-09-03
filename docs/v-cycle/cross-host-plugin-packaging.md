@@ -1,0 +1,183 @@
+# V-Cycle Record: Cross-host SparkLaunch plugin packaging
+
+| Field | Value |
+|---|---|
+| Status | Local implementation and verification complete; hosted deployment, publication, and unavailable-client proof remain separate |
+| Scope | Reorganize the SparkLaunch skills/package repository around one canonical skill and contract source; generate and validate OpenAI, Claude, Cursor, Gemini CLI, and Meta Muse Code adapters; make the smallest sibling-runtime changes required for portable contracts and least-privilege OAuth; then close the remaining standards-based client-registration and business-card handoff gaps without weakening existing controls. |
+| Effective sources | User request on 2026-09-02; prior compatibility audit; `D:/dev/SparkLaunch/docs/10-product/prds/PRD-CHATGPT_MCP_PLUGIN.md`; current OpenAI, Claude, Cursor, Gemini CLI, Agent Plugins, Agent Skills, MCP, and Meta Muse Code public contracts verified 2026-09-02. |
+| Evidence date | 2026-09-02 |
+
+## PRD context and outcomes
+
+### Problem and stakeholders
+
+SparkLaunch has a production remote MCP server and nine workflow skills, but its checked-in package is OpenAI/Codex-shaped, its canonical instructions contain ChatGPT-specific recovery text, its submission generator depends directly on a sibling private checkout, and its two file-input tools depend on OpenAI attachment metadata. Founders should receive the same governed SparkLaunch workflows in each supported agent without copying credentials or weakening project, confirmation, privacy, and retry boundaries. Maintainers need one editable source and deterministic, independently testable host packages.
+
+### Outcomes and success measures
+
+| ID | Atomic outcome | Measure and acceptance boundary | Source | Status |
+|---|---|---|---|---|
+| PRD-XHOST-001 | SparkLaunch shall be packaged from one canonical skill and contract source for ChatGPT/Codex, Claude, Cursor, Gemini CLI, and Muse Code. | A deterministic build emits all five adapter packages; static package validation passes for every documented format; no host package is hand-maintained. | User request | Complete |
+| PRD-XHOST-002 | SparkLaunch shall preserve the existing authorization, privacy, idempotency, confirmation, and legacy-client boundaries while becoming portable. | Existing runtime/package suites pass; portable contracts add no raw credential path; deployment and marketplace state remain separately unclaimed. | Existing PRD and audit | Complete |
+| PRD-XHOST-003 | Standards-conforming public MCP clients shall be able to identify themselves without requiring dynamic registration, while existing DCR clients continue to work. | A secure Client ID Metadata Document (CIMD) path passes validation, SSRF, redirect, cache, and DCR-regression tests before it is advertised. | Remaining-gap review | Complete locally |
+| PRD-XHOST-004 | Founders using hosts without attachment metadata shall have a first-party business-card import handoff that preserves explicit user intent and project authorization. | MCP creates only a short-lived handoff and reports status; an authenticated SparkLaunch page performs the bounded image import only after the user chooses **Upload and import**. | Remaining-gap review | Complete locally |
+
+### Non-goals
+
+- Production deployment, registry publication, marketplace submission, or hosted configuration changes.
+- Granting an open-source license or changing SparkLaunch legal terms.
+- Claiming Muse protected-MCP parity when Meta exposes no documented OAuth client flow; an unreviewed static bearer-token workaround is prohibited.
+- Building a custom MCP App/widget or new founder product capability.
+- Removing the legacy `slk_mcp_...` runtime credential path.
+
+## Product requirements
+
+| ID | Parent | Priority | Atomic shall statement | Acceptance criteria | Verification IDs | Status |
+|---|---|---|---|---|---|---|
+| PROD-XHOST-001 | PRD-XHOST-001 | Must | The repository shall have one clearly identified canonical skill/recipe source and generated host packages. | Editing generated packages is unnecessary; parity checks detect drift. | T-CONTRACT-001, T-ACCEPT-001 | Complete |
+| PROD-XHOST-002 | PRD-XHOST-001 | Must | Each supported host shall receive a syntactically valid native manifest or, where no manifest is documented, a truthful install/configuration package. | OpenAI, Claude, Cursor, and Gemini manifests validate; Muse package does not claim a nonexistent marketplace or OAuth capability. | T-CONTRACT-002, T-CONTRACT-003, T-CONTRACT-004, T-CONTRACT-005, T-CONTRACT-006 | Complete |
+| PROD-XHOST-003 | PRD-XHOST-001 | Must | Shared skill behavior shall be provider-neutral while each generated package shall give correct host-specific connection recovery. | No canonical skill hard-codes ChatGPT; generated host packages contain the expected host name and recovery contract. | T-UNIT-001, T-CONTRACT-007 | Complete |
+| PROD-XHOST-004 | PRD-XHOST-002 | Must | Non-OpenAI hosts shall have a safe contract for the two workflows that currently depend on OpenAI file references. | Incorporation supports a closed non-address structured draft; business-card ingestion supports only a bounded first-party/allowlisted portable reference or remains explicitly unavailable without an unsafe fallback. | T-UNIT-002, T-SEC-001 | Complete |
+| PROD-XHOST-005 | PRD-XHOST-002 | Must | Initial OAuth discovery shall request a least-privilege starting scope and allow standards-based step-up. | Initial 401 advertises a minimal scope; insufficient-scope challenges retain exact required scopes; existing token tests pass. | T-INT-001, T-SEC-002 | Complete |
+| PROD-XHOST-006 | PRD-XHOST-002 | Must | The OpenAI submission package shall accurately reflect runtime behavior. | OpenAI `.mcp.json` uses a supported shape; overwriting draft replacement is destructive; all 61 tool annotations and schemas remain synchronized. | T-CONTRACT-002, T-CONTRACT-008 | Complete |
+| PROD-XHOST-007 | PRD-XHOST-001 | Must | A standalone skills-repository clone shall validate against a versioned sanitized runtime contract without importing sibling Python. | Package-only validation succeeds when `../SparkLaunch` is absent; refresh/check mode detects snapshot drift when the sibling exists. | T-CONTRACT-009 | Complete |
+| PROD-XHOST-008 | PRD-XHOST-003 | Must | The authorization endpoint shall resolve an eligible HTTPS client identifier through CIMD without changing token, refresh, revocation, or existing DCR behavior. | Only validated public-client metadata is accepted; every subsequent OAuth step uses persisted registration state rather than refetching arbitrary URLs. | T-CIMD-001, T-CIMD-002, T-CIMD-003, T-CIMD-004 | Complete locally |
+| PROD-XHOST-009 | PRD-XHOST-004 | Must | Business-card portability shall use a first-party, authenticated, single-use handoff instead of transferring image bytes or arbitrary URLs through MCP. | A prepare tool returns an expiring same-origin page link; the page rechecks current access and imports on an explicit action; a read-only status tool reports the outcome. | T-UPLOAD-001, T-UPLOAD-002, T-UPLOAD-003, T-UPLOAD-004, T-UPLOAD-005 | Complete locally |
+
+## Architecture
+
+### Verified baseline before implementation
+
+- `plugins/sparklaunch/` is the only complete package and uses `.codex-plugin/plugin.json`.
+- Nine top-level `sparklaunch-*` folders are treated as canonical and mirrored by `scripts/sync_plugin.py`.
+- `scripts/generate_submission.py` imports `../SparkLaunch/backend/mcp_tool_contracts.py` directly.
+- The remote MCP server exposes 59 tools, OAuth DCR/PKCE/refresh/revocation, idempotency, and confirmation controls.
+- `crm.ingest_business_card` and `incorporation.update_draft` advertise `_meta["openai/fileParams"]`; downloaded hosts default to OpenAI file domains.
+- Cursor and Gemini CLIs are not installed in the verification environment; Claude Code 2.1.207 is installed; Muse Code is not installed.
+
+### Decisions and constraints
+
+| ID | Parent | Decision or constraint | Rationale/tradeoff | Compatibility, failure, migration, rollback | Verification IDs | Status |
+|---|---|---|---|---|---|---|
+| ARCH-XHOST-001 | PROD-XHOST-001 | `src/` owns canonical skills/recipes and `adapters/` owns host metadata; generated packages remain under `plugins/` for installability. | Separates editable behavior from distribution without requiring five repositories. | Legacy top-level skill paths remain generated compatibility mirrors until a separately governed removal. | T-CONTRACT-001 | Implemented |
+| ARCH-XHOST-002 | PROD-XHOST-002 | One deterministic Python builder renders host packages from canonical sources and declarative adapter metadata. | Avoids manually divergent trees and supports Windows CI. | Build output is reproducible; validation fails on stale checked-in packages. | T-CONTRACT-001, T-UNIT-003 | Implemented |
+| ARCH-XHOST-003 | PROD-XHOST-003 | Canonical instructions use provider-neutral connection language; adapters replace a bounded marked connection block with host text. | Workflow/privacy rules remain shared while recovery remains truthful. | Unknown hosts receive neutral safe-stop behavior; marker loss is a build failure. | T-UNIT-001, T-CONTRACT-007 | Implemented |
+| ARCH-XHOST-004 | PROD-XHOST-004 | Portable structured/file references are additive and closed; OpenAI file references remain supported for compatibility. | Avoids weakening privacy or breaking ChatGPT. | Exactly-one-source validation prevents ambiguous payloads; rollback removes additive fields. | T-UNIT-002, T-SEC-001 | Implemented |
+| ARCH-XHOST-005 | PROD-XHOST-005 | The initial HTTP bearer challenge uses `projects.read`; tool calls continue to challenge for exact additional scopes. | Prevents clients from requesting every supported permission initially. | Existing grants remain valid; DCR remains supported; CIMD is not advertised unless fully implemented and tested. | T-INT-001, T-SEC-002 | Implemented |
+| ARCH-XHOST-006 | PROD-XHOST-007 | `contracts/tools.snapshot.json` is a sanitized generated interface artifact, not server source. | Makes package validation self-contained without publishing private implementation. | Snapshot includes descriptors/schemas only; generation remains an explicit cross-repo maintenance command. | T-CONTRACT-009 | Implemented |
+| ARCH-XHOST-007 | PROD-XHOST-002 | Muse receives validated skills and a configuration template, but protected runtime activation is marked unavailable until OAuth is supported or a separately reviewed bridge is adopted. | Static tokens would violate the credential and refresh contract. | Skills remain useful; config uses optional/fail-soft mode; no false parity claim. | T-CONTRACT-006 | Implemented |
+| ARCH-XHOST-008 | PROD-XHOST-008 | CIMD resolution occurs only at authorization entry and creates durable, source-tagged public-client registration state after a bounded SSRF-safe metadata fetch. | URL-shaped client identifiers cannot become a general server-side fetch primitive, and later consent/token operations remain database-only. | Enforce HTTPS, exact document/client-ID equality, public-client auth, strict redirect policy, size/time/cache bounds, no redirects or proxy inheritance, public resolved addresses, and tested DCR fallback; do not advertise CIMD until every check passes. | T-CIMD-001, T-CIMD-002, T-CIMD-003, T-CIMD-004 | Implemented |
+| ARCH-XHOST-009 | PROD-XHOST-009 | MCP creates a durable, expiring upload intent but never accepts portable image bytes; a logged-in SparkLaunch page performs direct finalization through the existing CRM ingestion service after an explicit **Upload and import** action. | This gives every browser-capable host a portable handoff without arbitrary URL/base64 inputs, CORS exposure, temporary-object lifecycle risk, or an agent-triggered hidden write. | Bind intent to user and project; recheck current project/CRM-write access; allow only one bounded supported image; use atomic pending/processing/completed transitions; store only safe result/status data; status is read-only. | T-UPLOAD-001, T-UPLOAD-002, T-UPLOAD-003, T-UPLOAD-004, T-UPLOAD-005 | Implemented |
+
+### Interfaces and data flow
+
+`src/skills` and `src/recipes` -> deterministic builder -> the existing `plugins/sparklaunch` OpenAI compatibility path plus `plugins/{claude,cursor,gemini,muse}/sparklaunch`. Standalone validation reads `contracts/tools.snapshot.json`; runtime descriptors are refreshed explicitly from the sibling backend. Host OAuth clients connect directly to `https://sparklaun.ch/api/mcp/`; no package stores access or refresh tokens. Muse protected access remains outside the generated package until its OAuth boundary is supportable.
+
+The continuation adds two deliberately narrow flows:
+
+- OAuth authorization entry -> DCR database lookup or bounded CIMD resolution -> persisted public-client registration -> unchanged consent/code/token/refresh/revocation pipeline.
+- MCP prepare call -> expiring first-party link -> normal SparkLaunch sign-in -> current project/entitlement recheck -> explicit **Upload and import** -> existing CRM business-card ingestion -> read-only MCP status lookup. No image is staged by the handoff and no arbitrary remote URL, base64 value, data URL, or bearer credential enters an MCP argument.
+
+## System requirements
+
+| ID | Parent | Category | Priority | Atomic shall statement | Measure/conditions | Verification IDs | Status |
+|---|---|---|---|---|---|---|
+| SYS-XHOST-001 | ARCH-XHOST-001 | Compatibility | Must | The build shall preserve all nine skill names and their referenced local assets. | Every package has nine valid skills; every relative reference resolves. | T-CONTRACT-001, T-CONTRACT-007 | Complete |
+| SYS-XHOST-002 | ARCH-XHOST-002 | Reliability | Must | Repeated builds from unchanged inputs shall be byte-deterministic. | A second check-mode build reports no drift. | T-UNIT-003 | Complete |
+| SYS-XHOST-003 | ARCH-XHOST-003 | Functional | Must | A missing or expired host connection shall stop before writes and provide host-correct recovery. | Static contract tests inspect every generated skill. | T-CONTRACT-007 | Complete |
+| SYS-XHOST-004 | ARCH-XHOST-004 | Security/privacy | Must | Portable input alternatives shall reject addresses, oversized payloads, ambiguous sources, and non-allowlisted remote URLs. | Positive and negative runtime tests pass. | T-UNIT-002, T-SEC-001 | Complete |
+| SYS-XHOST-005 | ARCH-XHOST-005 | Security | Must | OAuth discovery and runtime scope challenges shall follow least privilege without weakening PKCE, audience, redirect, rotation, or revocation checks. | Targeted OAuth suite and existing auth suite pass. | T-INT-001, T-SEC-002 | Complete |
+| SYS-XHOST-006 | ARCH-XHOST-006 | Compatibility | Must | The contract snapshot shall cover exactly the runtime tool inventory with closed schemas and annotations. | Snapshot and generated submission both cover 61 tools; standalone validation passes. | T-CONTRACT-008, T-CONTRACT-009 | Complete |
+| SYS-XHOST-007 | ARCH-XHOST-007 | Truthfulness | Must | Muse artifacts shall not request pasted secrets or claim completed OAuth, marketplace, or protected-tool support. | Forbidden-text and manifest/config tests pass. | T-CONTRACT-006 | Complete |
+| SYS-XHOST-008 | ARCH-XHOST-002 | Maintainability | Must | CI shall run canonical parity, per-host schema/static validation, standalone snapshot validation, and runtime contract tests. | Workflow exists and its commands pass locally where tools are available. | T-SYS-001 | Complete |
+| SYS-XHOST-009 | ARCH-XHOST-002 | Operability | Must | Release metadata shall expose distinct package/service versions and detect drift without publishing. | Version tests explain Registry 1.0.0 versus candidate service metadata; no external publication occurs. | T-CONTRACT-010 | Complete |
+| SYS-XHOST-010 | ARCH-XHOST-008 | Security/compatibility | Must | CIMD metadata resolution shall be bounded, SSRF-resistant, exact-match validated, and limited to public clients. | Negative tests cover redirects, proxies, special/private addresses, DNS changes, oversized/invalid documents, mismatched client IDs, disallowed redirect URIs, and confidential-client methods; DCR remains green. | T-CIMD-001, T-CIMD-002, T-CIMD-003 | Complete locally |
+| SYS-XHOST-011 | ARCH-XHOST-008 | Reliability/privacy | Must | Valid CIMD registrations shall have durable source/cache metadata and later OAuth phases shall use only persisted state. | Registration source, fetch/expiry/digest, and exact redirect snapshot are inspectable; error responses do not leak fetched bodies or internal network details. | T-CIMD-003, T-CIMD-004 | Complete locally |
+| SYS-XHOST-012 | ARCH-XHOST-009 | Security/privacy | Must | The business-card handoff shall be same-origin, authenticated, user/project-bound, expiring, single-use, and limited to one supported image within the existing size bound. | Unauthorized, expired, replayed, ambiguous, oversized, mislabeled, and malformed uploads fail without CRM persistence. | T-UPLOAD-001, T-UPLOAD-002, T-UPLOAD-003 | Complete locally |
+| SYS-XHOST-013 | ARCH-XHOST-009 | Intent/reliability | Must | Preparing or checking a handoff shall not import a card; only the logged-in page's explicit action may perform the existing CRM write. | Prepare is non-destructive, status is read-only, processing is atomic, and successful completion can be read back without retrying the import. | T-UPLOAD-001, T-UPLOAD-004, T-UPLOAD-005 | Complete locally |
+| SYS-XHOST-014 | ARCH-XHOST-009 | Accessibility/responsiveness | Must | The first-party handoff page shall remain operable with keyboard and assistive technology and at narrow or wide browser sizes. | File input, context, status/error messages, and the **Upload and import** action have programmatic labels and visible focus; the page does not require horizontal scrolling at supported mobile widths. | T-UPLOAD-002, T-UPLOAD-005 | Complete locally |
+
+## Implementation requirements
+
+| ID | Parent | Component/interface | Priority | Atomic shall statement | Files/targets | Verification IDs | Status |
+|---|---|---|---|---|---|---|
+| IMPL-XHOST-001 | SYS-XHOST-001 | Canonical source | Must | The implementation shall move editable skills/recipes under `src/` and generate compatibility/package mirrors. | `src/skills`, `src/recipes`, sync/build scripts | T-CONTRACT-001 | Complete |
+| IMPL-XHOST-002 | SYS-XHOST-002 | Builder | Must | The implementation shall build/check all host packages deterministically. | `scripts/sync_plugin.py` | T-UNIT-003 | Complete |
+| IMPL-XHOST-003 | SYS-XHOST-003 | Skill rendering | Must | The implementation shall use a bounded connection-block marker and per-host replacement. | canonical skills, adapter copy | T-UNIT-001, T-CONTRACT-007 | Complete |
+| IMPL-XHOST-004 | SYS-XHOST-004 | Runtime input models | Must | The implementation shall add closed portable alternatives without removing OpenAI file parameters. | sibling backend models/tools | T-UNIT-002, T-SEC-001 | Complete |
+| IMPL-XHOST-005 | SYS-XHOST-005 | OAuth challenge | Must | The implementation shall add `scope="projects.read"` to the initial unauthenticated challenge. | sibling MCP auth middleware | T-INT-001 | Complete |
+| IMPL-XHOST-006 | SYS-XHOST-006 | Tool contract | Must | The implementation shall mark incorporation draft replacement destructive and regenerate the submission. | sibling contract registry, submission JSON | T-CONTRACT-008 | Complete |
+| IMPL-XHOST-007 | SYS-XHOST-006 | Snapshot | Must | The implementation shall generate and validate a sanitized snapshot of the complete runtime tool inventory. | `contracts/tools.snapshot.json`, generator/validator | T-CONTRACT-009 | Complete |
+| IMPL-XHOST-008 | SYS-XHOST-001 | OpenAI adapter | Must | The implementation shall emit a supported OpenAI `.mcp.json` and preserve the current install path. | `adapters/openai`, `plugins/sparklaunch` | T-CONTRACT-002 | Complete |
+| IMPL-XHOST-009 | SYS-XHOST-001 | Claude adapter | Must | The implementation shall emit `.claude-plugin/plugin.json`, Claude MCP config, and nine skills. | `adapters/claude`, generated package | T-CONTRACT-003 | Complete |
+| IMPL-XHOST-010 | SYS-XHOST-001 | Cursor adapter | Must | The implementation shall emit Agent Plugins 1.0 `plugin.json`, `mcp.json`, and nine skills. | `adapters/cursor`, generated package | T-CONTRACT-004 | Complete |
+| IMPL-XHOST-011 | SYS-XHOST-001 | Gemini adapter | Must | The implementation shall emit `gemini-extension.json`, `GEMINI.md`, and nine skills. | `adapters/gemini`, generated package | T-CONTRACT-005 | Complete |
+| IMPL-XHOST-012 | SYS-XHOST-007 | Muse adapter | Must | The implementation shall emit validated Muse skills, truthful setup guidance, and a fail-soft settings example. | `adapters/muse`, generated package | T-CONTRACT-006 | Complete |
+| IMPL-XHOST-013 | SYS-XHOST-008 | Validation/CI | Must | The implementation shall add per-host and standalone contract tests without requiring every client binary. | tests and GitHub workflow | T-SYS-001 | Complete |
+| IMPL-XHOST-014 | SYS-XHOST-009 | Governed docs | Must | The implementation shall extend the current MCP PRD, requirements, architecture, verification, and traceability chain to multi-host packaging. | sibling governed docs | T-CONTRACT-011 | Complete |
+| IMPL-XHOST-015 | SYS-XHOST-010, SYS-XHOST-011 | OAuth registration resolver | Must | The implementation shall add source-aware CIMD discovery, validation, persistence, caching, and authorization-entry integration while retaining DCR. | sibling OAuth service/models/migration/router/WAF/tests | T-CIMD-001, T-CIMD-002, T-CIMD-003, T-CIMD-004 | Complete |
+| IMPL-XHOST-016 | SYS-XHOST-012, SYS-XHOST-013 | MCP handoff tools | Must | The implementation shall add a non-destructive prepare tool and a read-only status tool with closed schemas and truthful annotations. | sibling MCP contracts/tools/models/migration/tests | T-UPLOAD-001, T-UPLOAD-004 | Complete |
+| IMPL-XHOST-017 | SYS-XHOST-012, SYS-XHOST-013, SYS-XHOST-014 | First-party upload page/API | Must | The implementation shall add the authenticated, accessible direct-finalization upload page and exact same-origin API route, reusing the existing CRM ingestion service. | sibling frontend/backend route, page, service, and tests | T-UPLOAD-002, T-UPLOAD-003, T-UPLOAD-005 | Complete |
+| IMPL-XHOST-018 | SYS-XHOST-011, SYS-XHOST-013 | Package/governance synchronization | Must | After runtime completion, the implementation shall refresh governed requirements, contract snapshot, skill guidance, submission evidence, tool counts, and release metadata without rewriting historical production evidence. | sibling governed docs and this repository's canonical sources/contracts/submission ledger | T-CIMD-004, T-UPLOAD-004, T-CONTRACT-008, T-CONTRACT-009, T-CONTRACT-011 | Complete |
+
+## Requirements-catalog disposition
+
+| Catalog group | Applicable or N/A | Requirement IDs or rationale |
+|---|---|---|
+| Product context and outcomes | Applicable | PRD-XHOST-001 through PRD-XHOST-004 |
+| Functional requirements | Applicable | PROD-XHOST-001 through PROD-XHOST-009; SYS-XHOST-001 through SYS-XHOST-014 |
+| Architecture and technical quality | Applicable | ARCH-XHOST-001 through ARCH-XHOST-009; maintainability, compatibility, reliability, operability, accessibility, and responsive handoff behavior are covered. |
+| Performance and scalability | Applicable to the continuation | SYS-XHOST-010 and SYS-XHOST-012 require bounded metadata and image work; no invented throughput target is needed. Build determinism remains a reliability requirement. |
+| Security, privacy, and compliance | Applicable | PROD-XHOST-004 through PROD-XHOST-006, PROD-XHOST-008, PROD-XHOST-009; SYS-XHOST-004, SYS-XHOST-005, SYS-XHOST-007, SYS-XHOST-010 through SYS-XHOST-014. License changes remain an explicit user/legal decision. |
+| Data, compatibility, and migration | Applicable | ARCH-XHOST-001, ARCH-XHOST-004, ARCH-XHOST-006, ARCH-XHOST-008, ARCH-XHOST-009; additive registration/intent records and generated compatibility mirrors avoid destructive migration. |
+| Verification and acceptance | Applicable | T-UNIT-001 through T-CONTRACT-011, T-INT-001, T-SEC-001, T-SEC-002, T-SYS-001, T-ACCEPT-001, T-CIMD-001 through T-CIMD-004, T-UPLOAD-001 through T-UPLOAD-005 |
+
+## Conflicts, gaps, assumptions, and waivers
+
+| ID | Type | Requirement IDs | Evidence and impact | Resolution/assumption | Severity | Status |
+|---|---|---|---|---|---|---|
+| GAP-XHOST-001 | Public-contract decision | PROD-XHOST-002 | Cursor public Marketplace requires open-source packages; current license is proprietary. | Preserve proprietary license and support local/private/team distribution. Public licensing requires explicit owner/legal decision. | Non-blocking | Open |
+| GAP-XHOST-002 | External capability | PROD-XHOST-002, PROD-XHOST-005 | Muse public docs expose static headers but no OAuth discovery/token lifecycle or third-party manifest. | Ship truthful skills/config only; do not build or recommend an unreviewed token bridge. | Blocking for Muse protected tools, non-blocking for repository work | Open |
+| GAP-XHOST-003 | Verification environment | PROD-XHOST-002 | Cursor, Gemini CLI, and Muse Code binaries are unavailable locally. | Perform schema/static tests and mark live install/OAuth/tool execution NOT VERIFIED. | Non-blocking | Open |
+| GAP-XHOST-004 | Hosted state | PRD-XHOST-001, PRD-XHOST-002 | Source changes do not deploy, publish, or update marketplace listings. | Keep all external release states NOT VERIFIED; provide exact next proof. | Non-blocking | Open |
+| GAP-XHOST-005 | CIMD implementation | PROD-XHOST-008 | Advertising CIMD without secure metadata fetch, exact client-ID/redirect validation, durable registration state, and regression coverage would be unsafe. | The feature-gated implementation and local tests are complete; DCR remains the production-verified path until an approved deployment enables and verifies CIMD. | Hosted verification tracked by GAP-XHOST-004 | Closed locally |
+| GAP-XHOST-006 | Portable business-card import | PROD-XHOST-009 | Host attachment metadata is not portable, while arbitrary URL/base64 fallbacks would widen SSRF, privacy, and payload risk. | The first-party no-staging prepare/page/status handoff and package contract are locally implemented and tested; deployment/live-host proof remains separate. | Hosted verification tracked by GAP-XHOST-003 and GAP-XHOST-004 | Closed locally |
+| GAP-XHOST-007 | Gemini product transition | PROD-XHOST-002 | Google's [June 18 Gemini CLI notice](https://github.com/google-gemini/gemini-cli/discussions/28017) states that the CLI stopped serving individual Free, Google AI Pro, and Ultra accounts, while enterprise Code Assist and API-key authentication remain unaffected; the [original transition announcement](https://github.com/google-gemini/gemini-cli/discussions/27274) gives the enterprise/Google Cloud and paid API-key detail. | Keep the Gemini CLI adapter for supported enterprise/API-key use of the legacy CLI, label live proof accordingly, and evaluate an Antigravity plugin separately rather than treating this adapter as one. | Non-blocking | Open |
+
+## Bidirectional traceability and verification evidence
+
+| Requirement ID | Parent ID(s) | Implementation target | Verification ID(s) | Layer/environment | Expected result | Actual result and evidence | Status |
+|---|---|---|---|---|---|---|---|
+| IMPL-XHOST-001..003 | SYS-XHOST-001..003 | Canonical source and package builder | T-UNIT-001, T-UNIT-003, T-CONTRACT-001, T-CONTRACT-007 | Unit/contract, Windows local | Deterministic build; all references and host recovery text validate. | `sync_plugin.py --write` emitted 374 files; check mode reported no drift; all five packages contain nine skills and resolved incorporation recipes. | Passed |
+| IMPL-XHOST-004..006 | SYS-XHOST-004..006 | Sibling MCP runtime | T-UNIT-002, T-INT-001, T-SEC-001, T-SEC-002, T-CONTRACT-008 | Unit/integration/security, local isolated | Portable inputs and least-privilege challenges pass without regressions. | Focused MCP runtime/OAuth/incorporation/governance suite: 225 passed. Draft schema has exactly one source, no confirmation token, destructive annotation true, and address-free nested models. | Passed |
+| IMPL-XHOST-007 | SYS-XHOST-006 | Contract snapshot | T-CONTRACT-009 | Contract, standalone import check | Exactly 61 sanitized tools validate without sibling import. | Snapshot export/check succeeded; `generate_submission` loaded all 61 tools with no sibling backend module or path imported. | Passed |
+| IMPL-XHOST-008 | PROD-XHOST-006 | OpenAI package | T-CONTRACT-002, T-CONTRACT-008 | Contract, local | Supported `.mcp.json`; submission and runtime annotations match. | Direct OpenAI MCP map validated; submission regenerated from the snapshot with truthful draft destructive/version justification. | Passed |
+| IMPL-XHOST-009 | PROD-XHOST-002 | Claude package | T-CONTRACT-003 | Contract plus Claude Code 2.1.207 local | Strict validation passes. | `claude plugin validate plugins/claude/sparklaunch --strict` passed. OAuth and tool execution were not attempted. | Passed (manifest) |
+| IMPL-XHOST-010 | PROD-XHOST-002 | Cursor package | T-CONTRACT-004 | Schema/static local | Agent Plugins schemas pass; live install remains environment-dependent. | Agent Plugins 1.0 manifest/static tests passed; Cursor binary absent. | Passed (static) |
+| IMPL-XHOST-011 | PROD-XHOST-002 | Gemini package | T-CONTRACT-005 | Schema/static local | Gemini manifest and skills validate; live OAuth remains environment-dependent. | Native `httpUrl`/context/static tests passed; Gemini CLI binary absent. | Passed (static) |
+| IMPL-XHOST-012 | PROD-XHOST-002 | Muse package | T-CONTRACT-006 | Static local | Skills/config validate and make no unsupported auth claim. | Disabled optional server, empty headers, and fail-closed recovery tests passed; Muse binary absent. | Passed (static) |
+| IMPL-XHOST-013 | SYS-XHOST-008 | Test/CI entrypoints | T-SYS-001 | System/local CI-equivalent | Applicable suites pass; missing binaries are clearly skipped/not verified. | New standalone workflow and validators added; Skills repository suite passed 78 tests. | Passed |
+| IMPL-XHOST-014 | PRD-XHOST-001, PRD-XHOST-002 | Governed documentation | T-CONTRACT-011 | Inspection/contract | PRD, requirements, architecture, verification, and traceability remain connected. | MCP governance suite passed 17 tests; JSON/CSV traceability remained aligned. | Passed |
+| IMPL-XHOST-015 | PROD-XHOST-008, SYS-XHOST-010, SYS-XHOST-011 | Sibling OAuth runtime | T-CIMD-001, T-CIMD-002, T-CIMD-003, T-CIMD-004 | Unit/security/integration/contract, local isolated | Secure CIMD registration works additively and DCR behavior is unchanged. | The final focused OAuth/CIMD selection passed 119 tests; coverage includes one DNS resolution and request, IP pinning with TLS SNI/Host configuration, special-address/redirect rejection, end-to-end deadlines, successful cache reuse without caching errors, bounded distinct-client discovery, metadata-change revocation, DB-only later phases, DCR regression, and response `iss`. CIMD remains default-off. | Passed locally |
+| IMPL-XHOST-016..017 | PROD-XHOST-009, SYS-XHOST-012, SYS-XHOST-013, SYS-XHOST-014 | Sibling MCP runtime and first-party web flow | T-UPLOAD-001, T-UPLOAD-002, T-UPLOAD-003, T-UPLOAD-004, T-UPLOAD-005 | Unit/security/integration/contract/acceptance, local isolated | Prepare creates only a safe handoff; authenticated explicit upload imports once through an accessible responsive page; status reads the result. | The final business-card/contact selection passed 46 tests; upload-body/WAF coverage passed 153 tests. Thirteen frontend suites passed 148 tests, followed by type checking and zero-warning lint. No hosted upload was attempted. | Passed locally |
+| IMPL-XHOST-018 | PRD-XHOST-003, PRD-XHOST-004 | Governed docs, canonical skills, snapshot, submission/release ledgers | T-CIMD-004, T-UPLOAD-004, T-CONTRACT-008, T-CONTRACT-009, T-CONTRACT-011 | Contract/governance, both repositories | Runtime and package truth synchronize without changing historical hosted evidence. | Service `1.4.0` exported exactly 61 tools with complete output schemas and annotations; the final integrated MCP/CRM/redaction/WAF runtime selection passed 691 tests; the `0.5.0+codex.20260902140918` packages, five-positive/three-negative submission import, 374 generated mirrors, and 79 package tests passed. The prior deployed 59-tool scan/revision remains intact and is marked stale/pending for this candidate. | Passed locally |
+| PROD-XHOST-001..007 | PRD-XHOST-001, PRD-XHOST-002 | Generated repository experience | T-ACCEPT-001 | Acceptance/local | One command builds/checks every package from canonical inputs. | Build/check, host validator, OpenAI validator, submission check, and package tests passed locally. | Passed |
+| PRD-XHOST-001..002 | none | Source and generated packages | T-ACCEPT-001 | Acceptance/operational | Local implementation is complete; deployment/publication/live-client proof remains explicitly separate. | Local requirements satisfied; release-state ledger records every non-local outcome as unperformed, blocked, or not verified. | Passed locally |
+
+## Verification summary
+
+| V level | Verification IDs | Pass | Fail | Not verified | Evidence boundary |
+|---|---|---:|---:|---:|---|
+| Implementation | T-UNIT-001, T-UNIT-002, T-UNIT-003 | 3 | 0 | 0 | Local/source |
+| Architecture/integration | T-CONTRACT-001..011, T-INT-001 | 12 | 0 | 0 | Local contracts and available-client manifest validation; absent-client live behavior remains an external evidence gap |
+| System/quality | T-SEC-001, T-SEC-002, T-SYS-001 | 3 | 0 | 0 | Local isolated/runtime |
+| Product/acceptance | T-ACCEPT-001 | 1 | 0 | 0 | Local build only; no marketplace or deployment proof |
+| Continuation | T-CIMD-001..004, T-UPLOAD-001..005 | 9 | 0 | 0 | Local source, security, integration, contract, and focused browser-component proof only; no deployment or live external-client completion is claimed |
+
+## Closeout
+
+- Satisfied requirement IDs: PRD-XHOST-001..004, PROD-XHOST-001..009, ARCH-XHOST-001..009, SYS-XHOST-001..014, and IMPL-XHOST-001..018 for the authorized local source/runtime/documentation scope.
+- Continuation requirement IDs not yet satisfied locally: none. Hosted and unavailable-native-client outcomes remain outside the local requirement closure.
+- Unsatisfied or externally blocked outcomes: Muse protected-tool execution (GAP-XHOST-002), Cursor public Marketplace submission under the proprietary license (GAP-XHOST-001), live Cursor/Gemini/Muse install/OAuth/tool execution (GAP-XHOST-003), and every hosted deployment/publication outcome (GAP-XHOST-004).
+- Material assumptions/waivers: DCR remains the only production-verified registration path because CIMD is default-off and undeployed; the first-party business-card handoff is locally verified but undeployed; no static Muse token path; generated root compatibility mirrors remain during migration.
+- Deployment, hosted-state, marketplace/directory approval, and real-world tool-execution proof: NOT VERIFIED and outside this implementation authorization.
