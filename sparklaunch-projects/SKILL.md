@@ -14,10 +14,12 @@ Manage the user's accessible SparkLaunch projects through the connected app.
 
 ## Connection And Scope
 
-1. Use the OAuth connection managed by ChatGPT. Never request credentials or bearer tokens.
-2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
-3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after it succeeds.
-4. If a loaded action reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch from this AI Agent, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+<!-- sparklaunch:connection:start -->
+1. Use the OAuth connection managed by ChatGPT or Codex. Never request credentials, bearer tokens, authorization codes, client secrets, or transport headers.
+2. If the required SparkLaunch actions are absent, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation with SparkLaunch selected, or enable the SparkLaunch plugin and start a new Codex task. If it is still absent, disable and re-enable or reinstall the SparkLaunch plugin, then start another fresh session. If the host asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch through the host, then retry only after it succeeds. Never ask the user to paste a token.
+4. If a loaded action reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch through the host, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+<!-- sparklaunch:connection:end -->
 5. `projects.list` and `projects.create` are user-level tools and do not take `project_id`.
 6. Pass an explicit `project_id` to `projects.get`, `projects.update`, `projects.invite_collaborator`, and every `tasks.*` action. Do not ask for workspace or user IDs.
 7. Retain all project/task identifiers and versions only as internal tool-call state. Never repeat them to the user, place them in parentheses, label them, or include them as table columns. Refer to projects and tasks by name or title, including in confirmation previews.
@@ -37,10 +39,10 @@ Manage the user's accessible SparkLaunch projects through the connected app.
 ## Workflow
 
 1. Call `projects.list` when the target project is not already unambiguous.
-2. If creating a project, require a useful business description, call `projects.create` with the known name and business fields, then retain the returned project id. Project creation automatically queues the included Idea Validation research.
+2. If creating a project, require a useful business description, call `projects.create` with the known non-location business fields, then retain the returned project id. Do not ask for or pass `business_location` or `state`; project creation automatically queues the included Idea Validation research.
 3. Tell the user that the automatic research normally takes 10-15 minutes. Poll `validation.list_projects` with the returned project id at a bounded cadence (about once per minute, for up to 20 minutes). Do not create or start a duplicate initial run with `validation.create_project` or `validation.start_analysis`.
 4. Call `projects.get` with that explicit id before edits when the current state matters. Its `effective_permissions` are the plan/role/token intersection for that project; if the required permission is absent, explain the plan/role boundary before proposing or confirming the write.
-5. For `projects.update`, use a stable `idempotency_key`. The first call returns a confirmation preview; show it and wait for explicit approval before retrying with the same arguments, key, and `confirmation_token`.
+5. For `projects.update`, use a stable `idempotency_key` and do not solicit or pass raw location/state values. The first call returns a confirmation preview; show it and wait for explicit approval before retrying with the same arguments, key, and `confirmation_token`.
 6. For `projects.invite_collaborator`, normalize and verify the intended email and Editor/Owner role, use a stable `idempotency_key`, and show the exact project/email/role confirmation preview. Wait for explicit approval before retrying with the same arguments, key, and `confirmation_token`. Never describe the recipient as a collaborator until the returned status is `accepted`; `invited` means acceptance is still pending. Report `delivery_status` separately because a persisted invitation does not prove email delivery.
 7. Re-read with `projects.get` to verify important project-field updates.
 8. For task work, call `tasks.list` first unless the exact task and current `version` were just returned. These actions manage general project tasks only; do not use them as aliases for CRM or GTM tasks.

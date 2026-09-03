@@ -1,0 +1,18 @@
+{
+  "host": "openai",
+  "format": "codex-plugin",
+  "package_path": "plugins/sparklaunch",
+  "connection_fragment": "connection.md",
+  "static_files": [
+    {
+      "source": "templates/.codex-plugin/plugin.json",
+      "destination": ".codex-plugin/plugin.json",
+      "render_package_version": false
+    },
+    {
+      "source": "templates/.mcp.json",
+      "destination": ".mcp.json",
+      "render_package_version": false
+    }
+  ]
+}

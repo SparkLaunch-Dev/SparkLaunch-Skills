@@ -5,14 +5,16 @@ summary: Prepare one entitled founder's supported company case and internal Fili
 
 # Incorporate A Single-Founder Company
 
+SparkLaunch service access begins at age 13. Users below their local age of majority need permission from a parent or legal guardian. Do not ask for age. Service access, Incorporation Package entitlement, and an internal Filing Operations receipt do not prove company formation, authority or capacity to sign, payment authorization or completion, identity-verification completion, regulatory eligibility, or provider eligibility.
+
 ## Steps
 
 1. Select the project, verify `effective_permissions`, and call `incorporation.check_entitlement` first.
 2. If entitled, call `incorporation.start_case` with one stable `idempotency_key`; retain `case_id` and `version`.
-3. Read the case, then replace the complete ordinary-data draft at its `expected_version`. The founder may hold the required founder and governance roles.
+3. Read the case, then prepare the complete non-address ordinary-data draft. Pass exactly one source at the current `expected_version`: the closed structured `draft` object on any MCP host, or `draft_file` only when the host supplies a supported UTF-8 JSON file reference. Never put address or location fields in either input, tool responses, or conversation. The founder may hold the required founder and governance roles.
 4. Validate the exact version and correct blocking ordinary fields without collecting private task data in chat.
 5. Preview `incorporation.prepare_action_center`, wait for explicit approval, and use its confirmation token exactly once with unchanged arguments and key.
-6. Direct the founder to their own Action Center for private information, Veriff, consent, and signatures. Use returned task-specific timing and bounded status readback.
+6. Direct the founder to their own Action Center for their address, private information, Veriff, consent, company business/mailing addresses when assigned, and signatures. Use returned task-specific timing and bounded status readback.
 7. At `ready_to_submit`, preview and explicitly confirm `incorporation.submit_to_sparklaunch` to submit to SparkLaunch Filing Operations.
 8. Retain the internal receipt. If a response is uncertain, read the case again before reusing the original key.
 

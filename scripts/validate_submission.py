@@ -13,11 +13,13 @@ from typing import Any
 import yaml
 
 try:
-    from scripts.build_submission_bundle import build_bundle
+    from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
     from scripts.sync_plugin import ROOT, SKILLS, sync
+    from scripts.tool_contract_snapshot import load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
-    from build_submission_bundle import build_bundle
+    from build_submission_bundle import build_bundle, portal_bundle_layout_errors
     from sync_plugin import ROOT, SKILLS, sync
+    from tool_contract_snapshot import load_snapshot
 
 
 FORBIDDEN = {
@@ -164,6 +166,11 @@ def _png_dimensions(path: Path, errors: list[str]) -> tuple[int, int] | None:
 
 def validate() -> list[str]:
     errors = sync(write=False)
+    try:
+        expected_tool_count = load_snapshot()["tool_count"]
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        errors.append(f"invalid tool contract snapshot: {exc}")
+        expected_tool_count = None
     text_roots = [ROOT / skill for skill in SKILLS] + [
         ROOT / "recipes",
         ROOT / "plugins" / "sparklaunch",
@@ -329,13 +336,13 @@ def validate() -> list[str]:
                     f"{skill}/assets/{name}"
                 )
     mcp = _load_json(plugin / ".mcp.json", errors)
-    server = ((mcp or {}).get("mcpServers") or {}).get("sparklaunch") or {}
+    server = (mcp or {}).get("sparklaunch") or {}
     endpoint = server.get("url")
     if endpoint != CANONICAL_MCP_URL:
         errors.append("plugin MCP mapping must use the canonical production endpoint")
     if server.get("oauth_resource") != CANONICAL_MCP_URL:
         errors.append("plugin MCP mapping must bind OAuth to the canonical production resource")
-    if set((mcp or {}).get("mcpServers") or {}) != {"sparklaunch"}:
+    if set(mcp or {}) != {"sparklaunch"}:
         errors.append("plugin MCP mapping must contain only the sparklaunch server")
 
     marketplace = _load_json(ROOT / ".agents" / "plugins" / "marketplace.json", errors)
@@ -363,8 +370,13 @@ def validate() -> list[str]:
             errors.append("submission must contain exactly five positive test cases")
         if len(submission.get("negative_test_cases") or []) != 3:
             errors.append("submission must contain exactly three negative test cases")
-        if len(submission.get("tools") or {}) != 59:
-            errors.append("submission must cover all 59 MCP tools")
+        if (
+            expected_tool_count is not None
+            and len(submission.get("tools") or {}) != expected_tool_count
+        ):
+            errors.append(
+                f"submission must cover all {expected_tool_count} MCP tools"
+            )
         for tool_name, tool in (submission.get("tools") or {}).items():
             annotations = tool.get("annotations") or {}
             if set(annotations) != EXPECTED_ANNOTATIONS or not all(
@@ -472,7 +484,7 @@ def validate() -> list[str]:
     else:
         for marker in (
             plugin_version,
-            "59 tools",
+            f"{expected_tool_count} tools",
             "OAuth",
             "project_id",
             "idempotency",
@@ -496,7 +508,7 @@ def validate() -> list[str]:
             "three negative prompts",
             "privacy-policy",
             "terms-and-conditions",
-            "59 tools",
+            f"{expected_tool_count} tools",
             "18 OAuth scopes",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",
@@ -531,6 +543,8 @@ def validate() -> list[str]:
             bundle, _digest = build_bundle(Path(directory) / "candidate.zip")
             if not bundle.is_file() or bundle.stat().st_size <= 0:
                 errors.append("submission bundle was not created")
+            else:
+                errors.extend(portal_bundle_layout_errors(bundle))
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         errors.append(f"submission bundle is not buildable: {exc}")
     return errors

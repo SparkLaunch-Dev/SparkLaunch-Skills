@@ -1,52 +1,61 @@
-# SparkLaunch Skills
+# SparkLaunch Connected-Agent Packages
 
-This repository contains the canonical skills, recipes, and installable plugin package for the connected SparkLaunch ChatGPT experience.
-
-## User Experience
+This repository builds SparkLaunch skills and native MCP package metadata for ChatGPT/Codex, Claude Code, Cursor, Gemini CLI, and Muse Code from one hand-edited source tree.
 
 SparkLaunch helps founders select or create a business project, validate an idea, generate brand assets, publish measurable launch surfaces, review campaign and landing-page signals, operate private CRM workflows, and prepare entitlement-gated incorporation cases with person-specific Action Center tasks.
 
-The default broad workflow is:
+## Host Support
 
-1. Connect SparkLaunch and select an accessible project, or create one with a complete business description.
-2. When a project is created, wait for its automatically queued Idea Validation research to complete (normally 10-15 minutes).
-3. Generate palette and logo options.
-4. Create a campaign, QR file, and landing page.
-5. Review observed signals and grounded CRM context.
+| Host | Generated package | Protected MCP status | Distribution boundary |
+| --- | --- | --- | --- |
+| ChatGPT and Codex | `plugins/sparklaunch/` | Host-managed OAuth; existing ChatGPT submission and Codex metadata retained | Local candidate; not submitted or approved by this change |
+| Claude Code | `plugins/claude/sparklaunch/` | Browser-based MCP OAuth through Claude Code | Native manifest validation passed; local/private candidate |
+| Cursor | `plugins/cursor/sparklaunch/` | Client-managed MCP OAuth | Local/private/team candidate; public Marketplace is blocked by the current proprietary license |
+| Gemini CLI | `plugins/gemini/sparklaunch/` | `/mcp auth sparklaunch` through Gemini CLI | Enterprise/API-key-supported legacy-CLI candidate; individual Free/Pro/Ultra access moved to Antigravity CLI in June 2026; live proof remains pending |
+| Muse Code | `plugins/muse/sparklaunch/` | Disabled by design: Muse does not document the OAuth lifecycle SparkLaunch requires | Skills are packageable; protected tool parity is not claimed |
 
-## Install And Connect
+Google's [June 18, 2026 Gemini CLI notice](https://github.com/google-gemini/gemini-cli/discussions/28017) is the source for the individual-account transition in this table. The Gemini adapter remains distinct from an Antigravity plugin.
 
-- **ChatGPT:** SparkLaunch availability in ChatGPT is separate from this public repository and the MCP Registry listing. When the SparkLaunch app is available to your account, start a new conversation with SparkLaunch selected. OAuth begins on the first protected action.
-- **Codex:** Add `https://github.com/SparkLaunch-Dev/SparkLaunch-Skills` as a Git plugin marketplace and install the `sparklaunch` plugin. Open a new task after installation so the current plugin actions are loaded.
-- **Other MCP clients:** Discover `io.github.SparkLaunch-Dev/sparklaunch` through the official MCP Registry or configure the Streamable HTTP endpoint `https://sparklaun.ch/api/mcp/`. The client must support the server's OAuth flow; never paste tokens into prompts or configuration shared with other people.
+All enabled packages connect to the same Streamable HTTP endpoint:
 
-See [Connect SparkLaunch to ChatGPT](./recipes/connect-sparklaunch-to-chatgpt.md) for connection, reconnection, project selection, and disconnection guidance.
+```text
+https://sparklaun.ch/api/mcp/
+```
 
-## Shared Safety Contract
-
-1. Authentication is OAuth-connected and managed by the host. It starts on the first protected SparkLaunch action in a conversation where the connector is loaded; skills never request credentials, OAuth codes, or transport headers. If required actions are absent, the skill stops and directs the user to open a new ChatGPT conversation with SparkLaunch selected instead of misreporting connector absence as an OAuth challenge. If a loaded connection is expired or revoked, the skill stops before writes, asks the user to reconnect from the AI Agent, and retries only after reconnection succeeds and any uncertain prior result is checked.
-2. `projects.list` is the source of truth for accessible projects. Project-scoped tools receive an explicit `project_id` argument.
-3. Every write receives one stable `idempotency_key` for the exact intended mutation. Uncertain writes are not repeated with new keys.
-4. Before a write or confirmation, the skill checks `projects.get.effective_permissions` when project-scoped authorization applies. Destructive or public-state tools return a one-time confirmation preview only after server-side authorization preflight succeeds. The user must explicitly approve it before the exact call is resubmitted with its confirmation token.
-5. Skills do not use query-token REST URLs, compatibility endpoints, legacy project headers, or hidden fallback routes.
-6. Generated logo and QR outputs use short-lived HTTPS file references, never raw base64 or data URLs.
-7. Configured assets, published state, traffic, conversions, CRM persistence, and revenue are reported as separate proof layers.
-8. User-facing errors stay concise. Secrets, private diagnostics, internal ownership IDs, and unnecessary personal data are never surfaced.
-9. OAuth scopes are the connection's maximum authorization. The selected project's plan and the user's project role may further restrict a tool; a plan/role denial is not a reason to reconnect OAuth.
-10. Identifiers and concurrency versions remain available only as opaque internal tool-call state. User-facing prose, tables, confirmations, and handoffs use human-readable names or descriptions and never expose identifier/version values, labels, parenthetical references, or columns.
+No package contains a bearer token, API key, client secret, authorization code, or static authorization header. Never add one as a workaround.
 
 ## Repository Layout
 
-- `sparklaunch-*/`: canonical skill source
-- `recipes/`: multi-tool connected founder workflows
-- `plugins/sparklaunch/`: deterministic packaged mirror plus plugin metadata
-- `.agents/plugins/marketplace.json`: repository-local install catalog
+- `src/skills/`: canonical, host-neutral skill source edited by hand
+- `src/recipes/`: canonical multi-tool founder workflows edited by hand
+- `adapters/`: native host manifests, connection recovery fragments, and distribution notes
+- `contracts/tools.snapshot.json`: checked-in, runtime-derived 61-tool descriptors and input/output schemas
+- `plugins/`: deterministic generated packages for all five hosts
+- `sparklaunch-*/` and `recipes/`: generated OpenAI-compatible legacy mirrors retained for existing consumers
+- `submission/`: ChatGPT review candidate evidence and portal-only gates
+- `release-state.json`: explicit local-candidate, Registry, runtime, and distribution boundaries
 
-The canonical skill folders are the only files edited by hand. Run `scripts/sync_plugin.py --write` to update packaged mirrors and `scripts/validate_submission.py` to check encodings, parity, metadata, tool references, and submission artifacts.
+Do not edit generated files under `plugins/`, the top-level `sparklaunch-*` folders, or the top-level `recipes/` folder. Edit `src/` or `adapters/`, then rebuild.
 
-## Development And Validation
+## Build And Validate
 
-Clone the application and skills repositories as sibling directories when running the full package tests or regenerating the ChatGPT submission:
+Build every package and compatibility mirror:
+
+```text
+python scripts/sync_plugin.py --write
+```
+
+Run standalone validation without the application repository:
+
+```text
+python scripts/sync_plugin.py
+python scripts/generate_submission.py --check
+python scripts/validate_host_packages.py
+python scripts/validate_submission.py
+python -m pytest tests/test_host_packages.py tests/test_claude_adapter.py tests/test_cursor_adapter.py tests/test_gemini_adapter.py tests/test_muse_adapter.py -q
+```
+
+The checked-in tool snapshot makes a standalone `SparkLaunch-Skills` clone self-contained for package and ChatGPT submission validation. Clone the application and skills repositories as sibling directories when the MCP runtime contract changes, then refresh the snapshot from the isolated test-mode exporter. The default runtime source is `../SparkLaunch/backend`:
 
 ```text
 parent/
@@ -55,41 +64,51 @@ parent/
   SparkLaunch-Skills/
 ```
 
-`scripts/generate_submission.py` imports the canonical MCP tool contracts from `../SparkLaunch/backend`, so `python scripts/generate_submission.py --check` and `python -m pytest tests -q` require that sibling checkout. A standalone `SparkLaunch-Skills` clone can still run `python scripts/validate_submission.py` for package-only validation.
-
-Every published plugin change must also update `plugins/sparklaunch/.codex-plugin/plugin.json` to a new version. Git marketplace installs are cached by plugin version, so publishing changed files under an existing version can leave an older cached package active.
-
-## Official MCP Registry
-
-The root `server.json` publishes the production service as the remote
-Streamable HTTP server `io.github.SparkLaunch-Dev/sparklaunch`. The descriptor
-version must match `../SparkLaunch/backend/mcp_server_version.py`; bump both for
-every new Registry publication because published versions are immutable.
-
-The descriptor intentionally omits `repository`: the public skills repository
-is not the private MCP server source, and the official Registry supports a
-closed-source server when its remote endpoint is publicly accessible. Validate
-from this repository with the latest official publisher:
-
 ```text
-mcp-publisher validate
+python scripts/export_tool_contract_snapshot.py
+python scripts/export_tool_contract_snapshot.py --check
+python scripts/generate_submission.py
 ```
 
-Publish an approved new version with the repository's **Publish to MCP Registry**
-GitHub Actions workflow. It downloads the pinned publisher release, verifies its
-checksum, validates `server.json`, authenticates with GitHub OIDC, and publishes
-without a stored Registry credential. Registry versions are immutable, so deploy
-and observe the matching application-owned version before dispatching the workflow.
+The exporter constructs the sibling runtime against a temporary SQLite database and records the resulting descriptors. It does not deploy the server or call a hosted SparkLaunch environment.
 
-Version `1.0.0` is currently published and active. Verify discovery through:
+## Portable Inputs
+
+`incorporation.update_draft` accepts exactly one of two address-free sources:
+
+- a closed structured `draft` object, portable across MCP hosts; or
+- `draft_file`, only when the current host supplies a server-supported UTF-8 JSON file reference.
+
+The same 256 KiB serialized limit, nested extra-field rejection, address-field rejection, expected-version check, and idempotency contract apply to both paths.
+
+`crm.ingest_business_card` remains intentionally narrow. It accepts only a server-approved short-lived HTTPS host file reference; callers must not substitute arbitrary URLs, base64, or data URLs.
+
+For hosts without supported attachment metadata, `crm.prepare_business_card_import` creates an expiring first-party handoff without importing anything. The founder signs in to SparkLaunch and explicitly chooses **Upload and import**; `crm.get_business_card_import` then reports safe status. The page, not the agent, supplies the single bounded image directly to the CRM ingestion path after current user/project access is rechecked. This service `1.4.0` contract is packaged locally; deployment and live host execution remain unverified.
+
+OAuth portability has the same evidence boundary. Existing DCR is the production-verified registration path. Service `1.4.0` adds feature-gated Client ID Metadata Document support with bounded-fetch, SSRF, redirect, persistence/cache, and DCR-regression controls; the gate remains off in the checked-in deployment configuration, and hosted CIMD behavior is not claimed by this package build.
+
+## Shared Safety Contract
+
+1. Authentication is managed by the host. Skills never collect credentials or transport headers.
+2. `projects.list` is the source of truth for accessible projects, and project-scoped tools receive an explicit `project_id`.
+3. Every write uses one stable `idempotency_key` for the exact mutation. An uncertain write is read back before any retry.
+4. Project plan, project role, OAuth scope, and commercial entitlement are separate gates.
+5. Destructive or public-state tools expose truthful annotations and use the runtime's governed preview/confirmation or version/idempotency boundary.
+6. Generated files use short-lived HTTPS references, never raw base64 or data URLs.
+7. Identifiers and concurrency versions remain opaque tool-call state; user-facing output uses human-readable names.
+8. Configured assets, published state, traffic, conversion, CRM persistence, formation status, deployment, and marketplace publication are separate proof layers.
+
+## ChatGPT Candidate And MCP Registry
+
+Build the ChatGPT portal ZIP with:
 
 ```text
-https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.SparkLaunch-Dev/sparklaunch
+python scripts/build_submission_bundle.py
 ```
 
-MCP Registry publication, GitHub availability, production deployment, and
-ChatGPT app review are separate release states. Do not describe one as proof of
-another.
+Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Validate them with `python scripts/validate_portal_prerequisites.py --allow-pending` while the explicitly pending gates remain unresolved. A local package or test pass does not prove ChatGPT review, hosted deployment, OAuth behavior, or a real tool execution.
+
+The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch-Dev/sparklaunch`. Registry candidate version, last-known published version, runtime snapshot version, and publication status are recorded separately in `release-state.json`. Publishing an immutable Registry version requires its dedicated approved workflow and is not performed by package generation.
 
 ## Current Skills
 
@@ -100,10 +119,8 @@ another.
 - `sparklaunch-logo-generation`: logo generation and file handoff
 - `sparklaunch-campaigns`: campaigns, short links, QR, attribution, and statistics
 - `sparklaunch-landing-pages`: landing creation, publishing, analytics, and leads
-- `sparklaunch-sales-crm`: lead, contact, deal, activity, and business-card workflows
-- `sparklaunch-incorporation`: entitlement, case preparation, private participant tasks, corrections, status, and internal Filing Operations submission
-
-See [recipes/README.md](./recipes/README.md) for the supported multi-step workflows.
+- `sparklaunch-sales-crm`: lead, contact, deal, activity, and supported business-card workflows
+- `sparklaunch-incorporation`: entitlement, address-free case preparation, private participant tasks, corrections, status, and internal Filing Operations submission
 
 ## Support, Security, And License
 
@@ -112,3 +129,7 @@ See [recipes/README.md](./recipes/README.md) for the supported multi-step workfl
 - Privacy: [SparkLaunch Privacy Policy](https://sparklaun.ch/privacy-policy)
 - Terms: [SparkLaunch Terms and Conditions](https://sparklaun.ch/terms-and-conditions)
 - License: [SparkLaunch Proprietary License Notice](./LICENSE)
+
+The proprietary license is preserved. In particular, generating a Cursor package does not satisfy Cursor's open-source requirement for public Marketplace submission.
+
+Installed agent packages may be cached by plugin version. Any published package-content change therefore requires a new governed version; rebuilding a local candidate does not publish or invalidate an existing cache.

@@ -1,0 +1,23 @@
+{
+  "host": "gemini",
+  "format": "gemini-cli-extension",
+  "package_path": "plugins/gemini/sparklaunch",
+  "connection_fragment": "connection.md",
+  "static_files": [
+    {
+      "source": "gemini-extension.json",
+      "destination": "gemini-extension.json",
+      "render_package_version": true
+    },
+    {
+      "source": "GEMINI.md",
+      "destination": "GEMINI.md",
+      "render_package_version": false
+    },
+    {
+      "source": "README.md",
+      "destination": "README.md",
+      "render_package_version": false
+    }
+  ]
+}

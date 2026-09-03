@@ -107,7 +107,7 @@
       "id": "incorporation-missing-plan",
       "prompt": "I do not have the SparkLaunch incorporation plan yet. Check what I need and help me recover access.",
       "expected_skills": ["sparklaunch-incorporation"],
-      "rationale": "Requests authoritative Incorporation Package entitlement and purchase-recovery guidance."
+      "rationale": "Requests authoritative Incorporation Package entitlement state without exposing or facilitating a purchase through ChatGPT."
     },
     {
       "id": "incorporation-collaborators",

@@ -1,0 +1,43 @@
+name: Validate host packages
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Check generated packages
+        run: python scripts/sync_plugin.py
+      - name: Check standalone contract consumers
+        run: python scripts/generate_submission.py --check
+      - name: Validate all host contracts
+        run: python scripts/validate_host_packages.py
+      - name: Validate OpenAI submission compatibility
+        run: python scripts/validate_submission.py
+      - name: Build deterministic portal candidate
+        run: python scripts/build_submission_bundle.py
+      - name: Validate recorded portal prerequisites
+        run: python scripts/validate_portal_prerequisites.py --allow-pending
+      - name: Run standalone package tests
+        run: >-
+          python -m pytest
+          tests/test_host_packages.py
+          tests/test_claude_adapter.py
+          tests/test_cursor_adapter.py
+          tests/test_gemini_adapter.py
+          tests/test_muse_adapter.py
+          tests/test_packaging_safety.py
+          -q

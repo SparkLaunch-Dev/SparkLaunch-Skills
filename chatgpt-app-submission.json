@@ -164,6 +164,18 @@
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
     },
+    "crm.get_business_card_import": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read sanitized state and result identifiers for one owner-bound business-card import handoff without returning card data, contact details, or storage references.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
     "crm.get_contact": {
       "annotations": {
         "readOnlyHint": true,
@@ -231,7 +243,7 @@
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Create or enrich a private CRM contact from a supplied business-card image in the selected project and therefore changes SparkLaunch state.",
+        "read_only_justification": "Create or enrich a private CRM contact from a supplied business-card image in the selected project while excluding dedicated address fields and rejecting detected cross-field addresses and therefore changes SparkLaunch state.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
@@ -270,6 +282,18 @@
         "read_only_justification": "Overwrite the selected private CRM deal's pipeline stage in the selected project and therefore changes SparkLaunch state.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "crm.prepare_business_card_import": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Create a short-lived private handoff to an authenticated SparkLaunch upload page without importing an image or changing a contact; the user must explicitly choose Upload and import on that page and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
     },
     "crm.refresh_contact_summary": {
@@ -351,7 +375,7 @@
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Check the selected project's incorporation eligibility and purchase recovery without changing it.",
+        "read_only_justification": "Check the selected project's incorporation package entitlement without changing it. This ChatGPT tool never returns a price, purchase URL, or purchasing instructions.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
@@ -408,12 +432,12 @@
       "annotations": {
         "readOnlyHint": false,
         "openWorldHint": false,
-        "destructiveHint": false
+        "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Replace the selected case's ordinary incorporation draft at the expected version and therefore changes SparkLaunch state.",
+        "read_only_justification": "Replace the selected case's non-address incorporation draft from either a bounded uploaded JSON file or a closed structured draft at the expected version; required addresses are completed later in the SparkLaunch Action Center and therefore changes SparkLaunch state.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
-        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+        "destructive_justification": "This replaces the complete saved draft. It is guarded by the current expected version and a stable idempotency key rather than a one-time confirmation preview."
       }
     },
     "incorporation.validate": {
@@ -552,12 +576,12 @@
       "annotations": {
         "readOnlyHint": false,
         "openWorldHint": true,
-        "destructiveHint": false
+        "destructiveHint": true
       },
       "justifications": {
         "read_only_justification": "Create or reissue an email invitation for one collaborator on the selected private SparkLaunch project; access begins only after acceptance and therefore changes SparkLaunch state.",
-        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
-        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+        "open_world_justification": "This sends an invitation email to an external recipient's inbox.",
+        "destructive_justification": "The invitation email is an irreversible sent message and requires an exact one-time confirmation before execution."
       }
     },
     "projects.list": {
@@ -728,7 +752,7 @@
     },
     {
       "description": "Create a private idea-validation workspace in a selected project.",
-      "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in project 99.",
+      "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in project 42.",
       "file_attachment_urls": null,
       "tools_triggered": "validation.create_project",
       "expected_output": "Creates one validation record in the selected project and reports its human-readable name and status without exposing internal identifiers or versions.",
@@ -736,7 +760,7 @@
     },
     {
       "description": "Generate saved brand palette options from a concrete brief.",
-      "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 99.",
+      "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 42.",
       "file_attachment_urls": null,
       "tools_triggered": "branding.generate_palette",
       "expected_output": "Returns saved palette options by name, hex values, and feeling labels without exposing internal identifiers or versions.",
@@ -744,18 +768,18 @@
     },
     {
       "description": "List private landing-page projects without requiring seeded records.",
-      "user_prompt": "List the landing-page projects in SparkLaunch project 99.",
+      "user_prompt": "List the landing-page projects in SparkLaunch project 42.",
       "file_attachment_urls": null,
       "tools_triggered": "landing.list_projects",
       "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without exposing internal identifiers or versions; no records are changed.",
       "expected_output_url": null
     },
     {
-      "description": "Search private CRM leads without creating or updating records.",
-      "user_prompt": "Find leads mentioning bookkeeping in project 99 and show at most 10.",
+      "description": "Prepare a first-party business-card import without importing an image.",
+      "user_prompt": "Prepare a secure business-card import for project 42, but do not import anything until I explicitly upload it in SparkLaunch.",
       "file_attachment_urls": null,
-      "tools_triggered": "crm.search_leads",
-      "expected_output": "Returns matching private leads and a result count without exposing internal identifiers or versions; no CRM data is modified.",
+      "tools_triggered": "crm.prepare_business_card_import",
+      "expected_output": "Returns an expiring first-party SparkLaunch action link and clearly states that nothing has been imported yet, without exposing internal identifiers or versions.",
       "expected_output_url": null
     }
   ],

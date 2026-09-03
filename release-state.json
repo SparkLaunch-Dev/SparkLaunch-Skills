@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "generated_packages": {
+    "version": "0.5.0+codex.20260902140918",
+    "hosts": [
+      "openai",
+      "claude",
+      "cursor",
+      "gemini",
+      "muse"
+    ],
+    "status": "local_candidates_only"
+  },
+  "mcp_registry": {
+    "candidate_descriptor_version": "1.4.0",
+    "last_known_published_version": "1.0.0",
+    "last_known_version_basis": "repository release record preceding the 2026-09-02 change",
+    "live_refresh_status": "not_performed_by_this_change",
+    "publication_status": "not_performed_by_this_change"
+  },
+  "runtime": {
+    "contract_snapshot_version": "1.4.0",
+    "deployment_status": "not_performed_or_verified_by_this_change"
+  },
+  "distribution": {
+    "openai": "local_candidate_not_submitted",
+    "claude": "local_private_candidate",
+    "cursor": "local_private_candidate_public_marketplace_blocked_by_license",
+    "gemini": "local_candidate",
+    "muse": "skills_candidate_protected_mcp_disabled"
+  }
+}

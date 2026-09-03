@@ -1,0 +1,35 @@
+---
+name: sparklaunch-color-palettes
+description: >
+  Use when a connected SparkLaunch user needs to generate or inspect project
+  color palettes with branding.generate_palette, branding.list_palettes, or
+  branding.get_palette. Do not use for generic color advice without a tool call.
+---
+
+# SparkLaunch Color Palettes
+
+Generate and inspect private brand palettes through the connected SparkLaunch app.
+
+## Rules
+
+<!-- sparklaunch:connection:start -->
+1. Use the SparkLaunch MCP connection supplied by Cursor. Never ask the user for credentials, access tokens, refresh tokens, client secrets, or authorization headers.
+2. If the SparkLaunch tools are absent, stop before planning or claiming execution and say: **SparkLaunch isn't available in this Cursor session. Open Customize, confirm that the SparkLaunch plugin and MCP server are installed and enabled, and follow Cursor's authentication prompt if shown. Then reload the Cursor window or start a new Agent conversation and send the request again.**
+3. If a SparkLaunch tool returns an OAuth challenge, ask the user to complete Cursor's SparkLaunch authentication prompt, then retry only after the connection succeeds.
+4. If authorization is expired or revoked, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Re-authenticate SparkLaunch from Cursor's Customize page, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+<!-- sparklaunch:connection:end -->
+5. Use `projects.list` when needed, then pass the selected `project_id` to every palette tool. Use `projects.get` to confirm `effective_permissions` includes `branding.write` before generation; explain a plan or role limitation without requesting OAuth reconnection.
+6. `branding.generate_palette` is a write and requires a stable `idempotency_key`. Do not retry with a new key after an uncertain result.
+7. Use `branding.list_palettes` or `branding.get_palette` to verify saved results.
+8. Retain project and palette identifiers only as internal tool-call state. Never repeat them to the user or include identifier/version labels or columns; refer to palettes by name and colors.
+
+## Workflow
+
+1. Confirm the business, audience, desired feeling, and any color constraints.
+2. Call `branding.generate_palette` with a concrete prompt and explicit project id.
+3. Present the generated options, including primary, secondary, accent, neutral-light, and neutral-dark colors.
+4. Use the saved palette id in downstream planning; do not claim favorite status because the current connected tool set does not change favorites.
+
+## Output
+
+Report the palette name, description, creation time, and each color's hex value and feeling. State whether the result was newly generated or retrieved.

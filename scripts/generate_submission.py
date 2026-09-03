@@ -1,4 +1,4 @@
-"""Generate the review-facing ChatGPT app submission from runtime contracts."""
+"""Generate the review-facing ChatGPT app submission from a checked-in contract snapshot."""
 
 from __future__ import annotations
 
@@ -9,16 +9,13 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BACKEND = ROOT.parent / "SparkLaunch" / "backend"
-if not BACKEND.is_dir():
-    raise SystemExit(
-        "SparkLaunch backend not found beside the skills repository. Clone "
-        "SparkLaunch and SparkLaunch-Skills as sibling directories before running "
-        f"submission generation or the full test suite. Expected: {BACKEND}"
-    )
-sys.path.insert(0, str(BACKEND))
+try:
+    from scripts.tool_contract_snapshot import load_tool_contracts
+except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from tool_contract_snapshot import load_tool_contracts
 
-from mcp_tool_contracts import MCP_TOOL_CONTRACTS  # noqa: E402
+
+MCP_TOOL_CONTRACTS = load_tool_contracts()
 
 
 REVIEWER_FIXTURE_PATH = ROOT / "submission" / "reviewer-fixture.json"
@@ -47,6 +44,20 @@ def _tool_entry(name, contract):
         destructive_reason = "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
     else:
         destructive_reason = "This does not delete, revoke, or overwrite an existing user-selected record."
+    if name == "incorporation.update_draft":
+        destructive_reason = (
+            "This replaces the complete saved draft. It is guarded by the current "
+            "expected version and a stable idempotency key rather than a one-time "
+            "confirmation preview."
+        )
+    if name == "projects.invite_collaborator":
+        open_reason = (
+            "This sends an invitation email to an external recipient's inbox."
+        )
+        destructive_reason = (
+            "The invitation email is an irreversible sent message and requires an "
+            "exact one-time confirmation before execution."
+        )
     return {
         "annotations": {
             "readOnlyHint": contract.read_only,
@@ -110,11 +121,11 @@ def build_submission(reviewer_project_id: int | None = None):
                 "expected_output_url": None,
             },
             {
-                "description": "Search private CRM leads without creating or updating records.",
-                "user_prompt": f"Find leads mentioning bookkeeping in project {project_id} and show at most 10.",
+                "description": "Prepare a first-party business-card import without importing an image.",
+                "user_prompt": f"Prepare a secure business-card import for project {project_id}, but do not import anything until I explicitly upload it in SparkLaunch.",
                 "file_attachment_urls": None,
-                "tools_triggered": "crm.search_leads",
-                "expected_output": "Returns matching private leads and a result count without exposing internal identifiers or versions; no CRM data is modified.",
+                "tools_triggered": "crm.prepare_business_card_import",
+                "expected_output": "Returns an expiring first-party SparkLaunch action link and clearly states that nothing has been imported yet, without exposing internal identifiers or versions.",
                 "expected_output_url": None,
             },
         ],

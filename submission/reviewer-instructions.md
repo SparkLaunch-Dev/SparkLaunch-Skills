@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch `0.3.3+codex.20260825101731` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The package contains nine skills, 59 tools, 30 trigger cases, and 13 controlled E2E cases under the expected 18 OAuth scopes.
+These instructions apply to the SparkLaunch `0.5.0+codex.20260902140918` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The portal ZIP contains nine skills, and the generated submission import declares 61 tools under the expected 18 OAuth scopes; before review, the exact deployed runtime must be scanned and observed to expose the same 61-tool contract. The retained 59-tool production scan predates this candidate and is marked stale, not rewritten. The repository's internal reviewer evidence contains 30 trigger cases and 13 controlled E2E cases; those evidence files are intentionally excluded from the portal ZIP.
 
 ## Access
 
@@ -11,7 +11,7 @@ These instructions apply to the SparkLaunch `0.3.3+codex.20260825101731` candida
 5. For `projects.invite_collaborator`, use only a synthetic `example.com` recipient and stop at the exact project/email/role confirmation preview. Do not confirm it during review; no email or collaborator membership should be created.
 6. For general task coverage, use `tasks.create` with synthetic private content and a stable idempotency key, verify it with `tasks.list`, and use only an active owner or accepted collaborator email for assignment. Stop `tasks.update` and `tasks.delete` at their exact version-bound confirmation previews unless a disposable mutation is explicitly approved.
 
-The checked-in five positive prompts use provisioned reviewer project `99`, recorded in `submission/reviewer-fixture.json`. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Before final import, confirm the project still belongs to the approved disposable reviewer account. If it changes, run `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
+The checked-in five positive prompts use local placeholder project `42`, recorded in `submission/reviewer-fixture.json`. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Before final import, bind the approved disposable reviewer project with `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
 
 ### Environment binding
 
@@ -36,13 +36,16 @@ Also exercise these boundaries:
 4. Read a synthetic CRM contact or lead and verify only requested private fields are returned.
 5. Revoke or disconnect SparkLaunch and confirm another protected call starts authorization again.
 6. Create and read back one synthetic general project task. Verify a pending invitation or outsider cannot be assigned, an old version cannot be updated or deleted, and task overwrite/delete require exact confirmation.
+7. For the portable business-card flow, call `crm.prepare_business_card_import` and verify it creates only an expiring SparkLaunch action link. Sign in on the first-party page, use one synthetic PNG/JPEG/WebP image no larger than 10 MiB, and import only by explicitly choosing **Upload and import**. Then use `crm.get_business_card_import` for status readback. Do not send image bytes, arbitrary URLs, base64, data URLs, addresses, or private contact data through MCP, and do not claim an import before the page reports completion.
 
 ## Controlled incorporation review
 
 Run the five incorporation scenarios only when the matching service version and synthetic entitlement are explicitly available. Otherwise record the scenario as externally blocked instead of working around the gate.
 
-1. Check entitlement first. Missing access must return recovery guidance without checkout, payment, case creation, email, or provider activity.
-2. Use synthetic ordinary company and participant data only. Never enter SSN/TIN values, identity documents, biometrics, signatures, payment data, private attestations, invitation tokens, provider sessions, or private Action Center URLs in chat.
+SparkLaunch service access begins at age 13. Users below their local age of majority need permission from a parent or legal guardian. Do not ask for age. Service access, Incorporation Package entitlement, and an internal Filing Operations receipt do not prove company formation, authority or capacity to sign, payment authorization or completion, identity-verification completion, regulatory eligibility, or provider eligibility.
+
+1. Check entitlement first. Missing access must return `purchase_supported_in_chatgpt:false` and no price, purchase URL, checkout action, purchasing instructions, case creation, email, or provider activity.
+2. Use synthetic ordinary company and participant data only. Extract `skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json` from the portal ZIP, attach it through the host file interface, and pass it as `draft_file`. The fixture intentionally contains no address fields. The packaged `draft-file-format.md` reference describes the complete non-address file contract. Never enter addresses, SSN/TIN values, identity documents, biometrics, signatures, payment data, private attestations, invitation tokens, provider sessions, or private Action Center URLs in chat. Complete address tasks only on the authenticated sparklaun.ch Action Center.
 3. For multiple participants, direct each person to their own private Action Center. A collaborator sees safe progress only and cannot complete another person's task.
 4. Use stable idempotency keys, exact versions, readback after uncertainty, and each confirmation token exactly once.
 5. Block every external provider adapter and require zero provider calls. Never call Delaware, NWRA, or CorpTools, and never perform filing, registered-agent, email, identity-provider, or background-worker actions from this review.

@@ -1,0 +1,16 @@
+interface:
+  display_name: "SparkLaunch Sales CRM"
+  short_description: "Operate leads, contacts, deals, and CRM notes"
+  icon_small: "./assets/sparklaunch-small.png"
+  icon_large: "./assets/sparklaunch.png"
+  brand_color: "#6366F1"
+  default_prompt: "Use $sparklaunch-sales-crm to review my connected CRM pipeline and identify the next grounded action."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "sparklaunch"
+      description: "Connected SparkLaunch CRM tools"
+      transport: "streamable_http"
+      url: "https://sparklaun.ch/api/mcp/"
+policy:
+  allow_implicit_invocation: true

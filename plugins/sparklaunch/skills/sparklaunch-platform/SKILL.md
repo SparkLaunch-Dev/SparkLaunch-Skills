@@ -14,7 +14,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 ## Routing
 
 1. For an idea-to-launch journey, use `recipes/start-a-business-from-an-idea.md`.
-2. For connection or project selection, use `recipes/connect-sparklaunch-to-chatgpt.md` and `sparklaunch-projects`.
+2. For connection or project selection, use `recipes/connect-sparklaunch.md` and `sparklaunch-projects`.
 3. For validation only, use `recipes/validate-an-idea-and-generate-a-report.md` and `sparklaunch-idea-validation`.
 4. For palette or logo work, use `recipes/create-a-brand-foundation.md` and the matching branding skills.
 5. For campaigns, QR, or landing pages, use `recipes/plan-and-publish-a-launch.md` with `sparklaunch-campaigns` and `sparklaunch-landing-pages`.
@@ -24,10 +24,12 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 
 ## Connected-App Rules
 
-1. Use the SparkLaunch connection supplied by ChatGPT. Never ask for credentials or authorization headers.
-2. If the required SparkLaunch actions are absent from this conversation, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation, select SparkLaunch, and send your request again. If ChatGPT asks you to connect, complete the SparkLaunch permission screen.**
-3. If a loaded tool returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch, then retry only after connection succeeds.
-4. If a loaded tool reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch from this AI Agent, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+<!-- sparklaunch:connection:start -->
+1. Use the OAuth connection managed by ChatGPT or Codex. Never request credentials, bearer tokens, authorization codes, client secrets, or transport headers.
+2. If the required SparkLaunch actions are absent, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation with SparkLaunch selected, or enable the SparkLaunch plugin and start a new Codex task. If it is still absent, disable and re-enable or reinstall the SparkLaunch plugin, then start another fresh session. If the host asks you to connect, complete the SparkLaunch permission screen.**
+3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch through the host, then retry only after it succeeds. Never ask the user to paste a token.
+4. If a loaded action reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch through the host, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
+<!-- sparklaunch:connection:end -->
 5. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
 6. Before proposing or confirming a write, use `projects.get` and verify `effective_permissions` contains the required permission. A project plan or role can further restrict execution; explain that restriction instead of asking the user to reconnect.
 7. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.

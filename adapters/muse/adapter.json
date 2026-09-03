@@ -1,0 +1,19 @@
+{
+  "host": "muse",
+  "format": "muse-code-skills",
+  "package_path": "plugins/muse/sparklaunch",
+  "connection_fragment": "connection.md",
+  "protected_mcp": "disabled",
+  "static_files": [
+    {
+      "source": "settings.example.json",
+      "destination": "settings.example.json",
+      "render_package_version": false
+    },
+    {
+      "source": "README.md",
+      "destination": "README.md",
+      "render_package_version": false
+    }
+  ]
+}

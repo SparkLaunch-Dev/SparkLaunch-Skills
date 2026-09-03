@@ -5,13 +5,15 @@ summary: Coordinate shared ordinary company data and separate private tasks for 
 
 # Incorporate With Collaborators
 
+SparkLaunch service access begins at age 13. Users below their local age of majority need permission from a parent or legal guardian. Do not ask for age. Service access, Incorporation Package entitlement, and an internal Filing Operations receipt do not prove company formation, authority or capacity to sign, payment authorization or completion, identity-verification completion, regulatory eligibility, or provider eligibility.
+
 ## Steps
 
 1. Select the project, verify `effective_permissions`, and call `incorporation.check_entitlement` first.
 2. Start or resume one case with a stable `idempotency_key`.
-3. Let authorized project collaborators prepare only the shared ordinary-data draft. Replace the complete draft against the current `expected_version` and validate it.
+3. Let authorized project collaborators prepare only the shared non-address ordinary-data draft. Pass exactly one source against the current `expected_version`: the closed structured `draft` object on any MCP host, or `draft_file` only when the host supplies a supported UTF-8 JSON file reference. Validate it. Never put address or location fields in either input, tool responses, or conversation.
 4. Preview and explicitly confirm `incorporation.prepare_action_center` exactly once with unchanged arguments, key, and returned token.
-5. Direct each person to their own Action Center. Each founder, officer, director, incorporator, signer, or responsible party supplies only their own private information and completes only their own Veriff, compliance, consent, and signature tasks.
+5. Direct each person to their own Action Center. Each founder, officer, director, incorporator, signer, or responsible party supplies their own address and other private information and completes only their own Veriff, compliance, consent, and signature tasks. The filing signer completes the protected company business/mailing-address task when assigned.
 6. Show collaborators only safe names, roles, statuses, and next actions. Participant-only access does not create project collaboration or filing authority.
 7. Follow returned task-specific timing and use bounded `incorporation.get_case` readback. On an uncertain write, read the case again before using the original key.
 8. Only the authorized owner previews and confirms `incorporation.submit_to_sparklaunch` to submit to SparkLaunch Filing Operations.

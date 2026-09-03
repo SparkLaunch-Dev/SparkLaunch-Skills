@@ -1,0 +1,51 @@
+{
+  "entity_type": "delaware_c_corporation",
+  "jurisdiction": "DE",
+  "company_name": "Example Launch Labs, Inc.",
+  "company_contact_email": "founder@example.com",
+  "company_phone": null,
+  "founders": [
+    {
+      "participant_key": "11111111-1111-4111-8111-111111111111",
+      "legal_name": "Example Founder",
+      "email": "founder@example.com",
+      "roles": [
+        "founder",
+        "incorporator",
+        "director",
+        "officer",
+        "signer",
+        "responsible_party"
+      ],
+      "equity_percent": 100,
+      "common_shares": 8000000
+    }
+  ],
+  "participants": [],
+  "governance": {
+    "incorporator_participant_key": "11111111-1111-4111-8111-111111111111",
+    "initial_director_participant_keys": [
+      "11111111-1111-4111-8111-111111111111"
+    ],
+    "officers": {
+      "president": "11111111-1111-4111-8111-111111111111",
+      "secretary": "11111111-1111-4111-8111-111111111111",
+      "treasurer": "11111111-1111-4111-8111-111111111111"
+    },
+    "signer_participant_key": "11111111-1111-4111-8111-111111111111",
+    "responsible_party_participant_key": "11111111-1111-4111-8111-111111111111"
+  },
+  "capitalization": {
+    "authorized_common_shares": 10000000,
+    "common_par_value": 0.00001,
+    "option_pool_shares": 2000000,
+    "founder_common_share_allocations": {
+      "11111111-1111-4111-8111-111111111111": 8000000
+    }
+  },
+  "filing_preferences": {
+    "registered_agent_selection": "sparklaunch",
+    "expedited": false,
+    "certified_copy": false
+  }
+}
