@@ -1418,6 +1418,36 @@ def test_portal_prerequisite_validator_cross_checks_release_state(
     assert expected_error in errors
 
 
+def test_portal_prerequisite_validator_accepts_verified_portal_scan_transition(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence["authenticated_production_scan"].update(
+        {
+            "status": "verified",
+            "observed_at": "2026-09-04T22:30:00Z",
+            "tool_count": len(MCP_TOOL_CONTRACTS),
+            "portal_result": "successful",
+        }
+    )
+    release_state["runtime"]["openai_portal_rescan_status"] = "verified"
+
+    assert _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    ) == []
+
+
 def test_public_repository_has_license_and_security_guidance():
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")

@@ -162,6 +162,8 @@ ALLOWED_KEYS = {
     "$.authenticated_production_scan": {
         "status",
         "candidate_expected_tool_count",
+        "observed_at",
+        "tool_count",
         "portal_result",
         "proof_boundary",
     },
