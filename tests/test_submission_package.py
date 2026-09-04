@@ -1037,6 +1037,69 @@ def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
     ("path", "replacement", "expected_error"),
     (
         (
+            ("candidate", "deployed_git_revision"),
+            "0" * 40,
+            "candidate and production deployment revisions must match",
+        ),
+        (
+            ("candidate", "production_tag"),
+            "other-tag",
+            "candidate and production deployment tags must match",
+        ),
+        (
+            ("production_deployment", "status"),
+            "pending",
+            "production deployment must have a verified observation",
+        ),
+        (
+            ("production_deployment", "observed_at"),
+            "",
+            "production deployment is verified but has no observation time",
+        ),
+        (
+            ("production_deployment", "git_revision"),
+            "0" * 40,
+            "production deployment revision is stale",
+        ),
+        (
+            ("production_deployment", "production_tag"),
+            "other-tag",
+            "production deployment tag is stale",
+        ),
+        (
+            ("production_deployment", "branch_matches_origin"),
+            False,
+            "verified production deployment must match origin",
+        ),
+        (
+            ("production_deployment", "service_version"),
+            "1.3.0",
+            "production service version must match the contract snapshot",
+        ),
+        (
+            ("production_deployment", "migration_status"),
+            "pending",
+            "production deployment must record the applied migration revision",
+        ),
+        (
+            (
+                "production_deployment",
+                "alembic_current_matches_head_on_all_backend_instances",
+            ),
+            False,
+            "production Alembic current/head parity must be verified",
+        ),
+        (
+            ("production_deployment", "public_backend_http_status"),
+            503,
+            "production backend health must return HTTP 200",
+        ),
+        (
+            ("production_deployment", "public_frontend_http_status"),
+            503,
+            "production frontend must return HTTP 200",
+        ),
+        (
             (
                 "production_deployment",
                 "all_observed_deployment_targets_match_revision",
@@ -1060,6 +1123,34 @@ def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
             "production launch-template pins must match refreshes",
         ),
         (
+            (
+                "production_deployment",
+                "frontend_revision_proven_by_immutable_launch_template_pin",
+            ),
+            False,
+            "production frontend revision must use an immutable launch-template pin",
+        ),
+        (
+            ("production_deployment", "required_runtime_configuration_verified"),
+            False,
+            "production deployment runtime configuration must be verified",
+        ),
+        (
+            ("direct_authenticated_production_scan", "status"),
+            "pending",
+            "direct authenticated production scan must be verified",
+        ),
+        (
+            ("direct_authenticated_production_scan", "observed_at"),
+            "",
+            "direct authenticated production scan is verified but has no observation time",
+        ),
+        (
+            ("direct_authenticated_production_scan", "deployed_git_revision"),
+            "0" * 40,
+            "direct authenticated scan revision must match production",
+        ),
+        (
             ("direct_authenticated_production_scan", "initialize_http_status"),
             201,
             "direct authenticated scan has invalid initialize_http_status",
@@ -1078,6 +1169,108 @@ def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
             ("direct_authenticated_production_scan", "server_version"),
             "1.3.0",
             "direct authenticated scan server version is stale",
+        ),
+        (
+            (
+                "direct_authenticated_production_scan",
+                "initialized_notification_http_status",
+            ),
+            200,
+            "direct authenticated scan has invalid initialized_notification_http_status",
+        ),
+        (
+            ("direct_authenticated_production_scan", "tools_list_http_status"),
+            503,
+            "direct authenticated scan has invalid tools_list_http_status",
+        ),
+        (
+            ("direct_authenticated_production_scan", "tool_count"),
+            60,
+            "direct authenticated scan tool count must match the candidate",
+        ),
+        (
+            ("direct_authenticated_production_scan", "tool_names"),
+            [],
+            "direct authenticated scan tool names must match the snapshot",
+        ),
+        (
+            (
+                "direct_authenticated_production_scan",
+                "exact_candidate_tool_name_set_match",
+            ),
+            False,
+            "direct authenticated scan must match the candidate tool-name set",
+        ),
+        (
+            ("direct_authenticated_production_scan", "missing_tool_count"),
+            1,
+            "direct authenticated scan has nonzero missing_tool_count",
+        ),
+        (
+            ("direct_authenticated_production_scan", "extra_tool_count"),
+            1,
+            "direct authenticated scan has nonzero extra_tool_count",
+        ),
+        (
+            ("direct_authenticated_production_scan", "duplicate_tool_count"),
+            1,
+            "direct authenticated scan has nonzero duplicate_tool_count",
+        ),
+        (
+            (
+                "direct_authenticated_production_scan",
+                "output_schema_root_failure_count",
+            ),
+            1,
+            "direct authenticated scan has nonzero output_schema_root_failure_count",
+        ),
+        (
+            (
+                "direct_authenticated_production_scan",
+                "annotation_triplet_failure_count",
+            ),
+            1,
+            "direct authenticated scan has nonzero annotation_triplet_failure_count",
+        ),
+        (
+            ("direct_authenticated_production_scan", "tool_calls_executed"),
+            1,
+            "direct authenticated scan has nonzero tool_calls_executed",
+        ),
+        (
+            ("direct_authenticated_production_scan", "sensitive_values_retained"),
+            True,
+            "direct authenticated scan must not retain sensitive values",
+        ),
+        (
+            (
+                "direct_authenticated_production_scan",
+                "dynamic_client_registration_advertised",
+            ),
+            False,
+            "direct authenticated scan must retain DCR advertisement evidence",
+        ),
+        (
+            (
+                "direct_authenticated_production_scan",
+                "client_id_metadata_document_advertised",
+            ),
+            True,
+            "direct authenticated scan must record CIMD as not advertised",
+        ),
+        (
+            ("direct_authenticated_production_scan", "business_card_tools"),
+            [],
+            "direct authenticated scan business-card inventory is incomplete",
+        ),
+        (
+            (
+                "public_production_readiness",
+                "evidence",
+                "authorization_server_metadata_http_status",
+            ),
+            503,
+            "public production readiness has invalid authorization_server_metadata_http_status",
         ),
         (
             ("public_production_readiness", "evidence", "domain_challenge"),
