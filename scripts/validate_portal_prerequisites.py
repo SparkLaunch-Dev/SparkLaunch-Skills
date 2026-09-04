@@ -367,7 +367,9 @@ def _schema_errors(evidence: dict) -> list[str]:
             return
         unexpected = sorted(set(record) - ALLOWED_KEYS[schema_path])
         for key in unexpected:
-            errors.append(f"portal prerequisite evidence has unexpected field at {path}.{key}")
+            errors.append(
+                f"portal prerequisite evidence has unexpected field at {path}.{key}"
+            )
 
     candidate = evidence.get("candidate")
     public = evidence.get("public_production_readiness")
@@ -445,6 +447,8 @@ def _sensitive_evidence_errors(value: object, path: str = "$") -> list[str]:
                     f"portal prerequisite evidence contains {category} at {path}"
                 )
     return errors
+
+
 def _canonical_sha256(value: object) -> str:
     serialized = json.dumps(
         value,
@@ -504,7 +508,9 @@ def _validate_runtime_evidence(
             migration_revision != EXPECTED_MIGRATION_REVISION
             or deployment.get("migration_status") != "applied"
         ):
-            errors.append("production deployment must record the applied migration revision")
+            errors.append(
+                "production deployment must record the applied migration revision"
+            )
         if (
             deployment.get("alembic_current_matches_head_on_all_backend_instances")
             is not True
@@ -516,8 +522,14 @@ def _validate_runtime_evidence(
             errors.append("production frontend must return HTTP 200")
 
         for field, message in (
-            ("backend_refresh_successful", "production backend refresh must be successful"),
-            ("frontend_refresh_successful", "production frontend refresh must be successful"),
+            (
+                "backend_refresh_successful",
+                "production backend refresh must be successful",
+            ),
+            (
+                "frontend_refresh_successful",
+                "production frontend refresh must be successful",
+            ),
             (
                 "launch_template_pins_match_refreshes",
                 "production launch-template pins must match refreshes",
@@ -530,9 +542,13 @@ def _validate_runtime_evidence(
             if deployment.get(field) is not True:
                 errors.append(message)
         if deployment.get("all_observed_deployment_targets_match_revision") is not True:
-            errors.append("production deployment targets must match the recorded revision")
+            errors.append(
+                "production deployment targets must match the recorded revision"
+            )
         if deployment.get("required_runtime_configuration_verified") is not True:
-            errors.append("production deployment runtime configuration must be verified")
+            errors.append(
+                "production deployment runtime configuration must be verified"
+            )
 
     direct_scan = evidence.get("direct_authenticated_production_scan")
     if not isinstance(direct_scan, dict) or direct_scan.get("status") != "verified":
@@ -560,7 +576,9 @@ def _validate_runtime_evidence(
     if direct_scan.get("tool_names") != expected_tool_names:
         errors.append("direct authenticated scan tool names must match the snapshot")
     if direct_scan.get("exact_candidate_tool_name_set_match") is not True:
-        errors.append("direct authenticated scan must match the candidate tool-name set")
+        errors.append(
+            "direct authenticated scan must match the candidate tool-name set"
+        )
     for count_field in (
         "missing_tool_count",
         "extra_tool_count",
@@ -574,7 +592,9 @@ def _validate_runtime_evidence(
     if direct_scan.get("sensitive_values_retained") is not False:
         errors.append("direct authenticated scan must not retain sensitive values")
     if direct_scan.get("dynamic_client_registration_advertised") is not True:
-        errors.append("direct authenticated scan must retain DCR advertisement evidence")
+        errors.append(
+            "direct authenticated scan must retain DCR advertisement evidence"
+        )
     if direct_scan.get("client_id_metadata_document_advertised") is not False:
         errors.append("direct authenticated scan must record CIMD as not advertised")
     if direct_scan.get("business_card_tools") != [
@@ -682,22 +702,28 @@ def validate(*, allow_pending: bool) -> list[str]:
         errors.append("portal prerequisite evidence is missing candidate metadata")
         candidate = {}
     if candidate.get("plugin_version") != manifest.get("version"):
-        errors.append("portal prerequisite plugin version does not match the plugin manifest")
+        errors.append(
+            "portal prerequisite plugin version does not match the plugin manifest"
+        )
     if candidate.get("production_mcp_url") != EXPECTED_MCP_URL:
-        errors.append("portal prerequisite evidence must use the canonical production MCP URL")
+        errors.append(
+            "portal prerequisite evidence must use the canonical production MCP URL"
+        )
     if candidate.get("expected_tool_count") != expected_tool_count:
         errors.append(
             "portal prerequisite evidence tool count must match the contract snapshot"
         )
     if candidate.get("expected_oauth_scope_count") != EXPECTED_SCOPE_COUNT:
-        errors.append("portal prerequisite evidence must expect exactly 18 OAuth scopes")
+        errors.append(
+            "portal prerequisite evidence must expect exactly 18 OAuth scopes"
+        )
     if candidate.get("deployment_status") != "verified":
         errors.append("portal prerequisite candidate deployment must be verified")
 
     bundle_relative = Path(str(candidate.get("bundle_path") or ""))
-    expected_bundle_relative = Path(
-        "dist"
-    ) / f"sparklaunch-chatgpt-plugin-{manifest.get('version')}.zip"
+    expected_bundle_relative = (
+        Path("dist") / f"sparklaunch-chatgpt-plugin-{manifest.get('version')}.zip"
+    )
     if (
         bundle_relative.is_absolute()
         or "\\" in str(candidate.get("bundle_path") or "")
@@ -792,7 +818,9 @@ def validate(*, allow_pending: bool) -> list[str]:
                 "verified authenticated production scan must match the candidate tool count"
             )
         if scan.get("portal_result") != "successful":
-            errors.append("verified authenticated production scan must report a successful portal result")
+            errors.append(
+                "verified authenticated production scan must report a successful portal result"
+            )
     elif isinstance(scan, dict) and scan.get("status") == "pending":
         if scan.get("candidate_expected_tool_count") != expected_tool_count:
             errors.append("pending portal scan must record the candidate tool count")
@@ -803,29 +831,41 @@ def validate(*, allow_pending: bool) -> list[str]:
     if isinstance(reviewer, dict) and reviewer.get("status") == "verified":
         _require_observation(reviewer, "reviewer access", errors)
         if reviewer.get("project_isolation_verified") is not True:
-            errors.append("verified reviewer access must prove disposable-project isolation")
+            errors.append(
+                "verified reviewer access must prove disposable-project isolation"
+            )
         if reviewer.get("reviewer_materials_configured") is not True:
-            errors.append("verified reviewer access must have configured review materials")
+            errors.append(
+                "verified reviewer access must have configured review materials"
+            )
         if reviewer.get("reviewer_materials_stored_outside_repository") is not True:
             errors.append("reviewer materials must be stored outside the repository")
         if reviewer.get("portal_positive_test_case_count") != 5:
             errors.append("reviewer access must retain five positive portal test cases")
         if reviewer.get("portal_negative_test_case_count") != 3:
-            errors.append("reviewer access must retain three negative portal test cases")
+            errors.append(
+                "reviewer access must retain three negative portal test cases"
+            )
 
     publisher = evidence.get("publisher_identity")
     if isinstance(publisher, dict) and publisher.get("status") == "verified":
         _require_observation(publisher, "publisher identity", errors)
         if publisher.get("organization_and_project_match") is not True:
-            errors.append("verified publisher identity must match the submission organization and project")
+            errors.append(
+                "verified publisher identity must match the submission organization and project"
+            )
 
     demo = evidence.get("demo_recording")
     if isinstance(demo, dict) and demo.get("status") == "verified":
         _require_observation(demo, "demo recording", errors)
         if not _is_https_url(demo.get("url")):
-            errors.append("verified demo recording must have a credential-free HTTPS URL")
+            errors.append(
+                "verified demo recording must have a credential-free HTTPS URL"
+            )
         if demo.get("reviewer_access_verified") is not True:
-            errors.append("verified demo recording URL must be tested without reviewer sign-in")
+            errors.append(
+                "verified demo recording URL must be tested without reviewer sign-in"
+            )
     if (
         not isinstance(demo, dict)
         or demo.get("runbook") != EXPECTED_DEMO_RUNBOOK.as_posix()
@@ -835,7 +875,10 @@ def validate(*, allow_pending: bool) -> list[str]:
 
     for gate in EXTERNAL_GATES:
         record = evidence.get(gate)
-        if not isinstance(record, dict) or record.get("status") not in {"pending", "verified"}:
+        if not isinstance(record, dict) or record.get("status") not in {
+            "pending",
+            "verified",
+        }:
             errors.append(f"{gate} status must be pending or verified")
         elif not allow_pending and record.get("status") != "verified":
             errors.append(f"external portal gate is still pending: {gate}")
