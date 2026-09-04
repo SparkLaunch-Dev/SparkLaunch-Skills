@@ -20,7 +20,32 @@
   },
   "runtime": {
     "contract_snapshot_version": "1.4.0",
-    "deployment_status": "not_performed_or_verified_by_this_change"
+    "deployment_status": "verified",
+    "observed_at": "2026-09-03T04:47:05Z",
+    "deployed_git_revision": "058513ed28b2fadba120d5f4a0e447a723e37ddc",
+    "release_tag": "prod-20260902-211542",
+    "service_version": "1.4.0",
+    "migration_revision": "mcp_portability_01",
+    "migration_status": "applied_on_all_observed_backend_targets",
+    "direct_authenticated_scan": {
+      "status": "verified",
+      "tool_count": 61,
+      "exact_tool_name_set_match": true,
+      "output_schema_root_failure_count": 0,
+      "annotation_triplet_failure_count": 0,
+      "mcp_protocol_version": "2025-11-25",
+      "server_name": "SparkLaunch MCP",
+      "server_version": "1.4.0",
+      "initialize_http_status": 200,
+      "initialized_notification_http_status": 202,
+      "tools_list_http_status": 200,
+      "tool_calls_executed": 0
+    },
+    "oauth": {
+      "dynamic_client_registration_advertised": true,
+      "client_id_metadata_document_advertised": false
+    },
+    "openai_portal_rescan_status": "pending"
   },
   "distribution": {
     "openai": "local_candidate_not_submitted",

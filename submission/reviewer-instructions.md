@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch `0.5.0+codex.20260902140918` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The portal ZIP contains nine skills, and the generated submission import declares 61 tools under the expected 18 OAuth scopes; before review, the exact deployed runtime must be scanned and observed to expose the same 61-tool contract. The retained 59-tool production scan predates this candidate and is marked stale, not rewritten. The repository's internal reviewer evidence contains 30 trigger cases and 13 controlled E2E cases; those evidence files are intentionally excluded from the portal ZIP.
+These instructions apply to the SparkLaunch `0.5.0+codex.20260902140918` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The portal ZIP contains nine skills, and the generated submission import declares 61 tools under the expected 18 OAuth scopes. A direct authenticated production `tools/list` check matched the candidate's exact 61-name tool set and checked top-level output-schema roots plus annotation-triplet presence, but it retained no full-descriptor hash. OpenAI portal Scan Tools must still be rerun because the retained portal result covers the prior 59-tool revision and is preserved as stale historical evidence. The repository's internal reviewer evidence contains 30 trigger cases and 13 controlled E2E cases; those evidence files are intentionally excluded from the portal ZIP.
 
 ## Access
 
