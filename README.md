@@ -83,9 +83,9 @@ The same 256 KiB serialized limit, nested extra-field rejection, address-field r
 
 `crm.ingest_business_card` remains intentionally narrow. It accepts only a server-approved short-lived HTTPS host file reference; callers must not substitute arbitrary URLs, base64, or data URLs.
 
-For hosts without supported attachment metadata, `crm.prepare_business_card_import` creates an expiring first-party handoff without importing anything. The founder signs in to SparkLaunch and explicitly chooses **Upload and import**; `crm.get_business_card_import` then reports safe status. The page, not the agent, supplies the single bounded image directly to the CRM ingestion path after current user/project access is rechecked. This service `1.4.0` contract is packaged locally; deployment and live host execution remain unverified.
+For hosts without supported attachment metadata, `crm.prepare_business_card_import` creates an expiring first-party handoff without importing anything. The founder signs in to SparkLaunch and explicitly chooses **Upload and import**; `crm.get_business_card_import` then reports safe status. The page, not the agent, supplies the single bounded image directly to the CRM ingestion path after current user/project access is rechecked. Service `1.4.0` and both handoff descriptors are live; the direct production probe matched the candidate's 61-name tool set and checked every listed tool's output-schema root and annotation triplet. It did not retain a full-descriptor hash, and native-host plus end-to-end import execution remain unverified.
 
-OAuth portability has the same evidence boundary. Existing DCR is the production-verified registration path. Service `1.4.0` adds feature-gated Client ID Metadata Document support with bounded-fetch, SSRF, redirect, persistence/cache, and DCR-regression controls; the gate remains off in the checked-in deployment configuration, and hosted CIMD behavior is not claimed by this package build.
+OAuth portability has the same evidence boundary. Existing DCR is the production-verified registration path. Service `1.4.0` includes feature-gated Client ID Metadata Document support with bounded-fetch, SSRF, redirect, persistence/cache, and DCR-regression controls; the implementation and migration are deployed, but current production metadata does not advertise CIMD, so the gate remains off and no live CIMD flow is claimed.
 
 ## Shared Safety Contract
 
@@ -106,7 +106,7 @@ Build the ChatGPT portal ZIP with:
 python scripts/build_submission_bundle.py
 ```
 
-Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Validate them with `python scripts/validate_portal_prerequisites.py --allow-pending` while the explicitly pending gates remain unresolved. A local package or test pass does not prove ChatGPT review, hosted deployment, OAuth behavior, or a real tool execution.
+Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Validate them with `python scripts/validate_portal_prerequisites.py --allow-pending` while the explicitly pending gates remain unresolved. Production revision, migration, public OAuth discovery, and the direct authenticated tool-name-set/schema-root/annotation-presence checks are now separately verified; OpenAI portal Scan Tools, full live-descriptor equality, ChatGPT review, native-host execution, and publication are not.
 
 The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch-Dev/sparklaunch`. Registry candidate version, last-known published version, runtime snapshot version, and publication status are recorded separately in `release-state.json`. Publishing an immutable Registry version requires its dedicated approved workflow and is not performed by package generation.
 

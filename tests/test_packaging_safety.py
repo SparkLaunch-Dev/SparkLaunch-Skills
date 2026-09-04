@@ -253,6 +253,11 @@ def test_expected_file_plan_rejects_duplicate_targets(monkeypatch, tmp_path):
         "sessionCookie",
         "reviewer_project_id",
         "instance_id",
+        "instance_refresh_id",
+        "autoscaling_group",
+        "launch_template_id",
+        "launch_template_name",
+        "launch_template_pins",
         "verified_identity_label",
     ],
 )
@@ -276,6 +281,9 @@ def test_portal_scan_rejects_nested_sensitive_fields_without_echoing_values(key)
         "sk-" + "d" * 24,
         "https://reviewer:" + "e" * 20 + "@example.com/path",
         "i-" + "0" * 17,
+        "lt-" + "0" * 17,
+        "example-backend-asg-production",
+        "00000000-0000-4000-8000-000000000000",
         "reviewer project " + "99",
     ],
 )

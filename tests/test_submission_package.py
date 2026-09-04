@@ -59,6 +59,32 @@ def _validate_with_text_replaced(monkeypatch, path, old, new):
     return validate()
 
 
+def _validate_portal_evidence(monkeypatch, tmp_path, evidence, release_state=None):
+    evidence_path = tmp_path / "portal-prerequisites.json"
+    evidence_path.write_text(json.dumps(evidence), encoding="utf-8")
+    monkeypatch.setattr(
+        portal_prerequisite_validator,
+        "EVIDENCE_PATH",
+        evidence_path,
+    )
+    if release_state is not None:
+        release_state_path = tmp_path / "release-state.json"
+        release_state_path.write_text(json.dumps(release_state), encoding="utf-8")
+        monkeypatch.setattr(
+            portal_prerequisite_validator,
+            "RELEASE_STATE_PATH",
+            release_state_path,
+        )
+    return portal_prerequisite_validator.validate(allow_pending=True)
+
+
+def _replace_nested_value(value, path, replacement):
+    target = value
+    for key in path[:-1]:
+        target = target[key]
+    target[path[-1]] = replacement
+
+
 def test_packaged_skills_are_exact_deterministic_mirrors():
     assert SKILLS == (
         "sparklaunch-platform",
@@ -852,35 +878,89 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     runbook = (ROOT / "submission" / "demo-recording-runbook.md").read_text(
         encoding="utf-8"
     )
+    release_state = json.loads((ROOT / "release-state.json").read_text(encoding="utf-8"))
 
     assert evidence["candidate"]["expected_tool_count"] == len(MCP_TOOL_CONTRACTS)
     assert evidence["candidate"]["expected_oauth_scope_count"] == 18
+    deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
+    historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
+    assert evidence["candidate"]["deployment_status"] == "verified"
+    assert evidence["candidate"]["deployed_git_revision"] == deployed_revision
     assert evidence["public_production_readiness"]["status"] == "verified"
-    assert evidence["public_production_readiness"]["evidence"]["domain_challenge"] == (
-        "verified_by_openai_portal"
-    )
+    current_public = evidence["public_production_readiness"]["evidence"]
+    assert "domain_challenge" not in current_public
+    assert current_public["domain_challenge_http_status"] == 200
+    assert current_public["domain_challenge_response_byte_count"] == 43
+    assert current_public["domain_challenge_cache_control_no_store"] is True
     assert evidence["authenticated_production_scan"]["status"] == "pending"
-    assert evidence["authenticated_production_scan"]["historical_result_status"] == (
-        "verified"
-    )
-    assert evidence["authenticated_production_scan"]["tool_count"] == 59
-    assert evidence["authenticated_production_scan"]["candidate_contract_status"] == (
-        "stale"
-    )
     assert evidence["authenticated_production_scan"][
         "candidate_expected_tool_count"
     ] == len(MCP_TOOL_CONTRACTS)
-    historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
-    assert evidence["production_deployment"]["git_revision"] == historical_revision
+    assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
+    assert evidence["production_deployment"]["git_revision"] == deployed_revision
+    assert evidence["production_deployment"]["service_version"] == "1.4.0"
+    assert evidence["production_deployment"]["migration_revision"] == (
+        "mcp_portability_01"
+    )
     assert evidence["production_deployment"][
-        "all_observed_deployment_targets_match_revision"
+        "alembic_current_matches_head_on_all_backend_instances"
     ] is True
-    assert evidence["production_deployment"][
-        "required_runtime_configuration_verified"
-    ] is True
-    assert evidence["authenticated_production_scan"]["latest_runtime_probe"][
+    assert {
+        deployment["git_revision"]
+        for deployment in evidence["historical_production_deployments"]
+    } == {historical_revision}
+    historical_scan = evidence["historical_authenticated_production_scans"][0]
+    assert historical_scan["historical_result_status"] == "verified"
+    assert historical_scan["tool_count"] == 59
+    assert historical_scan["candidate_contract_status"] == "stale"
+    assert historical_scan["latest_runtime_probe"][
         "deployed_git_revision"
     ] == historical_revision
+    assert portal_prerequisite_validator._canonical_sha256(
+        evidence["historical_public_production_readiness"][0]
+    ) == portal_prerequisite_validator.HISTORICAL_PUBLIC_READINESS_SHA256
+    assert portal_prerequisite_validator._canonical_sha256(
+        evidence["historical_production_deployments"][0]
+    ) == portal_prerequisite_validator.HISTORICAL_PRODUCTION_DEPLOYMENT_SHA256
+    assert portal_prerequisite_validator._canonical_sha256(
+        historical_scan
+    ) == portal_prerequisite_validator.HISTORICAL_PORTAL_SCAN_SHA256
+    deployment = evidence["production_deployment"]
+    assert deployment["backend_refresh_successful"] is True
+    assert deployment["frontend_refresh_successful"] is True
+    assert deployment["launch_template_pins_match_refreshes"] is True
+    assert deployment[
+        "frontend_revision_proven_by_immutable_launch_template_pin"
+    ] is True
+    assert deployment["all_observed_deployment_targets_match_revision"] is True
+    assert deployment["required_runtime_configuration_verified"] is True
+    direct_scan = evidence["direct_authenticated_production_scan"]
+    assert direct_scan["status"] == "verified"
+    assert direct_scan["deployed_git_revision"] == deployed_revision
+    assert direct_scan["mcp_protocol_version"] == "2025-11-25"
+    assert direct_scan["server_name"] == "SparkLaunch MCP"
+    assert direct_scan["server_version"] == "1.4.0"
+    assert direct_scan["initialize_http_status"] == 200
+    assert direct_scan["initialized_notification_http_status"] == 202
+    assert direct_scan["tools_list_http_status"] == 200
+    assert direct_scan["tool_count"] == len(MCP_TOOL_CONTRACTS)
+    assert direct_scan["tool_names"] == sorted(MCP_TOOL_CONTRACTS)
+    assert direct_scan["exact_candidate_tool_name_set_match"] is True
+    assert direct_scan["output_schema_root_failure_count"] == 0
+    assert direct_scan["annotation_triplet_failure_count"] == 0
+    assert direct_scan["tool_calls_executed"] == 0
+    assert direct_scan["sensitive_values_retained"] is False
+    release_scan = release_state["runtime"]["direct_authenticated_scan"]
+    assert "exact_contract_match" not in release_scan
+    assert release_scan["exact_tool_name_set_match"] is True
+    assert release_scan["output_schema_root_failure_count"] == 0
+    assert release_scan["annotation_triplet_failure_count"] == 0
+    assert release_scan["initialize_http_status"] == 200
+    assert release_scan["initialized_notification_http_status"] == 202
+    assert release_scan["tools_list_http_status"] == 200
+    assert release_scan["mcp_protocol_version"] == "2025-11-25"
+    assert release_scan["server_name"] == "SparkLaunch MCP"
+    assert release_scan["server_version"] == "1.4.0"
     assert evidence["reviewer_access"]["status"] == "verified"
     assert evidence["reviewer_access"]["project_isolation_verified"] is True
     assert evidence["reviewer_access"]["reviewer_materials_configured"] is True
@@ -899,6 +979,250 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
         "authenticated_production_scan",
         "demo_recording",
     }
+
+
+@pytest.mark.parametrize(
+    ("path", "replacement", "expected_error"),
+    (
+        (
+            (
+                "historical_public_production_readiness",
+                0,
+                "evidence",
+                "oauth_scope_count",
+            ),
+            17,
+            "historical public-readiness snapshot changed",
+        ),
+        (
+            (
+                "historical_production_deployments",
+                0,
+                "required_runtime_configuration_verified",
+            ),
+            False,
+            "historical production deployment snapshot changed",
+        ),
+        (
+            (
+                "historical_authenticated_production_scans",
+                0,
+                "latest_portal_refresh",
+                "annotation_justification_field_count",
+            ),
+            176,
+            "historical authenticated portal scan snapshot changed",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
+    monkeypatch,
+    tmp_path,
+    path,
+    replacement,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    _replace_nested_value(evidence, path, replacement)
+    assert expected_error in _validate_portal_evidence(
+        monkeypatch, tmp_path, evidence
+    )
+
+
+@pytest.mark.parametrize(
+    ("path", "replacement", "expected_error"),
+    (
+        (
+            (
+                "production_deployment",
+                "all_observed_deployment_targets_match_revision",
+            ),
+            False,
+            "production deployment targets must match the recorded revision",
+        ),
+        (
+            ("production_deployment", "backend_refresh_successful"),
+            False,
+            "production backend refresh must be successful",
+        ),
+        (
+            ("production_deployment", "frontend_refresh_successful"),
+            False,
+            "production frontend refresh must be successful",
+        ),
+        (
+            ("production_deployment", "launch_template_pins_match_refreshes"),
+            False,
+            "production launch-template pins must match refreshes",
+        ),
+        (
+            ("direct_authenticated_production_scan", "initialize_http_status"),
+            201,
+            "direct authenticated scan has invalid initialize_http_status",
+        ),
+        (
+            ("direct_authenticated_production_scan", "mcp_protocol_version"),
+            "2025-03-26",
+            "direct authenticated scan protocol version is stale",
+        ),
+        (
+            ("direct_authenticated_production_scan", "server_name"),
+            "Other MCP",
+            "direct authenticated scan server name is stale",
+        ),
+        (
+            ("direct_authenticated_production_scan", "server_version"),
+            "1.3.0",
+            "direct authenticated scan server version is stale",
+        ),
+        (
+            ("public_production_readiness", "evidence", "domain_challenge"),
+            "verified_by_openai_portal",
+            "current public readiness must not reuse historical portal verification",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_incomplete_current_proof(
+    monkeypatch,
+    tmp_path,
+    path,
+    replacement,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    _replace_nested_value(evidence, path, replacement)
+    assert expected_error in _validate_portal_evidence(
+        monkeypatch, tmp_path, evidence
+    )
+
+
+def test_portal_prerequisite_validator_requires_exact_candidate_bundle_path(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    manifest = ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json"
+    evidence["candidate"]["bundle_path"] = manifest.relative_to(ROOT).as_posix()
+    evidence["candidate"]["bundle_sha256"] = hashlib.sha256(
+        manifest.read_bytes()
+    ).hexdigest()
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert "portal prerequisite candidate bundle path is invalid" in errors
+
+
+def test_portal_prerequisite_validator_requires_exact_demo_runbook(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    evidence["demo_recording"]["runbook"] = "README.md"
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert "demo recording runbook is missing" in errors
+
+
+def test_portal_prerequisite_validator_rejects_new_sensitive_history_fields(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    evidence["historical_authenticated_production_scans"][0][
+        "client_secret"
+    ] = "not-a-real-secret"
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert any("sensitive field" in error for error in errors)
+    assert all("not-a-real-secret" not in error for error in errors)
+
+
+def test_portal_prerequisite_validator_rejects_extra_historical_records(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    evidence["historical_production_deployments"].append({})
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert (
+        "historical production deployment snapshot must contain exactly one immutable record"
+        in errors
+    )
+
+
+@pytest.mark.parametrize(
+    ("path", "replacement", "expected_error"),
+    (
+        (
+            ("runtime", "deployed_git_revision"),
+            "0" * 40,
+            "release-state runtime has inconsistent deployed_git_revision",
+        ),
+        (
+            ("runtime", "direct_authenticated_scan", "tool_count"),
+            60,
+            "release-state direct scan has inconsistent tool_count",
+        ),
+        (
+            ("runtime", "oauth", "dynamic_client_registration_advertised"),
+            False,
+            "release-state OAuth evidence has inconsistent dynamic_client_registration_advertised",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_cross_checks_release_state(
+    monkeypatch,
+    tmp_path,
+    path,
+    replacement,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    _replace_nested_value(release_state, path, replacement)
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert expected_error in errors
 
 
 def test_public_repository_has_license_and_security_guidance():

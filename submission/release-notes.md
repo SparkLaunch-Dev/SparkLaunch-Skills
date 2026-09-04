@@ -1,6 +1,6 @@
 # SparkLaunch 0.5.0+codex.20260902140918 ChatGPT Candidate
 
-Status: the previously observed production MCP service is deployed and official MCP Registry version `1.0.0` is published. This candidate describes application service version `1.4.0`; its deployment, immutable Registry publication, and marketplace availability require separate approval and evidence. The retained successful production scan covers the prior 59-tool deployed revision and is stale for this 61-tool candidate. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT.
+Status: the production MCP service is deployed at application service `1.4.0`, migration `mcp_portability_01`, and revision `058513ed28b2fadba120d5f4a0e447a723e37ddc`; all observed deployment targets match the revision and required runtime configuration. A direct authenticated production scan matched the candidate's exact 61-name tool set and found no top-level output-schema-root or annotation-triplet presence failures. No full-descriptor hash was retained, so exact full-contract equality is not claimed. The official MCP Registry remains published at version `1.0.0`. The retained OpenAI portal Scan Tools result covers the prior 59-tool revision and remains stale, so a fresh portal OAuth scan is still required. This ChatGPT submission bundle has not yet been submitted or approved by ChatGPT, and Registry `1.4.0` plus marketplace availability remain unverified.
 
 ## Reviewer-visible changes
 
@@ -33,7 +33,7 @@ Status: the previously observed production MCP service is deployed and official 
 ## Review boundaries
 
 - The candidate does not add a custom widget, direct provider integration, external filing action, payment collector, identity-document collector, or participant impersonation path.
-- The local SparkLaunch public-policy sources now set a minimum age of 13, require parent or legal-guardian permission below the applicable age of majority, and preserve workflow-, provider-, and jurisdiction-specific legal-capacity requirements. Deployment and live observation of the updated public policies remain required.
-- Package validation and controlled local E2E do not prove deployment, production email delivery, Registry `1.4.0` publication, marketplace activation, external filing, conversion, or retention.
+- The deployed SparkLaunch public-policy sources set a minimum age of 13, require parent or legal-guardian permission below the applicable age of majority, and preserve workflow-, provider-, and jurisdiction-specific legal-capacity requirements. A dedicated live policy-content observation remains separate from deployment proof.
+- Package validation and controlled local E2E do not by themselves prove deployment, production email delivery, Registry `1.4.0` publication, marketplace activation, external filing, conversion, or retention. The candidate deployment and direct 61-tool inventory are supported by separate production evidence.
 - Reviewer credentials, confirmation tokens, private participant values, provider session details, and signed file references must remain outside this repository.
-- Future production deployment, Registry publication, ChatGPT submission, and any separately enabled external Filing Operations action each require explicit approval and fresh evidence.
+- Any later runtime deployment, Registry publication, ChatGPT submission, and any separately enabled external Filing Operations action each require explicit approval and fresh evidence.
