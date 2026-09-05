@@ -1,6 +1,6 @@
 # SparkLaunch Gemini CLI adapter
 
-This adapter is the Gemini-specific input to the repository's host-package builder. The generated package contains this manifest and context file plus the nine canonical SparkLaunch skills.
+This adapter is the Gemini-specific input to the repository's host-package builder. The generated package contains this manifest and context file plus the eleven canonical SparkLaunch skills.
 
 ## Local verification with Gemini CLI
 

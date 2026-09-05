@@ -43,7 +43,7 @@ def test_claude_adapter_contract_is_safe_and_builder_consumable() -> None:
     manifest = _load_json(ADAPTER_ROOT / "templates" / "plugin.json")
     assert manifest["$schema"] == "https://json.schemastore.org/claude-code-plugin-manifest.json"
     assert manifest["name"] == "sparklaunch"
-    assert manifest["version"] == "0.5.0"
+    assert manifest["version"] == "0.7.0"
     assert manifest["license"] == "LicenseRef-SparkLaunch-Proprietary"
     assert manifest["skills"] == "./skills/"
     assert manifest["mcpServers"] == "./.mcp.json"

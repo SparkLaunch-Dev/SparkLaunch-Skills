@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "sparklaunch",
   "displayName": "SparkLaunch",
-  "version": "0.5.0",
+  "version": "0.7.0",
   "description": "Connected founder workflows for projects, validation, branding, launch, CRM, and incorporation.",
   "author": {
     "name": "SparkLaunch",

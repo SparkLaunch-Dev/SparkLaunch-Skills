@@ -1,6 +1,12 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the SparkLaunch `0.5.0+codex.20260902140918` candidate and the canonical MCP endpoint `https://sparklaun.ch/api/mcp/`. The portal ZIP contains nine skills, and the generated submission import declares 61 tools under the expected 18 OAuth scopes. A direct authenticated production `tools/list` check matched the candidate's exact 61-name tool set and checked top-level output-schema roots plus annotation-triplet presence, but it retained no full-descriptor hash. OpenAI portal Scan Tools must still be rerun because the retained portal result covers the prior 59-tool revision and is preserved as stale historical evidence. The repository's internal reviewer evidence contains 30 trigger cases and 13 controlled E2E cases; those evidence files are intentionally excluded from the portal ZIP.
+These instructions apply to the local SparkLaunch `0.7.0+codex.20260904000000` candidate at
+`https://sparklaun.ch/api/mcp/`. The package contains eleven skills and declares
+86 tools under 25 OAuth scopes. The retained 1.4.0 production scan and portal
+prerequisites concern the previous 61-tool candidate and do not prove SparkCap or SparkRoom
+availability. Deploy and scan the matching candidate before native-host review.
+The internal evidence contains 36 trigger cases and 15 controlled E2E cases;
+the new real-database SparkCap and SparkRoom acceptance tests are in the application repository.
 
 ## Access
 
@@ -37,6 +43,20 @@ Also exercise these boundaries:
 5. Revoke or disconnect SparkLaunch and confirm another protected call starts authorization again.
 6. Create and read back one synthetic general project task. Verify a pending invitation or outsider cannot be assigned, an old version cannot be updated or deleted, and task overwrite/delete require exact confirmation.
 7. For the portable business-card flow, call `crm.prepare_business_card_import` and verify it creates only an expiring SparkLaunch action link. Sign in on the first-party page, use one synthetic PNG/JPEG/WebP image no larger than 10 MiB, and import only by explicitly choosing **Upload and import**. Then use `crm.get_business_card_import` for status readback. Do not send image bytes, arbitrary URLs, base64, data URLs, addresses, or private contact data through MCP, and do not claim an import before the page reports completion.
+
+## SparkRoom review
+
+In an isolated synthetic Growth project, create a room and select a reviewed library revision. Verify preview-only behavior, pinned revision readback, scope/role/effective-plan denial, exact confirmation before share creation and revocation, stale-state failure and same-key replay. Inspect metadata for storage-key, password and audit-data omission. Do not open public links or send invitations during this review. The three sparkroom permissions require consent and are not implied by existing grants.
+
+## SparkCap review
+
+In a disposable synthetic project, exercise cap_table.create, cap_table.get,
+cap_table.create_stakeholder, and cap_table.simulate_raise. Verify confirmation
+changes nothing before approval, retries do not duplicate, stale versions reject,
+and models return saved:false. Check role/plan/scope denial and no address,
+signature, note, or share-token disclosure. The four cap_table permissions require
+new consent and are not implied by an existing grant. Do not execute official
+ledger, signature, sharing, export, or provider operations through these tools.
 
 ## Controlled incorporation review
 

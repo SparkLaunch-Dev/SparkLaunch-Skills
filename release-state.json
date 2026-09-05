@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_packages": {
-    "version": "0.5.0+codex.20260902140918",
+    "version": "0.7.0+codex.20260904000000",
     "hosts": [
       "openai",
       "claude",
@@ -12,15 +12,15 @@
     "status": "local_candidates_only"
   },
   "mcp_registry": {
-    "candidate_descriptor_version": "1.4.0",
+    "candidate_descriptor_version": "1.6.0",
     "last_known_published_version": "1.0.0",
     "last_known_version_basis": "repository release record preceding the 2026-09-02 change",
     "live_refresh_status": "not_performed_by_this_change",
     "publication_status": "not_performed_by_this_change"
   },
   "runtime": {
-    "contract_snapshot_version": "1.4.0",
-    "deployment_status": "verified",
+    "contract_snapshot_version": "1.6.0",
+    "deployment_status": "not_verified_for_candidate",
     "observed_at": "2026-09-03T04:47:05Z",
     "deployed_git_revision": "058513ed28b2fadba120d5f4a0e447a723e37ddc",
     "release_tag": "prod-20260902-211542",
@@ -45,7 +45,8 @@
       "dynamic_client_registration_advertised": true,
       "client_id_metadata_document_advertised": false
     },
-    "openai_portal_rescan_status": "pending"
+    "openai_portal_rescan_status": "pending",
+    "proof_boundary": "The retained deployment and direct scan fields describe the prior 1.4.0 / 61-tool baseline. The local 1.6.0 SparkCap and SparkRoom candidate has 86 tools and 25 scopes; deployment and live execution have not been verified."
   },
   "distribution": {
     "openai": "local_candidate_not_submitted",

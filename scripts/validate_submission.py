@@ -406,8 +406,8 @@ def validate() -> list[str]:
     cases = (evaluations or {}).get("cases") or []
     if (evaluations or {}).get("schema_version") != 1:
         errors.append("skill trigger evaluations schema_version must be 1")
-    if len(cases) != 30:
-        errors.append("skill trigger evaluations must contain exactly 30 cases")
+    if len(cases) != 36:
+        errors.append("skill trigger evaluations must contain exactly 36 cases")
     case_ids: set[str] = set()
     positive_counts = {skill: 0 for skill in SKILLS}
     negative_count = 0
@@ -430,15 +430,15 @@ def validate() -> list[str]:
     for skill, count in positive_counts.items():
         if count < 2:
             errors.append(f"skill trigger evaluations need two positive cases: {skill}")
-    if negative_count != 8:
-        errors.append("skill trigger evaluations must preserve exactly eight broad negative cases")
+    if negative_count != 10:
+        errors.append("skill trigger evaluations must preserve exactly ten broad negative cases")
 
     matrix = _load_json(ROOT / "evals" / "controlled-e2e-matrix.json", errors)
     matrix_cases = (matrix or {}).get("cases") or []
     if (matrix or {}).get("version") != 1:
         errors.append("controlled E2E matrix version must be 1")
-    if len(matrix_cases) != 13:
-        errors.append("controlled E2E matrix must contain exactly 13 cases")
+    if len(matrix_cases) != 15:
+        errors.append("controlled E2E matrix must contain exactly 15 cases")
     covered_tools = {
         tool
         for case in matrix_cases
@@ -489,7 +489,7 @@ def validate() -> list[str]:
             "project_id",
             "idempotency",
             "file references",
-            "nine",
+            "eleven",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",
         ):
@@ -509,7 +509,7 @@ def validate() -> list[str]:
             "privacy-policy",
             "terms-and-conditions",
             f"{expected_tool_count} tools",
-            "18 OAuth scopes",
+            "25 OAuth scopes",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",
         ):

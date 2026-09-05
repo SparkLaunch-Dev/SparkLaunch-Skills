@@ -1,7 +1,7 @@
 {
   "name": "sparklaunch",
-  "version": "0.5.0+codex.20260902140918",
-  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, and incorporation.",
+  "version": "0.7.0+codex.20260904000000",
+  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, SparkCap, SparkRoom, and incorporation.",
   "author": {
     "name": "SparkLaunch",
     "email": "support@sparklaun.ch",
@@ -23,7 +23,7 @@
   "interface": {
     "displayName": "SparkLaunch",
     "shortDescription": "Build and operate a startup",
-    "longDescription": "Connect SparkLaunch to select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect analytics, operate private CRM workflows, and prepare an entitlement-gated incorporation case with private Action Center tasks and an internal Filing Operations handoff. Authentication starts on first protected use. Disconnect in SparkLaunch Profile under AI Agent Connections.",
+    "longDescription": "Connect SparkLaunch to select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect analytics, operate private CRM workflows, manage SparkCap planning cap tables and model ownership, prepare SparkRoom investor rooms and controlled sharing, and prepare an entitlement-gated incorporation case with private Action Center tasks and an internal Filing Operations handoff. Authentication starts on first protected use. Disconnect in SparkLaunch Profile under AI Agent Connections.",
     "developerName": "SparkLaunch",
     "category": "Productivity",
     "capabilities": [

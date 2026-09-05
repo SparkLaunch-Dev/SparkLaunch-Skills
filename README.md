@@ -29,7 +29,7 @@ No package contains a bearer token, API key, client secret, authorization code, 
 - `src/skills/`: canonical, host-neutral skill source edited by hand
 - `src/recipes/`: canonical multi-tool founder workflows edited by hand
 - `adapters/`: native host manifests, connection recovery fragments, and distribution notes
-- `contracts/tools.snapshot.json`: checked-in, runtime-derived 61-tool descriptors and input/output schemas
+- `contracts/tools.snapshot.json`: checked-in, runtime-derived 86-tool descriptors and input/output schemas
 - `plugins/`: deterministic generated packages for all five hosts
 - `sparklaunch-*/` and `recipes/`: generated OpenAI-compatible legacy mirrors retained for existing consumers
 - `submission/`: ChatGPT review candidate evidence and portal-only gates
@@ -71,6 +71,19 @@ python scripts/generate_submission.py
 ```
 
 The exporter constructs the sibling runtime against a temporary SQLite database and records the resulting descriptors. It does not deploy the server or call a hosted SparkLaunch environment.
+
+## SparkRoom candidate
+
+The local 0.7.0 package and service 1.6.0 candidate include 86 tools, 25 scopes and eleven skills. SparkRoom adds twelve room, document-selection, share-control and usage tools plus its skill and recipe. Effective Growth access is required. The previous 1.4.0 / 61-tool production evidence remains historical; deployment and native-host execution of this candidate are unverified.
+
+## Earlier SparkCap candidate
+
+The local 0.6.0 package and service 1.5.0 candidate add 13 SparkCap planning tools,
+four selectable permissions, and a tenth skill. Advanced official-ledger,
+signature, proof, migration, compliance, sharing, and export workflows remain
+first-party application handoffs. The retained portal prerequisites and direct
+production scans describe the previous 1.4.0 / 61-tool candidate. They fail the
+current readiness check by design until fresh deployment and live scans exist.
 
 ## Portable Inputs
 
@@ -120,6 +133,8 @@ The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch
 - `sparklaunch-campaigns`: campaigns, short links, QR, attribution, and statistics
 - `sparklaunch-landing-pages`: landing creation, publishing, analytics, and leads
 - `sparklaunch-sales-crm`: lead, contact, deal, activity, and supported business-card workflows
+- `sparklaunch-sparkroom`: investor room preparation, pinned document selection, controlled sharing and usage summaries
+- `sparklaunch-sparkcap`: cap-table and stakeholder planning, ownership, dilution, raise and hiring models
 - `sparklaunch-incorporation`: entitlement, address-free case preparation, private participant tasks, corrections, status, and internal Filing Operations submission
 
 ## Support, Security, And License

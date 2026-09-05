@@ -109,7 +109,7 @@ def _validate_skills(errors: list[str]) -> None:
         skill_root = root / "skills"
         actual_skills = {path.name for path in skill_root.iterdir() if path.is_dir()}
         if actual_skills != set(SKILLS):
-            errors.append(f"{host} package must contain exactly the nine canonical skills")
+            errors.append(f"{host} package must contain exactly the configured canonical skills")
             continue
         for skill in SKILLS:
             directory = skill_root / skill

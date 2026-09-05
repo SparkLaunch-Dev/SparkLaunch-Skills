@@ -25,7 +25,7 @@ Across every scenario, inspect the assistant's visible response, table, confirma
 
 ## Permission variants
 
-Run the matrix with a grant containing the expected 18 OAuth scopes, then call `projects.get` and evaluate `effective_permissions` for the selected project's plan, the user's role, and any token restriction. OAuth authorization is only the maximum connection boundary. A project-plan or role denial must not prompt an OAuth reconnect. A least-privilege OAuth variant may be run separately, but it must use a separate labeled connection and be disconnected only with explicit user approval.
+Run the matrix with a grant containing the expected 25 OAuth scopes, then call `projects.get` and evaluate `effective_permissions` for the selected project's plan, the user's role, and any token restriction. OAuth authorization is only the maximum connection boundary. A project-plan or role denial must not prompt an OAuth reconnect. A least-privilege OAuth variant may be run separately, but it must use a separate labeled connection and be disconnected only with explicit user approval.
 
 ## Incorporation isolation controls
 

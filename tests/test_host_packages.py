@@ -17,7 +17,7 @@ def test_checked_in_contract_supports_standalone_submission_generation() -> None
         (ROOT / "contracts" / "tools.snapshot.json").read_text(encoding="utf-8")
     )
     assert snapshot["tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert snapshot["server_version"] == "1.4.0"
+    assert snapshot["server_version"] == "1.6.0"
     assert {
         "crm.prepare_business_card_import",
         "crm.get_business_card_import",

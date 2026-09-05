@@ -1,6 +1,6 @@
 # SparkLaunch Muse Code adapter
 
-Muse Code has no documented third-party plugin manifest. This adapter therefore packages the nine canonical SparkLaunch skills and a truthful, disabled MCP settings example; it does not claim marketplace installation or protected-tool parity.
+Muse Code has no documented third-party plugin manifest. This adapter therefore packages the eleven canonical SparkLaunch skills and a truthful, disabled MCP settings example; it does not claim marketplace installation or protected-tool parity.
 
 ## Validate and install the skills
 

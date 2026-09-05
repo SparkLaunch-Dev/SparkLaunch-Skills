@@ -4,6 +4,7 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 
 | Recipe | Use it for |
 | --- | --- |
+| [review-cap-table-and-model-a-raise.md](./review-cap-table-and-model-a-raise.md) | Inspect SparkCap ownership, confirm planning edits, and model an unsaved raise |
 | [connect-sparklaunch.md](./connect-sparklaunch.md) | Host-managed OAuth connection, accessible-project discovery, and project selection |
 | [validate-an-idea-and-generate-a-report.md](./validate-an-idea-and-generate-a-report.md) | Create and complete a private idea-validation analysis |
 | [create-a-brand-foundation.md](./create-a-brand-foundation.md) | Generate saved palette and logo options |
@@ -15,6 +16,7 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 | [recover-incorporation-entitlement.md](./recover-incorporation-entitlement.md) | Recover a missing or pending Incorporation Package safely |
 | [resume-or-correct-incorporation.md](./resume-or-correct-incorporation.md) | Resume a case, resolve a version conflict, correct a successor version, or cancel |
 | [check-incorporation-status.md](./check-incorporation-status.md) | Read safe case, participant, receipt, and acceptance progress |
+| [prepare-and-share-an-investor-room.md](./prepare-and-share-an-investor-room.md) | Prepare reviewed room contents and create or revoke bounded investor access |
 
 ## Shared Rules
 

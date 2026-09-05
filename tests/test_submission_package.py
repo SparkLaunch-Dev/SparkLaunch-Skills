@@ -96,6 +96,8 @@ def test_packaged_skills_are_exact_deterministic_mirrors():
         "sparklaunch-landing-pages",
         "sparklaunch-sales-crm",
         "sparklaunch-incorporation",
+        "sparklaunch-sparkcap",
+        "sparklaunch-sparkroom",
     )
     assert len(expected_pairs()) > 40
     assert sync(write=False) == []
@@ -315,8 +317,7 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
         "name": REGISTRY_SERVER_NAME,
         "title": "SparkLaunch",
         "description": (
-            "Founder workflows for idea validation, branding, launches, CRM, "
-            "and incorporation."
+            "Founder tools for launch, CRM, incorporation, SparkCap planning and SparkRoom sharing."
         ),
         "websiteUrl": "https://sparklaun.ch/",
         "remotes": [
@@ -328,7 +329,7 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
     application_version = run_path(BACKEND / "mcp_server_version.py")[
         "SPARKLAUNCH_MCP_SERVER_VERSION"
     ]
-    assert version == "1.4.0"
+    assert version == "1.6.0"
     assert version == application_version
 
 
@@ -619,7 +620,7 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         (ROOT / "evals" / "skill-trigger-cases.json").read_text(encoding="utf-8")
     )
     cases = evaluations["cases"]
-    assert len(cases) == 30
+    assert len(cases) == 36
     expected_skills = {
         skill
         for case in cases
@@ -635,8 +636,10 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         "sparklaunch-projects",
         "sparklaunch-sales-crm",
         "sparklaunch-incorporation",
+        "sparklaunch-sparkcap",
+        "sparklaunch-sparkroom",
     }
-    assert sum(not case["expected_skills"] for case in cases) == 8
+    assert sum(not case["expected_skills"] for case in cases) == 10
     incorporation_cases = {
         case["id"]: case["expected_skills"]
         for case in cases
@@ -670,9 +673,11 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
         for recipe in case["recipes"]
     }
 
-    assert len(matrix["cases"]) == 13
+    assert len(matrix["cases"]) == 15
     assert covered_tools == set(submission["tools"])
     assert covered_recipes == {
+        "prepare-and-share-an-investor-room.md",
+        "review-cap-table-and-model-a-raise.md",
         "connect-sparklaunch-to-chatgpt.md",
         "validate-an-idea-and-generate-a-report.md",
         "create-a-brand-foundation.md",
@@ -703,7 +708,7 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     assert controls["automatic_validation_typical_minutes"] == "10-15"
     assert controls["automatic_validation_poll_seconds"] >= 60
     assert controls["automatic_validation_timeout_minutes"] >= 20
-    assert len(MCP_OAUTH_SUPPORTED_SCOPES) == 18
+    assert len(MCP_OAUTH_SUPPORTED_SCOPES) == 25
     assert controls["expected_oauth_scope_count"] == len(MCP_OAUTH_SUPPORTED_SCOPES)
     expected_grant_marker = f"expected {len(MCP_OAUTH_SUPPORTED_SCOPES)}-scope grant"
     assert any(expected_grant_marker in case["expected"] for case in matrix["cases"])
@@ -721,7 +726,7 @@ def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
     runbook = (ROOT / "evals" / "CONTROLLED-E2E.md").read_text(encoding="utf-8")
 
     for marker in (
-        "18 OAuth scopes",
+        "25 OAuth scopes",
         "Never call Delaware, NWRA, or CorpTools",
         "zero provider calls",
         "submit to SparkLaunch Filing Operations",
@@ -843,7 +848,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.5.0+codex.20260902")
+    assert manifest["version"].startswith("0.7.0+codex.20260904")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
@@ -857,9 +862,9 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "sparklaunch-wordmark-light.png" in reviewer
     assert "sparklaunch-wordmark-dark.png" in reviewer
     for marker in (
-        "nine",
+        "eleven",
         f"{len(MCP_TOOL_CONTRACTS)} tools",
-        "18 OAuth scopes",
+        "25 OAuth scopes",
         "submit to SparkLaunch Filing Operations",
         "receipt does not mean",
         "zero provider calls",
@@ -880,7 +885,8 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
     release_state = json.loads((ROOT / "release-state.json").read_text(encoding="utf-8"))
 
-    assert evidence["candidate"]["expected_tool_count"] == len(MCP_TOOL_CONTRACTS)
+    assert evidence["candidate"]["expected_tool_count"] == 61
+    assert len(MCP_TOOL_CONTRACTS) == 86
     assert evidence["candidate"]["expected_oauth_scope_count"] == 18
     deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
     historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
@@ -895,7 +901,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert evidence["authenticated_production_scan"]["status"] == "pending"
     assert evidence["authenticated_production_scan"][
         "candidate_expected_tool_count"
-    ] == len(MCP_TOOL_CONTRACTS)
+    ] == 61
     assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
     assert evidence["production_deployment"]["git_revision"] == deployed_revision
     assert evidence["production_deployment"]["service_version"] == "1.4.0"
@@ -943,8 +949,8 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert direct_scan["initialize_http_status"] == 200
     assert direct_scan["initialized_notification_http_status"] == 202
     assert direct_scan["tools_list_http_status"] == 200
-    assert direct_scan["tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert direct_scan["tool_names"] == sorted(MCP_TOOL_CONTRACTS)
+    assert direct_scan["tool_count"] == 61
+    assert direct_scan["tool_names"] == sorted(name for name in MCP_TOOL_CONTRACTS if not name.startswith(("cap_table.", "sparkroom.")))
     assert direct_scan["exact_candidate_tool_name_set_match"] is True
     assert direct_scan["output_schema_root_failure_count"] == 0
     assert direct_scan["annotation_triplet_failure_count"] == 0
@@ -971,14 +977,13 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert evidence["publisher_identity"]["organization_and_project_match"] is True
     assert evidence["demo_recording"]["status"] == "pending"
     assert "hosted ChatGPT first and Codex second" in runbook
-    assert portal_prerequisite_validator.validate(allow_pending=True) == []
-    assert {
-        error.removeprefix("external portal gate is still pending: ")
-        for error in portal_prerequisite_validator.validate(allow_pending=False)
-    } == {
-        "authenticated_production_scan",
-        "demo_recording",
-    }
+    # Old live evidence must fail readiness for the additive SparkCap candidate.
+    errors = portal_prerequisite_validator.validate(allow_pending=True)
+    assert "portal prerequisite plugin version does not match the plugin manifest" in errors
+    assert "portal prerequisite evidence tool count must match the contract snapshot" in errors
+    assert release_state["runtime"]["deployment_status"] == "not_verified_for_candidate"
+    assert portal_prerequisite_validator.validate(allow_pending=False)
+
 
 
 @pytest.mark.parametrize(
@@ -1418,7 +1423,7 @@ def test_portal_prerequisite_validator_cross_checks_release_state(
     assert expected_error in errors
 
 
-def test_portal_prerequisite_validator_accepts_verified_portal_scan_transition(
+def test_portal_scan_alone_cannot_verify_a_new_undeployed_candidate(
     monkeypatch,
     tmp_path,
 ):
@@ -1440,12 +1445,14 @@ def test_portal_prerequisite_validator_accepts_verified_portal_scan_transition(
     )
     release_state["runtime"]["openai_portal_rescan_status"] = "verified"
 
-    assert _validate_portal_evidence(
+    errors = _validate_portal_evidence(
         monkeypatch,
         tmp_path,
         evidence,
         release_state,
-    ) == []
+    )
+    assert "portal prerequisite plugin version does not match the plugin manifest" in errors
+    assert "portal prerequisite evidence tool count must match the contract snapshot" in errors
 
 
 def test_public_repository_has_license_and_security_guidance():
@@ -1548,7 +1555,8 @@ def test_clean_checkout_builds_candidate_before_portal_validation(
     bundle_target = clean_root / evidence["candidate"]["bundle_path"]
     assert not bundle_target.exists()
     _bundle, digest = build_bundle(bundle_target)
-    assert digest == evidence["candidate"]["bundle_sha256"]
+    # The retained bundle hash belongs to the previous candidate.
+    assert digest != evidence["candidate"]["bundle_sha256"]
 
     monkeypatch.setattr(portal_prerequisite_validator, "ROOT", clean_root)
     monkeypatch.setattr(
@@ -1561,7 +1569,8 @@ def test_clean_checkout_builds_candidate_before_portal_validation(
         "MANIFEST_PATH",
         manifest_target,
     )
-    assert portal_prerequisite_validator.validate(allow_pending=True) == []
+    errors = portal_prerequisite_validator.validate(allow_pending=True)
+    assert "portal prerequisite plugin version does not match the plugin manifest" in errors
 
 
 def test_portal_bundle_layout_validation_rejects_nested_plugin_root(tmp_path):

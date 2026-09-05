@@ -7,7 +7,7 @@
     "automatic_validation_typical_minutes": "10-15",
     "automatic_validation_poll_seconds": 60,
     "automatic_validation_timeout_minutes": 20,
-    "expected_oauth_scope_count": 18,
+    "expected_oauth_scope_count": 25,
     "preflight_effective_permissions": true,
     "open_and_cancel_disconnect_dialog": true,
     "never_auto_confirm": true,
@@ -19,95 +19,257 @@
   },
   "cases": [
     {
+      "id": "E2E-SPARKCAP-PLANNING",
+      "recipes": [
+        "review-cap-table-and-model-a-raise.md"
+      ],
+      "tools": [
+        "cap_table.list",
+        "cap_table.get",
+        "cap_table.get_usage",
+        "cap_table.create",
+        "cap_table.update",
+        "cap_table.delete",
+        "cap_table.create_stakeholder",
+        "cap_table.update_stakeholder",
+        "cap_table.delete_stakeholder",
+        "cap_table.dilution_preview",
+        "cap_table.simulate_raise",
+        "cap_table.fully_diluted",
+        "cap_table.hiring_impact"
+      ],
+      "live_level": "isolated_private_planning_and_confirmed_writes",
+      "expected": "Synthetic cap-table and stakeholder CRUD uses exact confirmation, current versions, durable idempotency, project/role/scope checks, and existing quotas. Models are unsaved; dedicated addresses, notes, signature material and share tokens are excluded. Advanced first-party workflows remain handoffs. Local real-database acceptance exists; live host execution is not yet verified."
+    },
+    {
       "id": "E2E-CONNECTION-PROJECTS",
-      "recipes": ["connect-sparklaunch-to-chatgpt.md"],
-      "tools": ["projects.list", "projects.create", "projects.get", "projects.update", "projects.invite_collaborator", "tasks.list", "tasks.create", "tasks.update", "tasks.delete"],
+      "recipes": [
+        "connect-sparklaunch-to-chatgpt.md"
+      ],
+      "tools": [
+        "projects.list",
+        "projects.create",
+        "projects.get",
+        "projects.update",
+        "projects.invite_collaborator",
+        "tasks.list",
+        "tasks.create",
+        "tasks.update",
+        "tasks.delete"
+      ],
       "live_level": "private_write_and_confirmation_preview",
-      "expected": "OAuth connects with the expected 18-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
+      "expected": "OAuth connects with the expected 25-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
     },
     {
       "id": "E2E-AUTOMATIC-VALIDATION",
-      "recipes": ["validate-an-idea-and-generate-a-report.md", "start-a-business-from-an-idea.md"],
-      "tools": ["validation.list_projects", "validation.get_project"],
+      "recipes": [
+        "validate-an-idea-and-generate-a-report.md",
+        "start-a-business-from-an-idea.md"
+      ],
+      "tools": [
+        "validation.list_projects",
+        "validation.get_project"
+      ],
       "live_level": "asynchronous_readback",
       "expected": "Creating a business project automatically queues one included validation; it appears and reaches a terminal state within the bounded polling window without a duplicate start call."
     },
     {
       "id": "E2E-ADDITIONAL-VALIDATION",
-      "recipes": ["validate-an-idea-and-generate-a-report.md"],
-      "tools": ["validation.create_project", "validation.start_analysis"],
+      "recipes": [
+        "validate-an-idea-and-generate-a-report.md"
+      ],
+      "tools": [
+        "validation.create_project",
+        "validation.start_analysis"
+      ],
       "live_level": "private_write_when_explicitly_selected",
       "expected": "An explicitly requested additional validation is idempotent; after a lost or delayed response, readback determines the persisted outcome."
     },
     {
       "id": "E2E-BRAND",
-      "recipes": ["create-a-brand-foundation.md"],
-      "tools": ["branding.generate_palette", "branding.list_palettes", "branding.get_palette", "crm.generate_logo"],
+      "recipes": [
+        "create-a-brand-foundation.md"
+      ],
+      "tools": [
+        "branding.generate_palette",
+        "branding.list_palettes",
+        "branding.get_palette",
+        "crm.generate_logo"
+      ],
       "live_level": "private_generated_assets",
       "expected": "Three palettes persist and can be read back; logo generation returns a completed saved record and a short-lived HTTPS PNG reference."
     },
     {
       "id": "E2E-LANDING",
-      "recipes": ["plan-and-publish-a-launch.md", "review-launch-signals-and-follow-up.md"],
-      "tools": ["landing.create_project", "landing.generate_content", "landing.get_project", "landing.list_projects", "landing.get_analytics", "landing.get_leads", "landing.publish"],
+      "recipes": [
+        "plan-and-publish-a-launch.md",
+        "review-launch-signals-and-follow-up.md"
+      ],
+      "tools": [
+        "landing.create_project",
+        "landing.generate_content",
+        "landing.get_project",
+        "landing.list_projects",
+        "landing.get_analytics",
+        "landing.get_leads",
+        "landing.publish"
+      ],
       "live_level": "private_draft_reads_and_public_confirmation_preview",
       "expected": "Draft creation and reads agree, generated copy contains no invented social proof, analytics and leads distinguish zero from missing, and publish stops at the exact public-state preview without approval."
     },
     {
       "id": "E2E-CAMPAIGNS",
-      "recipes": ["plan-and-publish-a-launch.md", "review-launch-signals-and-follow-up.md"],
-      "tools": ["campaign_create", "shortlink_create", "qr_generate", "campaign_stats", "lead_capture_ingest", "campaign_pause", "campaign_archive", "shortlink_rotate"],
+      "recipes": [
+        "plan-and-publish-a-launch.md",
+        "review-launch-signals-and-follow-up.md"
+      ],
+      "tools": [
+        "campaign_create",
+        "shortlink_create",
+        "qr_generate",
+        "campaign_stats",
+        "lead_capture_ingest",
+        "campaign_pause",
+        "campaign_archive",
+        "shortlink_rotate"
+      ],
       "live_level": "plan_entitlement_and_confirmation_boundaries",
       "expected": "Read and private boundaries are explicit; public or destructive mutations stop at confirmation; plan or role denial is reported as such rather than as an OAuth reconnect request."
     },
     {
       "id": "E2E-CRM-READS",
-      "recipes": ["review-launch-signals-and-follow-up.md"],
-      "tools": ["crm.search_leads", "crm.get_lead", "crm.get_lead_workspace", "crm.search_contacts", "crm.get_contact", "crm.get_contact_workspace", "crm.list_deals", "crm.get_dashboard", "crm.get_activities"],
+      "recipes": [
+        "review-launch-signals-and-follow-up.md"
+      ],
+      "tools": [
+        "crm.search_leads",
+        "crm.get_lead",
+        "crm.get_lead_workspace",
+        "crm.search_contacts",
+        "crm.get_contact",
+        "crm.get_contact_workspace",
+        "crm.list_deals",
+        "crm.get_dashboard",
+        "crm.get_activities"
+      ],
       "live_level": "private_read",
       "expected": "Every read is project-isolated, returns bounded structured data, and treats empty results as successful zero-state evidence."
     },
     {
       "id": "E2E-CRM-WRITES",
-      "recipes": ["review-launch-signals-and-follow-up.md"],
-      "tools": ["crm.create_lead", "crm.update_lead", "crm.add_lead_note", "crm.log_activity", "crm.add_contact_note", "crm.update_contact", "crm.refresh_contact_summary", "crm.move_deal", "crm.ingest_business_card", "crm.prepare_business_card_import", "crm.get_business_card_import", "crm.delete_business_card"],
+      "recipes": [
+        "review-launch-signals-and-follow-up.md"
+      ],
+      "tools": [
+        "crm.create_lead",
+        "crm.update_lead",
+        "crm.add_lead_note",
+        "crm.log_activity",
+        "crm.add_contact_note",
+        "crm.update_contact",
+        "crm.refresh_contact_summary",
+        "crm.move_deal",
+        "crm.ingest_business_card",
+        "crm.prepare_business_card_import",
+        "crm.get_business_card_import",
+        "crm.delete_business_card"
+      ],
       "live_level": "synthetic_private_write_or_confirmation_preview",
       "expected": "Synthetic records use no real outreach; plan and role restrictions are distinguished from OAuth scopes; overwrite and delete operations require exact confirmation; uploaded-card tests use a dedicated non-sensitive fixture; preparing a portable import creates only an expiring first-party handoff, the authenticated page imports only after an explicit Upload and import action, and status readback exposes no image or contact data."
     },
     {
       "id": "E2E-INCORPORATION-MISSING-ENTITLEMENT",
-      "recipes": ["recover-incorporation-entitlement.md"],
-      "tools": ["incorporation.check_entitlement"],
+      "recipes": [
+        "recover-incorporation-entitlement.md"
+      ],
+      "tools": [
+        "incorporation.check_entitlement"
+      ],
       "live_level": "private_read_and_zero_provider_calls",
       "expected": "The authoritative missing or pending entitlement result returns safe package and project-bound recovery guidance without checkout, payment, case creation, email, or provider activity."
     },
     {
       "id": "E2E-INCORPORATION-SINGLE-FOUNDER",
-      "recipes": ["incorporate-a-single-founder-company.md"],
-      "tools": ["incorporation.check_entitlement", "incorporation.start_case", "incorporation.update_draft", "incorporation.validate", "incorporation.prepare_action_center", "incorporation.get_case"],
+      "recipes": [
+        "incorporate-a-single-founder-company.md"
+      ],
+      "tools": [
+        "incorporation.check_entitlement",
+        "incorporation.start_case",
+        "incorporation.update_draft",
+        "incorporation.validate",
+        "incorporation.prepare_action_center",
+        "incorporation.get_case"
+      ],
       "live_level": "isolated_private_case_and_confirmation_boundary",
       "expected": "One entitled case is idempotently created, an ordinary single-founder draft is versioned and validated, Action Center preparation stops for exact approval before changing state, and no Delaware, NWRA, CorpTools, email, or provider call occurs."
     },
     {
       "id": "E2E-INCORPORATION-MULTI-PARTICIPANT",
-      "recipes": ["incorporate-with-collaborators.md"],
-      "tools": ["incorporation.get_case", "incorporation.update_draft", "incorporation.validate", "incorporation.prepare_action_center"],
+      "recipes": [
+        "incorporate-with-collaborators.md"
+      ],
+      "tools": [
+        "incorporation.get_case",
+        "incorporation.update_draft",
+        "incorporation.validate",
+        "incorporation.prepare_action_center"
+      ],
       "live_level": "isolated_participant_privacy_and_confirmation_boundary",
       "expected": "Shared ordinary data and safe progress remain project-scoped, each participant is directed to their own private Action Center, participant-only access grants no project role, and protected personal fields never enter tool or transcript output."
     },
     {
       "id": "E2E-INCORPORATION-CORRECTION-RESUME",
-      "recipes": ["resume-or-correct-incorporation.md", "check-incorporation-status.md"],
-      "tools": ["incorporation.check_entitlement", "incorporation.start_case", "incorporation.get_case", "incorporation.update_draft", "incorporation.validate", "incorporation.cancel_case"],
+      "recipes": [
+        "resume-or-correct-incorporation.md",
+        "check-incorporation-status.md"
+      ],
+      "tools": [
+        "incorporation.check_entitlement",
+        "incorporation.start_case",
+        "incorporation.get_case",
+        "incorporation.update_draft",
+        "incorporation.validate",
+        "incorporation.cancel_case"
+      ],
       "live_level": "isolated_version_recovery_and_confirmation_boundary",
       "expected": "Stale writes fail closed, readback identifies the current version, a successor draft uses a new intent key, cancellation stops for exact approval, and uncertain or queued states never trigger blind retries."
     },
     {
       "id": "E2E-INCORPORATION-INTERNAL-SUBMISSION",
-      "recipes": ["check-incorporation-status.md", "incorporate-a-single-founder-company.md", "incorporate-with-collaborators.md"],
-      "tools": ["incorporation.get_case", "incorporation.submit_to_sparklaunch"],
+      "recipes": [
+        "check-incorporation-status.md",
+        "incorporate-a-single-founder-company.md",
+        "incorporate-with-collaborators.md"
+      ],
+      "tools": [
+        "incorporation.get_case",
+        "incorporation.submit_to_sparklaunch"
+      ],
       "live_level": "isolated_confirmed_internal_receipt_zero_provider_calls",
       "expected": "After exact user confirmation, one durable SparkLaunch Filing Operations receipt is returned and replay-safe; provider-call counters remain zero and the receipt is never described as Delaware or NWRA transmission."
+    },
+    {
+      "id": "E2E-SPARKROOM-SHARING",
+      "recipes": [
+        "prepare-and-share-an-investor-room.md"
+      ],
+      "tools": [
+        "sparkroom.list",
+        "sparkroom.get",
+        "sparkroom.create",
+        "sparkroom.update",
+        "sparkroom.list_documents",
+        "sparkroom.add_documents",
+        "sparkroom.update_item",
+        "sparkroom.remove_item",
+        "sparkroom.list_share_links",
+        "sparkroom.create_share_link",
+        "sparkroom.revoke_share_link",
+        "sparkroom.get_analytics"
+      ],
+      "live_level": "isolated_synthetic_room_confirmation_and_private_readback",
+      "expected": "Synthetic room creation, pinned document selection, metadata edits, bounded link creation and revocation use current versions, exact confirmation, durable idempotency and live Growth role/scope checks. No storage keys, passwords, file contents or private audit data appear. New bearer URLs appear only on confirmed creation and same-key replay; no invitation is sent or public link opened. Local acceptance exists; native-host execution remains unverified."
     }
   ]
 }

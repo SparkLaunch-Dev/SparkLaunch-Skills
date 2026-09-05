@@ -36,7 +36,7 @@ def test_cursor_adapter_conforms_to_agent_plugins_1_0_shape() -> None:
 
     manifest = _load_json(ADAPTER_ROOT / "templates" / "plugin.json")
     assert manifest["$schema"] == "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
-    assert manifest["version"] == "0.5.0"
+    assert manifest["version"] == "0.7.0"
     assert manifest["license"] == "LicenseRef-SparkLaunch-Proprietary"
     assert PLUGIN_NAME_PATTERN.fullmatch(manifest["name"])
     assert set(manifest) <= {
