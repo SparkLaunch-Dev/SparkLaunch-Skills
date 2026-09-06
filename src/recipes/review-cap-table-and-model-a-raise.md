@@ -1,3 +1,8 @@
+---
+title: Review a SparkCap cap table and model a raise
+summary: Inspect SparkCap ownership, confirm planning edits, and model an unsaved raise.
+---
+
 # Review a SparkCap cap table and model a raise
 
 Use `sparklaunch-sparkcap` for planning cap tables, stakeholders, and modeled

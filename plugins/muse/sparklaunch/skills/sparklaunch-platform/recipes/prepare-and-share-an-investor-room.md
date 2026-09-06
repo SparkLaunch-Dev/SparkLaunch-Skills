@@ -1,3 +1,8 @@
+---
+title: Prepare and share a SparkRoom investor room
+summary: Prepare reviewed room contents and create or revoke bounded investor access.
+---
+
 # Prepare and share a SparkRoom investor room
 
 Use `sparklaunch-sparkroom` for its host-managed OAuth, effective Growth access,
