@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "sparklaunch",
   "version": "0.7.0",
-  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, and incorporation.",
+  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, SparkCap, SparkRoom, and incorporation.",
   "author": {
     "name": "SparkLaunch",
     "email": "support@sparklaun.ch",

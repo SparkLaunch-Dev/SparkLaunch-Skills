@@ -4,9 +4,10 @@ Status: the local service 1.6.0 candidate adds SparkCap and SparkRoom and has no
 The previous production MCP service is deployed at service 1.4.0 according to the
 retained 2026-09-03 evidence; that 61-tool observation does not verify this 86-tool
 candidate. The package has not yet been submitted or approved by ChatGPT.
-The retained portal prerequisites remain bound to the previous candidate and
-intentionally fail current readiness checks. Registry publication and native-host
-invocation of the new tools remain unverified.
+The portal prerequisites now bind local artifact checks to this candidate while
+preserving previous production observations as immutable historical evidence.
+Pending-mode validation can pass without a deployment claim; strict readiness,
+Registry publication, and native-host invocation of the new tools remain unverified.
 
 ## Reviewer-visible changes
 

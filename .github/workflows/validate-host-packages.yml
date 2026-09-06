@@ -40,4 +40,5 @@ jobs:
           tests/test_gemini_adapter.py
           tests/test_muse_adapter.py
           tests/test_packaging_safety.py
+          tests/test_submission_package.py
           -q

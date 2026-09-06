@@ -119,7 +119,7 @@ Build the ChatGPT portal ZIP with:
 python scripts/build_submission_bundle.py
 ```
 
-Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Validate them with `python scripts/validate_portal_prerequisites.py --allow-pending` while the explicitly pending gates remain unresolved. Production revision, migration, public OAuth discovery, and the direct authenticated tool-name-set/schema-root/annotation-presence checks are now separately verified; OpenAI portal Scan Tools, full live-descriptor equality, ChatGPT review, native-host execution, and publication are not.
+Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Run `python scripts/validate_portal_prerequisites.py --allow-pending` after building the deterministic ZIP to validate the local candidate and its explicit evidence boundaries. That mode permits named external gates to remain pending; running the validator without the flag is the strict readiness check. The retained production revision, migration, 18-scope OAuth discovery, and 61-tool direct scan are historical baseline evidence for service `1.4.0`, not proof of the local `1.6.0` / 86-tool / 25-scope candidate. Candidate deployment, OpenAI portal Scan Tools, full live-descriptor equality, ChatGPT review, native-host execution, and publication remain unverified.
 
 The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch-Dev/sparklaunch`. Registry candidate version, last-known published version, runtime snapshot version, and publication status are recorded separately in `release-state.json`. Publishing an immutable Registry version requires its dedicated approved workflow and is not performed by package generation.
 

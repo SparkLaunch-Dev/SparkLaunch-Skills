@@ -187,3 +187,61 @@ The continuation adds two deliberately narrow flows:
 - Unsatisfied or externally blocked outcomes: Muse protected-tool execution (GAP-XHOST-002), Cursor public Marketplace submission under the proprietary license (GAP-XHOST-001), live Cursor/Gemini/Muse install/OAuth/tool execution (GAP-XHOST-003), CIMD enablement/live flow, the end-to-end business-card handoff, Registry `1.4.0`, OpenAI portal rescan/submission, and marketplace publication (GAP-XHOST-004).
 - Material assumptions/waivers: DCR remains the only production-verified registration path because deployed CIMD support is default-off and not advertised; business-card descriptors are live but the first-party import has not been executed in production; no static Muse token path; generated root compatibility mirrors remain during migration.
 - Deployment proof: VERIFIED for revision `058513ed28b2fadba120d5f4a0e447a723e37ddc`, service `1.4.0`, migration `mcp_portability_01`, public health, and a direct authenticated 61-name-set match with checked output-schema roots and annotation-triplet presence. Full live-descriptor equality, marketplace/directory approval, OpenAI portal Scan Tools, native-host execution, and real-world business-card import remain NOT VERIFIED.
+
+## 2026-09-06 SparkCap and SparkRoom candidate-evidence transition
+
+This addendum governs the local `0.7.0+codex.20260904000000` / service `1.6.0` / 86-tool candidate and supersedes earlier deployment wording only where that wording could be read as proof of this newer candidate. The retained service `1.4.0` / 61-tool observations remain prior production-baseline evidence. No deployment, authenticated candidate scan, OpenAI portal scan, native-host execution, Registry publication, or marketplace approval is claimed for the newer candidate.
+
+### Scope and non-goals
+
+- Scope: make the repository's `--allow-pending` CI gate validate a truthful, internally consistent undeployed candidate and its preserved production baseline.
+- Non-goal: deploy service `1.6.0`, rewrite old observations as if they measured 86 tools, submit to OpenAI, publish to a registry, or claim native-host acceptance.
+- Verified baseline on 2026-09-06: the package manifest and snapshot identify `0.7.0+codex.20260904000000`, service `1.6.0`, 86 tools, and 25 unique required OAuth scopes; retained production evidence identifies service `1.4.0` and 61 tools.
+
+### Requirements
+
+| ID | Parent | Priority | Atomic requirement and acceptance criteria | Planned verification |
+|---|---|---|---|---|
+| PRD-CAND-001 | User request | Must | The repository shall be mergeable without representing the undeployed candidate as deployed. Acceptance: CI's pending-mode evidence command exits zero while strict mode still reports unresolved external proof. | T-ACCEPT-CAND-001, T-SYS-CAND-001 |
+| PROD-CAND-001 | PRD-CAND-001 | Must | `--allow-pending` shall accept candidate-local package metadata plus a clearly marked historical production baseline. Acceptance: the checked-in evidence returns no validation errors after the deterministic bundle is built. | T-SYS-CAND-001 |
+| PROD-CAND-002 | PRD-CAND-001 | Must | Strict validation shall reject an undeployed candidate. Acceptance: strict validation reports the candidate deployment gate and other pending external gates. | T-CONTRACT-CAND-002 |
+| ARCH-CAND-001 | PRD-CAND-001 | Must | Candidate identity shall remain separate from retained production observations. Acceptance: candidate version, service version, tool count, scope count, and bundle digest come from local artifacts, while retained deployment and direct-scan fields continue to describe only the `1.4.0` / 61-tool baseline. | T-CONTRACT-CAND-001, T-CONTRACT-CAND-003 |
+| SYS-CAND-001 | PROD-CAND-001, ARCH-CAND-001 | Must | Candidate evidence shall match the plugin manifest, contract snapshot, unique required-scope set, deterministic bundle path, and bundle digest. Acceptance: any mismatch fails pending-mode validation. | T-CONTRACT-CAND-001 |
+| SYS-CAND-002 | PROD-CAND-002, ARCH-CAND-001 | Must | An undeployed candidate shall not carry a deployed revision, production tag, or verified authenticated portal scan. Acceptance: each false claim produces a validation error. | T-CONTRACT-CAND-002 |
+| SYS-CAND-003 | ARCH-CAND-001 | Must | Retained production-baseline evidence shall remain credential-free, internally consistent, immutable where already digest-pinned, and cross-checked with `release-state.json`. Acceptance: historical records remain exact, candidate observations are fresh and ordered, pending records cannot retain verified claims, reviewer URLs are public and credential-free, and mutations or release-state drift fail without exposing sensitive values. | T-CONTRACT-CAND-003, T-SEC-CAND-001 |
+| IMPL-CAND-001 | SYS-CAND-001, SYS-CAND-002, SYS-CAND-003 | Must | The portal-prerequisite validator shall select candidate or baseline comparison targets from the explicit candidate deployment state. Acceptance: pending mode validates the baseline without comparing it to the undeployed 86-tool candidate; verified mode requires current-candidate evidence. | T-UNIT-CAND-001, T-CONTRACT-CAND-001, T-CONTRACT-CAND-002 |
+| IMPL-CAND-002 | SYS-CAND-001 | Must | The portal evidence ledger shall record the current plugin version, 86 tools, 25 scopes, deterministic bundle path and digest, and `not_verified_for_candidate` deployment state. Acceptance: pending-mode validation passes only after the exact bundle exists. | T-CONTRACT-CAND-001, T-SYS-CAND-001 |
+| IMPL-CAND-003 | SYS-CAND-003 | Must | Tests shall distinguish local candidate validity from deployment and portal readiness. Acceptance: positive pending-mode, negative strict-mode, false-claim, baseline-integrity, bundle-integrity, and release-state-drift cases pass. | T-UNIT-CAND-001, T-CONTRACT-CAND-001..003, T-SEC-CAND-001 |
+
+### Requirements-catalog disposition
+
+| Catalog group | Disposition | Rationale |
+|---|---|---|
+| Product context and outcomes | Applicable | PRD-CAND-001 defines the merge outcome and prohibits false deployment claims. |
+| Functional requirements | Applicable | PROD-CAND-001..002 and SYS-CAND-001..003 define the pending and strict state transitions plus failure behavior. |
+| Architecture and technical quality | Applicable | ARCH-CAND-001 defines the candidate/baseline boundary, compatibility, operability, and evidence ownership. Accessibility, localization, and UI platform requirements are N/A because no user interface changes. |
+| Performance and scalability | N/A | The change validates small checked-in JSON records and one local ZIP; the user and repository specify no latency, throughput, storage-growth, or cost target. |
+| Security, privacy, and compliance | Applicable | SYS-CAND-002..003 preserve fail-closed claims, credential scanning, evidence minimization, and immutable historical records. No new regulated data is handled. |
+| Data, compatibility, and migration | Applicable | Schema-versioned evidence must remain compatible with retained observations and reject ambiguous state; no production data migration occurs. |
+| Verification and acceptance | Applicable | T-UNIT-CAND-001, T-CONTRACT-CAND-001..003, T-SEC-CAND-001, T-SYS-CAND-001, and T-ACCEPT-CAND-001 cover the relevant proof layers. Deployment and native-host acceptance remain NOT VERIFIED. |
+
+### Conflict and gap log
+
+| ID | Type | Requirements | Evidence and impact | Resolution | Severity | Status |
+|---|---|---|---|---|---|---|
+| GAP-CAND-001 | Contract contradiction | PRD-CAND-001, PROD-CAND-001 | Tests intentionally accepted pending candidate drift, while CI required `--allow-pending` to exit zero; the same state could not satisfy both. | Make pending mode validate truthful candidate-local evidence and preserved baseline evidence separately; keep strict mode fail-closed. | Blocking for merge | Closed locally |
+| GAP-CAND-002 | External verification | PROD-CAND-002 | Service `1.6.0` deployment and authenticated 86-tool scans have not occurred. | Keep candidate deployment, portal scan, demo, native-host, and publication outcomes pending; require separate authorized workflows and fresh observations. | Blocking for strict release readiness, not for source merge | Open |
+| GAP-CAND-003 | Cross-repository contract drift | SYS-CAND-001, ARCH-CAND-001 | The checked-in snapshot no longer matches the sibling service `1.6.0` runtime: six SparkRoom mutations gained a secondary read scope; all invocation labels contain a mojibake ellipsis; eight shared-state SparkCap/SparkRoom mutations understate external effects; and SparkCap confirmations omit active public-share impact. | Create a separately governed sibling-runtime fix, verify its focused safety tests, re-export the snapshot, regenerate dependent artifacts, rebuild the deterministic bundle, and update its digest. Do not normalize or hide runtime drift in this repository. | Blocking for source merge | Open; requires sibling-repository authority |
+| ASSUME-CAND-001 | Compatibility assumption | ARCH-CAND-001 | The latest retained `1.4.0` / 61-tool records are the only production baseline available in this repository. | Preserve their content and proof boundaries; do not present them as fresh live observations on 2026-09-06. | Non-blocking | Accepted |
+
+### Traceability and planned evidence
+
+| Requirement ID | Implementation target | Verification ID | Layer/environment | Expected result | Status/evidence |
+|---|---|---|---|---|---|
+| IMPL-CAND-001 | `scripts/validate_portal_prerequisites.py` | T-UNIT-CAND-001 | Unit, Windows local | State selection covers undeployed, partially transitioned, and verified candidates without weakening strict mode. | Passed: focused portal/release selection passed 97 tests; complete repository suite passed 229 with 6 skips. |
+| SYS-CAND-001, IMPL-CAND-002 | `submission/portal-prerequisites.json`, built ZIP | T-CONTRACT-CAND-001 | Contract, Windows local and CI | Manifest, snapshot, unique scopes, bundle path, and digest match exactly. | Blocked: the checked-in 86-tool / 25-scope artifacts and bundle SHA-256 `8BEC133719524A4861A220B7D24803C19B08B5F123D5B79E5EAC5B2F54B7F47E` are internally consistent, but `export_tool_contract_snapshot.py --check` fails against the current sibling runtime. Regeneration must follow GAP-CAND-003. |
+| PROD-CAND-002, SYS-CAND-002 | Validator and portal evidence | T-CONTRACT-CAND-002 | Negative contract, Windows local | Strict mode and false verified-state combinations fail with specific errors. | Passed: strict CLI returned nonzero for exactly the five pending public-readiness, deployment, direct-scan, portal-scan, and demo gates; verified-without-deployment and stale-proof mutations failed. |
+| SYS-CAND-003 | Portal evidence and `release-state.json` | T-CONTRACT-CAND-003 | Contract, Windows local | Preserved production baseline and release-state mirror remain consistent; mutations fail. | Passed: all prior records, including the prior 61-tool pending portal record, are digest-pinned; hybrid baseline and false publication/distribution mutations failed. |
+| SYS-CAND-003 | Recursive evidence scan | T-SEC-CAND-001 | Security/static, Windows local | Sensitive fields and values are rejected without echoing their contents. | Passed: sensitive evidence, pending-record, timestamp, and 17-case public credential-free URL checks passed. |
+| PROD-CAND-001 | CI command sequence | T-SYS-CAND-001 | System, Windows local CI-equivalent | Build followed by `validate_portal_prerequisites.py --allow-pending` exits zero. | Partial: sync (426 generated files), submission generation, five-host validation, OpenAI submission validation, deterministic build, pending-mode portal validation, and the isolated 162-test submission suite exited zero. Cross-repository snapshot parity still fails under GAP-CAND-003. |
+| PRD-CAND-001 | GitHub protected-main workflow | T-ACCEPT-CAND-001 | Acceptance, GitHub | Exact-head required checks pass and the PR can merge; this proves repository landing only. | NOT VERIFIED until PR checks complete |

@@ -16,6 +16,8 @@ muse skills validate ./skills/sparklaunch-campaigns
 muse skills validate ./skills/sparklaunch-landing-pages
 muse skills validate ./skills/sparklaunch-sales-crm
 muse skills validate ./skills/sparklaunch-incorporation
+muse skills validate ./skills/sparklaunch-sparkcap
+muse skills validate ./skills/sparklaunch-sparkroom
 ```
 
 Install a validated skill for one user with `muse skills install ./skills/<skill-id> --scope user`, or commit it to a trusted project's `.agents/skills/<skill-id>/SKILL.md`. Verify discovery with `muse skills list` and inspect an individual skill with `muse skills inspect <skill-id>`.
