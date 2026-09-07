@@ -26,6 +26,9 @@ SKILLS = (
     "sparklaunch-landing-pages",
     "sparklaunch-sales-crm",
     "sparklaunch-incorporation",
+    "sparklaunch-sparkcap",
+    "sparklaunch-sparkroom",
+    "sparklaunch-sparkclose",
 )
 HOSTS = ("openai", "claude", "cursor", "gemini", "muse")
 INCORPORATION_RECIPES = (

@@ -187,3 +187,82 @@ The continuation adds two deliberately narrow flows:
 - Unsatisfied or externally blocked outcomes: Muse protected-tool execution (GAP-XHOST-002), Cursor public Marketplace submission under the proprietary license (GAP-XHOST-001), live Cursor/Gemini/Muse install/OAuth/tool execution (GAP-XHOST-003), CIMD enablement/live flow, the end-to-end business-card handoff, Registry `1.4.0`, OpenAI portal rescan/submission, and marketplace publication (GAP-XHOST-004).
 - Material assumptions/waivers: DCR remains the only production-verified registration path because deployed CIMD support is default-off and not advertised; business-card descriptors are live but the first-party import has not been executed in production; no static Muse token path; generated root compatibility mirrors remain during migration.
 - Deployment proof: VERIFIED for revision `058513ed28b2fadba120d5f4a0e447a723e37ddc`, service `1.4.0`, migration `mcp_portability_01`, public health, and a direct authenticated 61-name-set match with checked output-schema roots and annotation-triplet presence. Full live-descriptor equality, marketplace/directory approval, OpenAI portal Scan Tools, native-host execution, and real-world business-card import remain NOT VERIFIED.
+
+## 2026-09-06 SparkCap and SparkRoom candidate-evidence transition (historical 0.7 baseline)
+
+This addendum governs the local `0.7.0+codex.20260904000000` / service `1.6.0` / 86-tool candidate and supersedes earlier deployment wording only where that wording could be read as proof of this newer candidate. The retained service `1.4.0` / 61-tool observations remain prior production-baseline evidence. No deployment, authenticated candidate scan, OpenAI portal scan, native-host execution, Registry publication, or marketplace approval is claimed for the newer candidate.
+
+### Scope and non-goals
+
+- Scope: make the repository's `--allow-pending` CI gate validate a truthful, internally consistent undeployed candidate and its preserved production baseline.
+- Non-goal: deploy service `1.6.0`, rewrite old observations as if they measured 86 tools, submit to OpenAI, publish to a registry, or claim native-host acceptance.
+- Verified baseline on 2026-09-06: the package manifest and snapshot identify `0.7.0+codex.20260904000000`, service `1.6.0`, 86 tools, and 25 unique required OAuth scopes; retained production evidence identifies service `1.4.0` and 61 tools.
+
+### Requirements
+
+| ID | Parent | Priority | Atomic requirement and acceptance criteria | Planned verification |
+|---|---|---|---|---|
+| PRD-CAND-001 | User request | Must | The repository shall be mergeable without representing the undeployed candidate as deployed. Acceptance: CI's pending-mode evidence command exits zero while strict mode still reports unresolved external proof. | T-ACCEPT-CAND-001, T-SYS-CAND-001 |
+| PROD-CAND-001 | PRD-CAND-001 | Must | `--allow-pending` shall accept candidate-local package metadata plus a clearly marked historical production baseline. Acceptance: the checked-in evidence returns no validation errors after the deterministic bundle is built. | T-SYS-CAND-001 |
+| PROD-CAND-002 | PRD-CAND-001 | Must | Strict validation shall reject an undeployed candidate. Acceptance: strict validation reports the candidate deployment gate and other pending external gates. | T-CONTRACT-CAND-002 |
+| ARCH-CAND-001 | PRD-CAND-001 | Must | Candidate identity shall remain separate from retained production observations. Acceptance: candidate version, service version, tool count, scope count, and bundle digest come from local artifacts, while retained deployment and direct-scan fields continue to describe only the `1.4.0` / 61-tool baseline. | T-CONTRACT-CAND-001, T-CONTRACT-CAND-003 |
+| SYS-CAND-001 | PROD-CAND-001, ARCH-CAND-001 | Must | Candidate evidence shall match the plugin manifest, contract snapshot, unique required-scope set, deterministic bundle path, and bundle digest. Acceptance: any mismatch fails pending-mode validation. | T-CONTRACT-CAND-001 |
+| SYS-CAND-002 | PROD-CAND-002, ARCH-CAND-001 | Must | An undeployed candidate shall not carry a deployed revision, production tag, or verified authenticated portal scan. Acceptance: each false claim produces a validation error. | T-CONTRACT-CAND-002 |
+| SYS-CAND-003 | ARCH-CAND-001 | Must | Retained production-baseline evidence shall remain credential-free, internally consistent, immutable where already digest-pinned, and cross-checked with `release-state.json`. Acceptance: historical records remain exact, candidate observations are fresh and ordered, pending records cannot retain verified claims, reviewer URLs are public and credential-free, and mutations or release-state drift fail without exposing sensitive values. | T-CONTRACT-CAND-003, T-SEC-CAND-001 |
+| IMPL-CAND-001 | SYS-CAND-001, SYS-CAND-002, SYS-CAND-003 | Must | The portal-prerequisite validator shall select candidate or baseline comparison targets from the explicit candidate deployment state. Acceptance: pending mode validates the baseline without comparing it to the undeployed 86-tool candidate; verified mode requires current-candidate evidence. | T-UNIT-CAND-001, T-CONTRACT-CAND-001, T-CONTRACT-CAND-002 |
+| IMPL-CAND-002 | SYS-CAND-001 | Must | The portal evidence ledger shall record the current plugin version, 86 tools, 25 scopes, deterministic bundle path and digest, and `not_verified_for_candidate` deployment state. Acceptance: pending-mode validation passes only after the exact bundle exists. | T-CONTRACT-CAND-001, T-SYS-CAND-001 |
+| IMPL-CAND-003 | SYS-CAND-003 | Must | Tests shall distinguish local candidate validity from deployment and portal readiness. Acceptance: positive pending-mode, negative strict-mode, false-claim, baseline-integrity, bundle-integrity, and release-state-drift cases pass. | T-UNIT-CAND-001, T-CONTRACT-CAND-001..003, T-SEC-CAND-001 |
+
+### Requirements-catalog disposition
+
+| Catalog group | Disposition | Rationale |
+|---|---|---|
+| Product context and outcomes | Applicable | PRD-CAND-001 defines the merge outcome and prohibits false deployment claims. |
+| Functional requirements | Applicable | PROD-CAND-001..002 and SYS-CAND-001..003 define the pending and strict state transitions plus failure behavior. |
+| Architecture and technical quality | Applicable | ARCH-CAND-001 defines the candidate/baseline boundary, compatibility, operability, and evidence ownership. Accessibility, localization, and UI platform requirements are N/A because no user interface changes. |
+| Performance and scalability | N/A | The change validates small checked-in JSON records and one local ZIP; the user and repository specify no latency, throughput, storage-growth, or cost target. |
+| Security, privacy, and compliance | Applicable | SYS-CAND-002..003 preserve fail-closed claims, credential scanning, evidence minimization, and immutable historical records. No new regulated data is handled. |
+| Data, compatibility, and migration | Applicable | Schema-versioned evidence must remain compatible with retained observations and reject ambiguous state; no production data migration occurs. |
+| Verification and acceptance | Applicable | T-UNIT-CAND-001, T-CONTRACT-CAND-001..003, T-SEC-CAND-001, T-SYS-CAND-001, and T-ACCEPT-CAND-001 cover the relevant proof layers. Deployment and native-host acceptance remain NOT VERIFIED. |
+
+### Conflict and gap log
+
+| ID | Type | Requirements | Evidence and impact | Resolution | Severity | Status |
+|---|---|---|---|---|---|---|
+| GAP-CAND-001 | Contract contradiction | PRD-CAND-001, PROD-CAND-001 | Tests intentionally accepted pending candidate drift, while CI required `--allow-pending` to exit zero; the same state could not satisfy both. | Make pending mode validate truthful candidate-local evidence and preserved baseline evidence separately; keep strict mode fail-closed. | Blocking for merge | Closed locally |
+| GAP-CAND-002 | External verification | PROD-CAND-002 | Service `1.6.0` deployment and authenticated 86-tool scans have not occurred. | Keep candidate deployment, portal scan, demo, native-host, and publication outcomes pending; require separate authorized workflows and fresh observations. | Blocking for strict release readiness, not for source merge | Open |
+| GAP-CAND-003 | Cross-repository contract drift | SYS-CAND-001, ARCH-CAND-001 | The checked-in 0.7 snapshot no longer matched the sibling service `1.6.0` runtime: six SparkRoom mutations gained a secondary read scope; invocation labels contained a mojibake ellipsis; eight shared-state SparkCap/SparkRoom mutations understated external effects; and SparkCap confirmations omitted active public-share impact. | Runtime PR [#432](https://github.com/johncotter3/SparkLaunch/pull/432) corrected the source contract, passed exact-head CI, and merged as `c5ccc042e46ec1b41b3a3468218ecb5104d16165`. The 0.8 continuation re-exported the identical merged tree, regenerated every dependent artifact, and rebuilt the bundle. | Blocking for source merge | Closed by the 0.8 continuation |
+| ASSUME-CAND-001 | Compatibility assumption | ARCH-CAND-001 | The latest retained `1.4.0` / 61-tool records are the only production baseline available in this repository. | Preserve their content and proof boundaries; do not present them as fresh live observations on 2026-09-06. | Non-blocking | Accepted |
+
+### Traceability and planned evidence
+
+| Requirement ID | Implementation target | Verification ID | Layer/environment | Expected result | Status/evidence |
+|---|---|---|---|---|---|
+| IMPL-CAND-001 | `scripts/validate_portal_prerequisites.py` | T-UNIT-CAND-001 | Unit, Windows local | State selection covers undeployed, partially transitioned, and verified candidates without weakening strict mode. | Passed: focused portal/release selection passed 97 tests; complete repository suite passed 229 with 6 skips. |
+| SYS-CAND-001, IMPL-CAND-002 | `submission/portal-prerequisites.json`, built ZIP | T-CONTRACT-CAND-001 | Contract, Windows local and CI | Manifest, snapshot, unique scopes, bundle path, and digest match exactly. | Superseded and passed in the 0.8 continuation: service `1.7.0`, 100 tools, 29 scopes, and bundle SHA-256 `49E81BC7FBD561221B0E143EEF0741B59DD54F90D0F81E5FFAE4F99609983A91` match. |
+| PROD-CAND-002, SYS-CAND-002 | Validator and portal evidence | T-CONTRACT-CAND-002 | Negative contract, Windows local | Strict mode and false verified-state combinations fail with specific errors. | Passed: strict CLI returned nonzero for exactly the five pending public-readiness, deployment, direct-scan, portal-scan, and demo gates; verified-without-deployment and stale-proof mutations failed. |
+| SYS-CAND-003 | Portal evidence and `release-state.json` | T-CONTRACT-CAND-003 | Contract, Windows local | Preserved production baseline and release-state mirror remain consistent; mutations fail. | Passed: all prior records, including the prior 61-tool pending portal record, are digest-pinned; hybrid baseline and false publication/distribution mutations failed. |
+| SYS-CAND-003 | Recursive evidence scan | T-SEC-CAND-001 | Security/static, Windows local | Sensitive fields and values are rejected without echoing their contents. | Passed: sensitive evidence, pending-record, timestamp, and 17-case public credential-free URL checks passed. |
+| PROD-CAND-001 | CI command sequence | T-SYS-CAND-001 | System, Windows local CI-equivalent | Build followed by `validate_portal_prerequisites.py --allow-pending` exits zero. | Superseded and passed in the 0.8 continuation: snapshot parity, submission generation, 452-file sync, five-host validation, deterministic build, pending-mode portal validation, and the complete package suite pass. |
+| PRD-CAND-001 | GitHub protected-main workflow | T-ACCEPT-CAND-001 | Acceptance, GitHub | Exact-head required checks pass and the PR can merge; this proves repository landing only. | NOT VERIFIED until PR checks complete |
+
+## 2026-09-07 SparkClose package continuation
+
+This continuation supersedes the active local candidate identity from the historical 0.7 section. The current candidate is plugin `0.8.0+codex.20260906000000`, service `1.7.0`, 100 tools, 29 unique required OAuth scopes, and twelve skills. It adds the SparkClose skill, SAFE-modeling/closing recipe, 14 runtime-derived SparkClose descriptors, and corresponding controlled review cases. The retained service `1.4.0` / 61-tool production observations remain historical; they do not prove this candidate is deployed, scanned, approved, published, or exercised by a native host.
+
+### Continuation requirements and evidence
+
+| ID | Requirement | Verification and evidence | Status |
+|---|---|---|---|
+| PRD-CLOSE-PKG-001 | The dependent Skills candidate shall be generated only from the corrected, current runtime contract. | SparkLaunch PR [#432](https://github.com/johncotter3/SparkLaunch/pull/432) passed backend, frontend, mobile, and Terraform checks at head `0114f2ece67b15c9eb89a178655fb521bc2af647`, then squash-merged as `c5ccc042e46ec1b41b3a3468218ecb5104d16165`. The tested and merged trees both equal `47bdb9660256da0fb1c01dda16ce1fb381299068`. Snapshot export and check report service `1.7.0`, 100 tools, and 14 SparkClose tools. | Complete |
+| PROD-CLOSE-PKG-001 | SparkClose shall be discoverable as a bounded workflow without claiming legal review, signing, money movement, or completed financing. | Canonical skill, recipe, platform routing, host descriptions, 39 trigger cases (including a generic-investment-advice negative boundary), 16 controlled E2E cases, reviewer instructions, release notes, and the recording runbook distinguish modeling, saved snapshots, company assertions, signing, funding, closing, and destination updates. | Complete locally |
+| ARCH-CLOSE-PKG-001 | One canonical source shall deterministically generate every host package and legacy mirror. | Submission generation reports 100 tools; write/check sync reports 452 generated files across five hosts; host and submission validators pass. | Complete locally |
+| SEC-CLOSE-PKG-001 | Descriptor scope validation and reviewer evidence scanning shall fail closed. | Exact top-level and `_meta` OAuth scope sets are enforced for all 13 compound SparkRoom/SparkClose tools; missing primary scopes or expected tools fail. Reviewer Markdown rejects authorization headers, secret assignments, private keys, JWTs, provider tokens, URL userinfo, credential query/fragment parameters, and nested encoded credential URLs while allowing benign key substrings. | Complete locally |
+| SYS-CLOSE-PKG-001 | Candidate-local evidence shall match the deterministic bundle while strict readiness preserves external gates. | Bundle `dist/sparklaunch-chatgpt-plugin-0.8.0+codex.20260906000000.zip` rebuilds as SHA-256 `49E81BC7FBD561221B0E143EEF0741B59DD54F90D0F81E5FFAE4F99609983A91`; `--allow-pending` passes. Strict validation fails only for public readiness, candidate deployment, direct authenticated scan, portal scan, and demo recording. | Complete locally; five external gates open |
+| T-ACCEPT-CLOSE-PKG-001 | The complete repository suite shall pass against the exact merged runtime tree before the dependent PR is opened. | Windows local full suite: 257 passed and 6 skipped; Ruff, Python compilation, JSON parsing, generated parity, snapshot parity, and `git diff --check` pass. GitHub exact-head results are recorded in the PR rather than predicted here. | Complete locally |
+
+### Remaining proof boundaries
+
+- Candidate deployment, authenticated 100-tool production equality, OpenAI Scan Tools, reviewer demo, ChatGPT approval, MCP Registry publication, marketplace distribution, and live/native-host invocation remain unverified.
+- The deterministic ZIP and local validators prove source/package consistency only. They do not prove legal adequacy, agreement signatures, bank settlement, a completed financing, filing, formation, customer acceptance, or production outcomes.
+- Muse protected MCP remains disabled because no approved OAuth lifecycle is documented; no static bearer-token workaround is permitted.

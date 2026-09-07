@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generated_packages": {
-    "version": "0.5.0+codex.20260902140918",
+    "version": "0.8.0+codex.20260906000000",
     "hosts": [
       "openai",
       "claude",
@@ -12,40 +12,49 @@
     "status": "local_candidates_only"
   },
   "mcp_registry": {
-    "candidate_descriptor_version": "1.4.0",
+    "candidate_descriptor_version": "1.7.0",
     "last_known_published_version": "1.0.0",
     "last_known_version_basis": "repository release record preceding the 2026-09-02 change",
     "live_refresh_status": "not_performed_by_this_change",
     "publication_status": "not_performed_by_this_change"
   },
   "runtime": {
-    "contract_snapshot_version": "1.4.0",
-    "deployment_status": "verified",
-    "observed_at": "2026-09-03T04:47:05Z",
-    "deployed_git_revision": "058513ed28b2fadba120d5f4a0e447a723e37ddc",
-    "release_tag": "prod-20260902-211542",
-    "service_version": "1.4.0",
-    "migration_revision": "mcp_portability_01",
-    "migration_status": "applied_on_all_observed_backend_targets",
-    "direct_authenticated_scan": {
-      "status": "verified",
-      "tool_count": 61,
-      "exact_tool_name_set_match": true,
-      "output_schema_root_failure_count": 0,
-      "annotation_triplet_failure_count": 0,
-      "mcp_protocol_version": "2025-11-25",
-      "server_name": "SparkLaunch MCP",
-      "server_version": "1.4.0",
-      "initialize_http_status": 200,
-      "initialized_notification_http_status": 202,
-      "tools_list_http_status": 200,
-      "tool_calls_executed": 0
+    "contract_snapshot_version": "1.7.0",
+    "candidate": {
+      "plugin_version": "0.8.0+codex.20260906000000",
+      "deployment_status": "not_verified_for_candidate",
+      "direct_authenticated_scan_status": "pending",
+      "openai_portal_rescan_status": "pending",
+      "proof_boundary": "The local 1.7.0 / 100-tool / 29-scope candidate has not been deployed or scanned in production. These status fields describe only the candidate and must not inherit the retained production baseline."
     },
-    "oauth": {
-      "dynamic_client_registration_advertised": true,
-      "client_id_metadata_document_advertised": false
-    },
-    "openai_portal_rescan_status": "pending"
+    "last_verified_production": {
+      "observed_at": "2026-09-03T04:47:05Z",
+      "deployed_git_revision": "058513ed28b2fadba120d5f4a0e447a723e37ddc",
+      "release_tag": "prod-20260902-211542",
+      "service_version": "1.4.0",
+      "migration_revision": "mcp_portability_01",
+      "migration_status": "applied_on_all_observed_backend_targets",
+      "direct_authenticated_scan": {
+        "status": "verified",
+        "tool_count": 61,
+        "exact_tool_name_set_match": true,
+        "output_schema_root_failure_count": 0,
+        "annotation_triplet_failure_count": 0,
+        "mcp_protocol_version": "2025-11-25",
+        "server_name": "SparkLaunch MCP",
+        "server_version": "1.4.0",
+        "initialize_http_status": 200,
+        "initialized_notification_http_status": 202,
+        "tools_list_http_status": 200,
+        "tool_calls_executed": 0
+      },
+      "oauth": {
+        "scope_count": 18,
+        "dynamic_client_registration_advertised": true,
+        "client_id_metadata_document_advertised": false
+      },
+      "proof_boundary": "These retained fields mirror the last verified 1.4.0 / 61-tool production baseline. They are historical evidence relative to the local 1.7.0 candidate and do not prove SparkCap, SparkRoom, SparkClose, candidate deployment, or current live state."
+    }
   },
   "distribution": {
     "openai": "local_candidate_not_submitted",

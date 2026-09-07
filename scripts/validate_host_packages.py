@@ -32,6 +32,39 @@ HOST_MARKERS = {
     "muse": "Protected SparkLaunch MCP tools are not activated",
 }
 RECIPE_REFERENCE = re.compile(r"recipes/([A-Za-z0-9_.-]+\.md)")
+EXPECTED_DESCRIPTOR_SCOPE_SETS: dict[str, frozenset[str]] = {
+    "sparkclose.cancel_unsigned": frozenset(
+        {"sparkclose.read", "sparkclose.write"}
+    ),
+    "sparkclose.close_investment": frozenset(
+        {"sparkclose.close", "sparkclose.read"}
+    ),
+    "sparkclose.reconcile_funding": frozenset(
+        {"sparkclose.read", "sparkclose.write"}
+    ),
+    "sparkclose.record_approval": frozenset(
+        {"sparkclose.read", "sparkclose.write"}
+    ),
+    "sparkclose.record_receipt": frozenset(
+        {"sparkclose.read", "sparkclose.write"}
+    ),
+    "sparkclose.retry_updates": frozenset(
+        {"sparkclose.read", "sparkclose.write"}
+    ),
+    "sparkclose.save_scenario": frozenset(
+        {"sparkclose.model", "sparkclose.read", "sparkclose.write"}
+    ),
+    "sparkroom.update": frozenset({"sparkroom.read", "sparkroom.write"}),
+    "sparkroom.add_documents": frozenset({"sparkroom.read", "sparkroom.write"}),
+    "sparkroom.update_item": frozenset({"sparkroom.read", "sparkroom.write"}),
+    "sparkroom.remove_item": frozenset({"sparkroom.read", "sparkroom.write"}),
+    "sparkroom.create_share_link": frozenset(
+        {"sparkroom.read", "sparkroom.share"}
+    ),
+    "sparkroom.revoke_share_link": frozenset(
+        {"sparkroom.read", "sparkroom.share"}
+    ),
+}
 
 
 def _json(path: Path, errors: list[str]) -> dict[str, Any]:
@@ -44,6 +77,67 @@ def _json(path: Path, errors: list[str]) -> dict[str, Any]:
         errors.append(f"JSON object required: {path.relative_to(ROOT)}")
         return {}
     return value
+
+
+def _exact_oauth2_scope_set(descriptor: dict[str, Any]) -> frozenset[str] | None:
+    schemes = descriptor.get("securitySchemes")
+    if not isinstance(schemes, list) or len(schemes) != 1:
+        return None
+    scheme = schemes[0]
+    if not isinstance(scheme, dict) or scheme.get("type") != "oauth2":
+        return None
+    scopes = scheme.get("scopes")
+    if (
+        not isinstance(scopes, list)
+        or not all(isinstance(scope, str) for scope in scopes)
+        or len(scopes) != len(set(scopes))
+    ):
+        return None
+    return frozenset(scopes)
+
+
+def _expected_descriptor_scope_set(
+    name: str, contract: dict[str, Any]
+) -> frozenset[str]:
+    configured = EXPECTED_DESCRIPTOR_SCOPE_SETS.get(name)
+    if configured is not None:
+        return configured
+    required_scope = contract.get("required_scope")
+    if isinstance(required_scope, str):
+        return frozenset({required_scope})
+    return frozenset()
+
+
+def _descriptor_scope_set_errors(
+    name: str, contract: dict[str, Any], descriptor: dict[str, Any]
+) -> list[str]:
+    errors: list[str] = []
+    required_scope = contract.get("required_scope")
+    expected_scopes = _expected_descriptor_scope_set(name, contract)
+    if not isinstance(required_scope, str) or not required_scope.strip():
+        errors.append(f"snapshot contract required_scope must be nonempty: {name}")
+    elif required_scope not in expected_scopes:
+        errors.append(
+            "snapshot expected descriptor scope set does not include required_scope: "
+            f"{name} ({required_scope})"
+        )
+    metadata = descriptor.get("_meta")
+    locations = {
+        "descriptor": _exact_oauth2_scope_set(descriptor),
+        "descriptor _meta": _exact_oauth2_scope_set(
+            metadata if isinstance(metadata, dict) else {}
+        ),
+    }
+    errors.extend(
+        (
+            f"snapshot {location} security scope set mismatch: "
+            f"{name} (expected {sorted(expected_scopes)}, "
+            f"got {sorted(advertised_scopes) if advertised_scopes else advertised_scopes})"
+        )
+        for location, advertised_scopes in locations.items()
+        if advertised_scopes != expected_scopes
+    )
+    return errors
 
 
 def _validate_manifest_contracts(errors: list[str]) -> dict[str, str]:
@@ -109,7 +203,7 @@ def _validate_skills(errors: list[str]) -> None:
         skill_root = root / "skills"
         actual_skills = {path.name for path in skill_root.iterdir() if path.is_dir()}
         if actual_skills != set(SKILLS):
-            errors.append(f"{host} package must contain exactly the nine canonical skills")
+            errors.append(f"{host} package must contain exactly the configured canonical skills")
             continue
         for skill in SKILLS:
             directory = skill_root / skill
@@ -137,6 +231,10 @@ def _validate_snapshot_and_release(errors: list[str], versions: dict[str, str]) 
         errors.append(f"invalid tool contract snapshot: {exc}")
         return
     tools = snapshot["tools"]
+    for name in sorted(set(EXPECTED_DESCRIPTOR_SCOPE_SETS) - set(tools)):
+        errors.append(
+            f"snapshot is missing tool with an expected descriptor scope set: {name}"
+        )
     for name, entry in tools.items():
         descriptor = entry.get("descriptor") or {}
         contract = entry.get("contract") or {}
@@ -146,13 +244,7 @@ def _validate_snapshot_and_release(errors: list[str], versions: dict[str, str]) 
             errors.append(f"snapshot descriptor is missing inputSchema: {name}")
         if not isinstance(descriptor.get("outputSchema"), dict):
             errors.append(f"snapshot descriptor is missing outputSchema: {name}")
-        advertised_scopes = {
-            scope
-            for scheme in descriptor.get("securitySchemes") or []
-            for scope in scheme.get("scopes") or []
-        }
-        if contract.get("required_scope") not in advertised_scopes:
-            errors.append(f"snapshot security scope mismatch: {name}")
+        errors.extend(_descriptor_scope_set_errors(name, contract, descriptor))
 
     registry = _json(ROOT / "server.json", errors)
     if snapshot.get("server_version") != registry.get("version"):

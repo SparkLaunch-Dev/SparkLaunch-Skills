@@ -17,15 +17,16 @@ BACKEND = Path(
         Path(__file__).resolve().parents[2] / "SparkLaunch" / "backend",
     )
 ).resolve()
-if BACKEND.is_dir():
+BACKEND_AVAILABLE = BACKEND.is_dir()
+if BACKEND_AVAILABLE:
     sys.path.insert(0, str(BACKEND))
+    from incorporation_contracts import parse_incorporation_draft
+    from incorporation_validation import validate_incorporation_draft
 
 import scripts.generate_submission as submission_generator
 import scripts.validate_portal_prerequisites as portal_prerequisite_validator
 import scripts.validate_submission as submission_validator
 from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
-from incorporation_contracts import parse_incorporation_draft
-from incorporation_validation import validate_incorporation_draft
 from scripts.generate_submission import (
     MCP_TOOL_CONTRACTS,
     ROOT,
@@ -41,7 +42,6 @@ from scripts.validate_submission import (
     _validate_registry_descriptor,
     validate,
 )
-from mcp_oauth_service import MCP_OAUTH_SUPPORTED_SCOPES
 
 
 def _validate_with_text_replaced(monkeypatch, path, old, new):
@@ -59,7 +59,30 @@ def _validate_with_text_replaced(monkeypatch, path, old, new):
     return validate()
 
 
-def _validate_portal_evidence(monkeypatch, tmp_path, evidence, release_state=None):
+def _validate_with_bytes_replaced(monkeypatch, path, old, new):
+    original_read_bytes = Path.read_bytes
+    target = path.resolve()
+
+    def read_bytes(candidate, *args, **kwargs):
+        raw = original_read_bytes(candidate, *args, **kwargs)
+        if candidate.resolve() == target:
+            text = raw.decode("utf-8")
+            assert old in text
+            return text.replace(old, new, 1).encode("utf-8")
+        return raw
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    return validate()
+
+
+def _validate_portal_evidence(
+    monkeypatch,
+    tmp_path,
+    evidence,
+    release_state=None,
+    *,
+    allow_pending=True,
+):
     evidence_path = tmp_path / "portal-prerequisites.json"
     evidence_path.write_text(json.dumps(evidence), encoding="utf-8")
     monkeypatch.setattr(
@@ -75,7 +98,7 @@ def _validate_portal_evidence(monkeypatch, tmp_path, evidence, release_state=Non
             "RELEASE_STATE_PATH",
             release_state_path,
         )
-    return portal_prerequisite_validator.validate(allow_pending=True)
+    return portal_prerequisite_validator.validate(allow_pending=allow_pending)
 
 
 def _replace_nested_value(value, path, replacement):
@@ -83,6 +106,130 @@ def _replace_nested_value(value, path, replacement):
     for key in path[:-1]:
         target = target[key]
     target[path[-1]] = replacement
+
+
+def _promote_candidate_evidence(evidence, release_state):
+    candidate = evidence["candidate"]
+    plugin_version = candidate["plugin_version"]
+    service_version = candidate["service_version"]
+    tool_count = candidate["expected_tool_count"]
+    scope_count = candidate["expected_oauth_scope_count"]
+    revision = "a" * 40
+
+    public = json.loads(
+        json.dumps(evidence["historical_public_production_readiness"][-1])
+    )
+    public.update(
+        {
+            "status": "verified",
+            "candidate_plugin_version": plugin_version,
+            "candidate_service_version": service_version,
+            "candidate_expected_oauth_scope_count": scope_count,
+            "observed_at": "2026-09-06T20:01:00Z",
+        }
+    )
+    public["evidence"]["oauth_scope_count"] = scope_count
+    evidence["public_production_readiness"] = public
+
+    deployment = json.loads(
+        json.dumps(evidence["historical_production_deployments"][-1])
+    )
+    deployment.update(
+        {
+            "status": "verified",
+            "candidate_plugin_version": plugin_version,
+            "candidate_service_version": service_version,
+            "candidate_expected_tool_count": tool_count,
+            "observed_at": "2026-09-06T20:00:00Z",
+            "git_revision": revision,
+            "production_tag": "prod-candidate-test",
+            "service_version": service_version,
+        }
+    )
+    evidence["production_deployment"] = deployment
+
+    direct_scan = json.loads(
+        json.dumps(evidence["historical_direct_authenticated_production_scans"][-1])
+    )
+    direct_scan.update(
+        {
+            "status": "verified",
+            "candidate_plugin_version": plugin_version,
+            "candidate_service_version": service_version,
+            "candidate_expected_tool_count": tool_count,
+            "observed_at": "2026-09-06T20:02:00Z",
+            "deployed_git_revision": revision,
+            "server_version": service_version,
+            "tool_count": tool_count,
+            "tool_names": sorted(MCP_TOOL_CONTRACTS),
+        }
+    )
+    evidence["direct_authenticated_production_scan"] = direct_scan
+
+    evidence["authenticated_production_scan"].update(
+        {
+            "status": "verified",
+            "observed_at": "2026-09-06T20:03:00Z",
+            "tool_count": tool_count,
+            "portal_result": "successful",
+        }
+    )
+    evidence["demo_recording"].update(
+        {
+            "status": "verified",
+            "url": "https://demo.sparklaun.ch/reviewer-demo",
+            "observed_at": "2026-09-06T20:04:00Z",
+            "reviewer_access_verified": True,
+        }
+    )
+
+    release_candidate = release_state["runtime"]["candidate"]
+    release_candidate.update(
+        {
+            "deployment_status": "verified",
+            "direct_authenticated_scan_status": "verified",
+            "openai_portal_rescan_status": "verified",
+        }
+    )
+    baseline = release_state["runtime"]["last_verified_production"]
+    baseline.update(
+        {
+            "observed_at": deployment["observed_at"],
+            "deployed_git_revision": revision,
+            "release_tag": deployment["production_tag"],
+            "service_version": service_version,
+            "migration_revision": deployment["migration_revision"],
+            "migration_status": "applied_on_all_observed_backend_targets",
+        }
+    )
+    release_scan = baseline["direct_authenticated_scan"]
+    for release_field, evidence_field in {
+        "status": "status",
+        "tool_count": "tool_count",
+        "exact_tool_name_set_match": "exact_candidate_tool_name_set_match",
+        "output_schema_root_failure_count": "output_schema_root_failure_count",
+        "annotation_triplet_failure_count": "annotation_triplet_failure_count",
+        "mcp_protocol_version": "mcp_protocol_version",
+        "server_name": "server_name",
+        "server_version": "server_version",
+        "initialize_http_status": "initialize_http_status",
+        "initialized_notification_http_status": "initialized_notification_http_status",
+        "tools_list_http_status": "tools_list_http_status",
+        "tool_calls_executed": "tool_calls_executed",
+    }.items():
+        release_scan[release_field] = direct_scan[evidence_field]
+    baseline["oauth"].update(
+        {
+            "scope_count": scope_count,
+            "dynamic_client_registration_advertised": direct_scan[
+                "dynamic_client_registration_advertised"
+            ],
+            "client_id_metadata_document_advertised": direct_scan[
+                "client_id_metadata_document_advertised"
+            ],
+        }
+    )
+    return evidence, release_state
 
 
 def test_packaged_skills_are_exact_deterministic_mirrors():
@@ -96,6 +243,9 @@ def test_packaged_skills_are_exact_deterministic_mirrors():
         "sparklaunch-landing-pages",
         "sparklaunch-sales-crm",
         "sparklaunch-incorporation",
+        "sparklaunch-sparkcap",
+        "sparklaunch-sparkroom",
+        "sparklaunch-sparkclose",
     )
     assert len(expected_pairs()) > 40
     assert sync(write=False) == []
@@ -125,9 +275,7 @@ def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
         canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
         assert "only as internal tool-call state" in canonical, skill
 
-    recipe_contract = (
-        "Retain identifiers and versions only for internal tool calls"
-    )
+    recipe_contract = "Retain identifiers and versions only for internal tool calls"
     for recipe in (ROOT / "recipes").rglob("*.md"):
         text = recipe.read_text(encoding="utf-8")
         if recipe.name == "README.md":
@@ -208,15 +356,15 @@ def test_validator_rejects_positive_submission_output_without_user_friendly_pres
 def test_submission_package_is_complete():
     assert validate() == []
     marketplace = json.loads(
-        (ROOT / ".agents" / "plugins" / "marketplace.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / ".agents" / "plugins" / "marketplace.json").read_text(encoding="utf-8")
     )
     sparklaunch = next(
         entry for entry in marketplace["plugins"] if entry["name"] == "sparklaunch"
     )
     assert sparklaunch["policy"]["authentication"] == "ON_USE"
-    generated = json.loads((ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8"))
+    generated = json.loads(
+        (ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8")
+    )
     assert generated == build_submission()
     assert len(generated["tools"]) == len(MCP_TOOL_CONTRACTS)
     invite = generated["tools"]["projects.invite_collaborator"]
@@ -226,11 +374,13 @@ def test_submission_package_is_complete():
         "destructiveHint": True,
     }
     assert "external recipient" in invite["justifications"]["open_world_justification"]
-    assert "irreversible sent message" in invite["justifications"]["destructive_justification"]
+    assert (
+        "irreversible sent message"
+        in invite["justifications"]["destructive_justification"]
+    )
     assert "incorporation" in generated["app_info"]["description"].lower()
     assert generated["$schema"] == (
-        "https://developers.openai.com/plugins/schemas/"
-        "chatgpt-app-submission.v1.json"
+        "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json"
     )
     assert all(
         case["tools_triggered"] in generated["tools"]
@@ -254,11 +404,14 @@ def test_submission_package_is_complete():
     ]
     assert len(scoped) == 4
     assert all(
-        f"project {fixture['project_id']}" in case["user_prompt"]
-        for case in scoped
+        f"project {fixture['project_id']}" in case["user_prompt"] for case in scoped
     )
 
 
+@pytest.mark.skipif(
+    not BACKEND_AVAILABLE,
+    reason="requires the sibling SparkLaunch runtime contract",
+)
 def test_packaged_synthetic_incorporation_draft_matches_runtime_contract():
     path = (
         ROOT
@@ -315,21 +468,19 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
         "name": REGISTRY_SERVER_NAME,
         "title": "SparkLaunch",
         "description": (
-            "Founder workflows for idea validation, branding, launches, CRM, "
-            "and incorporation."
+            "Founder tools for launch, CRM, incorporation, SparkCap, SparkRoom, and SparkClose."
         ),
         "websiteUrl": "https://sparklaun.ch/",
-        "remotes": [
-            {"type": "streamable-http", "url": CANONICAL_MCP_URL}
-        ],
+        "remotes": [{"type": "streamable-http", "url": CANONICAL_MCP_URL}],
     }
     assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
-    application_version = run_path(BACKEND / "mcp_server_version.py")[
-        "SPARKLAUNCH_MCP_SERVER_VERSION"
-    ]
-    assert version == "1.4.0"
-    assert version == application_version
+    assert version == "1.7.0"
+    if BACKEND_AVAILABLE:
+        application_version = run_path(BACKEND / "mcp_server_version.py")[
+            "SPARKLAUNCH_MCP_SERVER_VERSION"
+        ]
+        assert version == application_version
 
 
 def test_incorporation_tools_and_scopes_match_the_runtime_contract():
@@ -491,15 +642,47 @@ def test_registry_validator_rejects_an_empty_descriptor(tmp_path):
 @pytest.mark.parametrize(
     ("field", "value", "expected_error"),
     [
-        ("$schema", "https://example.com/schema.json", "MCP Registry descriptor must use the pinned official schema"),
-        ("name", "com.example/sparklaunch", "MCP Registry descriptor has the wrong server namespace"),
+        (
+            "$schema",
+            "https://example.com/schema.json",
+            "MCP Registry descriptor must use the pinned official schema",
+        ),
+        (
+            "name",
+            "com.example/sparklaunch",
+            "MCP Registry descriptor has the wrong server namespace",
+        ),
         ("title", "Other", "MCP Registry descriptor must use the SparkLaunch title"),
-        ("description", "", "MCP Registry description must contain 1 to 100 characters"),
-        ("description", "x" * 101, "MCP Registry description must contain 1 to 100 characters"),
-        ("description", 123, "MCP Registry description must contain 1 to 100 characters"),
-        ("version", "1.0", "MCP Registry descriptor must use a semantic service version"),
-        ("websiteUrl", "https://example.com/", "MCP Registry descriptor has the wrong website URL"),
-        ("remotes", [], "MCP Registry descriptor must expose only the canonical remote"),
+        (
+            "description",
+            "",
+            "MCP Registry description must contain 1 to 100 characters",
+        ),
+        (
+            "description",
+            "x" * 101,
+            "MCP Registry description must contain 1 to 100 characters",
+        ),
+        (
+            "description",
+            123,
+            "MCP Registry description must contain 1 to 100 characters",
+        ),
+        (
+            "version",
+            "1.0",
+            "MCP Registry descriptor must use a semantic service version",
+        ),
+        (
+            "websiteUrl",
+            "https://example.com/",
+            "MCP Registry descriptor has the wrong website URL",
+        ),
+        (
+            "remotes",
+            [],
+            "MCP Registry descriptor must expose only the canonical remote",
+        ),
     ],
 )
 def test_registry_validator_rejects_invalid_fields(
@@ -556,7 +739,9 @@ def test_registry_validator_rejects_invalid_semantic_versions(tmp_path, version)
     assert "MCP Registry descriptor must use a semantic service version" in errors
 
 
-def test_registry_validator_accepts_a_standalone_clone_without_the_application(tmp_path):
+def test_registry_validator_accepts_a_standalone_clone_without_the_application(
+    tmp_path,
+):
     registry = json.loads((ROOT / "server.json").read_text(encoding="utf-8"))
     errors = []
 
@@ -608,7 +793,9 @@ def test_registry_validator_rejects_an_invalid_utf8_application_version(tmp_path
 def test_readme_documents_cross_repository_validation_and_cache_versioning():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
-    assert "Clone the application and skills repositories as sibling directories" in readme
+    assert (
+        "Clone the application and skills repositories as sibling directories" in readme
+    )
     assert "../SparkLaunch/backend" in readme
     assert "standalone `SparkLaunch-Skills` clone" in readme
     assert "cached by plugin version" in readme
@@ -619,12 +806,8 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         (ROOT / "evals" / "skill-trigger-cases.json").read_text(encoding="utf-8")
     )
     cases = evaluations["cases"]
-    assert len(cases) == 30
-    expected_skills = {
-        skill
-        for case in cases
-        for skill in case["expected_skills"]
-    }
+    assert len(cases) == 39
+    expected_skills = {skill for case in cases for skill in case["expected_skills"]}
     assert expected_skills == {
         "sparklaunch-campaigns",
         "sparklaunch-color-palettes",
@@ -635,8 +818,14 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         "sparklaunch-projects",
         "sparklaunch-sales-crm",
         "sparklaunch-incorporation",
+        "sparklaunch-sparkcap",
+        "sparklaunch-sparkroom",
+        "sparklaunch-sparkclose",
     }
-    assert sum(not case["expected_skills"] for case in cases) == 8
+    assert sum(not case["expected_skills"] for case in cases) == 11
+    assert next(
+        case for case in cases if case["id"] == "negative-generic-safe-advice"
+    )["expected_skills"] == []
     incorporation_cases = {
         case["id"]: case["expected_skills"]
         for case in cases
@@ -659,20 +848,15 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     submission = json.loads(
         (ROOT / "chatgpt-app-submission.json").read_text(encoding="utf-8")
     )
-    covered_tools = {
-        tool
-        for case in matrix["cases"]
-        for tool in case["tools"]
-    }
-    covered_recipes = {
-        recipe
-        for case in matrix["cases"]
-        for recipe in case["recipes"]
-    }
+    covered_tools = {tool for case in matrix["cases"] for tool in case["tools"]}
+    covered_recipes = {recipe for case in matrix["cases"] for recipe in case["recipes"]}
 
-    assert len(matrix["cases"]) == 13
+    assert len(matrix["cases"]) == 16
     assert covered_tools == set(submission["tools"])
     assert covered_recipes == {
+        "model-and-close-a-safe.md",
+        "prepare-and-share-an-investor-room.md",
+        "review-cap-table-and-model-a-raise.md",
         "connect-sparklaunch-to-chatgpt.md",
         "validate-an-idea-and-generate-a-report.md",
         "create-a-brand-foundation.md",
@@ -686,7 +870,9 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
         "check-incorporation-status.md",
     }
     incorporation_cases = {
-        case["id"]: case for case in matrix["cases"] if case["id"].startswith("E2E-INCORPORATION-")
+        case["id"]: case
+        for case in matrix["cases"]
+        if case["id"].startswith("E2E-INCORPORATION-")
     }
     assert set(incorporation_cases) == {
         "E2E-INCORPORATION-MISSING-ENTITLEMENT",
@@ -703,9 +889,12 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     assert controls["automatic_validation_typical_minutes"] == "10-15"
     assert controls["automatic_validation_poll_seconds"] >= 60
     assert controls["automatic_validation_timeout_minutes"] >= 20
-    assert len(MCP_OAUTH_SUPPORTED_SCOPES) == 18
-    assert controls["expected_oauth_scope_count"] == len(MCP_OAUTH_SUPPORTED_SCOPES)
-    expected_grant_marker = f"expected {len(MCP_OAUTH_SUPPORTED_SCOPES)}-scope grant"
+    expected_scopes = {
+        contract.required_scope for contract in MCP_TOOL_CONTRACTS.values()
+    }
+    assert len(expected_scopes) == 29
+    assert controls["expected_oauth_scope_count"] == len(expected_scopes)
+    expected_grant_marker = f"expected {len(expected_scopes)}-scope grant"
     assert any(expected_grant_marker in case["expected"] for case in matrix["cases"])
     assert "15-scope" not in json.dumps(matrix)
     assert controls["preflight_effective_permissions"] is True
@@ -721,7 +910,7 @@ def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
     runbook = (ROOT / "evals" / "CONTROLLED-E2E.md").read_text(encoding="utf-8")
 
     for marker in (
-        "18 OAuth scopes",
+        "29 OAuth scopes",
         "Never call Delaware, NWRA, or CorpTools",
         "zero provider calls",
         "submit to SparkLaunch Filing Operations",
@@ -732,8 +921,12 @@ def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
 
 
 def test_project_and_validation_guidance_uses_automatic_initial_research():
-    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(encoding="utf-8")
-    validation_skill = (ROOT / "sparklaunch-idea-validation" / "SKILL.md").read_text(encoding="utf-8")
+    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    validation_skill = (ROOT / "sparklaunch-idea-validation" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
     validation_recipe = (
         ROOT / "recipes" / "validate-an-idea-and-generate-a-report.md"
     ).read_text(encoding="utf-8")
@@ -742,7 +935,10 @@ def test_project_and_validation_guidance_uses_automatic_initial_research():
         assert "automatically" in document
         assert "10-15 minutes" in document
         assert "duplicate" in document
-    assert "do not call `validation.create_project` or `validation.start_analysis`" in validation_recipe
+    assert (
+        "do not call `validation.create_project` or `validation.start_analysis`"
+        in validation_recipe
+    )
 
 
 def test_landing_recipe_forbids_invented_social_proof():
@@ -755,13 +951,15 @@ def test_landing_recipe_forbids_invented_social_proof():
 
 
 def test_project_guidance_preflights_effective_permissions_before_writes():
-    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(encoding="utf-8")
-    connect_recipe = (
-        ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md"
-    ).read_text(encoding="utf-8")
-    launch_recipe = (
-        ROOT / "recipes" / "plan-and-publish-a-launch.md"
-    ).read_text(encoding="utf-8")
+    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    connect_recipe = (ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md").read_text(
+        encoding="utf-8"
+    )
+    launch_recipe = (ROOT / "recipes" / "plan-and-publish-a-launch.md").read_text(
+        encoding="utf-8"
+    )
 
     for document in (project_skill, connect_recipe, launch_recipe):
         assert "effective_permissions" in document
@@ -843,7 +1041,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.5.0+codex.20260902")
+    assert manifest["version"].startswith("0.8.0+codex.20260906")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
@@ -857,9 +1055,9 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "sparklaunch-wordmark-light.png" in reviewer
     assert "sparklaunch-wordmark-dark.png" in reviewer
     for marker in (
-        "nine",
+        "twelve",
         f"{len(MCP_TOOL_CONTRACTS)} tools",
-        "18 OAuth scopes",
+        "29 OAuth scopes",
         "submit to SparkLaunch Filing Operations",
         "receipt does not mean",
         "zero provider calls",
@@ -869,72 +1067,195 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
         assert marker in reviewer
 
 
+@pytest.mark.parametrize(
+    ("relative_path", "injected", "category"),
+    (
+        (
+            "submission/release-notes.md",
+            "Authorization: Bearer synthetic-review-secret",
+            "authorization header",
+        ),
+        (
+            "submission/reviewer-instructions.md",
+            "client_secret=synthetic-review-secret",
+            "secret assignment",
+        ),
+        (
+            "submission/demo-recording-runbook.md",
+            "-----BEGIN PRIVATE KEY-----",
+            "private key",
+        ),
+        (
+            "submission/demo-recording-runbook.md",
+            "eyJabcdefgh.abcdefgh.abcdefgh",
+            "JWT",
+        ),
+        (
+            "submission/demo-recording-runbook.md",
+            "https://downloads.example.com/demo?X-Amz-Signature=synthetic",
+            "credential-bearing URL",
+        ),
+    ),
+)
+def test_reviewer_markdown_rejects_injected_sensitive_material(
+    monkeypatch,
+    relative_path,
+    injected,
+    category,
+):
+    path = ROOT / relative_path
+    marker = path.read_text(encoding="utf-8").splitlines()[0]
+
+    errors = _validate_with_bytes_replaced(
+        monkeypatch,
+        path,
+        marker,
+        f"{marker}\n{injected}",
+    )
+
+    assert (
+        f"reviewer-facing Markdown contains {category}: "
+        f"{path.relative_to(ROOT)}"
+    ) in errors
+
+
+@pytest.mark.parametrize(
+    "url",
+    (
+        "https://downloads.example.com/demo#access_token=synthetic",
+        (
+            "https://downloads.example.com/redirect?target="
+            "https%3A%2F%2Fvideo.example.com%2Fdemo%23session_id%3Dsynthetic"
+        ),
+    ),
+)
+def test_reviewer_markdown_url_scan_follows_fragments_and_nested_urls(url):
+    assert "credential-bearing URL" in (
+        portal_prerequisite_validator.sensitive_text_findings(url)
+    )
+
+
+def test_reviewer_markdown_url_scan_allows_benign_key_substrings():
+    url = "https://downloads.example.com/demo?design=minimal&codec=av1&monkey=capuchin"
+
+    assert portal_prerequisite_validator.sensitive_text_findings(url) == []
+    assert portal_prerequisite_validator._is_https_url(url) is True
+
+
 def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed():
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     runbook = (ROOT / "submission" / "demo-recording-runbook.md").read_text(
         encoding="utf-8"
     )
-    release_state = json.loads((ROOT / "release-state.json").read_text(encoding="utf-8"))
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
 
-    assert evidence["candidate"]["expected_tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert evidence["candidate"]["expected_oauth_scope_count"] == 18
+    assert evidence["schema_version"] == 3
+    assert evidence["candidate"]["plugin_version"] == ("0.8.0+codex.20260906000000")
+    assert evidence["candidate"]["service_version"] == "1.7.0"
+    assert evidence["candidate"]["expected_tool_count"] == 100
+    assert len(MCP_TOOL_CONTRACTS) == 100
+    assert evidence["candidate"]["expected_oauth_scope_count"] == 29
     deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
     historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
-    assert evidence["candidate"]["deployment_status"] == "verified"
-    assert evidence["candidate"]["deployed_git_revision"] == deployed_revision
-    assert evidence["public_production_readiness"]["status"] == "verified"
-    current_public = evidence["public_production_readiness"]["evidence"]
+    assert evidence["public_production_readiness"]["status"] == "pending"
+    assert evidence["production_deployment"]["status"] == "pending"
+    assert evidence["direct_authenticated_production_scan"]["status"] == "pending"
+    current_public = evidence["historical_public_production_readiness"][-1]["evidence"]
     assert "domain_challenge" not in current_public
     assert current_public["domain_challenge_http_status"] == 200
     assert current_public["domain_challenge_response_byte_count"] == 43
     assert current_public["domain_challenge_cache_control_no_store"] is True
     assert evidence["authenticated_production_scan"]["status"] == "pending"
-    assert evidence["authenticated_production_scan"][
-        "candidate_expected_tool_count"
-    ] == len(MCP_TOOL_CONTRACTS)
-    assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
-    assert evidence["production_deployment"]["git_revision"] == deployed_revision
-    assert evidence["production_deployment"]["service_version"] == "1.4.0"
-    assert evidence["production_deployment"]["migration_revision"] == (
-        "mcp_portability_01"
+    assert (
+        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 100
     )
-    assert evidence["production_deployment"][
-        "alembic_current_matches_head_on_all_backend_instances"
-    ] is True
+    assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
+    deployment = evidence["historical_production_deployments"][-1]
+    assert deployment["git_revision"] == deployed_revision
+    assert deployment["service_version"] == "1.4.0"
+    assert deployment["migration_revision"] == ("mcp_portability_01")
+    assert deployment["alembic_current_matches_head_on_all_backend_instances"] is True
     assert {
         deployment["git_revision"]
         for deployment in evidence["historical_production_deployments"]
-    } == {historical_revision}
+    } == {historical_revision, deployed_revision}
     historical_scan = evidence["historical_authenticated_production_scans"][0]
     assert historical_scan["historical_result_status"] == "verified"
     assert historical_scan["tool_count"] == 59
     assert historical_scan["candidate_contract_status"] == "stale"
-    assert historical_scan["latest_runtime_probe"][
-        "deployed_git_revision"
-    ] == historical_revision
-    assert portal_prerequisite_validator._canonical_sha256(
-        evidence["historical_public_production_readiness"][0]
-    ) == portal_prerequisite_validator.HISTORICAL_PUBLIC_READINESS_SHA256
-    assert portal_prerequisite_validator._canonical_sha256(
-        evidence["historical_production_deployments"][0]
-    ) == portal_prerequisite_validator.HISTORICAL_PRODUCTION_DEPLOYMENT_SHA256
-    assert portal_prerequisite_validator._canonical_sha256(
-        historical_scan
-    ) == portal_prerequisite_validator.HISTORICAL_PORTAL_SCAN_SHA256
-    deployment = evidence["production_deployment"]
+    assert (
+        historical_scan["latest_runtime_probe"]["deployed_git_revision"]
+        == historical_revision
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(
+            evidence["historical_candidates"][0]
+        )
+        == portal_prerequisite_validator.HISTORICAL_CANDIDATE_SHA256S[0]
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(
+            evidence["historical_public_production_readiness"][0]
+        )
+        == portal_prerequisite_validator.HISTORICAL_PUBLIC_READINESS_SHA256S[0]
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(
+            evidence["historical_public_production_readiness"][1]
+        )
+        == portal_prerequisite_validator.HISTORICAL_PUBLIC_READINESS_SHA256S[1]
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(
+            evidence["historical_production_deployments"][0]
+        )
+        == portal_prerequisite_validator.HISTORICAL_PRODUCTION_DEPLOYMENT_SHA256S[0]
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(
+            evidence["historical_production_deployments"][1]
+        )
+        == portal_prerequisite_validator.HISTORICAL_PRODUCTION_DEPLOYMENT_SHA256S[1]
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(
+            evidence["historical_direct_authenticated_production_scans"][0]
+        )
+        == portal_prerequisite_validator.HISTORICAL_DIRECT_SCAN_SHA256S[0]
+    )
+    assert (
+        portal_prerequisite_validator._canonical_sha256(historical_scan)
+        == portal_prerequisite_validator.HISTORICAL_PORTAL_SCAN_SHA256S[0]
+    )
+    historical_pending_scan = evidence["historical_authenticated_production_scans"][1]
+    assert historical_pending_scan == {
+        "status": "pending",
+        "candidate_expected_tool_count": 61,
+        "portal_result": "pending",
+        "proof_boundary": (
+            "A fresh OpenAI portal OAuth Scan Tools pass against the deployed 61-tool "
+            "candidate remains pending. The separate direct authenticated production "
+            "scan does not replace this portal gate, and the prior 59-tool portal "
+            "observation is preserved under historical_authenticated_production_scans."
+        ),
+    }
+    assert (
+        portal_prerequisite_validator._canonical_sha256(historical_pending_scan)
+        == portal_prerequisite_validator.HISTORICAL_PORTAL_SCAN_SHA256S[1]
+    )
     assert deployment["backend_refresh_successful"] is True
     assert deployment["frontend_refresh_successful"] is True
     assert deployment["launch_template_pins_match_refreshes"] is True
-    assert deployment[
-        "frontend_revision_proven_by_immutable_launch_template_pin"
-    ] is True
+    assert (
+        deployment["frontend_revision_proven_by_immutable_launch_template_pin"] is True
+    )
     assert deployment["all_observed_deployment_targets_match_revision"] is True
     assert deployment["required_runtime_configuration_verified"] is True
-    direct_scan = evidence["direct_authenticated_production_scan"]
+    direct_scan = evidence["historical_direct_authenticated_production_scans"][0]
     assert direct_scan["status"] == "verified"
     assert direct_scan["deployed_git_revision"] == deployed_revision
     assert direct_scan["mcp_protocol_version"] == "2025-11-25"
@@ -943,14 +1264,20 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert direct_scan["initialize_http_status"] == 200
     assert direct_scan["initialized_notification_http_status"] == 202
     assert direct_scan["tools_list_http_status"] == 200
-    assert direct_scan["tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert direct_scan["tool_names"] == sorted(MCP_TOOL_CONTRACTS)
+    assert direct_scan["tool_count"] == 61
+    assert direct_scan["tool_names"] == sorted(
+        name
+        for name in MCP_TOOL_CONTRACTS
+        if not name.startswith(("cap_table.", "sparkroom.", "sparkclose."))
+    )
     assert direct_scan["exact_candidate_tool_name_set_match"] is True
     assert direct_scan["output_schema_root_failure_count"] == 0
     assert direct_scan["annotation_triplet_failure_count"] == 0
     assert direct_scan["tool_calls_executed"] == 0
     assert direct_scan["sensitive_values_retained"] is False
-    release_scan = release_state["runtime"]["direct_authenticated_scan"]
+    release_scan = release_state["runtime"]["last_verified_production"][
+        "direct_authenticated_scan"
+    ]
     assert "exact_contract_match" not in release_scan
     assert release_scan["exact_tool_name_set_match"] is True
     assert release_scan["output_schema_root_failure_count"] == 0
@@ -964,26 +1291,81 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert evidence["reviewer_access"]["status"] == "verified"
     assert evidence["reviewer_access"]["project_isolation_verified"] is True
     assert evidence["reviewer_access"]["reviewer_materials_configured"] is True
-    assert evidence["reviewer_access"][
-        "reviewer_materials_stored_outside_repository"
-    ] is True
+    assert (
+        evidence["reviewer_access"]["reviewer_materials_stored_outside_repository"]
+        is True
+    )
     assert evidence["publisher_identity"]["status"] == "verified"
     assert evidence["publisher_identity"]["organization_and_project_match"] is True
     assert evidence["demo_recording"]["status"] == "pending"
     assert "hosted ChatGPT first and Codex second" in runbook
+    assert release_state["runtime"]["candidate"]["deployment_status"] == (
+        "not_verified_for_candidate"
+    )
     assert portal_prerequisite_validator.validate(allow_pending=True) == []
+    strict_errors = portal_prerequisite_validator.validate(allow_pending=False)
     assert {
-        error.removeprefix("external portal gate is still pending: ")
-        for error in portal_prerequisite_validator.validate(allow_pending=False)
-    } == {
-        "authenticated_production_scan",
-        "demo_recording",
-    }
+        "external portal gate is still pending: public_production_readiness",
+        "external portal gate is still pending: production_deployment",
+        "external portal gate is still pending: direct_authenticated_production_scan",
+        "external portal gate is still pending: authenticated_production_scan",
+        "external portal gate is still pending: demo_recording",
+    }.issubset(strict_errors)
 
 
 @pytest.mark.parametrize(
     ("path", "replacement", "expected_error"),
     (
+        (
+            ("candidate", "plugin_version"),
+            "0.6.0",
+            "portal prerequisite plugin version does not match the plugin manifest",
+        ),
+        (
+            ("candidate", "service_version"),
+            "1.5.0",
+            "portal prerequisite service version must match the contract snapshot",
+        ),
+        (
+            ("candidate", "expected_tool_count"),
+            85,
+            "portal prerequisite evidence tool count must match the contract snapshot",
+        ),
+        (
+            ("candidate", "expected_oauth_scope_count"),
+            24,
+            "portal prerequisite evidence OAuth scope count must match the contract snapshot",
+        ),
+        (
+            ("candidate", "bundle_sha256"),
+            "0" * 64,
+            "portal prerequisite candidate bundle digest does not match",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
+    monkeypatch,
+    tmp_path,
+    path,
+    replacement,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    _replace_nested_value(evidence, path, replacement)
+
+    assert expected_error in _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+
+@pytest.mark.parametrize(
+    ("path", "replacement", "expected_error"),
+    (
+        (
+            ("historical_candidates", 0, "expected_tool_count"),
+            60,
+            "historical candidate snapshot changed",
+        ),
         (
             (
                 "historical_public_production_readiness",
@@ -997,11 +1379,20 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
         (
             (
                 "historical_production_deployments",
-                0,
+                1,
                 "required_runtime_configuration_verified",
             ),
             False,
             "historical production deployment snapshot changed",
+        ),
+        (
+            (
+                "historical_direct_authenticated_production_scans",
+                0,
+                "tool_count",
+            ),
+            60,
+            "historical direct authenticated production scan snapshot changed",
         ),
         (
             (
@@ -1023,33 +1414,34 @@ def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
     expected_error,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     _replace_nested_value(evidence, path, replacement)
-    assert expected_error in _validate_portal_evidence(
-        monkeypatch, tmp_path, evidence
-    )
+    assert expected_error in _validate_portal_evidence(monkeypatch, tmp_path, evidence)
 
 
 @pytest.mark.parametrize(
     ("path", "replacement", "expected_error"),
     (
         (
-            ("candidate", "deployed_git_revision"),
-            "0" * 40,
-            "candidate and production deployment revisions must match",
+            ("public_production_readiness", "candidate_expected_oauth_scope_count"),
+            24,
+            "public production readiness has inconsistent candidate_expected_oauth_scope_count",
         ),
         (
-            ("candidate", "production_tag"),
-            "other-tag",
-            "candidate and production deployment tags must match",
+            ("production_deployment", "candidate_plugin_version"),
+            "0.6.0",
+            "production deployment has inconsistent candidate_plugin_version",
+        ),
+        (
+            ("direct_authenticated_production_scan", "candidate_service_version"),
+            "1.5.0",
+            "direct authenticated production scan has inconsistent candidate_service_version",
         ),
         (
             ("production_deployment", "status"),
             "pending",
-            "production deployment must have a verified observation",
+            "production deployment is pending but contains verified field observed_at",
         ),
         (
             ("production_deployment", "observed_at"),
@@ -1058,13 +1450,13 @@ def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
         ),
         (
             ("production_deployment", "git_revision"),
-            "0" * 40,
-            "production deployment revision is stale",
+            "not-a-sha",
+            "production deployment revision must be a full Git SHA",
         ),
         (
             ("production_deployment", "production_tag"),
-            "other-tag",
-            "production deployment tag is stale",
+            "",
+            "production deployment tag is missing",
         ),
         (
             ("production_deployment", "branch_matches_origin"),
@@ -1138,7 +1530,7 @@ def test_portal_prerequisite_validator_rejects_historical_evidence_changes(
         (
             ("direct_authenticated_production_scan", "status"),
             "pending",
-            "direct authenticated production scan must be verified",
+            "direct authenticated production scan is pending but contains verified field observed_at",
         ),
         (
             ("direct_authenticated_production_scan", "observed_at"),
@@ -1287,14 +1679,120 @@ def test_portal_prerequisite_validator_rejects_incomplete_current_proof(
     expected_error,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
     _replace_nested_value(evidence, path, replacement)
     assert expected_error in _validate_portal_evidence(
-        monkeypatch, tmp_path, evidence
+        monkeypatch, tmp_path, evidence, release_state
     )
+
+
+def test_portal_prerequisite_validator_accepts_fully_verified_candidate(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+
+    assert (
+        _validate_portal_evidence(
+            monkeypatch,
+            tmp_path,
+            evidence,
+            release_state,
+            allow_pending=False,
+        )
+        == []
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "observed_at", "expected_error"),
+    (
+        (
+            "public_production_readiness",
+            "2026-09-03T04:41:12Z",
+            "public production readiness observation must be newer than its historical baseline",
+        ),
+        (
+            "production_deployment",
+            "2026-09-03T04:47:05Z",
+            "production deployment observation must be newer than its historical baseline",
+        ),
+        (
+            "direct_authenticated_production_scan",
+            "2026-09-03T04:43:24Z",
+            "direct authenticated production scan observation must be newer than its historical baseline",
+        ),
+        (
+            "authenticated_production_scan",
+            "2026-09-01T18:53:55Z",
+            "authenticated production scan observation must be newer than its historical baseline",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_reused_historical_observations(
+    monkeypatch,
+    tmp_path,
+    field,
+    observed_at,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+    evidence[field]["observed_at"] = observed_at
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+        allow_pending=False,
+    )
+
+    assert expected_error in errors
+
+
+def test_portal_prerequisite_validator_rejects_invalid_or_prebuild_observations(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+    evidence["public_production_readiness"]["observed_at"] = "not-a-time"
+    evidence["production_deployment"]["observed_at"] = "2026-09-03T23:59:59Z"
+    evidence["demo_recording"]["observed_at"] = "2026-09-03T23:59:59Z"
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+        allow_pending=False,
+    )
+
+    assert "public production readiness has an invalid UTC observation time" in errors
+    assert "production deployment observation predates the candidate build" in errors
+    assert "demo recording observation predates the candidate build" in errors
 
 
 def test_portal_prerequisite_validator_requires_exact_candidate_bundle_path(
@@ -1302,9 +1800,7 @@ def test_portal_prerequisite_validator_requires_exact_candidate_bundle_path(
     tmp_path,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     manifest = ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json"
     evidence["candidate"]["bundle_path"] = manifest.relative_to(ROOT).as_posix()
@@ -1322,9 +1818,7 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
     tmp_path,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     evidence["demo_recording"]["runbook"] = "README.md"
 
@@ -1333,18 +1827,76 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
     assert "demo recording runbook is missing" in errors
 
 
+@pytest.mark.parametrize(
+    ("old", "new", "expected_error"),
+    (
+        (
+            "exactly 100 tools",
+            "exactly 61 tools",
+            "demo recording runbook has stale tool count",
+        ),
+        (
+            "service `1.7.0`",
+            "service `1.4.0`",
+            "demo recording runbook has stale service version",
+        ),
+        (
+            "29 OAuth scopes",
+            "18 OAuth scopes",
+            "demo recording runbook has stale OAuth scope count",
+        ),
+        (
+            "**Review SparkCap.**",
+            "**Review old cap table.**",
+            "demo recording runbook has stale SparkCap walkthrough",
+        ),
+        (
+            "**Review SparkRoom.**",
+            "**Review old room.**",
+            "demo recording runbook has stale SparkRoom walkthrough",
+        ),
+        (
+            "**Review SparkClose.**",
+            "**Review old SAFE workflow.**",
+            "demo recording runbook has stale SparkClose walkthrough",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_stale_demo_runbook(
+    monkeypatch,
+    old,
+    new,
+    expected_error,
+):
+    original_read_text = Path.read_text
+    runbook_path = (
+        ROOT / portal_prerequisite_validator.EXPECTED_DEMO_RUNBOOK
+    ).resolve()
+
+    def read_text(path, *args, **kwargs):
+        text = original_read_text(path, *args, **kwargs)
+        if path.resolve() == runbook_path:
+            assert old in text
+            return text.replace(old, new, 1)
+        return text
+
+    monkeypatch.setattr(Path, "read_text", read_text)
+
+    errors = portal_prerequisite_validator.validate(allow_pending=True)
+
+    assert expected_error in errors
+
+
 def test_portal_prerequisite_validator_rejects_new_sensitive_history_fields(
     monkeypatch,
     tmp_path,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
-    evidence["historical_authenticated_production_scans"][0][
-        "client_secret"
-    ] = "not-a-real-secret"
+    evidence["historical_authenticated_production_scans"][0]["client_secret"] = (
+        "not-a-real-secret"
+    )
 
     errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
 
@@ -1357,16 +1909,14 @@ def test_portal_prerequisite_validator_rejects_extra_historical_records(
     tmp_path,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     evidence["historical_production_deployments"].append({})
 
     errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
 
     assert (
-        "historical production deployment snapshot must contain exactly one immutable record"
+        "historical production deployment snapshot must contain exactly 2 immutable records"
         in errors
     )
 
@@ -1375,19 +1925,29 @@ def test_portal_prerequisite_validator_rejects_extra_historical_records(
     ("path", "replacement", "expected_error"),
     (
         (
-            ("runtime", "deployed_git_revision"),
+            ("runtime", "last_verified_production", "deployed_git_revision"),
             "0" * 40,
-            "release-state runtime has inconsistent deployed_git_revision",
+            "release-state production baseline has inconsistent deployed_git_revision",
         ),
         (
-            ("runtime", "direct_authenticated_scan", "tool_count"),
+            (
+                "runtime",
+                "last_verified_production",
+                "direct_authenticated_scan",
+                "tool_count",
+            ),
             60,
-            "release-state direct scan has inconsistent tool_count",
+            "release-state baseline direct scan has inconsistent tool_count",
         ),
         (
-            ("runtime", "oauth", "dynamic_client_registration_advertised"),
+            (
+                "runtime",
+                "last_verified_production",
+                "oauth",
+                "dynamic_client_registration_advertised",
+            ),
             False,
-            "release-state OAuth evidence has inconsistent dynamic_client_registration_advertised",
+            "release-state baseline OAuth has inconsistent dynamic_client_registration_advertised",
         ),
     ),
 )
@@ -1399,9 +1959,7 @@ def test_portal_prerequisite_validator_cross_checks_release_state(
     expected_error,
 ):
     evidence = json.loads(
-        (ROOT / "submission" / "portal-prerequisites.json").read_text(
-            encoding="utf-8"
-        )
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     release_state = json.loads(
         (ROOT / "release-state.json").read_text(encoding="utf-8")
@@ -1418,14 +1976,342 @@ def test_portal_prerequisite_validator_cross_checks_release_state(
     assert expected_error in errors
 
 
-def test_portal_prerequisite_validator_accepts_verified_portal_scan_transition(
+@pytest.mark.parametrize(
+    ("path", "replacement", "expected_error"),
+    (
+        (
+            ("generated_packages", "status"),
+            "published",
+            "release-state generated packages has inconsistent status",
+        ),
+        (
+            ("generated_packages", "hosts"),
+            ["openai"],
+            "release-state generated packages has inconsistent hosts",
+        ),
+        (
+            ("mcp_registry", "publication_status"),
+            "published",
+            "release-state Registry has inconsistent publication_status",
+        ),
+        (
+            ("mcp_registry", "live_refresh_status"),
+            "verified",
+            "release-state Registry has inconsistent live_refresh_status",
+        ),
+        (
+            ("distribution", "openai"),
+            "publicly_published",
+            "release-state distribution has inconsistent openai",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_false_release_claims(
     monkeypatch,
     tmp_path,
+    path,
+    replacement,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    _replace_nested_value(release_state, path, replacement)
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert expected_error in errors
+
+
+def test_portal_prerequisite_validator_rejects_extra_release_state_fields(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    release_state["generated_packages"]["publication_url"] = (
+        "https://demo.sparklaun.ch/release"
+    )
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert (
+        "release state has unexpected field at "
+        "$release_state.generated_packages.publication_url" in errors
+    )
+
+
+def test_release_state_production_baseline_switches_atomically(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    promoted_evidence = json.loads(json.dumps(evidence))
+    promoted_release_state = json.loads(json.dumps(release_state))
+    promoted_evidence, _ = _promote_candidate_evidence(
+        promoted_evidence,
+        promoted_release_state,
+    )
+    evidence["production_deployment"] = promoted_evidence["production_deployment"]
+    release_state["runtime"]["candidate"]["deployment_status"] = "verified"
+
+    assert (
+        _validate_portal_evidence(
+            monkeypatch,
+            tmp_path,
+            evidence,
+            release_state,
+        )
+        == []
+    )
+
+    release_state["runtime"]["last_verified_production"]["service_version"] = "1.7.0"
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+    assert (
+        "release-state production baseline has inconsistent service_version" in errors
+    )
+
+
+def test_public_readiness_alone_cannot_verify_a_new_undeployed_candidate(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    promoted_evidence = json.loads(json.dumps(evidence))
+    promoted_release_state = json.loads(json.dumps(release_state))
+    promoted_evidence, _ = _promote_candidate_evidence(
+        promoted_evidence,
+        promoted_release_state,
+    )
+    evidence["public_production_readiness"] = promoted_evidence[
+        "public_production_readiness"
+    ]
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert (
+        "public production readiness requires a verified candidate deployment" in errors
+    )
+
+
+@pytest.mark.parametrize(
+    ("field", "expected_error"),
+    (
+        (
+            "reviewer_access",
+            "reviewer access is pending but contains verified field observed_at",
+        ),
+        (
+            "publisher_identity",
+            "publisher identity is pending but contains verified field observed_at",
+        ),
+    ),
+)
+def test_pending_identity_gates_cannot_retain_verified_proof(
+    monkeypatch,
+    tmp_path,
+    field,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    evidence[field]["status"] = "pending"
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert expected_error in errors
+
+
+def test_pending_demo_cannot_retain_verified_proof(monkeypatch, tmp_path):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    evidence["demo_recording"].update(
+        {
+            "url": "https://demo.sparklaun.ch/demo",
+            "observed_at": "2026-09-06T20:04:00Z",
+            "reviewer_access_verified": True,
+        }
+    )
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert "pending demo recording must not contain a URL" in errors
+    assert "pending demo recording must not contain an observation time" in errors
+    assert "pending demo recording must not claim reviewer access" in errors
+
+
+@pytest.mark.parametrize(
+    ("field", "label"),
+    (
+        ("production_deployment", "candidate deployment"),
+        ("authenticated_production_scan", "authenticated production scan"),
+        ("reviewer_access", "reviewer access"),
+        ("publisher_identity", "publisher identity"),
+    ),
+)
+def test_verified_demo_requires_verified_recording_prerequisites(
+    monkeypatch,
+    tmp_path,
+    field,
+    label,
 ):
     evidence = json.loads(
         (ROOT / "submission" / "portal-prerequisites.json").read_text(
             encoding="utf-8"
         )
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+    evidence[field]["status"] = "pending"
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert f"verified demo recording requires verified {label}" in errors
+
+
+@pytest.mark.parametrize(
+    ("field", "label"),
+    (
+        ("authenticated_production_scan", "authenticated production scan"),
+        ("reviewer_access", "reviewer access"),
+        ("publisher_identity", "publisher identity"),
+    ),
+)
+def test_verified_demo_must_postdate_recording_prerequisites(
+    monkeypatch,
+    tmp_path,
+    field,
+    label,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+    evidence[field]["observed_at"] = "2026-09-06T20:05:00Z"
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert (
+        f"demo recording observation must be later than {label} observation"
+        in errors
+    )
+
+
+@pytest.mark.parametrize(
+    ("url", "expected"),
+    (
+        ("https://demo.sparklaun.ch/demo", True),
+        ("https://demo.sparklaun.ch/demo?v=public-id", True),
+        ("https://8.8.8.8/demo", True),
+        ("http://demo.sparklaun.ch/demo", False),
+        ("https://:443", False),
+        ("https://localhost/demo", False),
+        ("https://internal/demo", False),
+        ("https://service.internal/demo", False),
+        ("https://127.0.0.1/demo", False),
+        ("https://127.1/demo", False),
+        ("https://2130706433/demo", False),
+        ("https://0x7f.0.0.1/demo", False),
+        ("https://10.0.0.1/demo", False),
+        ("https://exa mple.com/demo", False),
+        ("https://demo.sparklaun.ch:0/demo", False),
+        ("https://demo.sparklaun.ch/demo?token=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?signature=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?password=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?passphrase=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?passcode=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?pwd=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?session_id=supersecretvalue", False),
+        (
+            "https://demo.sparklaun.ch/demo?target="
+            "https%3A%2F%2Fvideo.example.com%2Fwatch%23access_token%3Dsecret",
+            False,
+        ),
+        (
+            "https://demo.sparklaun.ch/demo?design=minimal&codec=av1&monkey=capuchin",
+            True,
+        ),
+    ),
+)
+def test_demo_url_must_be_credential_free_and_public(url, expected):
+    assert portal_prerequisite_validator._is_https_url(url) is expected
+
+
+def test_portal_prerequisite_cli_defaults_to_strict(capsys):
+    assert portal_prerequisite_validator.main([]) == 1
+    strict_output = capsys.readouterr().out
+    assert (
+        "external portal gate is still pending: production_deployment" in strict_output
+    )
+
+    assert portal_prerequisite_validator.main(["--allow-pending"]) == 0
+    assert capsys.readouterr().out.strip() == (
+        "ChatGPT portal prerequisite evidence passed."
+    )
+
+
+def test_portal_scan_alone_cannot_verify_a_new_undeployed_candidate(
+    monkeypatch,
+    tmp_path,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     release_state = json.loads(
         (ROOT / "release-state.json").read_text(encoding="utf-8")
@@ -1438,14 +2324,22 @@ def test_portal_prerequisite_validator_accepts_verified_portal_scan_transition(
             "portal_result": "successful",
         }
     )
-    release_state["runtime"]["openai_portal_rescan_status"] = "verified"
+    release_state["runtime"]["candidate"]["openai_portal_rescan_status"] = "verified"
 
-    assert _validate_portal_evidence(
+    errors = _validate_portal_evidence(
         monkeypatch,
         tmp_path,
         evidence,
         release_state,
-    ) == []
+    )
+    assert (
+        "verified authenticated production scan requires a verified candidate deployment"
+        in errors
+    )
+    assert (
+        "verified authenticated production scan requires a verified direct authenticated scan"
+        in errors
+    )
 
 
 def test_public_repository_has_license_and_security_guidance():
@@ -1561,7 +2455,8 @@ def test_clean_checkout_builds_candidate_before_portal_validation(
         "MANIFEST_PATH",
         manifest_target,
     )
-    assert portal_prerequisite_validator.validate(allow_pending=True) == []
+    errors = portal_prerequisite_validator.validate(allow_pending=True)
+    assert errors == []
 
 
 def test_portal_bundle_layout_validation_rejects_nested_plugin_root(tmp_path):
@@ -1571,5 +2466,7 @@ def test_portal_bundle_layout_validation_rejects_nested_plugin_root(tmp_path):
 
     errors = portal_bundle_layout_errors(bundle)
 
-    assert any("exactly one root .codex-plugin/plugin.json" in error for error in errors)
+    assert any(
+        "exactly one root .codex-plugin/plugin.json" in error for error in errors
+    )
     assert any("non-plugin files" in error for error in errors)

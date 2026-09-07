@@ -1,7 +1,7 @@
 {
   "name": "sparklaunch",
-  "version": "0.5.0",
-  "description": "Connected founder workflows for projects, validation, branding, launch, CRM, and incorporation.",
+  "version": "0.8.0",
+  "description": "Connected founder workflows for launch, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.",
   "mcpServers": {
     "sparklaunch": {
       "httpUrl": "https://sparklaun.ch/api/mcp/"
