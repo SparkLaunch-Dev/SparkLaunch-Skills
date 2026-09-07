@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Connected founder workflows for launch, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.",
   "mcpServers": {
     "sparklaunch": {

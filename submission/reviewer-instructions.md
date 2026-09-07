@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.8.0+codex.20260906000000` candidate at
+These instructions apply to the local SparkLaunch `0.8.1` candidate at
 `https://sparklaun.ch/api/mcp/`. The package contains twelve skills and declares
 100 tools under 29 OAuth scopes. The retained 1.4.0 production scan and portal
 prerequisites concern the previous 61-tool candidate and do not prove SparkCap, SparkRoom, or SparkClose
@@ -26,6 +26,8 @@ Staging credentials and reviewer projects are provisioned outside this package a
 ### Brand assets
 
 - Upload `plugins/sparklaunch/assets/sparklaunch.png` as the square app logo.
+- For the dark-mode directory slot, upload `plugins/sparklaunch/assets/sparklaunch-directory-dark.png` (1024x1024, #F1F5F9 mark on transparency).
+- For the composer slot, upload `plugins/sparklaunch/assets/sparklaunch-composer-48.png` (48x48, #334155 mark on transparency). The existing 192px skill icon is unchanged.
 - Use `plugins/sparklaunch/assets/sparklaunch-wordmark-light.png` on light surfaces and `plugins/sparklaunch/assets/sparklaunch-wordmark-dark.png` on dark surfaces.
 - Do not substitute generated artwork, stretch a wordmark, or crop the app logo.
 

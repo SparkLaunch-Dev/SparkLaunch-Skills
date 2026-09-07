@@ -18,6 +18,11 @@
       "source": "DISTRIBUTION.md",
       "destination": "DISTRIBUTION.md",
       "render_package_version": false
+    },
+    {
+      "source": "DISTRIBUTION.md",
+      "destination": "README.md",
+      "render_package_version": false
     }
   ],
   "verification": {

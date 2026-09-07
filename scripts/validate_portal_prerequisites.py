@@ -12,8 +12,10 @@ from pathlib import Path
 from urllib.parse import parse_qsl, unquote, urlparse
 
 try:
+    from scripts.sync_plugin import PACKAGE_VERSION_RE
     from scripts.tool_contract_snapshot import load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from sync_plugin import PACKAGE_VERSION_RE
     from tool_contract_snapshot import load_snapshot
 
 
@@ -73,6 +75,7 @@ ALLOWED_KEYS = {
     },
     "$.candidate": {
         "plugin_version",
+        "built_at",
         "service_version",
         "production_mcp_url",
         "expected_tool_count",
@@ -310,7 +313,7 @@ RELEASE_STATE_ALLOWED_KEYS = {
         "runtime",
         "distribution",
     },
-    "$release_state.generated_packages": {"version", "hosts", "status"},
+    "$release_state.generated_packages": {"version", "built_at", "hosts", "status"},
     "$release_state.mcp_registry": {
         "candidate_descriptor_version",
         "last_known_published_version",
@@ -373,8 +376,8 @@ EXPECTED_REGISTRY_STATE = {
 }
 EXPECTED_DISTRIBUTION_STATE = {
     "openai": "local_candidate_not_submitted",
-    "claude": "local_private_candidate",
-    "cursor": "local_private_candidate_public_marketplace_blocked_by_license",
+    "claude": "local_public_catalog_candidate_not_listed",
+    "cursor": "local_open_source_candidate_not_submitted",
     "gemini": "local_candidate",
     "muse": "skills_candidate_protected_mcp_disabled",
 }
@@ -778,19 +781,12 @@ def _release_state_schema_errors(release_state: dict) -> list[str]:
 
 def _candidate_build_time(candidate: dict, errors: list[str]) -> datetime | None:
     version = str(candidate.get("plugin_version") or "")
-    match = re.fullmatch(r"\d+\.\d+\.\d+\+codex\.(\d{14})", version)
-    if match is None:
-        errors.append(
-            "candidate plugin version must contain canonical UTC build metadata"
-        )
-        return None
-    try:
-        return datetime.strptime(match.group(1), "%Y%m%d%H%M%S").replace(
-            tzinfo=timezone.utc
-        )
-    except ValueError:
-        errors.append("candidate plugin version has invalid UTC build metadata")
-        return None
+    if PACKAGE_VERSION_RE.fullmatch(version) is None:
+        errors.append("candidate plugin version must be numeric major.minor.patch")
+    built_at = _parse_utc_observation(candidate.get("built_at"))
+    if built_at is None:
+        errors.append("candidate built_at must be a valid UTC timestamp")
+    return built_at
 
 
 def _latest_observation(records: object) -> datetime | None:
@@ -1264,12 +1260,13 @@ def _validate_release_state(
     expected_service_version: str,
     errors: list[str],
 ) -> None:
-    if release_state.get("schema_version") != 2:
-        errors.append("release state schema_version must be 2")
+    if release_state.get("schema_version") != 3:
+        errors.append("release state schema_version must be 3")
     generated = release_state.get("generated_packages")
     if isinstance(generated, dict):
         expected_generated = {
             "version": candidate.get("plugin_version"),
+            "built_at": candidate.get("built_at"),
             "hosts": EXPECTED_PACKAGE_HOSTS,
             "status": "local_candidates_only",
         }
@@ -1446,8 +1443,8 @@ def validate(*, allow_pending: bool) -> list[str]:
     errors.extend(_sensitive_evidence_errors(evidence))
     errors.extend(_release_state_schema_errors(release_state))
 
-    if evidence.get("schema_version") != 3:
-        errors.append("portal prerequisite evidence schema_version must be 3")
+    if evidence.get("schema_version") != 4:
+        errors.append("portal prerequisite evidence schema_version must be 4")
 
     candidate = evidence.get("candidate")
     if not isinstance(candidate, dict):

@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.8.0+codex.20260906000000",
+  "version": "0.8.1",
   "description": "Connected founder workflows for launch, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.",
   "author": {
     "name": "SparkLaunch",
@@ -9,7 +9,7 @@
   },
   "homepage": "https://sparklaun.ch/",
   "repository": "https://github.com/SparkLaunch-Dev/SparkLaunch-Skills.git",
-  "license": "Proprietary",
+  "license": "Apache-2.0",
   "keywords": [
     "sparklaunch",
     "startup",
@@ -40,9 +40,9 @@
       "Prepare or resume my incorporation through SparkLaunch"
     ],
     "brandColor": "#6366F1",
-    "composerIcon": "./assets/sparklaunch-small.png",
+    "composerIcon": "./assets/sparklaunch-composer-48.png",
     "logo": "./assets/sparklaunch.png",
-    "logoDark": "./assets/sparklaunch.png",
+    "logoDark": "./assets/sparklaunch-directory-dark.png",
     "screenshots": []
   }
 }

@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "candidate": {
+    "plugin_version": "0.8.1",
+    "built_at": "2026-09-07T18:56:26Z",
+    "server_version": "1.7.0",
+    "tool_count": 100,
+    "content_sha256": "0d0a5393182a6664ea74581a201e5e43e40aef848a4b65c2f64da9b67bdfa137"
+  },
+  "policy_review": {
+    "status": "pending",
+    "reviewer": null,
+    "observed_at": null,
+    "evidence_path": null,
+    "evidence_sha256": null
+  },
+  "hosts": {
+    "openai": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "claude": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "cursor": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "gemini": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "muse": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "not_applicable_reason": "Muse Code is a skills-only package; its protected MCP server remains disabled until Muse supports the required OAuth lifecycle.",
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "not_applicable",
+        "scope_escalation": "not_applicable",
+        "refresh": "not_applicable",
+        "disconnect": "not_applicable",
+        "safe_write": "not_applicable",
+        "file_handoff": "not_applicable"
+      }
+    }
+  }
+}

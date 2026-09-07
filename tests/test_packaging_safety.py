@@ -239,6 +239,7 @@ def test_expected_file_plan_rejects_duplicate_targets(monkeypatch, tmp_path):
     monkeypatch.setattr(plugin_sync, "_read_adapter", lambda _host: adapter)
     monkeypatch.setattr(plugin_sync, "_legacy_files", lambda _adapter: [duplicate, duplicate])
     monkeypatch.setattr(plugin_sync, "_package_files", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(plugin_sync, "_catalog_files", lambda *_args: [])
 
     with pytest.raises(ValueError, match="duplicate target files"):
         plugin_sync.expected_files()

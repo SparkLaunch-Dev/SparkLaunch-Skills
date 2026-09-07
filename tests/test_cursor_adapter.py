@@ -32,12 +32,12 @@ def test_cursor_adapter_conforms_to_agent_plugins_1_0_shape() -> None:
         assert item["destination"] not in destinations
         destinations.add(item["destination"])
 
-    assert destinations == {"plugin.json", "mcp.json", "DISTRIBUTION.md"}
+    assert destinations == {"plugin.json", "mcp.json", "DISTRIBUTION.md", "README.md"}
 
     manifest = _load_json(ADAPTER_ROOT / "templates" / "plugin.json")
     assert manifest["$schema"] == "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json"
-    assert manifest["version"] == "0.8.0"
-    assert manifest["license"] == "LicenseRef-SparkLaunch-Proprietary"
+    assert manifest["version"] == "0.8.1"
+    assert manifest["license"] == "Apache-2.0"
     assert PLUGIN_NAME_PATTERN.fullmatch(manifest["name"])
     assert set(manifest) <= {
         "$schema",
@@ -79,5 +79,5 @@ def test_cursor_connection_and_distribution_text_are_truthful() -> None:
     assert "stop before any write" in connection
     assert "proprietary" in distribution.lower()
     assert "public Marketplace requires plugins to be open source" in distribution
-    assert "blocks public Marketplace submission" in distribution
+    assert "Apache-2.0" in distribution
     assert "~/.cursor/plugins/local/sparklaunch" in distribution

@@ -19,14 +19,39 @@ MCP_TOOL_CONTRACTS = load_tool_contracts()
 
 
 REVIEWER_FIXTURE_PATH = ROOT / "submission" / "reviewer-fixture.json"
+REVIEWER_FIXTURE_KEYS = frozenset(
+    {"status", "project_id", "incorporation_data", "provider_calls_allowed"}
+)
+
+
+def reviewer_fixture_errors(
+    fixture: object, *, require_provisioned: bool = False
+) -> list[str]:
+    if not isinstance(fixture, dict) or set(fixture) != REVIEWER_FIXTURE_KEYS:
+        return ["reviewer fixture must contain exactly the approved four fields"]
+    errors = []
+    allowed_statuses = {"provisioned"} if require_provisioned else {
+        "local_placeholder",
+        "provisioned",
+    }
+    if fixture.get("status") not in allowed_statuses:
+        errors.append("reviewer fixture status is invalid")
+    project_id = fixture.get("project_id")
+    if type(project_id) is not int or project_id <= 0:
+        errors.append("reviewer fixture project_id must be a positive integer")
+    if fixture.get("incorporation_data") != "synthetic_only":
+        errors.append("reviewer fixture must use synthetic incorporation data")
+    if fixture.get("provider_calls_allowed") is not False:
+        errors.append("reviewer fixture must disable provider calls")
+    return errors
 
 
 def _reviewer_project_id() -> int:
     fixture = json.loads(REVIEWER_FIXTURE_PATH.read_text(encoding="utf-8"))
-    project_id = fixture.get("project_id")
-    if not isinstance(project_id, int) or project_id <= 0:
-        raise ValueError("reviewer-fixture.json must contain a positive integer project_id")
-    return project_id
+    errors = reviewer_fixture_errors(fixture)
+    if errors:
+        raise ValueError("reviewer-fixture.json is invalid: " + "; ".join(errors))
+    return fixture["project_id"]
 
 
 def _tool_entry(name, contract):

@@ -1,4 +1,9 @@
-# SparkLaunch 0.8.0+codex.20260906000000 ChatGPT Candidate
+# SparkLaunch 0.8.1 Release Candidate
+
+- License the public skills/plugin repository under Apache-2.0; the separately hosted service and backend remain proprietary.
+- Generate Claude and Cursor repository catalogs and self-contained archives for all five hosts, with deterministic checksums and a candidate fingerprint.
+- Gate Registry and artifact publication on current evidence and authenticated full production-contract equality.
+- Add candidate-bound native-client acceptance and SparkClose policy-review evidence requirements. Pending evidence remains pending; this candidate is not a claim of native compatibility or marketplace approval.
 
 Status: the local service 1.7.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
 The previous production MCP service is deployed at service 1.4.0 according to the
@@ -42,7 +47,7 @@ Registry publication, and native-host invocation of the new tools remain unverif
 - Add 39 skill-trigger cases and 16 controlled E2E cases. The five incorporation scenarios require synthetic data and zero provider calls to Delaware, NWRA, CorpTools, email, filing, or registered-agent adapters.
 - Preserve generated logo and QR assets as expiring HTTPS file references rather than raw base64 or data URLs.
 - Keep identifiers and concurrency versions as internal tool-call state while all user-facing skill, recipe, confirmation, table, and handoff language uses human-readable names or descriptions.
-- Rebuild the portal candidate deterministically with canonical/mirror parity and a bundled proprietary license; record its digest in the separate readiness evidence.
+- Rebuild the portal candidate deterministically with canonical/mirror parity and the bundled Apache-2.0 license and NOTICE; record its digest in the separate readiness evidence.
 
 ## Compatibility
 

@@ -125,7 +125,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_oauth_scope_count": scope_count,
-            "observed_at": "2026-09-06T20:01:00Z",
+            "observed_at": "2026-09-07T20:01:00Z",
         }
     )
     public["evidence"]["oauth_scope_count"] = scope_count
@@ -140,7 +140,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_tool_count": tool_count,
-            "observed_at": "2026-09-06T20:00:00Z",
+            "observed_at": "2026-09-07T20:00:00Z",
             "git_revision": revision,
             "production_tag": "prod-candidate-test",
             "service_version": service_version,
@@ -157,7 +157,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_tool_count": tool_count,
-            "observed_at": "2026-09-06T20:02:00Z",
+            "observed_at": "2026-09-07T20:02:00Z",
             "deployed_git_revision": revision,
             "server_version": service_version,
             "tool_count": tool_count,
@@ -169,16 +169,28 @@ def _promote_candidate_evidence(evidence, release_state):
     evidence["authenticated_production_scan"].update(
         {
             "status": "verified",
-            "observed_at": "2026-09-06T20:03:00Z",
+            "observed_at": "2026-09-07T20:03:00Z",
             "tool_count": tool_count,
             "portal_result": "successful",
         }
     )
+    # Synthetic positive fixture, independent of the live reviewer's pending
+    # credential rotation. This object is written only to the test directory.
+    evidence["reviewer_access"] = {
+        "status": "verified",
+        "observed_at": "2026-09-07T20:03:00Z",
+        "project_isolation_verified": True,
+        "reviewer_materials_configured": True,
+        "reviewer_materials_stored_outside_repository": True,
+        "portal_positive_test_case_count": 5,
+        "portal_negative_test_case_count": 3,
+        "proof_boundary": "Synthetic unit-test acceptance record only.",
+    }
     evidence["demo_recording"].update(
         {
             "status": "verified",
             "url": "https://demo.sparklaun.ch/reviewer-demo",
-            "observed_at": "2026-09-06T20:04:00Z",
+            "observed_at": "2026-09-07T20:04:00Z",
             "reviewer_access_verified": True,
         }
     )
@@ -457,6 +469,29 @@ def test_reviewer_project_regeneration_preserves_incorporation_safety_controls(
         "incorporation_data": "synthetic_only",
         "provider_calls_allowed": False,
     }
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    (
+        lambda fixture: fixture.update(unexpected="value"),
+        lambda fixture: fixture.update(project_id=True),
+        lambda fixture: fixture.update(incorporation_data="live"),
+        lambda fixture: fixture.update(provider_calls_allowed=True),
+    ),
+)
+def test_reviewer_fixture_contract_rejects_extra_or_unsafe_fields(mutation):
+    fixture = {
+        "status": "provisioned",
+        "project_id": 123,
+        "incorporation_data": "synthetic_only",
+        "provider_calls_allowed": False,
+    }
+    mutation(fixture)
+
+    assert submission_generator.reviewer_fixture_errors(
+        fixture, require_provisioned=True
+    )
 
 
 def test_mcp_registry_descriptor_matches_the_public_remote_and_application_version():
@@ -1041,8 +1076,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.8.0+codex.20260906")
-    assert manifest["version"] != "0.2.1+codex.20260817230400"
+    assert manifest["version"] == "0.8.1"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -1065,6 +1099,32 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     ):
         assert marker in release_notes
         assert marker in reviewer
+
+
+def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
+    manifest_path = ROOT / "plugins/sparklaunch/.codex-plugin/plugin.json"
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        manifest_path,
+        '"version": "0.8.1"',
+        '"version": "0.8.1+codex.20260907000000"',
+    )
+
+    assert "plugin version must be numeric major.minor.patch" in errors
+
+
+def test_submission_validator_rejects_whitespace_around_package_version(monkeypatch):
+    manifest_path = ROOT / "plugins/sparklaunch/.codex-plugin/plugin.json"
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        manifest_path,
+        '"version": "0.8.1"',
+        '"version": " 0.8.1 "',
+    )
+
+    assert "plugin version must be numeric major.minor.patch" in errors
 
 
 @pytest.mark.parametrize(
@@ -1153,8 +1213,9 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
         (ROOT / "release-state.json").read_text(encoding="utf-8")
     )
 
-    assert evidence["schema_version"] == 3
-    assert evidence["candidate"]["plugin_version"] == ("0.8.0+codex.20260906000000")
+    assert evidence["schema_version"] == 4
+    assert evidence["candidate"]["plugin_version"] == "0.8.1"
+    assert evidence["candidate"]["built_at"] == "2026-09-07T18:56:26Z"
     assert evidence["candidate"]["service_version"] == "1.7.0"
     assert evidence["candidate"]["expected_tool_count"] == 100
     assert len(MCP_TOOL_CONTRACTS) == 100
@@ -1288,12 +1349,19 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert release_scan["mcp_protocol_version"] == "2025-11-25"
     assert release_scan["server_name"] == "SparkLaunch MCP"
     assert release_scan["server_version"] == "1.4.0"
-    assert evidence["reviewer_access"]["status"] == "verified"
-    assert evidence["reviewer_access"]["project_isolation_verified"] is True
-    assert evidence["reviewer_access"]["reviewer_materials_configured"] is True
-    assert (
-        evidence["reviewer_access"]["reviewer_materials_stored_outside_repository"]
-        is True
+    assert evidence["reviewer_access"]["status"] == "pending"
+    assert set(evidence["reviewer_access"]) == {"status", "proof_boundary"}
+    observations = json.loads(
+        (ROOT / "submission/observations/2026-09-07-release-follow-up.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    historical_reviewer = observations["historical_reviewer_access"]
+    assert historical_reviewer["status"] == "verified"
+    assert historical_reviewer["observed_at"] == "2026-09-01T18:54:52Z"
+    assert observations["synthetic_reviewer_setup"]["credential_rotation_required"] is True
+    assert not portal_prerequisite_validator.sensitive_text_findings(
+        json.dumps(observations)
     )
     assert evidence["publisher_identity"]["status"] == "verified"
     assert evidence["publisher_identity"]["organization_and_project_match"] is True
@@ -1309,6 +1377,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
         "external portal gate is still pending: production_deployment",
         "external portal gate is still pending: direct_authenticated_production_scan",
         "external portal gate is still pending: authenticated_production_scan",
+        "external portal gate is still pending: reviewer_access",
         "external portal gate is still pending: demo_recording",
     }.issubset(strict_errors)
 
@@ -1356,6 +1425,38 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     _replace_nested_value(evidence, path, replacement)
 
     assert expected_error in _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement", "expected_error"),
+    (
+        (
+            "plugin_version",
+            "0.8.1+codex.20260907000000",
+            "candidate plugin version must be numeric major.minor.patch",
+        ),
+        (
+            "built_at",
+            "not-a-time",
+            "candidate built_at must be a valid UTC timestamp",
+        ),
+    ),
+)
+def test_portal_prerequisite_validator_rejects_nonstandard_candidate_identity(
+    monkeypatch,
+    tmp_path,
+    field,
+    replacement,
+    expected_error,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
+    )
+    evidence["candidate"][field] = replacement
+
+    errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
+
+    assert expected_error in errors
 
 
 @pytest.mark.parametrize(
@@ -2154,6 +2255,7 @@ def test_pending_identity_gates_cannot_retain_verified_proof(
         (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     evidence[field]["status"] = "pending"
+    evidence[field]["observed_at"] = "2026-09-07T20:03:00Z"
 
     errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
 
@@ -2167,7 +2269,7 @@ def test_pending_demo_cannot_retain_verified_proof(monkeypatch, tmp_path):
     evidence["demo_recording"].update(
         {
             "url": "https://demo.sparklaun.ch/demo",
-            "observed_at": "2026-09-06T20:04:00Z",
+            "observed_at": "2026-09-07T20:04:00Z",
             "reviewer_access_verified": True,
         }
     )
@@ -2238,7 +2340,7 @@ def test_verified_demo_must_postdate_recording_prerequisites(
         (ROOT / "release-state.json").read_text(encoding="utf-8")
     )
     evidence, release_state = _promote_candidate_evidence(evidence, release_state)
-    evidence[field]["observed_at"] = "2026-09-06T20:05:00Z"
+    evidence[field]["observed_at"] = "2026-09-07T20:05:00Z"
 
     errors = _validate_portal_evidence(
         monkeypatch,
@@ -2346,7 +2448,8 @@ def test_public_repository_has_license_and_security_guidance():
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
 
-    assert "Proprietary" in license_text
+    assert "Apache License" in license_text
+    assert "Version 2.0" in license_text
     assert "support@sparklaun.ch" in security
     assert "Do not open a public issue" in security
 
@@ -2358,18 +2461,23 @@ def test_plugin_brand_assets_are_canonical_and_theme_ready():
         )
     )
     interface = manifest["interface"]
-    assert interface["composerIcon"] == "./assets/sparklaunch-small.png"
+    assert interface["composerIcon"] == "./assets/sparklaunch-composer-48.png"
     assert interface["logo"] == "./assets/sparklaunch.png"
-    assert interface["logoDark"] == "./assets/sparklaunch.png"
+    assert interface["logoDark"] == "./assets/sparklaunch-directory-dark.png"
 
     assets = ROOT / "plugins" / "sparklaunch" / "assets"
     for name in (
+        "sparklaunch-composer-48.png",
+        "sparklaunch-directory-dark.png",
         "sparklaunch-small.png",
         "sparklaunch.png",
         "sparklaunch-wordmark-light.png",
         "sparklaunch-wordmark-dark.png",
     ):
         assert (assets / name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+        assert (assets / name).read_bytes() == (
+            ROOT / "adapters/openai/assets" / name
+        ).read_bytes()
 
     expected_small = (assets / "sparklaunch-small.png").read_bytes()
     expected_large = (assets / "sparklaunch.png").read_bytes()
@@ -2400,6 +2508,8 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "LICENSE" in names
         assert "assets/sparklaunch.png" in names
         assert "assets/sparklaunch-small.png" in names
+        assert "assets/sparklaunch-composer-48.png" in names
+        assert "assets/sparklaunch-directory-dark.png" in names
         assert "assets/sparklaunch-wordmark-light.png" in names
         assert "assets/sparklaunch-wordmark-dark.png" in names
         assert "skills/sparklaunch-platform/SKILL.md" in names
@@ -2407,6 +2517,53 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "chatgpt-app-submission.json" not in names
         assert not any(name.startswith(("evals/", "submission/")) for name in names)
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
+
+
+@pytest.mark.parametrize(
+    ("name", "size"),
+    [("sparklaunch-composer-48.png", 48), ("sparklaunch-directory-dark.png", 1024)],
+)
+def test_icon_dimensions_reject_incorrect_size(monkeypatch, name, size):
+    asset = ROOT / "plugins/sparklaunch/assets" / name
+    original_read_bytes = Path.read_bytes
+
+    def read_bytes(candidate, *args, **kwargs):
+        content = original_read_bytes(candidate, *args, **kwargs)
+        if candidate.resolve() == asset.resolve():
+            assert content[16:20] == size.to_bytes(4, "big")
+            return content[:16] + (size + 1).to_bytes(4, "big") + content[20:]
+        return content
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    errors = validate()
+    assert any(f"assets/{name} must be {size}x{size}" in error for error in errors)
+
+
+def test_icon_validation_rejects_malformed_png(monkeypatch, tmp_path):
+    asset = tmp_path / "plugins/sparklaunch/assets/sparklaunch-composer-48.png"
+    asset.parent.mkdir(parents=True)
+    asset.write_bytes(b"not-a-png")
+    monkeypatch.setattr(submission_validator, "ROOT", tmp_path)
+    errors = []
+
+    assert submission_validator._png_dimensions(asset, errors) is None
+    assert errors == [
+        "plugin brand asset is not a valid PNG: "
+        f"{Path('plugins/sparklaunch/assets/sparklaunch-composer-48.png')}"
+    ]
+
+
+def test_icon_validation_rejects_wrong_manifest_reference(monkeypatch):
+    manifest = ROOT / "plugins/sparklaunch/.codex-plugin/plugin.json"
+
+    errors = _validate_with_text_replaced(
+        monkeypatch,
+        manifest,
+        '"composerIcon": "./assets/sparklaunch-composer-48.png"',
+        '"composerIcon": "./assets/sparklaunch.png"',
+    )
+
+    assert "plugin composerIcon must reference ./assets/sparklaunch-composer-48.png" in errors
 
 
 def test_clean_checkout_builds_candidate_before_portal_validation(

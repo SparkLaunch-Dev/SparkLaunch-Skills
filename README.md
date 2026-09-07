@@ -9,8 +9,8 @@ SparkLaunch helps founders select or create a business project, validate an idea
 | Host | Generated package | Protected MCP status | Distribution boundary |
 | --- | --- | --- | --- |
 | ChatGPT and Codex | `plugins/sparklaunch/` | Host-managed OAuth; existing ChatGPT submission and Codex metadata retained | Local candidate; not submitted or approved by this change |
-| Claude Code | `plugins/claude/sparklaunch/` | Browser-based MCP OAuth through Claude Code | Native manifest validation passed; local/private candidate |
-| Cursor | `plugins/cursor/sparklaunch/` | Client-managed MCP OAuth | Local/private/team candidate; public Marketplace is blocked by the current proprietary license |
+| Claude Code | `plugins/claude/sparklaunch/` | Browser-based MCP OAuth through Claude Code | Native manifest and catalog validation passed; public catalog candidate, not directory-listed |
+| Cursor | `plugins/cursor/sparklaunch/` | Client-managed MCP OAuth | Apache-2.0 package and catalog candidate; native acceptance and Marketplace review pending |
 | Gemini CLI | `plugins/gemini/sparklaunch/` | `/mcp auth sparklaunch` through Gemini CLI | Enterprise/API-key-supported legacy-CLI candidate; individual Free/Pro/Ultra access moved to Antigravity CLI in June 2026; live proof remains pending |
 | Muse Code | `plugins/muse/sparklaunch/` | Disabled by design: Muse does not document the OAuth lifecycle SparkLaunch requires | Skills are packageable; protected tool parity is not claimed |
 
@@ -74,7 +74,7 @@ The exporter constructs the sibling runtime against a temporary SQLite database 
 
 ## SparkClose candidate
 
-The local 0.8.0 package and service 1.7.0 candidate include 100 tools, 29 scopes and twelve skills. SparkClose adds fourteen SAFE modeling, investment, evidence, closing, recovery and first-party handoff tools. Signing and agreement review remain in SparkLaunch. Package validation does not prove deployment, publication or native-host execution.
+The local 0.8.1 package and service 1.7.0 candidate include 100 tools, 29 scopes and twelve skills. SparkClose adds fourteen SAFE modeling, investment, evidence, closing, recovery and first-party handoff tools. Signing and agreement review remain in SparkLaunch. Package validation does not prove deployment, publication or native-host execution.
 
 ## Earlier SparkRoom candidate
 
@@ -148,8 +148,20 @@ The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch
 - Security reports: [SECURITY.md](./SECURITY.md)
 - Privacy: [SparkLaunch Privacy Policy](https://sparklaun.ch/privacy-policy)
 - Terms: [SparkLaunch Terms and Conditions](https://sparklaun.ch/terms-and-conditions)
-- License: [SparkLaunch Proprietary License Notice](./LICENSE)
+- License: [Apache License 2.0](./LICENSE), with [NOTICE](./NOTICE)
 
-The proprietary license is preserved. In particular, generating a Cursor package does not satisfy Cursor's open-source requirement for public Marketplace submission.
+This public skills/plugin repository is Apache-2.0 with the owner's explicit approval. The separately hosted SparkLaunch service and backend remain proprietary; service terms, account permissions and trademark rights are unchanged.
+
+## Public release process
+
+The `0.8.1` release candidate adds Apache-2.0 licensing, generated Claude/Cursor
+catalogs, deterministic five-host archives and fail-closed publication checks.
+Run `python scripts/build_release_bundles.py` to create the archives, release
+manifest and SHA-256 checksums under `dist/release/`.
+
+See [the public-release runbook](submission/public-release-runbook.md) for native
+acceptance, production matching, reviewer evidence, installation and publishing.
+`--allow-pending` is a source-validation mode only. Both publishing workflows
+require strict evidence and a fresh authenticated full-descriptor comparison.
 
 Installed agent packages may be cached by plugin version. Any published package-content change therefore requires a new governed version; rebuilding a local candidate does not publish or invalidate an existing cache.
