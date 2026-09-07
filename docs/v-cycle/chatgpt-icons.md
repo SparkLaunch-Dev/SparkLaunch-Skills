@@ -54,7 +54,7 @@ dimension rejection and deterministic ZIP completeness. Repository host/submissi
 validators and pending release-evidence checks passed. Generated file count is
 462; other-host archive hashes are unchanged. All publication gates stay pending.
 The new OpenAI archive digest is
-`01184C97F915F578EDA37BA446B8E95AAC3EAE909324BC8E60E25ECDA322E716`.
+`72D4F4893D86D7BA198FA0A0E8345017CCFB6F476441E847EA43D6BC943B982F`.
 
 The bundled generic plugin validator rejects the existing `.mcp.json` top-level
 `sparklaunch` envelope and expects `mcpServers`. This unchanged pre-existing format
@@ -63,6 +63,6 @@ format or authentication changes were made to silence that separate check.
 T-ICON-VISUAL establishes local asset readiness, not a portal upload or published
 appearance. The earlier inspect-only portal boundary remains in force.
 
-Final regression: 329 passed, six Windows symlink-privilege skips. Python lint,
+Final regression: 363 passed, six Windows symlink-privilege skips. Python compile,
 JavaScript syntax, generated parity and diff whitespace checks passed. All traced
 local asset requirements are satisfied; portal rendering remains NOT VERIFIED.

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
-import re
 from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 try:
@@ -17,6 +17,7 @@ except ImportError:
     from build_submission_bundle import FIXED_ZIP_TIME
 
 ROOT = sync.ROOT
+RELEASE_STATE_PATH = ROOT / "release-state.json"
 MANIFESTS = {
     "openai": ".codex-plugin/plugin.json",
     "claude": ".claude-plugin/plugin.json",
@@ -24,6 +25,27 @@ MANIFESTS = {
     "gemini": "gemini-extension.json",
     "muse": "settings.example.json",  # A skills package, not an invented plugin manifest.
 }
+
+
+def _candidate_built_at(expected_version: str) -> str:
+    release_state = json.loads(RELEASE_STATE_PATH.read_text(encoding="utf-8"))
+    generated = release_state.get("generated_packages")
+    if not isinstance(generated, dict) or generated.get("version") != expected_version:
+        raise ValueError(
+            "Release-state package version must match the plugin manifest"
+        )
+    value = generated.get("built_at")
+    if not isinstance(value, str):
+        raise ValueError("Candidate built_at must be a canonical UTC timestamp")
+    try:
+        parsed = datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError as exc:
+        raise ValueError(
+            "Candidate built_at must be a canonical UTC timestamp"
+        ) from exc
+    if parsed.strftime("%Y-%m-%dT%H:%M:%SZ") != value:
+        raise ValueError("Candidate built_at must be a canonical UTC timestamp")
+    return value
 
 
 def candidate_identity() -> dict:
@@ -48,13 +70,10 @@ def candidate_identity() -> dict:
         entries[name] = hashlib.sha256(
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
-    manifest = json.loads(
-        (ROOT / "adapters/openai/templates/.codex-plugin/plugin.json").read_text(
-            encoding="utf-8"
-        )
-    )
+    version = sync._base_package_version()
     return {
-        "plugin_version": manifest["version"],
+        "plugin_version": version,
+        "built_at": _candidate_built_at(version),
         "server_version": snapshot["server_version"],
         "tool_count": snapshot["tool_count"],
         "content_sha256": hashlib.sha256(
@@ -89,7 +108,7 @@ def build_releases(output_dir: Path | None = None) -> dict:
     absolute.mkdir(parents=True, exist_ok=True)
     identity = candidate_identity()
     version = sync._base_package_version()
-    if not re.fullmatch(r"\d+\.\d+\.\d+", version):
+    if sync.PACKAGE_VERSION_RE.fullmatch(version) is None:
         raise ValueError("Release version must be a numeric major.minor.patch")
     assets: list[dict] = []
     planned = sync.expected_files()
@@ -135,7 +154,7 @@ def build_releases(output_dir: Path | None = None) -> dict:
                     "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                 }
             )
-    result = {"schema_version": 1, "candidate": identity, "assets": assets}
+    result = {"schema_version": 2, "candidate": identity, "assets": assets}
     for name in ("release-manifest.json", "SHA256SUMS"):
         sync._assert_no_link_components(
             absolute, absolute / name, label="release metadata"

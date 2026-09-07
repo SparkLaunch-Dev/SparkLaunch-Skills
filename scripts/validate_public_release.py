@@ -10,6 +10,7 @@ import re
 
 try:
     from scripts.build_release_bundles import candidate_identity
+    from scripts.generate_submission import reviewer_fixture_errors
     from scripts.sync_plugin import (
         ROOT,
         HOSTS,
@@ -23,6 +24,7 @@ try:
     from scripts.verify_production_contract import verify, VerificationError
 except ImportError:
     from build_release_bundles import candidate_identity
+    from generate_submission import reviewer_fixture_errors
     from sync_plugin import (
         ROOT,
         HOSTS,
@@ -45,6 +47,18 @@ CHECKS = (
     "safe_write",
     "file_handoff",
 )
+NOT_APPLICABLE_CHECKS = {
+    "muse": frozenset(
+        {
+            "oauth_connect",
+            "scope_escalation",
+            "refresh",
+            "disconnect",
+            "safe_write",
+            "file_handoff",
+        }
+    )
+}
 MAX_AGE = timedelta(days=7)
 
 
@@ -69,7 +83,7 @@ def validate(
         return ["Public-release evidence must be an object"]
     if (
         set(document) != {"schema_version", "candidate", "policy_review", "hosts"}
-        or document.get("schema_version") != 1
+        or document.get("schema_version") != 2
     ):
         errors.append("Public-release evidence schema is invalid")
     if document.get("candidate") != candidate_identity():
@@ -99,37 +113,59 @@ def validate(
     if not isinstance(hosts, dict) or set(hosts) != set(HOSTS):
         return errors + ["Native-host evidence must enumerate all five hosts"]
     for host, record in hosts.items():
-        if not isinstance(record, dict) or set(record) != {
+        not_applicable = NOT_APPLICABLE_CHECKS.get(host, frozenset())
+        expected_fields = {
             "status",
             "client_version",
             "observed_at",
             "evidence_path",
             "evidence_sha256",
             "checks",
-        }:
+        }
+        if not_applicable:
+            expected_fields.add("not_applicable_reason")
+        if not isinstance(record, dict) or set(record) != expected_fields:
             errors.append(f"{host}: native-host evidence schema is invalid")
             continue
+        if not_applicable and (
+            not isinstance(record.get("not_applicable_reason"), str)
+            or len(record["not_applicable_reason"].strip()) < 20
+        ):
+            errors.append(f"{host}: not-applicable checks require a concrete reason")
         checks = record["checks"]
         if (
             not isinstance(checks, dict)
             or set(checks) != set(CHECKS)
             or any(
-                not isinstance(value, str) or value not in {"pending", "pass", "fail"}
+                not isinstance(value, str)
+                or value not in {"pending", "pass", "fail", "not_applicable"}
                 for value in checks.values()
+            )
+            or any(
+                (check in not_applicable) != (checks.get(check) == "not_applicable")
+                for check in CHECKS
             )
         ):
             errors.append(f"{host}: native check matrix is invalid")
         if record["status"] == "verified" and (
             not isinstance(checks, dict)
-            or any(checks.get(check) != "pass" for check in CHECKS)
+            or any(
+                checks.get(check)
+                != ("not_applicable" if check in not_applicable else "pass")
+                for check in CHECKS
+            )
         ):
             errors.append(
-                f"{host}: verified status requires every native check to pass"
+                f"{host}: verified status requires every applicable native check to pass"
             )
         if (
             record["status"] == "pending"
             and isinstance(checks, dict)
-            and any(value != "pending" for value in checks.values())
+            and any(
+                checks.get(check)
+                != ("not_applicable" if check in not_applicable else "pending")
+                for check in CHECKS
+            )
         ):
             errors.append(
                 f"{host}: partial observations belong in an evidence report, not a pending acceptance claim"
@@ -224,17 +260,21 @@ def _record_errors(
         if not isinstance(results, dict) or set(results) != set(required):
             errors.append(f"{label}: evidence report results are incomplete")
         else:
+            not_applicable = NOT_APPLICABLE_CHECKS.get(label, frozenset())
             for check in required:
                 result = results[check]
+                expected_status = (
+                    "not_applicable" if check in not_applicable else "pass"
+                )
                 if (
                     not isinstance(result, dict)
                     or set(result) != {"status", "observation"}
-                    or result.get("status") != "pass"
+                    or result.get("status") != expected_status
                     or not isinstance(result.get("observation"), str)
                     or len(result["observation"].strip()) < 20
                 ):
                     errors.append(
-                        f"{label}: {check} needs a passing result and a concrete observation"
+                        f"{label}: {check} needs the expected result and a concrete observation"
                     )
     except (OSError, ValueError, UnicodeError):
         errors.append(f"{label}: evidence file is missing, unsafe, or malformed")
@@ -265,13 +305,7 @@ def main() -> int:
             fixture = json.loads(
                 (ROOT / "submission/reviewer-fixture.json").read_text(encoding="utf-8")
             )
-            if (
-                fixture.get("status") != "provisioned"
-                or type(fixture.get("project_id")) is not int
-                or fixture["project_id"] <= 0
-                or fixture.get("incorporation_data") != "synthetic_only"
-                or fixture.get("provider_calls_allowed") is not False
-            ):
+            if reviewer_fixture_errors(fixture, require_provisioned=True):
                 errors.append(
                     "A provisioned, synthetic, provider-disabled reviewer fixture is required"
                 )

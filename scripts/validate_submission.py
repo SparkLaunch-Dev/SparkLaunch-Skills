@@ -14,13 +14,15 @@ import yaml
 
 try:
     from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
+    from scripts.generate_submission import reviewer_fixture_errors
     from scripts.validate_portal_prerequisites import sensitive_text_findings
-    from scripts.sync_plugin import ROOT, SKILLS, sync
+    from scripts.sync_plugin import PACKAGE_VERSION_RE, ROOT, SKILLS, sync
     from scripts.tool_contract_snapshot import load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
     from build_submission_bundle import build_bundle, portal_bundle_layout_errors
+    from generate_submission import reviewer_fixture_errors
     from validate_portal_prerequisites import sensitive_text_findings
-    from sync_plugin import ROOT, SKILLS, sync
+    from sync_plugin import PACKAGE_VERSION_RE, ROOT, SKILLS, sync
     from tool_contract_snapshot import load_snapshot
 
 
@@ -280,10 +282,13 @@ def validate() -> list[str]:
     manifest = _load_json(plugin / ".codex-plugin" / "plugin.json", errors)
     plugin_version = ""
     if manifest is not None:
-        plugin_version = str(manifest.get("version") or "").strip()
+        version_value = manifest.get("version")
+        plugin_version = version_value if isinstance(version_value, str) else ""
         for key in ("name", "version", "description", "homepage", "repository", "license"):
             if not str(manifest.get(key, "")).strip():
                 errors.append(f"plugin manifest missing {key}")
+        if PACKAGE_VERSION_RE.fullmatch(plugin_version) is None:
+            errors.append("plugin version must be numeric major.minor.patch")
         author = manifest.get("author") or {}
         for key in ("name", "email", "url"):
             if not str(author.get(key, "")).strip():
@@ -474,13 +479,9 @@ def validate() -> list[str]:
         ROOT / "submission" / "reviewer-fixture.json", errors
     )
     if reviewer_fixture is not None:
-        fixture_status = reviewer_fixture.get("status")
         fixture_project_id = reviewer_fixture.get("project_id")
-        if fixture_status not in {"local_placeholder", "provisioned"}:
-            errors.append("reviewer fixture status must be local_placeholder or provisioned")
-        if not isinstance(fixture_project_id, int) or fixture_project_id <= 0:
-            errors.append("reviewer fixture project_id must be a positive integer")
-        else:
+        errors.extend(reviewer_fixture_errors(reviewer_fixture))
+        if type(fixture_project_id) is int and fixture_project_id > 0:
             scoped_cases = [
                 case
                 for case in (submission or {}).get("test_cases", [])

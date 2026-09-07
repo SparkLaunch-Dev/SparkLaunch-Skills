@@ -1,4 +1,4 @@
-# SparkLaunch 0.8.1+codex.20260907000000 Release Candidate
+# SparkLaunch 0.8.1 Release Candidate
 
 - License the public skills/plugin repository under Apache-2.0; the separately hosted service and backend remain proprietary.
 - Generate Claude and Cursor repository catalogs and self-contained archives for all five hosts, with deterministic checksums and a candidate fingerprint.
@@ -47,7 +47,7 @@ Registry publication, and native-host invocation of the new tools remain unverif
 - Add 39 skill-trigger cases and 16 controlled E2E cases. The five incorporation scenarios require synthetic data and zero provider calls to Delaware, NWRA, CorpTools, email, filing, or registered-agent adapters.
 - Preserve generated logo and QR assets as expiring HTTPS file references rather than raw base64 or data URLs.
 - Keep identifiers and concurrency versions as internal tool-call state while all user-facing skill, recipe, confirmation, table, and handoff language uses human-readable names or descriptions.
-- Rebuild the portal candidate deterministically with canonical/mirror parity and a bundled proprietary license; record its digest in the separate readiness evidence.
+- Rebuild the portal candidate deterministically with canonical/mirror parity and the bundled Apache-2.0 license and NOTICE; record its digest in the separate readiness evidence.
 
 ## Compatibility
 

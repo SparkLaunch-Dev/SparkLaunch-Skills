@@ -248,7 +248,16 @@ This addendum governs the local `0.7.0+codex.20260904000000` / service `1.6.0` /
 
 ## 2026-09-07 SparkClose package continuation
 
-This continuation supersedes the active local candidate identity from the historical 0.7 section. The current candidate is plugin `0.8.0+codex.20260906000000`, service `1.7.0`, 100 tools, 29 unique required OAuth scopes, and twelve skills. It adds the SparkClose skill, SAFE-modeling/closing recipe, 14 runtime-derived SparkClose descriptors, and corresponding controlled review cases. The retained service `1.4.0` / 61-tool production observations remain historical; they do not prove this candidate is deployed, scanned, approved, published, or exercised by a native host.
+This historical continuation superseded the active local candidate identity from the
+0.7 section at that time. Its candidate was plugin
+`0.8.0+codex.20260906000000`, service `1.7.0`, 100 tools, 29 unique required
+OAuth scopes, and twelve skills. The later numeric-version follow-up in
+`public-release-readiness.md` supersedes that package identity with `0.8.1`. This
+continuation added the SparkClose skill, SAFE-modeling/closing recipe, 14
+runtime-derived SparkClose descriptors, and corresponding controlled review cases.
+The retained service `1.4.0` / 61-tool production observations remain historical;
+they do not prove either candidate is deployed, scanned, approved, published, or
+exercised by a native host.
 
 ### Continuation requirements and evidence
 
@@ -258,7 +267,7 @@ This continuation supersedes the active local candidate identity from the histor
 | PROD-CLOSE-PKG-001 | SparkClose shall be discoverable as a bounded workflow without claiming legal review, signing, money movement, or completed financing. | Canonical skill, recipe, platform routing, host descriptions, 39 trigger cases (including a generic-investment-advice negative boundary), 16 controlled E2E cases, reviewer instructions, release notes, and the recording runbook distinguish modeling, saved snapshots, company assertions, signing, funding, closing, and destination updates. | Complete locally |
 | ARCH-CLOSE-PKG-001 | One canonical source shall deterministically generate every host package and legacy mirror. | Submission generation reports 100 tools; write/check sync reports 452 generated files across five hosts; host and submission validators pass. | Complete locally |
 | SEC-CLOSE-PKG-001 | Descriptor scope validation and reviewer evidence scanning shall fail closed. | Exact top-level and `_meta` OAuth scope sets are enforced for all 13 compound SparkRoom/SparkClose tools; missing primary scopes or expected tools fail. Reviewer Markdown rejects authorization headers, secret assignments, private keys, JWTs, provider tokens, URL userinfo, credential query/fragment parameters, and nested encoded credential URLs while allowing benign key substrings. | Complete locally |
-| SYS-CLOSE-PKG-001 | Candidate-local evidence shall match the deterministic bundle while strict readiness preserves external gates. | Bundle `dist/sparklaunch-chatgpt-plugin-0.8.0+codex.20260906000000.zip` rebuilds as SHA-256 `49E81BC7FBD561221B0E143EEF0741B59DD54F90D0F81E5FFAE4F99609983A91`; `--allow-pending` passes. Strict validation fails only for public readiness, candidate deployment, direct authenticated scan, portal scan, and demo recording. | Complete locally; five external gates open |
+| SYS-CLOSE-PKG-001 | Candidate-local evidence shall match the deterministic bundle while strict readiness preserves external gates. | At the time of this historical continuation, bundle `dist/sparklaunch-chatgpt-plugin-0.8.0+codex.20260906000000.zip` rebuilt as SHA-256 `49E81BC7FBD561221B0E143EEF0741B59DD54F90D0F81E5FFAE4F99609983A91`; `--allow-pending` passed. Strict validation failed only for public readiness, candidate deployment, direct authenticated scan, portal scan, and demo recording. | Superseded local candidate; five external gates remained open |
 | T-ACCEPT-CLOSE-PKG-001 | The complete repository suite shall pass against the exact merged runtime tree before the dependent PR is opened. | Windows local full suite: 257 passed and 6 skipped; Ruff, Python compilation, JSON parsing, generated parity, snapshot parity, and `git diff --check` pass. GitHub exact-head results are recorded in the PR rather than predicted here. | Complete locally |
 
 ### Remaining proof boundaries

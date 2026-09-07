@@ -44,6 +44,9 @@ CONNECTION_PATTERN = re.compile(
     re.escape(CONNECTION_START) + r".*?" + re.escape(CONNECTION_END),
     re.DOTALL,
 )
+PACKAGE_VERSION_RE = re.compile(
+    r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
+)
 
 
 @dataclass(frozen=True)
@@ -236,7 +239,10 @@ def _base_package_version() -> str:
             encoding="utf-8"
         )
     )
-    return str(manifest["version"]).split("+", 1)[0]
+    version = manifest.get("version")
+    if not isinstance(version, str) or PACKAGE_VERSION_RE.fullmatch(version) is None:
+        raise ValueError("Package version must be numeric major.minor.patch")
+    return version
 
 
 def _connection_block(fragment: str) -> str:

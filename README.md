@@ -74,7 +74,7 @@ The exporter constructs the sibling runtime against a temporary SQLite database 
 
 ## SparkClose candidate
 
-The local 0.8.0 package and service 1.7.0 candidate include 100 tools, 29 scopes and twelve skills. SparkClose adds fourteen SAFE modeling, investment, evidence, closing, recovery and first-party handoff tools. Signing and agreement review remain in SparkLaunch. Package validation does not prove deployment, publication or native-host execution.
+The local 0.8.1 package and service 1.7.0 candidate include 100 tools, 29 scopes and twelve skills. SparkClose adds fourteen SAFE modeling, investment, evidence, closing, recovery and first-party handoff tools. Signing and agreement review remain in SparkLaunch. Package validation does not prove deployment, publication or native-host execution.
 
 ## Earlier SparkRoom candidate
 

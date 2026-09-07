@@ -40,8 +40,10 @@ proprietary. Do not manufacture host, deployment, reviewer, policy, or publicati
 ## Acceptance evidence
 
 T-REL-LICENSE, T-REL-BUNDLE, T-REL-CATALOG and T-REL-GATE passed locally. T-REL-HOST
-and T-REL-LIVE negative/positive synthetic validator tests passed; actual native
-workflows and full authenticated production equality remain NOT VERIFIED.
+and T-REL-LIVE negative/positive synthetic validator tests passed. Muse's unsupported
+protected-MCP checks are locked to a reasoned `not_applicable` state, while its install
+and skill-selection checks remain required. Actual native workflows and full
+authenticated production equality remain NOT VERIFIED.
 T-REL-POLICY correctly refuses pending review; the technical classification brief
 does not approve public distribution. T-REL-AUTH passes for the sibling UserInfo
 implementation and remains NOT VERIFIED for Muse protected OAuth and live workspace
@@ -114,3 +116,54 @@ release commands still exit nonzero for real outstanding gates; pending mode and
 all five generated package validators pass. Candidate and archive digests are
 unchanged because no canonical skills, manifests or generated prompts changed in
 this follow-up.
+
+## Follow-up: numeric three-part package versions
+
+Status: locally implemented and verified; publication remains separately gated.
+Source: owner request on 2026-09-07 to remove `+codex...` package-version metadata
+and use standard three-part versions. Before remediation, Claude, Cursor and Gemini
+rendered `0.8.1`, while the OpenAI manifest and current release evidence rendered
+`0.8.1+codex.20260907000000`. The current unpublished candidate now uses exact
+`0.8.1` throughout active manifests, catalogs, evidence and archive names. Historical
+evidence keeps the exact identifiers that were actually observed; rewriting prior
+released or deployed identities is a non-goal.
+
+| ID | Parent | Atomic requirement | Acceptance / verification |
+|---|---|---|---|
+| PRD-VER-001 | Owner request | Current and future SparkLaunch client packages shall use a numeric `MAJOR.MINOR.PATCH` version without prerelease or build metadata. | T-VER-ACCEPT-001: the canonical and all generated current manifests, catalogs, evidence and release filenames identify `0.8.1`; current-version validation rejects `+codex` metadata. |
+| PROD-VER-001 | PRD-VER-001 | The five generated host packages shall share the same three-part release version. | T-VER-CONTRACT-001: generated parity and archive inspection report one version, and no current archive filename contains `+codex`. |
+| ARCH-VER-001 | PROD-VER-001 | Candidate freshness shall be independent of the package-version string. | T-VER-CONTRACT-002: portal evidence carries a separate UTC `built_at`, and verified observations older than it remain rejected. |
+| SYS-VER-001 | ARCH-VER-001 | Release tooling shall fail closed for missing, malformed, prerelease, build-metadata, whitespace-padded, or non-ASCII-numeric package versions. | T-VER-NEG-001: focused negative tests cover incomplete, leading-zero, Unicode-digit, whitespace, prerelease and `+codex` versions. |
+| IMPL-VER-001 | SYS-VER-001 | Canonical generation and submission validation shall enforce one shared numeric three-part pattern. | T-VER-UNIT-001: focused unit tests exercise the generator and submission validator; the full repository suite remains green. |
+
+### Traceability and catalog disposition
+
+| Requirement | Implementation target | Verification | Layer / expected result | Status |
+|---|---|---|---|---|
+| PRD-VER-001, PROD-VER-001 | OpenAI template, generated manifests/catalogs, current release ledgers and reviewer docs | T-VER-ACCEPT-001, T-VER-CONTRACT-001 | Acceptance/contract: exact `0.8.1` identity and plain archive names | PASS |
+| ARCH-VER-001 | Candidate `built_at`, release-state binding and freshness validators | T-VER-CONTRACT-002 | Contract: build freshness remains fail-closed without version metadata | PASS |
+| SYS-VER-001, IMPL-VER-001 | `sync_plugin.py`, bundle builders, submission and portal validators | T-VER-NEG-001, T-VER-UNIT-001 | Unit/integration: invalid forms rejected; valid numeric version passes | PASS |
+
+T-VER-ACCEPT-001 through T-VER-UNIT-001 passed with 363 repository tests and six
+expected Windows symlink-privilege skips. The focused public-release, submission and
+packaging-safety suite passed 294 tests with the same six skips. Canonical generation
+validated 462 files across five hosts; both deterministic bundle builders and both
+pending-mode evidence validators passed. The release manifest now uses schema 2,
+while candidate freshness uses an exact canonical UTC `built_at` independent of the
+numeric package version.
+
+Catalog disposition: product context, functional packaging, architecture,
+maintainability, compatibility/migration and verification are applicable through
+the requirements above. Performance/scalability is N/A because version parsing
+does not affect runtime, payload size or throughput. Security/privacy/compliance
+is applicable only to preserving fail-closed evidence binding; no credentials,
+personal data, authorization, license or trust boundary changes. UI,
+accessibility, localization, service availability, production deployment and data
+migration are N/A because this is a local package-identity contract change.
+
+Conflict/gap log: `GAP-VER-001` is closed. Removing the timestamp from the version
+would otherwise weaken the existing pre-build evidence check; `ARCH-VER-001` resolves
+that conflict by moving the timestamp to explicit candidate metadata, binding it to
+the matching release-state version, and advancing the affected evidence and release
+manifest schemas. Rollback is the version/evidence commit; no published artifact or
+data migration is involved.

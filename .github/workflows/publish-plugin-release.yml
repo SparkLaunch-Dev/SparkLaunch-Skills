@@ -32,18 +32,31 @@ jobs:
         with:
           python-version: "3.12"
       - name: Build only the reviewed candidate's release assets
-        run: python scripts/build_release_bundles.py
-      - name: Publish immutable versioned archives and digests
+        run: |
+          python scripts/build_release_bundles.py
+          python scripts/build_submission_bundle.py
+      - name: Revalidate evidence and production immediately before publication
+        env:
+          SPARKLAUNCH_MCP_ACCESS_TOKEN: ${{ secrets.SPARKLAUNCH_MCP_ACCESS_TOKEN }}
+        run: |
+          python scripts/validate_portal_prerequisites.py
+          python scripts/validate_public_release.py --live
+      - name: Publish versioned archives and digests
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           version=$(python -c 'from scripts.sync_plugin import _base_package_version; print(_base_package_version())')
-          tag="plugins-v${version}"
+          tag="${version}"
           if gh release view "$tag" >/dev/null 2>&1; then
             echo "This release already exists; bump the package version instead of overwriting it."
             exit 1
           fi
-          gh release create "$tag" --target "$GITHUB_SHA" --title "SparkLaunch plugins ${version}" \
-            --notes-file submission/release-notes.md \
+          if ! gh api --method POST "repos/${GITHUB_REPOSITORY}/git/refs" \
+            -f ref="refs/tags/${tag}" -f sha="$GITHUB_SHA" >/dev/null; then
+            echo "The version tag already exists or could not be created at the reviewed commit."
+            exit 1
+          fi
+          gh release create "$tag" --verify-tag --title "SparkLaunch plugins ${version}" \
+            --notes-file submission/github-release-notes.md \
             dist/release/*.zip dist/release/release-manifest.json dist/release/SHA256SUMS

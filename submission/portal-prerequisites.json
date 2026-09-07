@@ -1,38 +1,39 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "candidate": {
-    "plugin_version": "0.8.1+codex.20260907000000",
+    "plugin_version": "0.8.1",
+    "built_at": "2026-09-07T18:56:26Z",
     "service_version": "1.7.0",
     "production_mcp_url": "https://sparklaun.ch/api/mcp/",
     "expected_tool_count": 100,
     "expected_oauth_scope_count": 29,
-    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.8.1+codex.20260907000000.zip",
-    "bundle_sha256": "01184C97F915F578EDA37BA446B8E95AAC3EAE909324BC8E60E25ECDA322E716"
+    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.8.1.zip",
+    "bundle_sha256": "72D4F4893D86D7BA198FA0A0E8345017CCFB6F476441E847EA43D6BC943B982F"
   },
   "public_production_readiness": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1+codex.20260907000000",
+    "candidate_plugin_version": "0.8.1",
     "candidate_service_version": "1.7.0",
     "candidate_expected_oauth_scope_count": 29,
     "proof_boundary": "The local 1.7.0 candidate has not been deployed, so public OAuth and MCP readiness for its 29-scope contract is not verified. Prior 18-scope public observations are preserved under historical_public_production_readiness and do not prove this candidate."
   },
   "production_deployment": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1+codex.20260907000000",
+    "candidate_plugin_version": "0.8.1",
     "candidate_service_version": "1.7.0",
     "candidate_expected_tool_count": 100,
     "proof_boundary": "No production deployment is recorded for the local 1.7.0 / 100-tool candidate. The last verified 1.4.0 deployment is preserved under historical_production_deployments and must not be reused as candidate proof."
   },
   "direct_authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1+codex.20260907000000",
+    "candidate_plugin_version": "0.8.1",
     "candidate_service_version": "1.7.0",
     "candidate_expected_tool_count": 100,
     "proof_boundary": "No direct authenticated production scan is recorded for the local 1.7.0 / 100-tool candidate. The last verified 1.4.0 / 61-tool scan is preserved under historical_direct_authenticated_production_scans and does not prove SparkCap, SparkRoom or SparkClose availability."
   },
   "authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1+codex.20260907000000",
+    "candidate_plugin_version": "0.8.1",
     "candidate_service_version": "1.7.0",
     "candidate_expected_tool_count": 100,
     "portal_result": "pending",

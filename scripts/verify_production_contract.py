@@ -8,9 +8,12 @@ from an argument, file, or printed response. Redirects are not followed.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
+import base64
+import binascii
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
+import math
 import os
 import re
 import urllib.error
@@ -27,6 +30,13 @@ ORIGIN = "https://sparklaun.ch"
 ENDPOINT = ORIGIN + "/api/mcp/"
 PROTOCOL = "2025-11-25"
 MAX_BYTES = 8 * 1024 * 1024
+# The backend issues 30-minute access tokens. Allow one minute of clock skew
+# between the issuer and the release runner while still rejecting long-lived JWTs.
+MAX_ACCESS_TOKEN_REMAINING = timedelta(minutes=31)
+ACCESS_TOKEN_ERROR = (
+    "A short-lived, unexpired OAuth access token is required in "
+    "SPARKLAUNCH_MCP_ACCESS_TOKEN"
+)
 
 
 class VerificationError(ValueError):
@@ -36,6 +46,36 @@ class VerificationError(ValueError):
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         raise VerificationError("Production endpoint redirected; verification stopped")
+
+
+def _validate_access_token(token: str, *, now: datetime | None = None) -> None:
+    # This local payload read only screens token lifetime. The production server
+    # remains responsible for signature, issuer, audience, grant and scope checks.
+    if not token or not re.fullmatch(
+        r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", token
+    ):
+        raise VerificationError(ACCESS_TOKEN_ERROR)
+    payload_segment = token.split(".", 2)[1]
+    padded = payload_segment + "=" * (-len(payload_segment) % 4)
+    try:
+        payload = json.loads(
+            base64.b64decode(padded, altchars=b"-_", validate=True)
+        )
+    except (binascii.Error, UnicodeDecodeError, json.JSONDecodeError):
+        raise VerificationError(ACCESS_TOKEN_ERROR) from None
+    expires_at = payload.get("exp") if isinstance(payload, dict) else None
+    if isinstance(expires_at, bool) or not isinstance(expires_at, (int, float)):
+        raise VerificationError(ACCESS_TOKEN_ERROR)
+    try:
+        expires_at = float(expires_at)
+    except (OverflowError, ValueError):
+        raise VerificationError(ACCESS_TOKEN_ERROR) from None
+    if not math.isfinite(expires_at):
+        raise VerificationError(ACCESS_TOKEN_ERROR)
+    current = now or datetime.now(timezone.utc)
+    remaining = expires_at - current.timestamp()
+    if not 0 < remaining <= MAX_ACCESS_TOKEN_REMAINING.total_seconds():
+        raise VerificationError(ACCESS_TOKEN_ERROR)
 
 
 def request_json(
@@ -163,7 +203,7 @@ def verify(*, public_only: bool = False, transport=request_json) -> dict:
             "Production UserInfo discovery or identity permissions are missing"
         )
     result = {
-        "schema_version": 1,
+        "schema_version": 2,
         "candidate": candidate_identity(),
         "observed_at": datetime.now(timezone.utc).isoformat(),
         "endpoint": ENDPOINT,
@@ -174,12 +214,7 @@ def verify(*, public_only: bool = False, transport=request_json) -> dict:
     if public_only:
         return result
     token = os.environ.get("SPARKLAUNCH_MCP_ACCESS_TOKEN", "")
-    if not token or not re.fullmatch(
-        r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", token
-    ):
-        raise VerificationError(
-            "A short-lived OAuth access token is required in SPARKLAUNCH_MCP_ACCESS_TOKEN"
-        )
+    _validate_access_token(token)
     headers = {"Authorization": "Bearer " + token}
 
     def rpc(method: str, params: dict | None, request_id: int) -> tuple[dict, dict]:

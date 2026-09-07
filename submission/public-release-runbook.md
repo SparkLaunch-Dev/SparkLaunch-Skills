@@ -76,15 +76,19 @@ Claude Code skill installation is distinct from the Claude.ai connector director
 Gemini CLI requires an eligible supported account; this is not proof for Gemini web
 or Antigravity. Muse protected MCP stays disabled until its currently supported
 OAuth lifecycle (or a separately reviewed trusted bridge) is verified. A skills-only
-install cannot pass Muse's protected connection checks.
+install cannot pass Muse's protected connection checks, so those six checks remain
+explicitly `not_applicable` with a concrete reason. Muse install and skill selection
+remain required and cannot use that status. Other hosts cannot use it at all.
 
 ## Evidence format and policy review
 
 `submission/public-release.json` deliberately starts pending. When results exist,
 create a sanitized JSON report under `submission/evidence/` containing exactly
 `candidate`, `observed_at` (UTC), `surface` (host name or `policy`), and `results`.
-Each result contains `status: "pass"` and a concrete `observation`; use the eight
-matrix keys for hosts. The policy report instead contains
+Each applicable result contains `status: "pass"` and a concrete `observation`; use
+the eight matrix keys for hosts. Muse's six protected-MCP results instead contain
+`status: "not_applicable"` and observations explaining the disabled boundary, matching
+the ledger's `not_applicable_reason`. The policy report instead contains
 `sparkclose_classification`, `platform_guidelines`, and `reviewer_access`.
 Record client version or policy reviewer, observation time, report path, normalized
 UTF-8/LF SHA-256, and matching check results in the ledger. The report and ledger must
@@ -102,8 +106,11 @@ marketplace approval on the publisher's behalf.
 
 Both publishing workflows are manual, main-only and depend on the shared strict
 readiness workflow. That workflow runs all tests, builds the exact artifacts,
-requires current portal/deployment/reviewer/demo records, requires all native
-acceptance and policy reports, and makes a fresh authenticated production scan.
+requires current portal/deployment/reviewer/demo records, requires all applicable
+native acceptance and policy reports, and makes a fresh authenticated production scan.
+After the protected publish job begins, it rebuilds the candidate and repeats both
+strict evidence validators immediately before the external write so an approval delay
+cannot reuse expired evidence or an earlier production observation.
 `--allow-pending` is never allowed in a publishing path. Configure the
 `public-release` GitHub environment with required reviewers. Supply the short-lived
 OAuth token as the workflow's protected secret immediately before the run, then
@@ -111,7 +118,8 @@ remove it afterward; do not provision a long-lived static bearer workaround.
 Do not use untrusted pull-request workflows with that secret.
 
 After release gates pass, `Publish versioned plugin assets` creates
-`plugins-v<version>` at the reviewed commit, with checksums and release metadata.
+the exact numeric `<MAJOR.MINOR.PATCH>` tag at the reviewed commit, with checksums
+and release metadata. The tag matches `gemini-extension.json` for update discovery.
 It refuses to overwrite an existing release. `Publish to MCP Registry` separately
 publishes the service version in `server.json` through the pinned Registry publisher.
 Neither job submits to a host directory or claims vendor approval.

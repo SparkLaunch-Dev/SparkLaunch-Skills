@@ -10,6 +10,7 @@ from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile, ZipInfo
 
 try:
     from scripts.sync_plugin import (
+        PACKAGE_VERSION_RE,
         _lexical_absolute,
         _normalized_content,
         _tree_links,
@@ -17,6 +18,7 @@ try:
     )
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
     from sync_plugin import (
+        PACKAGE_VERSION_RE,
         _lexical_absolute,
         _normalized_content,
         _tree_links,
@@ -138,9 +140,9 @@ def _plugin_version() -> str:
     manifest = json.loads(
         (PLUGIN_ROOT / PLUGIN_MANIFEST).read_text(encoding="utf-8")
     )
-    version = str(manifest.get("version") or "").strip()
-    if not version:
-        raise ValueError("Plugin manifest version is required.")
+    version = manifest.get("version")
+    if not isinstance(version, str) or PACKAGE_VERSION_RE.fullmatch(version) is None:
+        raise ValueError("Plugin version must be numeric major.minor.patch")
     return version
 
 
