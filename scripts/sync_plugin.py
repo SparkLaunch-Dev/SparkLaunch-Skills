@@ -377,6 +377,7 @@ def _package_files(adapter: Adapter, *, base_version: str) -> list[ExpectedFile]
             ),
         )
     _append(files, source=ROOT / "LICENSE", target=adapter.package_root / "LICENSE")
+    _append(files, source=ROOT / "NOTICE", target=adapter.package_root / "NOTICE")
     if adapter.host == "openai":
         asset_root = adapter.root / "assets"
         for source in _tree_files(asset_root, label="OpenAI adapter assets"):
@@ -426,12 +427,36 @@ def _legacy_files(openai: Adapter) -> list[ExpectedFile]:
     return files
 
 
+def _catalog_files(adapters: dict[str, Adapter], base_version: str) -> list[ExpectedFile]:
+    files: list[ExpectedFile] = []
+    for host in ("claude", "cursor"):
+        catalog = {
+            "name": "sparklaunch-skills",
+            "owner": {"name": "SparkLaunch", "email": "support@sparklaun.ch"},
+            "metadata": {"description": "SparkLaunch founder workflow plugins."},
+            "plugins": [{
+                "name": "sparklaunch",
+                "source": "./" + adapters[host].package_root.relative_to(ROOT).as_posix(),
+                "version": base_version,
+                "description": "Connected SparkLaunch founder workflows.",
+                "license": "Apache-2.0",
+            }],
+        }
+        _append(
+            files, source=adapters[host].root / "adapter.json",
+            target=ROOT / f".{host}-plugin" / "marketplace.json",
+            content=(json.dumps(catalog, indent=2) + "\n").encode("utf-8"),
+        )
+    return files
+
+
 def expected_files() -> list[ExpectedFile]:
     base_version = _base_package_version()
     adapters = {host: _read_adapter(host) for host in HOSTS}
     files = _legacy_files(adapters["openai"])
     for host in HOSTS:
         files.extend(_package_files(adapters[host], base_version=base_version))
+    files.extend(_catalog_files(adapters, base_version))
     targets = [_lexical_absolute(item.target) for item in files]
     if len(targets) != len(set(targets)):
         raise ValueError("host package plan contains duplicate target files")

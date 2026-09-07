@@ -1,0 +1,19 @@
+{
+  "name": "sparklaunch-skills",
+  "owner": {
+    "name": "SparkLaunch",
+    "email": "support@sparklaun.ch"
+  },
+  "metadata": {
+    "description": "SparkLaunch founder workflow plugins."
+  },
+  "plugins": [
+    {
+      "name": "sparklaunch",
+      "source": "./plugins/cursor/sparklaunch",
+      "version": "0.8.1",
+      "description": "Connected SparkLaunch founder workflows.",
+      "license": "Apache-2.0"
+    }
+  ]
+}

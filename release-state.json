@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "generated_packages": {
-    "version": "0.8.0+codex.20260906000000",
+    "version": "0.8.1+codex.20260907000000",
     "hosts": [
       "openai",
       "claude",
@@ -21,7 +21,7 @@
   "runtime": {
     "contract_snapshot_version": "1.7.0",
     "candidate": {
-      "plugin_version": "0.8.0+codex.20260906000000",
+      "plugin_version": "0.8.1+codex.20260907000000",
       "deployment_status": "not_verified_for_candidate",
       "direct_authenticated_scan_status": "pending",
       "openai_portal_rescan_status": "pending",
@@ -58,8 +58,8 @@
   },
   "distribution": {
     "openai": "local_candidate_not_submitted",
-    "claude": "local_private_candidate",
-    "cursor": "local_private_candidate_public_marketplace_blocked_by_license",
+    "claude": "local_public_catalog_candidate_not_listed",
+    "cursor": "local_open_source_candidate_not_submitted",
     "gemini": "local_candidate",
     "muse": "skills_candidate_protected_mcp_disabled"
   }

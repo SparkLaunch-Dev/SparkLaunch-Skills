@@ -540,7 +540,7 @@ def validate() -> list[str]:
     except (OSError, UnicodeError) as exc:
         errors.append(f"plugin LICENSE is missing or invalid: {exc}")
     else:
-        if "Proprietary" not in license_text:
+        if "Apache License" not in license_text or "Version 2.0" not in license_text:
             errors.append("plugin LICENSE does not match the manifest")
     root_license_path = ROOT / "LICENSE"
     try:
@@ -548,7 +548,7 @@ def validate() -> list[str]:
     except (OSError, UnicodeError) as exc:
         errors.append(f"repository LICENSE is missing or invalid: {exc}")
     else:
-        if "Proprietary" not in root_license_text:
+        if "Apache License" not in root_license_text or "Version 2.0" not in root_license_text:
             errors.append("repository LICENSE does not match the plugin license")
 
     try:

@@ -1,0 +1,95 @@
+{
+  "kind": "partial_release_observations_not_acceptance",
+  "observed_on": "2026-09-07",
+  "candidate": {
+    "plugin_version": "0.8.1+codex.20260907000000",
+    "server_version": "1.7.0",
+    "tool_count": 100,
+    "content_sha256": "053ca4d4a75cc302b879980b584e9deddd9d994603b7581c001c2163cce56d1f"
+  },
+  "production": {
+    "observed_backend_count": 2,
+    "all_observed_backends_active": true,
+    "deployed_git_revision": "0916f9fa16e55ebbf3ad84fe3e07232461553181",
+    "migration_revision": "formation_consent_actor_01",
+    "candidate_migration_required": "sparkclose_safe_01",
+    "missing_business_scopes": [
+      "sparkclose.read",
+      "sparkclose.model",
+      "sparkclose.write",
+      "sparkclose.close"
+    ],
+    "candidate_deployed": false
+  },
+  "synthetic_reviewer_setup": {
+    "owner_approved": true,
+    "committed": true,
+    "users_changed": 1,
+    "projects_changed": 1,
+    "analytics_excluded": true,
+    "growth_access": true,
+    "incorporation_entitlement": true,
+    "billing_and_paid_timestamps_unchanged": true,
+    "email_ownership_remains_unverified": true,
+    "provider_calls": 0,
+    "retention_date_unchanged": "2026-09-11",
+    "live_preflight_observed_at": "2026-09-07T05:31:59.747309Z",
+    "live_preflight_checks_passed": 6,
+    "fixture_contents_and_native_workflows_tested": false,
+    "credential_rotation_required": true,
+    "proof_boundary": "Exact disposable account and sole owned project only. No purchase, subscription, signing, filing, provider call, verified-mailbox claim, or release approval. A stored reviewer credential appeared in browser inspection output; its value is not retained here. Owner rotation and subsequent private store/portal synchronization are required before further reviewer use."
+  },
+  "native_installations": {
+    "claude": {
+      "client_version": "2.1.207",
+      "isolated_configuration": true,
+      "local_catalog_and_plugin_install_passed": true,
+      "plugin_version": "0.8.1",
+      "skills_discovered": 12,
+      "mcp_servers_discovered": 1,
+      "model_account_authenticated": false,
+      "protected_oauth_and_model_selection_tested": false
+    },
+    "gemini": {
+      "client_version": "0.58.0",
+      "isolated_configuration": true,
+      "local_extension_install_passed": true,
+      "plugin_version": "0.8.1",
+      "skills_discovered": 12,
+      "mcp_servers_discovered": 1,
+      "protected_oauth_and_model_selection_tested": false
+    },
+    "cursor": {"native_binary_available": false},
+    "muse": {"native_binary_available": false}
+  },
+  "openai_portal": {
+    "inspected_existing_draft": true,
+    "saved_tool_count": 59,
+    "saved_positive_test_count": 5,
+    "saved_negative_test_count": 3,
+    "fifth_positive_test_differs_from_candidate": true,
+    "domain_verification_shown": true,
+    "enterprise_domain_restrictions_available": false,
+    "demo_recording_url_present": false,
+    "uploaded_or_saved_changes": false,
+    "submitted_or_published": false
+  },
+  "muse_documentation": {
+    "url": "https://dev.meta.ai/docs/muse-code/extending#mcp",
+    "configuration_url": "https://dev.meta.ai/docs/muse-code/configuration",
+    "pages_read_successfully": true,
+    "documented_transports": ["stdio", "streamable_http"],
+    "protected_oauth_lifecycle_established": false
+  },
+  "historical_reviewer_access": {
+    "status": "verified",
+    "observed_at": "2026-09-01T18:54:52Z",
+    "project_isolation_verified": true,
+    "reviewer_materials_configured": true,
+    "reviewer_materials_stored_outside_repository": true,
+    "portal_positive_test_case_count": 5,
+    "portal_negative_test_case_count": 3,
+    "proof_boundary": "Reviewer access succeeded, the account was isolated to one disposable project, and all required review materials and test cases were configured outside this repository. No credential values are stored here."
+  },
+  "proof_boundary": "Partial diagnostic and local-install evidence only. Historical reviewer access is not current approval. No native host completed the full acceptance matrix, and all candidate publication gates remain pending."
+}

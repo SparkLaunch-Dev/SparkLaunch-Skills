@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.8.0+codex.20260906000000",
+  "version": "0.8.1+codex.20260907000000",
   "description": "Connected founder workflows for launch, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.",
   "author": {
     "name": "SparkLaunch",
@@ -9,7 +9,7 @@
   },
   "homepage": "https://sparklaun.ch/",
   "repository": "https://github.com/SparkLaunch-Dev/SparkLaunch-Skills.git",
-  "license": "Proprietary",
+  "license": "Apache-2.0",
   "keywords": [
     "sparklaunch",
     "startup",

@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "plugin_version": "0.8.1+codex.20260907000000",
+    "server_version": "1.7.0",
+    "tool_count": 100,
+    "content_sha256": "053ca4d4a75cc302b879980b584e9deddd9d994603b7581c001c2163cce56d1f"
+  },
+  "policy_review": {
+    "status": "pending",
+    "reviewer": null,
+    "observed_at": null,
+    "evidence_path": null,
+    "evidence_sha256": null
+  },
+  "hosts": {
+    "openai": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "claude": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "cursor": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "gemini": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    },
+    "muse": {
+      "status": "pending",
+      "client_version": null,
+      "observed_at": null,
+      "evidence_path": null,
+      "evidence_sha256": null,
+      "checks": {
+        "install": "pending",
+        "skill_selection": "pending",
+        "oauth_connect": "pending",
+        "scope_escalation": "pending",
+        "refresh": "pending",
+        "disconnect": "pending",
+        "safe_write": "pending",
+        "file_handoff": "pending"
+      }
+    }
+  }
+}

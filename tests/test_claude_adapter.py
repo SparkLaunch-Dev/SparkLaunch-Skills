@@ -43,8 +43,8 @@ def test_claude_adapter_contract_is_safe_and_builder_consumable() -> None:
     manifest = _load_json(ADAPTER_ROOT / "templates" / "plugin.json")
     assert manifest["$schema"] == "https://json.schemastore.org/claude-code-plugin-manifest.json"
     assert manifest["name"] == "sparklaunch"
-    assert manifest["version"] == "0.8.0"
-    assert manifest["license"] == "LicenseRef-SparkLaunch-Proprietary"
+    assert manifest["version"] == "0.8.1"
+    assert manifest["license"] == "Apache-2.0"
     assert manifest["skills"] == "./skills/"
     assert manifest["mcpServers"] == "./.mcp.json"
 
@@ -72,7 +72,7 @@ def test_claude_connection_and_distribution_text_are_truthful() -> None:
     assert "Never ask the user for credentials" in connection
     assert "stop before any write" in connection
     assert "proprietary" in distribution.lower()
-    assert "private distribution" in distribution.lower()
+    assert "Apache-2.0" in distribution
     assert "does not claim public listing" in distribution.lower()
     assert "claude plugin validate" in distribution
 

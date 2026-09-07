@@ -125,7 +125,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_oauth_scope_count": scope_count,
-            "observed_at": "2026-09-06T20:01:00Z",
+            "observed_at": "2026-09-07T02:01:00Z",
         }
     )
     public["evidence"]["oauth_scope_count"] = scope_count
@@ -140,7 +140,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_tool_count": tool_count,
-            "observed_at": "2026-09-06T20:00:00Z",
+            "observed_at": "2026-09-07T02:00:00Z",
             "git_revision": revision,
             "production_tag": "prod-candidate-test",
             "service_version": service_version,
@@ -157,7 +157,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_tool_count": tool_count,
-            "observed_at": "2026-09-06T20:02:00Z",
+            "observed_at": "2026-09-07T02:02:00Z",
             "deployed_git_revision": revision,
             "server_version": service_version,
             "tool_count": tool_count,
@@ -169,16 +169,28 @@ def _promote_candidate_evidence(evidence, release_state):
     evidence["authenticated_production_scan"].update(
         {
             "status": "verified",
-            "observed_at": "2026-09-06T20:03:00Z",
+            "observed_at": "2026-09-07T02:03:00Z",
             "tool_count": tool_count,
             "portal_result": "successful",
         }
     )
+    # Synthetic positive fixture, independent of the live reviewer's pending
+    # credential rotation. This object is written only to the test directory.
+    evidence["reviewer_access"] = {
+        "status": "verified",
+        "observed_at": "2026-09-07T02:03:00Z",
+        "project_isolation_verified": True,
+        "reviewer_materials_configured": True,
+        "reviewer_materials_stored_outside_repository": True,
+        "portal_positive_test_case_count": 5,
+        "portal_negative_test_case_count": 3,
+        "proof_boundary": "Synthetic unit-test acceptance record only.",
+    }
     evidence["demo_recording"].update(
         {
             "status": "verified",
             "url": "https://demo.sparklaun.ch/reviewer-demo",
-            "observed_at": "2026-09-06T20:04:00Z",
+            "observed_at": "2026-09-07T02:04:00Z",
             "reviewer_access_verified": True,
         }
     )
@@ -1041,7 +1053,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.8.0+codex.20260906")
+    assert manifest["version"].startswith("0.8.1+codex.20260907")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
@@ -1154,7 +1166,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 3
-    assert evidence["candidate"]["plugin_version"] == ("0.8.0+codex.20260906000000")
+    assert evidence["candidate"]["plugin_version"] == ("0.8.1+codex.20260907000000")
     assert evidence["candidate"]["service_version"] == "1.7.0"
     assert evidence["candidate"]["expected_tool_count"] == 100
     assert len(MCP_TOOL_CONTRACTS) == 100
@@ -1288,12 +1300,19 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert release_scan["mcp_protocol_version"] == "2025-11-25"
     assert release_scan["server_name"] == "SparkLaunch MCP"
     assert release_scan["server_version"] == "1.4.0"
-    assert evidence["reviewer_access"]["status"] == "verified"
-    assert evidence["reviewer_access"]["project_isolation_verified"] is True
-    assert evidence["reviewer_access"]["reviewer_materials_configured"] is True
-    assert (
-        evidence["reviewer_access"]["reviewer_materials_stored_outside_repository"]
-        is True
+    assert evidence["reviewer_access"]["status"] == "pending"
+    assert set(evidence["reviewer_access"]) == {"status", "proof_boundary"}
+    observations = json.loads(
+        (ROOT / "submission/observations/2026-09-07-release-follow-up.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    historical_reviewer = observations["historical_reviewer_access"]
+    assert historical_reviewer["status"] == "verified"
+    assert historical_reviewer["observed_at"] == "2026-09-01T18:54:52Z"
+    assert observations["synthetic_reviewer_setup"]["credential_rotation_required"] is True
+    assert not portal_prerequisite_validator.sensitive_text_findings(
+        json.dumps(observations)
     )
     assert evidence["publisher_identity"]["status"] == "verified"
     assert evidence["publisher_identity"]["organization_and_project_match"] is True
@@ -1309,6 +1328,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
         "external portal gate is still pending: production_deployment",
         "external portal gate is still pending: direct_authenticated_production_scan",
         "external portal gate is still pending: authenticated_production_scan",
+        "external portal gate is still pending: reviewer_access",
         "external portal gate is still pending: demo_recording",
     }.issubset(strict_errors)
 
@@ -2154,6 +2174,7 @@ def test_pending_identity_gates_cannot_retain_verified_proof(
         (ROOT / "submission" / "portal-prerequisites.json").read_text(encoding="utf-8")
     )
     evidence[field]["status"] = "pending"
+    evidence[field]["observed_at"] = "2026-09-07T02:03:00Z"
 
     errors = _validate_portal_evidence(monkeypatch, tmp_path, evidence)
 
@@ -2167,7 +2188,7 @@ def test_pending_demo_cannot_retain_verified_proof(monkeypatch, tmp_path):
     evidence["demo_recording"].update(
         {
             "url": "https://demo.sparklaun.ch/demo",
-            "observed_at": "2026-09-06T20:04:00Z",
+            "observed_at": "2026-09-07T02:04:00Z",
             "reviewer_access_verified": True,
         }
     )
@@ -2238,7 +2259,7 @@ def test_verified_demo_must_postdate_recording_prerequisites(
         (ROOT / "release-state.json").read_text(encoding="utf-8")
     )
     evidence, release_state = _promote_candidate_evidence(evidence, release_state)
-    evidence[field]["observed_at"] = "2026-09-06T20:05:00Z"
+    evidence[field]["observed_at"] = "2026-09-07T02:05:00Z"
 
     errors = _validate_portal_evidence(
         monkeypatch,
@@ -2346,7 +2367,8 @@ def test_public_repository_has_license_and_security_guidance():
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
 
-    assert "Proprietary" in license_text
+    assert "Apache License" in license_text
+    assert "Version 2.0" in license_text
     assert "support@sparklaun.ch" in security
     assert "Do not open a public issue" in security
 

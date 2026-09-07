@@ -1,4 +1,9 @@
-# SparkLaunch 0.8.0+codex.20260906000000 ChatGPT Candidate
+# SparkLaunch 0.8.1+codex.20260907000000 Release Candidate
+
+- License the public skills/plugin repository under Apache-2.0; the separately hosted service and backend remain proprietary.
+- Generate Claude and Cursor repository catalogs and self-contained archives for all five hosts, with deterministic checksums and a candidate fingerprint.
+- Gate Registry and artifact publication on current evidence and authenticated full production-contract equality.
+- Add candidate-bound native-client acceptance and SparkClose policy-review evidence requirements. Pending evidence remains pending; this candidate is not a claim of native compatibility or marketplace approval.
 
 Status: the local service 1.7.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
 The previous production MCP service is deployed at service 1.4.0 according to the

@@ -373,8 +373,8 @@ EXPECTED_REGISTRY_STATE = {
 }
 EXPECTED_DISTRIBUTION_STATE = {
     "openai": "local_candidate_not_submitted",
-    "claude": "local_private_candidate",
-    "cursor": "local_private_candidate_public_marketplace_blocked_by_license",
+    "claude": "local_public_catalog_candidate_not_listed",
+    "cursor": "local_open_source_candidate_not_submitted",
     "gemini": "local_candidate",
     "muse": "skills_candidate_protected_mcp_disabled",
 }

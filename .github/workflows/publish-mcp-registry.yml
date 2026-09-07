@@ -12,10 +12,17 @@ permissions:
   id-token: write
 
 jobs:
+  readiness:
+    if: github.repository == 'SparkLaunch-Dev/SparkLaunch-Skills' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/release-readiness.yml
+    secrets: inherit
+
   publish:
-    if: github.repository == 'SparkLaunch-Dev/SparkLaunch-Skills'
+    needs: readiness
+    if: github.repository == 'SparkLaunch-Dev/SparkLaunch-Skills' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment: public-release
 
     steps:
       - name: Check out the published manifest
