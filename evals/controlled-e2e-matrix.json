@@ -7,7 +7,7 @@
     "automatic_validation_typical_minutes": "10-15",
     "automatic_validation_poll_seconds": 60,
     "automatic_validation_timeout_minutes": 20,
-    "expected_oauth_scope_count": 25,
+    "expected_oauth_scope_count": 29,
     "preflight_effective_permissions": true,
     "open_and_cancel_disconnect_dialog": true,
     "never_auto_confirm": true,
@@ -58,7 +58,7 @@
         "tasks.delete"
       ],
       "live_level": "private_write_and_confirmation_preview",
-      "expected": "OAuth connects with the expected 25-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
+      "expected": "OAuth connects with the expected 29-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
     },
     {
       "id": "E2E-AUTOMATIC-VALIDATION",
@@ -270,6 +270,30 @@
       ],
       "live_level": "isolated_synthetic_room_confirmation_and_private_readback",
       "expected": "Synthetic room creation, pinned document selection, metadata edits, bounded link creation and revocation use current versions, exact confirmation, durable idempotency and live Growth role/scope checks. No storage keys, passwords, file contents or private audit data appear. New bearer URLs appear only on confirmed creation and same-key replay; no invitation is sent or public link opened. Local acceptance exists; native-host execution remains unverified."
+    },
+    {
+      "id": "E2E-SPARKCLOSE-SAFE",
+      "recipes": [
+        "model-and-close-a-safe.md"
+      ],
+      "tools": [
+        "sparkclose.cancel_unsigned",
+        "sparkclose.close_investment",
+        "sparkclose.get_investment",
+        "sparkclose.get_scenario",
+        "sparkclose.list_investments",
+        "sparkclose.list_scenarios",
+        "sparkclose.model_safe",
+        "sparkclose.open_workflow",
+        "sparkclose.readiness",
+        "sparkclose.reconcile_funding",
+        "sparkclose.record_approval",
+        "sparkclose.record_receipt",
+        "sparkclose.retry_updates",
+        "sparkclose.save_scenario"
+      ],
+      "live_level": "isolated_synthetic_investment_confirmation_and_readback",
+      "expected": "Model supported SAFE exposure and save an immutable snapshot. After first-party agreement review/signing, company-reviewed approval and receipt evidence, reconciliation and exact confirmation close one investment. Changed sources reject stale approval and same-key replay never duplicates it. Check destination event status. No money moves, no agreement is signed, no private file body is exposed, and no room sharing is broadened by MCP. Local tests do not prove native-host or production execution."
     }
   ]
 }

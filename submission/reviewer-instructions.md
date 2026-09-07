@@ -1,12 +1,12 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.7.0+codex.20260904000000` candidate at
-`https://sparklaun.ch/api/mcp/`. The package contains eleven skills and declares
-86 tools under 25 OAuth scopes. The retained 1.4.0 production scan and portal
-prerequisites concern the previous 61-tool candidate and do not prove SparkCap or SparkRoom
+These instructions apply to the local SparkLaunch `0.8.0+codex.20260906000000` candidate at
+`https://sparklaun.ch/api/mcp/`. The package contains twelve skills and declares
+100 tools under 29 OAuth scopes. The retained 1.4.0 production scan and portal
+prerequisites concern the previous 61-tool candidate and do not prove SparkCap, SparkRoom, or SparkClose
 availability. Deploy and scan the matching candidate before native-host review.
-The internal evidence contains 36 trigger cases and 15 controlled E2E cases;
-the new real-database SparkCap and SparkRoom acceptance tests are in the application repository.
+The internal evidence contains 39 trigger cases and 16 controlled E2E cases;
+the new real-database SparkCap, SparkRoom, and SparkClose acceptance tests are in the application repository.
 
 ## Access
 
@@ -88,3 +88,7 @@ Record the candidate revision, package digest, service version, redacted fixture
 - Terms: `https://sparklaun.ch/terms-and-conditions`
 
 Stop review and contact support if OAuth redirects to an unregistered host, a project outside the reviewer account becomes visible, a private participant value appears, a write cannot be safely reconciled, or any provider call occurs.
+
+## SparkClose review
+
+Use `sparklaunch-sparkclose` and `model-and-close-a-safe.md` for the SAFE workflow. Review the separate read, model, write and close permissions. Verify no investment is changed by a confirmation preview, stale evidence requires a new review, and same-key replay cannot duplicate a receipt or closing. Signing and document review use first-party handoffs.

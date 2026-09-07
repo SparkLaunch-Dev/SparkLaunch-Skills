@@ -1,6 +1,6 @@
 # SparkLaunch Muse Code adapter
 
-Muse Code has no documented third-party plugin manifest. This adapter therefore packages the eleven canonical SparkLaunch skills and a truthful, disabled MCP settings example; it does not claim marketplace installation or protected-tool parity.
+Muse Code has no documented third-party plugin manifest. This adapter therefore packages the twelve canonical SparkLaunch skills and a truthful, disabled MCP settings example; it does not claim marketplace installation or protected-tool parity.
 
 ## Validate and install the skills
 
@@ -18,6 +18,7 @@ muse skills validate ./skills/sparklaunch-sales-crm
 muse skills validate ./skills/sparklaunch-incorporation
 muse skills validate ./skills/sparklaunch-sparkcap
 muse skills validate ./skills/sparklaunch-sparkroom
+muse skills validate ./skills/sparklaunch-sparkclose
 ```
 
 Install a validated skill for one user with `muse skills install ./skills/<skill-id> --scope user`, or commit it to a trusted project's `.agents/skills/<skill-id>/SKILL.md`. Verify discovery with `muse skills list` and inspect an individual skill with `muse skills inspect <skill-id>`.

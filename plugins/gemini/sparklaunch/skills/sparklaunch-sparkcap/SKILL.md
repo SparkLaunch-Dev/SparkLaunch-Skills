@@ -67,9 +67,12 @@ months. Dedicated address, signature, identity, execution-status, and freeform
 note inputs are not supported through this skill. Do not request sensitive
 identity, address, banking, tax, or signature data in the conversation.
 
-Deleting a table also removes associated records and stops existing shared
-access. Include that effect in the confirmation. Planning edits do not issue
-securities, execute a SAFE/note, sign documents, or establish an official ledger.
+Any existing SparkCap or SparkRoom shares can reflect saved table and stakeholder
+changes immediately. Deleting a table also removes associated records: any
+existing SparkCap links stop working, and any shared SparkRoom live-cap-table
+items stop exposing it. Include the applicable effect in the confirmation.
+Planning edits do not issue securities, execute a SAFE/note, sign documents, or
+establish an official ledger.
 
 ## Model and explain
 

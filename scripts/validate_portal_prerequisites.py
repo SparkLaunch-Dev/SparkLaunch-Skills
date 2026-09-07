@@ -9,7 +9,7 @@ import json
 import re
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import parse_qsl, urlparse
+from urllib.parse import parse_qsl, unquote, urlparse
 
 try:
     from scripts.tool_contract_snapshot import load_snapshot
@@ -378,12 +378,18 @@ EXPECTED_DISTRIBUTION_STATE = {
     "gemini": "local_candidate",
     "muse": "skills_candidate_protected_mcp_disabled",
 }
-SENSITIVE_URL_QUERY_KEY_PARTS = {
+SENSITIVE_URL_PARAMETER_KEY_COMPONENTS = {
     "auth",
     "code",
+    "cookie",
     "credential",
     "key",
+    "passcode",
+    "passphrase",
+    "password",
+    "pwd",
     "secret",
+    "session",
     "sig",
     "signature",
     "token",
@@ -479,6 +485,10 @@ SENSITIVE_VALUE_PATTERNS = (
         re.compile(r"\b(?:reviewer|disposable)\s+project\s+`?#?\d+`?\b", re.IGNORECASE),
     ),
 )
+URL_CANDIDATE_PATTERN = re.compile(
+    r"https?://[^\s<>{}\[\]\"'`]+",
+    re.IGNORECASE,
+)
 
 
 def _load_json(path: Path) -> dict:
@@ -546,13 +556,75 @@ def _is_https_url(value: object) -> bool:
     else:
         if not address.is_global:
             return False
-    for key, item in parse_qsl(parsed.query, keep_blank_values=True):
-        normalized_key = _normalize_key(key)
-        if any(part in normalized_key for part in SENSITIVE_URL_QUERY_KEY_PARTS):
-            return False
-        if any(pattern.search(item) for _, pattern in SENSITIVE_VALUE_PATTERNS):
-            return False
+    if _url_contains_sensitive_material(parsed):
+        return False
     return True
+
+
+def _url_contains_sensitive_material(parsed: object) -> bool:
+    pending = [
+        str(component)
+        for component in (
+            getattr(parsed, "query", ""),
+            getattr(parsed, "fragment", ""),
+        )
+        if component
+    ]
+    inspected: set[str] = set()
+    while pending:
+        component = pending.pop()
+        for decoded in _decoded_url_component_variants(component):
+            if decoded in inspected:
+                continue
+            inspected.add(decoded)
+            if len(inspected) > 64:
+                return True
+            for key, item in parse_qsl(
+                decoded.lstrip("/?#"), keep_blank_values=True
+            ):
+                key_components = set(filter(None, _normalize_key(key).split("_")))
+                if key_components & SENSITIVE_URL_PARAMETER_KEY_COMPONENTS:
+                    return True
+                for decoded_item in _decoded_url_component_variants(item):
+                    if any(
+                        pattern.search(decoded_item)
+                        for _, pattern in SENSITIVE_VALUE_PATTERNS
+                    ):
+                        return True
+                    nested = urlparse(decoded_item)
+                    if nested.query:
+                        pending.append(nested.query)
+                    if nested.fragment:
+                        pending.append(nested.fragment)
+    return False
+
+
+def _decoded_url_component_variants(value: str) -> tuple[str, ...]:
+    variants: list[str] = []
+    current = value
+    for _ in range(3):
+        if current in variants:
+            break
+        variants.append(current)
+        decoded = unquote(current)
+        if decoded == current:
+            break
+        current = decoded
+    return tuple(variants)
+
+
+def sensitive_text_findings(value: str) -> list[str]:
+    """Return unique sensitive-value categories found in reviewer-facing text."""
+    findings = [
+        category
+        for category, pattern in SENSITIVE_VALUE_PATTERNS
+        if pattern.search(value)
+    ]
+    for candidate in URL_CANDIDATE_PATTERN.findall(value):
+        parsed = urlparse(candidate.rstrip(".,;:!?"))
+        if _url_contains_sensitive_material(parsed):
+            findings.append("credential-bearing URL")
+    return list(dict.fromkeys(findings))
 
 
 def _parse_utc_observation(value: object) -> datetime | None:
@@ -835,11 +907,10 @@ def _sensitive_evidence_errors(value: object, path: str = "$") -> list[str]:
         for index, item in enumerate(value):
             errors.extend(_sensitive_evidence_errors(item, f"{path}[{index}]"))
     elif isinstance(value, str):
-        for category, pattern in SENSITIVE_VALUE_PATTERNS:
-            if pattern.search(value):
-                errors.append(
-                    f"portal prerequisite evidence contains {category} at {path}"
-                )
+        for category in sensitive_text_findings(value):
+            errors.append(
+                f"portal prerequisite evidence contains {category} at {path}"
+            )
     return errors
 
 
@@ -1606,7 +1677,7 @@ def validate(*, allow_pending: bool) -> list[str]:
     demo = evidence.get("demo_recording")
     if isinstance(demo, dict):
         if demo.get("status") == "verified":
-            _require_observation(demo, "demo recording", errors)
+            demo_observed = _require_observation(demo, "demo recording", errors)
             if not _is_https_url(demo.get("url")):
                 errors.append(
                     "verified demo recording must have a credential-free public HTTPS URL"
@@ -1615,6 +1686,34 @@ def validate(*, allow_pending: bool) -> list[str]:
                 errors.append(
                     "verified demo recording URL must be tested without reviewer sign-in"
                 )
+            recording_prerequisites = {
+                "production_deployment": "candidate deployment",
+                "authenticated_production_scan": "authenticated production scan",
+                "reviewer_access": "reviewer access",
+                "publisher_identity": "publisher identity",
+            }
+            for field, label in recording_prerequisites.items():
+                prerequisite = evidence.get(field)
+                if (
+                    not isinstance(prerequisite, dict)
+                    or prerequisite.get("status") != "verified"
+                ):
+                    errors.append(
+                        f"verified demo recording requires verified {label}"
+                    )
+                    continue
+                prerequisite_observed = _parse_utc_observation(
+                    prerequisite.get("observed_at")
+                )
+                if (
+                    demo_observed is not None
+                    and prerequisite_observed is not None
+                    and demo_observed <= prerequisite_observed
+                ):
+                    errors.append(
+                        "demo recording observation must be later than "
+                        f"{label} observation"
+                    )
         elif demo.get("status") == "pending":
             if demo.get("url") is not None:
                 errors.append("pending demo recording must not contain a URL")
@@ -1649,6 +1748,7 @@ def validate(*, allow_pending: bool) -> list[str]:
                 f"{expected_scope_count} OAuth scopes": "OAuth scope count",
                 "**Review SparkCap.**": "SparkCap walkthrough",
                 "**Review SparkRoom.**": "SparkRoom walkthrough",
+                "**Review SparkClose.**": "SparkClose walkthrough",
             }
             for marker, label in required_runbook_markers.items():
                 if marker not in runbook:

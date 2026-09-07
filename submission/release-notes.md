@@ -1,8 +1,8 @@
-# SparkLaunch 0.7.0+codex.20260904000000 ChatGPT Candidate
+# SparkLaunch 0.8.0+codex.20260906000000 ChatGPT Candidate
 
-Status: the local service 1.6.0 candidate adds SparkCap and SparkRoom and has not been deployed.
+Status: the local service 1.7.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
 The previous production MCP service is deployed at service 1.4.0 according to the
-retained 2026-09-03 evidence; that 61-tool observation does not verify this 86-tool
+retained 2026-09-03 evidence; that 61-tool observation does not verify this 100-tool
 candidate. The package has not yet been submitted or approved by ChatGPT.
 The portal prerequisites now bind local artifact checks to this candidate while
 preserving previous production observations as immutable historical evidence.
@@ -19,24 +19,27 @@ Registry publication, and native-host invocation of the new tools remain unverif
   idempotency, live authorization, and existing plan limits. Modeling is unsaved.
 - Add the portable SparkCap skill and a cap-table/raise recipe for all hosts.
   Advanced legal/official, sharing, and export actions remain first-party handoffs.
-
+- Add fourteen SparkClose tools for SAFE modeling, investment evidence, closing,
+  recovery, and first-party signing handoffs, plus four OAuth scopes, the twelfth
+  skill, and a model-and-close recipe. Writes remain confirmation-bound and
+  idempotent; signing and full agreement review stay in SparkLaunch.
 
 - Classify collaborator invitation email delivery as destructive and open-world, requiring exact one-time confirmation because a sent message cannot be recalled.
 - Remove raw CRM/project location inputs and outputs from the submitted MCP boundary. ChatGPT business-card ingestion excludes physical addresses from extraction and storage while web/mobile retain their existing address-capable defaults.
 - Keep incorporation `draft_file` attachments address-free and move participant plus company business/mailing address entry to authenticated sparklaun.ch Action Center tasks.
 - Build a portal upload containing only the SparkLaunch plugin, with `.codex-plugin/plugin.json` at the archive root; keep internal submission evidence outside that upload.
-- Expose eleven concise founder-workflow skills through one connected SparkLaunch MCP server.
-- Generate review metadata from the application-owned registry of 86 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, SparkCap, SparkRoom, and incorporation.
+- Expose twelve concise founder-workflow skills through one connected SparkLaunch MCP server.
+- Generate review metadata from the application-owned registry of 100 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.
 - Add `crm.prepare_business_card_import` and `crm.get_business_card_import` for a portable, first-party business-card handoff: preparation creates no contact or attachment, import requires an authenticated explicit **Upload and import** action, and status readback returns no image or contact data.
 - Add `projects.invite_collaborator` as an owner/admin-only, idempotent, confirmation-bound email invitation that uses the canonical acceptance workflow and reports invitation persistence separately from delivery.
 - Add `tasks.list`, `tasks.create`, `tasks.update`, and `tasks.delete` for project-isolated general tasks with accepted-member email assignment, optimistic versions, idempotency, exact overwrite/delete confirmation, and stale mobile-state cleanup. CRM and GTM tasks remain outside this generic contract.
-- Add eight incorporation tools with explicit `project_id` arguments and the application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` permissions within the expected 25 OAuth scopes.
+- Add eight incorporation tools with explicit `project_id` arguments and the application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` permissions within the expected 29 OAuth scopes.
 - Check entitlement before starting, resuming, or reporting on an incorporation case. Missing access returns safe package recovery guidance without checkout or payment collection.
 - Coordinate ordinary shared company data separately from private Action Center work. Each participant completes only their own identity/Veriff, compliance, consent, and signature tasks; another participant's private data or Action Center URL is never returned in conversation.
 - Use exact draft versions, stable idempotency keys, readback after uncertain writes, and exact one-time confirmation previews for Action Center preparation, internal submission, and cancellation.
 - Use task-specific incorporation timing instead of the unrelated Idea Validation estimate.
 - Limit the final connected action to **submit to SparkLaunch Filing Operations**. The exact receipt warning is: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof.
-- Add 36 skill-trigger cases and 15 controlled E2E cases. The five incorporation scenarios require synthetic data and zero provider calls to Delaware, NWRA, CorpTools, email, filing, or registered-agent adapters.
+- Add 39 skill-trigger cases and 16 controlled E2E cases. The five incorporation scenarios require synthetic data and zero provider calls to Delaware, NWRA, CorpTools, email, filing, or registered-agent adapters.
 - Preserve generated logo and QR assets as expiring HTTPS file references rather than raw base64 or data URLs.
 - Keep identifiers and concurrency versions as internal tool-call state while all user-facing skill, recipe, confirmation, table, and handoff language uses human-readable names or descriptions.
 - Rebuild the portal candidate deterministically with canonical/mirror parity and a bundled proprietary license; record its digest in the separate readiness evidence.

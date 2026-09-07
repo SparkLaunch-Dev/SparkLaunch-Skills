@@ -29,7 +29,7 @@ No package contains a bearer token, API key, client secret, authorization code, 
 - `src/skills/`: canonical, host-neutral skill source edited by hand
 - `src/recipes/`: canonical multi-tool founder workflows edited by hand
 - `adapters/`: native host manifests, connection recovery fragments, and distribution notes
-- `contracts/tools.snapshot.json`: checked-in, runtime-derived 86-tool descriptors and input/output schemas
+- `contracts/tools.snapshot.json`: checked-in, runtime-derived 100-tool descriptors and input/output schemas
 - `plugins/`: deterministic generated packages for all five hosts
 - `sparklaunch-*/` and `recipes/`: generated OpenAI-compatible legacy mirrors retained for existing consumers
 - `submission/`: ChatGPT review candidate evidence and portal-only gates
@@ -72,7 +72,11 @@ python scripts/generate_submission.py
 
 The exporter constructs the sibling runtime against a temporary SQLite database and records the resulting descriptors. It does not deploy the server or call a hosted SparkLaunch environment.
 
-## SparkRoom candidate
+## SparkClose candidate
+
+The local 0.8.0 package and service 1.7.0 candidate include 100 tools, 29 scopes and twelve skills. SparkClose adds fourteen SAFE modeling, investment, evidence, closing, recovery and first-party handoff tools. Signing and agreement review remain in SparkLaunch. Package validation does not prove deployment, publication or native-host execution.
+
+## Earlier SparkRoom candidate
 
 The local 0.7.0 package and service 1.6.0 candidate include 86 tools, 25 scopes and eleven skills. SparkRoom adds twelve room, document-selection, share-control and usage tools plus its skill and recipe. Effective Growth access is required. The previous 1.4.0 / 61-tool production evidence remains historical; deployment and native-host execution of this candidate are unverified.
 
@@ -119,7 +123,7 @@ Build the ChatGPT portal ZIP with:
 python scripts/build_submission_bundle.py
 ```
 
-Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Run `python scripts/validate_portal_prerequisites.py --allow-pending` after building the deterministic ZIP to validate the local candidate and its explicit evidence boundaries. That mode permits named external gates to remain pending; running the validator without the flag is the strict readiness check. The retained production revision, migration, 18-scope OAuth discovery, and 61-tool direct scan are historical baseline evidence for service `1.4.0`, not proof of the local `1.6.0` / 86-tool / 25-scope candidate. Candidate deployment, OpenAI portal Scan Tools, full live-descriptor equality, ChatGPT review, native-host execution, and publication remain unverified.
+Portal-only prerequisites remain in `submission/portal-prerequisites.json`. Run `python scripts/validate_portal_prerequisites.py --allow-pending` after building the deterministic ZIP to validate the local candidate and its explicit evidence boundaries. That mode permits named external gates to remain pending; running the validator without the flag is the strict readiness check. The retained production revision, migration, 18-scope OAuth discovery, and 61-tool direct scan are historical baseline evidence for service `1.4.0`, not proof of the local `1.7.0` / 100-tool / 29-scope candidate. Candidate deployment, OpenAI portal Scan Tools, full live-descriptor equality, ChatGPT review, native-host execution, and publication remain unverified.
 
 The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch-Dev/sparklaunch`. Registry candidate version, last-known published version, runtime snapshot version, and publication status are recorded separately in `release-state.json`. Publishing an immutable Registry version requires its dedicated approved workflow and is not performed by package generation.
 
@@ -135,6 +139,7 @@ The root `server.json` is the MCP Registry descriptor for `io.github.SparkLaunch
 - `sparklaunch-sales-crm`: lead, contact, deal, activity, and supported business-card workflows
 - `sparklaunch-sparkroom`: investor room preparation, pinned document selection, controlled sharing and usage summaries
 - `sparklaunch-sparkcap`: cap-table and stakeholder planning, ownership, dilution, raise and hiring models
+- `sparklaunch-sparkclose`: SAFE modeling, investment evidence, closing, recovery, and first-party signing handoffs
 - `sparklaunch-incorporation`: entitlement, address-free case preparation, private participant tasks, corrections, status, and internal Filing Operations submission
 
 ## Support, Security, And License

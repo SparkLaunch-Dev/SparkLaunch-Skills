@@ -14,10 +14,12 @@ import yaml
 
 try:
     from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
+    from scripts.validate_portal_prerequisites import sensitive_text_findings
     from scripts.sync_plugin import ROOT, SKILLS, sync
     from scripts.tool_contract_snapshot import load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
     from build_submission_bundle import build_bundle, portal_bundle_layout_errors
+    from validate_portal_prerequisites import sensitive_text_findings
     from sync_plugin import ROOT, SKILLS, sync
     from tool_contract_snapshot import load_snapshot
 
@@ -77,6 +79,11 @@ EXPECTED_PLUGIN_PNG_DIMENSIONS = {
     "assets/sparklaunch.png": (1024, 1024),
     "assets/sparklaunch-wordmark-light.png": (1338, 280),
     "assets/sparklaunch-wordmark-dark.png": (1338, 280),
+}
+REVIEWER_MARKDOWN_FILES = {
+    Path("submission/demo-recording-runbook.md"),
+    Path("submission/release-notes.md"),
+    Path("submission/reviewer-instructions.md"),
 }
 
 
@@ -194,6 +201,12 @@ def validate() -> list[str]:
         for label, pattern in FORBIDDEN.items():
             if pattern.search(text):
                 errors.append(f"{label} remains in {path.relative_to(ROOT)}")
+        relative_path = path.relative_to(ROOT)
+        if relative_path in REVIEWER_MARKDOWN_FILES:
+            for category in sensitive_text_findings(text):
+                errors.append(
+                    f"reviewer-facing Markdown contains {category}: {relative_path}"
+                )
 
     registry = _load_json(ROOT / "server.json", errors)
     if registry is not None:
@@ -406,8 +419,8 @@ def validate() -> list[str]:
     cases = (evaluations or {}).get("cases") or []
     if (evaluations or {}).get("schema_version") != 1:
         errors.append("skill trigger evaluations schema_version must be 1")
-    if len(cases) != 36:
-        errors.append("skill trigger evaluations must contain exactly 36 cases")
+    if len(cases) != 39:
+        errors.append("skill trigger evaluations must contain exactly 39 cases")
     case_ids: set[str] = set()
     positive_counts = {skill: 0 for skill in SKILLS}
     negative_count = 0
@@ -430,15 +443,15 @@ def validate() -> list[str]:
     for skill, count in positive_counts.items():
         if count < 2:
             errors.append(f"skill trigger evaluations need two positive cases: {skill}")
-    if negative_count != 10:
-        errors.append("skill trigger evaluations must preserve exactly ten broad negative cases")
+    if negative_count != 11:
+        errors.append("skill trigger evaluations must preserve exactly eleven broad negative cases")
 
     matrix = _load_json(ROOT / "evals" / "controlled-e2e-matrix.json", errors)
     matrix_cases = (matrix or {}).get("cases") or []
     if (matrix or {}).get("version") != 1:
         errors.append("controlled E2E matrix version must be 1")
-    if len(matrix_cases) != 15:
-        errors.append("controlled E2E matrix must contain exactly 15 cases")
+    if len(matrix_cases) != 16:
+        errors.append("controlled E2E matrix must contain exactly 16 cases")
     covered_tools = {
         tool
         for case in matrix_cases
@@ -489,7 +502,7 @@ def validate() -> list[str]:
             "project_id",
             "idempotency",
             "file references",
-            "eleven",
+            "twelve",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",
         ):
@@ -509,7 +522,7 @@ def validate() -> list[str]:
             "privacy-policy",
             "terms-and-conditions",
             f"{expected_tool_count} tools",
-            "25 OAuth scopes",
+            "29 OAuth scopes",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",
         ):

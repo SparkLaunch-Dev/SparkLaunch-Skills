@@ -4,7 +4,7 @@
   "app_info": {
     "display_name": "SparkLaunch",
     "subtitle": "Build and operate a startup",
-    "description": "SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, manage SparkCap planning cap tables and model ownership, prepare SparkRoom investor rooms and controlled sharing, and prepare entitlement-gated incorporation cases with secure participant tasks.",
+    "description": "SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, model ownership with SparkCap, prepare controlled investor rooms with SparkRoom, model and close SAFE investments with SparkClose, and prepare entitlement-gated incorporation cases with secure participant tasks.",
     "category": "BUSINESS"
   },
   "tools": {
@@ -107,12 +107,12 @@
     "cap_table.create_stakeholder": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Add an address-free planning stakeholder, share position, SAFE, or note within plan limits after confirmation. Amounts are whole USD and discounts are fractions. No securities are issued or signed and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Add an address-free planning stakeholder, share position, SAFE, or note within plan limits after confirmation. Any existing public shares may reflect the addition immediately. Amounts are whole USD and discounts are fractions. No securities are issued or signed and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
@@ -123,7 +123,7 @@
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Delete the selected cap table and associated records after exact confirmation at the current version; existing shared access stops and therefore changes SparkLaunch state.",
+        "read_only_justification": "Delete the selected cap table and associated records after exact confirmation at the current version; any existing shared access stops and therefore changes SparkLaunch state.",
         "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
@@ -131,12 +131,12 @@
     "cap_table.delete_stakeholder": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Delete a selected planning stakeholder and associated records after exact confirmation at the current cap-table version and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Delete a selected planning stakeholder and associated records after exact confirmation at the current cap-table version. Any existing public shares reflect the removal immediately and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
@@ -227,24 +227,24 @@
     "cap_table.update": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Update selected planning fields after exact confirmation at the current opaque version and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Update selected planning fields after exact confirmation at the current opaque version. Any existing public shares may reflect changed shared fields immediately and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
     "cap_table.update_stakeholder": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Change selected address-free planning stakeholder fields after exact confirmation at the current cap-table version. Execution and signature status cannot be changed and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Change selected address-free planning stakeholder fields after exact confirmation at the current cap-table version. Any existing public shares may reflect changed shared fields immediately. Execution and signature status cannot be changed and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
@@ -800,6 +800,174 @@
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
+    "sparkclose.cancel_unsigned": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Confirm cancellation and void a pending signature request; retain history. Signed agreements require first-party correction and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.close_investment": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Confirm one closing only after signatures, approval, matching receipts, reconciliation and source gates pass. Updates private packet and CRM; no share issuance or payment processing and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.get_investment": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read safe investment milestones and an opaque version; no agreement bodies, signer identities or raw evidence.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.get_scenario": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read a saved model snapshot, its inputs and stale-source status.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.list_investments": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read paginated SAFE investment metadata in a Growth project.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.list_scenarios": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read paginated saved scenario metadata in a Growth project.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.model_safe": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Calculate an unsaved cap-exposure estimate with explicit assumptions; no issued equity or saved investment.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.open_workflow": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Return the selected project workspace for agreement preparation, signing, signed-document import or correction. No action is executed.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.readiness": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Read financing readiness and issue metadata; this is not a completed closing.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.reconcile_funding": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Confirm matching company-recorded receipts; no funds move and no bank settlement is verified and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.record_approval": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "After confirmation, record a company-reviewed approval reference. Metadata is not legal review and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.record_receipt": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "After confirmation, record receipt evidence and reset reconciliation; no payment or bank verification occurs and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.retry_updates": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Confirm retry of unfinished canonical CRM/document updates. Does not sign or broaden sharing and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.save_scenario": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Confirm and save a source-version-bound immutable scenario; no investment is created and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
     "sparkroom.add_documents": {
       "annotations": {
         "readOnlyHint": false,
@@ -807,7 +975,7 @@
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Pin up to 25 explicitly selected document revisions in the room after confirmation. Existing viewers can access additions. No source documents are changed and therefore changes SparkLaunch state.",
+        "read_only_justification": "Pin up to 25 explicitly selected document revisions in the room after confirmation. Any existing room links may expose additions according to their permissions. No source documents are changed and therefore changes SparkLaunch state.",
         "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
@@ -899,24 +1067,24 @@
     "sparkroom.remove_item": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Remove the selected room item after confirmation, retaining its source document. Previously downloaded copies cannot be recalled and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Remove the selected room item after confirmation, retaining its source document. Any existing room links stop exposing or downloading the item; prior downloads, if any, cannot be recalled and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
     "sparkroom.revoke_share_link": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Revoke the selected link after current-state confirmation. Other links and prior downloads are unaffected and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Revoke the selected bearer link immediately after current-state confirmation. Any other links are unaffected, and prior downloads, if any, cannot be recalled and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },
@@ -935,12 +1103,12 @@
     "sparkroom.update_item": {
       "annotations": {
         "readOnlyHint": false,
-        "openWorldHint": false,
+        "openWorldHint": true,
         "destructiveHint": true
       },
       "justifications": {
-        "read_only_justification": "Change a room item title, section or order after current-state confirmation. Revision and live-source modes remain unchanged and therefore changes SparkLaunch state.",
-        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "read_only_justification": "Change a room item title, section or order after current-state confirmation. Any existing room links reflect the new presentation immediately; revision and live-source modes remain unchanged and therefore changes SparkLaunch state.",
+        "open_world_justification": "This can change a publicly reachable URL or other public internet state.",
         "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
       }
     },

@@ -268,6 +268,28 @@
       "prompt": "Explain what investors usually expect in a diligence data room, without accessing any account.",
       "expected_skills": [],
       "rationale": "Generic education does not use SparkLaunch workspace data."
+    },
+    {
+      "id": "sparkclose-model",
+      "prompt": "Model a $500000 SAFE at a $10 million post-money cap in my SparkClose project and save the scenario.",
+      "expected_skills": [
+        "sparklaunch-sparkclose"
+      ],
+      "rationale": "Requires canonical SAFE modeling and a confirmed saved snapshot."
+    },
+    {
+      "id": "sparkclose-closing",
+      "prompt": "Review my signed SparkClose investment, record the company-confirmed receipt and help me close it.",
+      "expected_skills": [
+        "sparklaunch-sparkclose"
+      ],
+      "rationale": "Requires reviewed evidence, distinct funding and closing gates, confirmation and destination readback."
+    },
+    {
+      "id": "negative-generic-safe-advice",
+      "prompt": "Explain whether a SAFE is a good investment for me without accessing any account.",
+      "expected_skills": [],
+      "rationale": "Generic investment education or advice does not use SparkLaunch workspace data or trigger SparkClose."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "server_version": "1.6.0",
-  "tool_count": 86,
+  "server_version": "1.7.0",
+  "tool_count": 100,
   "tools": {
     "branding.generate_palette": {
       "contract": {
@@ -21,7 +21,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Generate color palettes finished",
-          "openai/toolInvocation/invoking": "Running generate color palettes\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running generate color palettes\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -215,7 +215,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get color palette finished",
-          "openai/toolInvocation/invoking": "Running get color palette\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get color palette\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -388,7 +388,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List color palettes finished",
-          "openai/toolInvocation/invoking": "Running list color palettes\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list color palettes\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -566,7 +566,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Archive campaign finished",
-          "openai/toolInvocation/invoking": "Running archive campaign\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running archive campaign\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -765,7 +765,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create campaign finished",
-          "openai/toolInvocation/invoking": "Running create campaign\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create campaign\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -985,7 +985,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Pause campaign finished",
-          "openai/toolInvocation/invoking": "Running pause campaign\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running pause campaign\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -1180,7 +1180,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get campaign statistics finished",
-          "openai/toolInvocation/invoking": "Running get campaign statistics\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get campaign statistics\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -1370,7 +1370,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create SparkCap draft finished",
-          "openai/toolInvocation/invoking": "Running create sparkcap draft\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create sparkcap draft\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -1576,10 +1576,10 @@
     },
     "cap_table.create_stakeholder": {
       "contract": {
-        "description": "Add an address-free planning stakeholder, share position, SAFE, or note within plan limits after confirmation. Amounts are whole USD and discounts are fractions. No securities are issued or signed.",
+        "description": "Add an address-free planning stakeholder, share position, SAFE, or note within plan limits after confirmation. Any existing public shares may reflect the addition immediately. Amounts are whole USD and discounts are fractions. No securities are issued or signed.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "cap_table_data",
         "project_scoped": true,
         "read_only": false,
@@ -1594,7 +1594,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Add SparkCap stakeholder finished",
-          "openai/toolInvocation/invoking": "Running add sparkcap stakeholder\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running add sparkcap stakeholder\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -1607,11 +1607,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Add SparkCap stakeholder"
         },
-        "description": "Add an address-free planning stakeholder, share position, SAFE, or note within plan limits after confirmation. Amounts are whole USD and discounts are fractions. No securities are issued or signed.",
+        "description": "Add an address-free planning stakeholder, share position, SAFE, or note within plan limits after confirmation. Any existing public shares may reflect the addition immediately. Amounts are whole USD and discounts are fractions. No securities are issued or signed.",
         "inputSchema": {
           "$defs": {
             "StakeholderInput": {
@@ -1955,7 +1955,7 @@
     },
     "cap_table.delete": {
       "contract": {
-        "description": "Delete the selected cap table and associated records after exact confirmation at the current version; existing shared access stops.",
+        "description": "Delete the selected cap table and associated records after exact confirmation at the current version; any existing shared access stops.",
         "destructive": true,
         "idempotent": true,
         "open_world": true,
@@ -1972,7 +1972,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Delete SparkCap cap table finished",
-          "openai/toolInvocation/invoking": "Running delete sparkcap cap table\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running delete sparkcap cap table\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -1989,7 +1989,7 @@
           "readOnlyHint": false,
           "title": "Delete SparkCap cap table"
         },
-        "description": "Delete the selected cap table and associated records after exact confirmation at the current version; existing shared access stops.",
+        "description": "Delete the selected cap table and associated records after exact confirmation at the current version; any existing shared access stops.",
         "inputSchema": {
           "additionalProperties": false,
           "properties": {
@@ -2143,10 +2143,10 @@
     },
     "cap_table.delete_stakeholder": {
       "contract": {
-        "description": "Delete a selected planning stakeholder and associated records after exact confirmation at the current cap-table version.",
+        "description": "Delete a selected planning stakeholder and associated records after exact confirmation at the current cap-table version. Any existing public shares reflect the removal immediately.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "cap_table_data",
         "project_scoped": true,
         "read_only": false,
@@ -2161,7 +2161,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Delete SparkCap stakeholder finished",
-          "openai/toolInvocation/invoking": "Running delete sparkcap stakeholder\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running delete sparkcap stakeholder\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -2174,11 +2174,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Delete SparkCap stakeholder"
         },
-        "description": "Delete a selected planning stakeholder and associated records after exact confirmation at the current cap-table version.",
+        "description": "Delete a selected planning stakeholder and associated records after exact confirmation at the current cap-table version. Any existing public shares reflect the removal immediately.",
         "inputSchema": {
           "additionalProperties": false,
           "properties": {
@@ -2361,7 +2361,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Preview SparkCap dilution finished",
-          "openai/toolInvocation/invoking": "Running preview sparkcap dilution\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running preview sparkcap dilution\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -2532,7 +2532,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Model fully diluted ownership finished",
-          "openai/toolInvocation/invoking": "Running model fully diluted ownership\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running model fully diluted ownership\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -2718,7 +2718,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get SparkCap cap table finished",
-          "openai/toolInvocation/invoking": "Running get sparkcap cap table\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get sparkcap cap table\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -2893,7 +2893,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get SparkCap usage finished",
-          "openai/toolInvocation/invoking": "Running get sparkcap usage\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get sparkcap usage\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -3067,7 +3067,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Model SparkCap hiring impact finished",
-          "openai/toolInvocation/invoking": "Running model sparkcap hiring impact\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running model sparkcap hiring impact\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -3265,7 +3265,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List SparkCap cap tables finished",
-          "openai/toolInvocation/invoking": "Running list sparkcap cap tables\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list sparkcap cap tables\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -3447,7 +3447,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Simulate SparkCap raise finished",
-          "openai/toolInvocation/invoking": "Running simulate sparkcap raise\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running simulate sparkcap raise\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -3674,10 +3674,10 @@
     },
     "cap_table.update": {
       "contract": {
-        "description": "Update selected planning fields after exact confirmation at the current opaque version.",
+        "description": "Update selected planning fields after exact confirmation at the current opaque version. Any existing public shares may reflect changed shared fields immediately.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "cap_table_data",
         "project_scoped": true,
         "read_only": false,
@@ -3692,7 +3692,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update SparkCap draft finished",
-          "openai/toolInvocation/invoking": "Running update sparkcap draft\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update sparkcap draft\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -3705,11 +3705,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Update SparkCap draft"
         },
-        "description": "Update selected planning fields after exact confirmation at the current opaque version.",
+        "description": "Update selected planning fields after exact confirmation at the current opaque version. Any existing public shares may reflect changed shared fields immediately.",
         "inputSchema": {
           "$defs": {
             "DraftChanges": {
@@ -3941,10 +3941,10 @@
     },
     "cap_table.update_stakeholder": {
       "contract": {
-        "description": "Change selected address-free planning stakeholder fields after exact confirmation at the current cap-table version. Execution and signature status cannot be changed.",
+        "description": "Change selected address-free planning stakeholder fields after exact confirmation at the current cap-table version. Any existing public shares may reflect changed shared fields immediately. Execution and signature status cannot be changed.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "cap_table_data",
         "project_scoped": true,
         "read_only": false,
@@ -3959,7 +3959,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update SparkCap stakeholder finished",
-          "openai/toolInvocation/invoking": "Running update sparkcap stakeholder\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update sparkcap stakeholder\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -3972,11 +3972,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Update SparkCap stakeholder"
         },
-        "description": "Change selected address-free planning stakeholder fields after exact confirmation at the current cap-table version. Execution and signature status cannot be changed.",
+        "description": "Change selected address-free planning stakeholder fields after exact confirmation at the current cap-table version. Any existing public shares may reflect changed shared fields immediately. Execution and signature status cannot be changed.",
         "inputSchema": {
           "$defs": {
             "StakeholderChanges": {
@@ -4362,7 +4362,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Add contact note finished",
-          "openai/toolInvocation/invoking": "Running add contact note\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running add contact note\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -4585,7 +4585,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Add lead note finished",
-          "openai/toolInvocation/invoking": "Running add lead note\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running add lead note\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -4795,7 +4795,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create CRM lead finished",
-          "openai/toolInvocation/invoking": "Running create crm lead\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create crm lead\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -5119,7 +5119,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Delete business card finished",
-          "openai/toolInvocation/invoking": "Running delete business card\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running delete business card\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -5319,7 +5319,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Generate CRM logo finished",
-          "openai/toolInvocation/invoking": "Running generate crm logo\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running generate crm logo\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -5630,7 +5630,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get CRM activities finished",
-          "openai/toolInvocation/invoking": "Running get crm activities\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get crm activities\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -5839,7 +5839,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get business card import finished",
-          "openai/toolInvocation/invoking": "Running get business card import\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get business card import\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -6057,7 +6057,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get CRM contact finished",
-          "openai/toolInvocation/invoking": "Running get crm contact\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get crm contact\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -6228,7 +6228,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get contact workspace finished",
-          "openai/toolInvocation/invoking": "Running get contact workspace\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get contact workspace\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -6408,7 +6408,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get CRM dashboard finished",
-          "openai/toolInvocation/invoking": "Running get crm dashboard\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get crm dashboard\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -6592,7 +6592,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get CRM lead finished",
-          "openai/toolInvocation/invoking": "Running get crm lead\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get crm lead\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -6763,7 +6763,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get lead workspace finished",
-          "openai/toolInvocation/invoking": "Running get lead workspace\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get lead workspace\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -6937,7 +6937,7 @@
             "business_card_file"
           ],
           "openai/toolInvocation/invoked": "Ingest business card finished",
-          "openai/toolInvocation/invoking": "Running ingest business card\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running ingest business card\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -7219,7 +7219,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List CRM deals finished",
-          "openai/toolInvocation/invoking": "Running list crm deals\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list crm deals\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -7421,7 +7421,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Log CRM activity finished",
-          "openai/toolInvocation/invoking": "Running log crm activity\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running log crm activity\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -7652,7 +7652,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Move CRM deal finished",
-          "openai/toolInvocation/invoking": "Running move crm deal\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running move crm deal\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -7862,7 +7862,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Prepare business card import finished",
-          "openai/toolInvocation/invoking": "Running prepare business card import\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running prepare business card import\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -8108,7 +8108,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Refresh contact summary finished",
-          "openai/toolInvocation/invoking": "Running refresh contact summary\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running refresh contact summary\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -8305,7 +8305,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Search CRM contacts finished",
-          "openai/toolInvocation/invoking": "Running search crm contacts\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running search crm contacts\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -8503,7 +8503,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Search CRM leads finished",
-          "openai/toolInvocation/invoking": "Running search crm leads\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running search crm leads\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -8702,7 +8702,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update CRM contact finished",
-          "openai/toolInvocation/invoking": "Running update crm contact\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update crm contact\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -9059,7 +9059,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update CRM lead finished",
-          "openai/toolInvocation/invoking": "Running update crm lead\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update crm lead\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -9423,7 +9423,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Cancel incorporation case finished",
-          "openai/toolInvocation/invoking": "Running cancel incorporation case\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running cancel incorporation case\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -9666,7 +9666,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Check incorporation entitlement finished",
-          "openai/toolInvocation/invoking": "Running check incorporation entitlement\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running check incorporation entitlement\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -9892,7 +9892,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get incorporation case finished",
-          "openai/toolInvocation/invoking": "Running get incorporation case\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get incorporation case\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -10134,7 +10134,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Prepare incorporation Action Center finished",
-          "openai/toolInvocation/invoking": "Running prepare incorporation action center\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running prepare incorporation action center\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -10387,7 +10387,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Start incorporation case finished",
-          "openai/toolInvocation/invoking": "Running start incorporation case\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running start incorporation case\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -10627,7 +10627,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Submit incorporation case to SparkLaunch finished",
-          "openai/toolInvocation/invoking": "Running submit incorporation case to sparklaunch\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running submit incorporation case to sparklaunch\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -10864,7 +10864,7 @@
             "draft_file"
           ],
           "openai/toolInvocation/invoked": "Update incorporation draft finished",
-          "openai/toolInvocation/invoking": "Running update incorporation draft\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update incorporation draft\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -11513,7 +11513,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Validate incorporation draft finished",
-          "openai/toolInvocation/invoking": "Running validate incorporation draft\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running validate incorporation draft\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -11741,7 +11741,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create landing project finished",
-          "openai/toolInvocation/invoking": "Running create landing project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create landing project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -11949,7 +11949,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Generate landing content finished",
-          "openai/toolInvocation/invoking": "Running generate landing content\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running generate landing content\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -12212,7 +12212,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get landing analytics finished",
-          "openai/toolInvocation/invoking": "Running get landing analytics\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get landing analytics\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -12396,7 +12396,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get landing leads finished",
-          "openai/toolInvocation/invoking": "Running get landing leads\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get landing leads\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -12596,7 +12596,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get landing project finished",
-          "openai/toolInvocation/invoking": "Running get landing project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get landing project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -12769,7 +12769,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List landing projects finished",
-          "openai/toolInvocation/invoking": "Running list landing projects\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list landing projects\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -12947,7 +12947,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Publish landing page finished",
-          "openai/toolInvocation/invoking": "Running publish landing page\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running publish landing page\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -13142,7 +13142,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Ingest campaign lead finished",
-          "openai/toolInvocation/invoking": "Running ingest campaign lead\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running ingest campaign lead\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -13496,7 +13496,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create SparkLaunch project finished",
-          "openai/toolInvocation/invoking": "Running create sparklaunch project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create sparklaunch project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -13754,7 +13754,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get SparkLaunch project finished",
-          "openai/toolInvocation/invoking": "Running get sparklaunch project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get sparklaunch project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -14074,7 +14074,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Invite project collaborator finished",
-          "openai/toolInvocation/invoking": "Running invite project collaborator\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running invite project collaborator\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -14305,7 +14305,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List SparkLaunch projects finished",
-          "openai/toolInvocation/invoking": "Running list sparklaunch projects\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list sparklaunch projects\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -14468,7 +14468,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update SparkLaunch project finished",
-          "openai/toolInvocation/invoking": "Running update sparklaunch project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update sparklaunch project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -14849,7 +14849,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Generate QR code finished",
-          "openai/toolInvocation/invoking": "Running generate qr code\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running generate qr code\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -15107,7 +15107,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create short link finished",
-          "openai/toolInvocation/invoking": "Running create short link\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create short link\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -15430,7 +15430,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Rotate short-link destination finished",
-          "openai/toolInvocation/invoking": "Running rotate short-link destination\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running rotate short-link destination\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -15715,9 +15715,2986 @@
         "title": "Rotate short-link destination"
       }
     },
+    "sparkclose.cancel_unsigned": {
+      "contract": {
+        "description": "Confirm cancellation and void a pending signature request; retain history. Signed agreements require first-party correction.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Cancel an unsigned SAFE investment"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Cancel an unsigned SAFE investment finished",
+          "openai/toolInvocation/invoking": "Running cancel an unsigned safe investment\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Cancel an unsigned SAFE investment"
+        },
+        "description": "Confirm cancellation and void a pending signature request; retain history. Signed agreements require first-party correction.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id",
+            "expected_version"
+          ],
+          "title": "cancel_unsignedArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.cancel_unsigned",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Cancel an unsigned SAFE investment"
+      }
+    },
+    "sparkclose.close_investment": {
+      "contract": {
+        "description": "Confirm one closing only after signatures, approval, matching receipts, reconciliation and source gates pass. Updates private packet and CRM; no share issuance or payment processing.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.close",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Finalize an evidenced SAFE closing"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Finalize an evidenced SAFE closing finished",
+          "openai/toolInvocation/invoking": "Running finalize an evidenced safe closing\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.close",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Finalize an evidenced SAFE closing"
+        },
+        "description": "Confirm one closing only after signatures, approval, matching receipts, reconciliation and source gates pass. Updates private packet and CRM; no share issuance or payment processing.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id",
+            "expected_version"
+          ],
+          "title": "close_investmentArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.close_investment",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.close",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Finalize an evidenced SAFE closing"
+      }
+    },
+    "sparkclose.get_investment": {
+      "contract": {
+        "description": "Read safe investment milestones and an opaque version; no agreement bodies, signer identities or raw evidence.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Inspect a SAFE investment"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Inspect a SAFE investment finished",
+          "openai/toolInvocation/invoking": "Running inspect a safe investment\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "Inspect a SAFE investment"
+        },
+        "description": "Read safe investment milestones and an opaque version; no agreement bodies, signer identities or raw evidence.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id"
+          ],
+          "title": "get_investmentArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.get_investment",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Inspect a SAFE investment"
+      }
+    },
+    "sparkclose.get_scenario": {
+      "contract": {
+        "description": "Read a saved model snapshot, its inputs and stale-source status.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "scenario"
+        ],
+        "title": "Inspect a saved SAFE scenario"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Inspect a saved SAFE scenario finished",
+          "openai/toolInvocation/invoking": "Running inspect a saved safe scenario\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "Inspect a saved SAFE scenario"
+        },
+        "description": "Read a saved model snapshot, its inputs and stale-source status.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            },
+            "scenario_id": {
+              "exclusiveMinimum": 0,
+              "title": "Scenario Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "scenario_id"
+          ],
+          "title": "get_scenarioArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.get_scenario",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "project_id": {
+                  "type": "integer"
+                },
+                "scenario": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "project_id",
+                "scenario"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Inspect a saved SAFE scenario"
+      }
+    },
+    "sparkclose.list_investments": {
+      "contract": {
+        "description": "Read paginated SAFE investment metadata in a Growth project.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "total",
+          "items"
+        ],
+        "title": "List SparkClose investments"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "List SparkClose investments finished",
+          "openai/toolInvocation/invoking": "Running list sparkclose investments\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "List SparkClose investments"
+        },
+        "description": "Read paginated SAFE investment metadata in a Growth project.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "limit": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "offset": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id"
+          ],
+          "title": "list_investmentsArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.list_investments",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "items": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "total": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "project_id",
+                "total",
+                "items"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "List SparkClose investments"
+      }
+    },
+    "sparkclose.list_scenarios": {
+      "contract": {
+        "description": "Read paginated saved scenario metadata in a Growth project.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "total",
+          "items"
+        ],
+        "title": "List SAFE scenarios"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "List SAFE scenarios finished",
+          "openai/toolInvocation/invoking": "Running list safe scenarios\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "List SAFE scenarios"
+        },
+        "description": "Read paginated saved scenario metadata in a Growth project.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "limit": {
+              "default": 25,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            },
+            "offset": {
+              "default": 0,
+              "maximum": 100000,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id"
+          ],
+          "title": "list_scenariosArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.list_scenarios",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "items": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "total": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "project_id",
+                "total",
+                "items"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "List SAFE scenarios"
+      }
+    },
+    "sparkclose.model_safe": {
+      "contract": {
+        "description": "Calculate an unsaved cap-exposure estimate with explicit assumptions; no issued equity or saved investment.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.model",
+        "success_required": [
+          "project_id",
+          "model"
+        ],
+        "title": "Model post-money SAFE exposure"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Model post-money SAFE exposure finished",
+          "openai/toolInvocation/invoking": "Running model post-money safe exposure\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.model"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "Model post-money SAFE exposure"
+        },
+        "description": "Calculate an unsaved cap-exposure estimate with explicit assumptions; no issued equity or saved investment.",
+        "inputSchema": {
+          "$defs": {
+            "Allocation": {
+              "additionalProperties": false,
+              "properties": {
+                "amount": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Amount",
+                  "type": "integer"
+                },
+                "cap": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Cap",
+                  "type": "integer"
+                },
+                "name": {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "title": "Name",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "amount",
+                "cap"
+              ],
+              "title": "Allocation",
+              "type": "object"
+            },
+            "ModelInput": {
+              "additionalProperties": false,
+              "properties": {
+                "allocations": {
+                  "items": {
+                    "$ref": "#/$defs/Allocation"
+                  },
+                  "maxItems": 100,
+                  "title": "Allocations",
+                  "type": "array"
+                },
+                "cap_table_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Cap Table Id",
+                  "type": "integer"
+                },
+                "inclusion": {
+                  "default": "all",
+                  "enum": [
+                    "all",
+                    "signed",
+                    "funded"
+                  ],
+                  "title": "Inclusion",
+                  "type": "string"
+                },
+                "name": {
+                  "default": "SAFE scenario",
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "title": "Name",
+                  "type": "string"
+                },
+                "pool_dilution_percent": {
+                  "anyOf": [
+                    {
+                      "maximum": 50.0,
+                      "minimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                      "type": "string"
+                    }
+                  ],
+                  "default": "0",
+                  "title": "Pool Dilution Percent"
+                },
+                "round_amount": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 2000000000,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Round Amount"
+                },
+                "round_valuation": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 2000000000,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Round Valuation"
+                },
+                "scenario_id": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Scenario Id"
+                }
+              },
+              "required": [
+                "cap_table_id"
+              ],
+              "title": "ModelInput",
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "properties": {
+            "data": {
+              "$ref": "#/$defs/ModelInput"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "data"
+          ],
+          "title": "model_safeArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.model_safe",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "model": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "project_id",
+                "model"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.model"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Model post-money SAFE exposure"
+      }
+    },
+    "sparkclose.open_workflow": {
+      "contract": {
+        "description": "Return the selected project workspace for agreement preparation, signing, signed-document import or correction. No action is executed.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "handoff"
+        ],
+        "title": "Continue SAFE agreement work in SparkLaunch"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Continue SAFE agreement work in SparkLaunch finished",
+          "openai/toolInvocation/invoking": "Running continue safe agreement work in sparklaunch\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "Continue SAFE agreement work in SparkLaunch"
+        },
+        "description": "Return the selected project workspace for agreement preparation, signing, signed-document import or correction. No action is executed.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            },
+            "purpose": {
+              "default": "prepare_agreement",
+              "enum": [
+                "prepare_agreement",
+                "sign",
+                "import_signed_safe",
+                "correct_records"
+              ],
+              "title": "Purpose",
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id"
+          ],
+          "title": "open_workflowArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.open_workflow",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "handoff": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "project_id",
+                "handoff"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Continue SAFE agreement work in SparkLaunch"
+      }
+    },
+    "sparkclose.readiness": {
+      "contract": {
+        "description": "Read financing readiness and issue metadata; this is not a completed closing.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "readiness",
+          "issues"
+        ],
+        "title": "Review SparkClose readiness"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Review SparkClose readiness finished",
+          "openai/toolInvocation/invoking": "Running review sparkclose readiness\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "Review SparkClose readiness"
+        },
+        "description": "Read financing readiness and issue metadata; this is not a completed closing.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id"
+          ],
+          "title": "readinessArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.readiness",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "issues": {
+                  "items": {
+                    "additionalProperties": true,
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "readiness": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "project_id",
+                "readiness",
+                "issues"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Review SparkClose readiness"
+      }
+    },
+    "sparkclose.reconcile_funding": {
+      "contract": {
+        "description": "Confirm matching company-recorded receipts; no funds move and no bank settlement is verified.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Reconcile SAFE funding evidence"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Reconcile SAFE funding evidence finished",
+          "openai/toolInvocation/invoking": "Running reconcile safe funding evidence\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Reconcile SAFE funding evidence"
+        },
+        "description": "Confirm matching company-recorded receipts; no funds move and no bank settlement is verified.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id",
+            "expected_version"
+          ],
+          "title": "reconcile_fundingArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.reconcile_funding",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Reconcile SAFE funding evidence"
+      }
+    },
+    "sparkclose.record_approval": {
+      "contract": {
+        "description": "After confirmation, record a company-reviewed approval reference. Metadata is not legal review.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Record company-reviewed SAFE approval"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Record company-reviewed SAFE approval finished",
+          "openai/toolInvocation/invoking": "Running record company-reviewed safe approval\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Record company-reviewed SAFE approval"
+        },
+        "description": "After confirmation, record a company-reviewed approval reference. Metadata is not legal review.",
+        "inputSchema": {
+          "$defs": {
+            "EvidenceApproval": {
+              "additionalProperties": false,
+              "properties": {
+                "approved": {
+                  "const": true,
+                  "title": "Approved",
+                  "type": "boolean"
+                },
+                "company_reviewed": {
+                  "const": true,
+                  "title": "Company Reviewed",
+                  "type": "boolean"
+                },
+                "evidence_version_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Evidence Version Id",
+                  "type": "integer"
+                },
+                "reference": {
+                  "maxLength": 200,
+                  "minLength": 3,
+                  "title": "Reference",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "evidence_version_id",
+                "reference",
+                "approved",
+                "company_reviewed"
+              ],
+              "title": "EvidenceApproval",
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "data": {
+              "$ref": "#/$defs/EvidenceApproval"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id",
+            "expected_version",
+            "data"
+          ],
+          "title": "record_approvalArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.record_approval",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Record company-reviewed SAFE approval"
+      }
+    },
+    "sparkclose.record_receipt": {
+      "contract": {
+        "description": "After confirmation, record receipt evidence and reset reconciliation; no payment or bank verification occurs.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Record company-confirmed funds received"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Record company-confirmed funds received finished",
+          "openai/toolInvocation/invoking": "Running record company-confirmed funds received\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Record company-confirmed funds received"
+        },
+        "description": "After confirmation, record receipt evidence and reset reconciliation; no payment or bank verification occurs.",
+        "inputSchema": {
+          "$defs": {
+            "EvidenceReceipt": {
+              "additionalProperties": false,
+              "properties": {
+                "amount": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "pattern": "^(?!^[-+.]*$)[+-]?0*(?:\\d{0,18}|(?=[\\d.]{1,21}0*$)\\d{0,18}\\.\\d{0,2}0*$)",
+                      "type": "string"
+                    }
+                  ],
+                  "title": "Amount"
+                },
+                "company_confirmed_receipt": {
+                  "const": true,
+                  "title": "Company Confirmed Receipt",
+                  "type": "boolean"
+                },
+                "currency": {
+                  "const": "USD",
+                  "title": "Currency",
+                  "type": "string"
+                },
+                "evidence_version_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Evidence Version Id",
+                  "type": "integer"
+                },
+                "received_at": {
+                  "format": "date-time",
+                  "title": "Received At",
+                  "type": "string"
+                },
+                "reference": {
+                  "maxLength": 200,
+                  "minLength": 3,
+                  "title": "Reference",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "amount",
+                "currency",
+                "received_at",
+                "reference",
+                "evidence_version_id",
+                "company_confirmed_receipt"
+              ],
+              "title": "EvidenceReceipt",
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "data": {
+              "$ref": "#/$defs/EvidenceReceipt"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id",
+            "expected_version",
+            "data"
+          ],
+          "title": "record_receiptArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.record_receipt",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Record company-confirmed funds received"
+      }
+    },
+    "sparkclose.retry_updates": {
+      "contract": {
+        "description": "Confirm retry of unfinished canonical CRM/document updates. Does not sign or broaden sharing.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Retry SAFE record updates"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Retry SAFE record updates finished",
+          "openai/toolInvocation/invoking": "Running retry safe record updates\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Retry SAFE record updates"
+        },
+        "description": "Confirm retry of unfinished canonical CRM/document updates. Does not sign or broaden sharing.",
+        "inputSchema": {
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "investment_id": {
+              "exclusiveMinimum": 0,
+              "title": "Investment Id",
+              "type": "integer"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "investment_id",
+            "expected_version"
+          ],
+          "title": "retry_updatesArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.retry_updates",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Retry SAFE record updates"
+      }
+    },
+    "sparkclose.save_scenario": {
+      "contract": {
+        "description": "Confirm and save a source-version-bound immutable scenario; no investment is created.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "scenario"
+        ],
+        "title": "Save a SAFE scenario"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Save a SAFE scenario finished",
+          "openai/toolInvocation/invoking": "Running save a safe scenario\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read",
+                "sparkclose.model"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Save a SAFE scenario"
+        },
+        "description": "Confirm and save a source-version-bound immutable scenario; no investment is created.",
+        "inputSchema": {
+          "$defs": {
+            "Allocation": {
+              "additionalProperties": false,
+              "properties": {
+                "amount": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Amount",
+                  "type": "integer"
+                },
+                "cap": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Cap",
+                  "type": "integer"
+                },
+                "name": {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "title": "Name",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "amount",
+                "cap"
+              ],
+              "title": "Allocation",
+              "type": "object"
+            },
+            "ModelInput": {
+              "additionalProperties": false,
+              "properties": {
+                "allocations": {
+                  "items": {
+                    "$ref": "#/$defs/Allocation"
+                  },
+                  "maxItems": 100,
+                  "title": "Allocations",
+                  "type": "array"
+                },
+                "cap_table_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Cap Table Id",
+                  "type": "integer"
+                },
+                "inclusion": {
+                  "default": "all",
+                  "enum": [
+                    "all",
+                    "signed",
+                    "funded"
+                  ],
+                  "title": "Inclusion",
+                  "type": "string"
+                },
+                "name": {
+                  "default": "SAFE scenario",
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "title": "Name",
+                  "type": "string"
+                },
+                "pool_dilution_percent": {
+                  "anyOf": [
+                    {
+                      "maximum": 50.0,
+                      "minimum": 0.0,
+                      "type": "number"
+                    },
+                    {
+                      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                      "type": "string"
+                    }
+                  ],
+                  "default": "0",
+                  "title": "Pool Dilution Percent"
+                },
+                "round_amount": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 2000000000,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Round Amount"
+                },
+                "round_valuation": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "maximum": 2000000000,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Round Valuation"
+                },
+                "scenario_id": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Scenario Id"
+                }
+              },
+              "required": [
+                "cap_table_id"
+              ],
+              "title": "ModelInput",
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "data": {
+              "$ref": "#/$defs/ModelInput"
+            },
+            "expected_source_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Source Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "expected_source_version",
+            "data"
+          ],
+          "title": "save_scenarioArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.save_scenario",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "project_id": {
+                  "type": "integer"
+                },
+                "scenario": {
+                  "additionalProperties": true,
+                  "type": "object"
+                }
+              },
+              "required": [
+                "project_id",
+                "scenario"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read",
+              "sparkclose.model"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Save a SAFE scenario"
+      }
+    },
     "sparkroom.add_documents": {
       "contract": {
-        "description": "Pin up to 25 explicitly selected document revisions in the room after confirmation. Existing viewers can access additions. No source documents are changed.",
+        "description": "Pin up to 25 explicitly selected document revisions in the room after confirmation. Any existing room links may expose additions according to their permissions. No source documents are changed.",
         "destructive": false,
         "idempotent": true,
         "open_world": true,
@@ -15735,11 +18712,12 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Add reviewed documents to SparkRoom finished",
-          "openai/toolInvocation/invoking": "Running add reviewed documents to sparkroom\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running add reviewed documents to sparkroom\u2026",
           "securitySchemes": [
             {
               "scopes": [
-                "sparkroom.write"
+                "sparkroom.write",
+                "sparkroom.read"
               ],
               "type": "oauth2"
             }
@@ -15752,7 +18730,7 @@
           "readOnlyHint": false,
           "title": "Add reviewed documents to SparkRoom"
         },
-        "description": "Pin up to 25 explicitly selected document revisions in the room after confirmation. Existing viewers can access additions. No source documents are changed.",
+        "description": "Pin up to 25 explicitly selected document revisions in the room after confirmation. Any existing room links may expose additions according to their permissions. No source documents are changed.",
         "inputSchema": {
           "$defs": {
             "DocumentSelection": {
@@ -15949,7 +18927,8 @@
         "securitySchemes": [
           {
             "scopes": [
-              "sparkroom.write"
+              "sparkroom.write",
+              "sparkroom.read"
             ],
             "type": "oauth2"
           }
@@ -15977,7 +18956,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create a SparkRoom finished",
-          "openai/toolInvocation/invoking": "Running create a sparkroom\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create a sparkroom\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -16178,11 +19157,12 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create a bounded SparkRoom share link finished",
-          "openai/toolInvocation/invoking": "Running create a bounded sparkroom share link\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create a bounded sparkroom share link\u2026",
           "securitySchemes": [
             {
               "scopes": [
-                "sparkroom.share"
+                "sparkroom.share",
+                "sparkroom.read"
               ],
               "type": "oauth2"
             }
@@ -16399,7 +19379,8 @@
         "securitySchemes": [
           {
             "scopes": [
-              "sparkroom.share"
+              "sparkroom.share",
+              "sparkroom.read"
             ],
             "type": "oauth2"
           }
@@ -16427,7 +19408,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Inspect a SparkRoom finished",
-          "openai/toolInvocation/invoking": "Running inspect a sparkroom\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running inspect a sparkroom\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -16597,7 +19578,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Read SparkRoom usage summary finished",
-          "openai/toolInvocation/invoking": "Running read sparkroom usage summary\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running read sparkroom usage summary\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -16764,7 +19745,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List SparkRoom investor rooms finished",
-          "openai/toolInvocation/invoking": "Running list sparkroom investor rooms\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list sparkroom investor rooms\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -16951,7 +19932,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Find SparkRoom library documents finished",
-          "openai/toolInvocation/invoking": "Running find sparkroom library documents\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running find sparkroom library documents\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -17153,7 +20134,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Inspect SparkRoom sharing controls finished",
-          "openai/toolInvocation/invoking": "Running inspect sparkroom sharing controls\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running inspect sparkroom sharing controls\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -17305,10 +20286,10 @@
     },
     "sparkroom.remove_item": {
       "contract": {
-        "description": "Remove the selected room item after confirmation, retaining its source document. Previously downloaded copies cannot be recalled.",
+        "description": "Remove the selected room item after confirmation, retaining its source document. Any existing room links stop exposing or downloading the item; prior downloads, if any, cannot be recalled.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "investor_room_metadata",
         "project_scoped": true,
         "read_only": false,
@@ -17323,11 +20304,12 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Remove an item from SparkRoom finished",
-          "openai/toolInvocation/invoking": "Running remove an item from sparkroom\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running remove an item from sparkroom\u2026",
           "securitySchemes": [
             {
               "scopes": [
-                "sparkroom.write"
+                "sparkroom.write",
+                "sparkroom.read"
               ],
               "type": "oauth2"
             }
@@ -17336,11 +20318,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Remove an item from SparkRoom"
         },
-        "description": "Remove the selected room item after confirmation, retaining its source document. Previously downloaded copies cannot be recalled.",
+        "description": "Remove the selected room item after confirmation, retaining its source document. Any existing room links stop exposing or downloading the item; prior downloads, if any, cannot be recalled.",
         "inputSchema": {
           "additionalProperties": false,
           "properties": {
@@ -17495,7 +20477,8 @@
         "securitySchemes": [
           {
             "scopes": [
-              "sparkroom.write"
+              "sparkroom.write",
+              "sparkroom.read"
             ],
             "type": "oauth2"
           }
@@ -17505,10 +20488,10 @@
     },
     "sparkroom.revoke_share_link": {
       "contract": {
-        "description": "Revoke the selected link after current-state confirmation. Other links and prior downloads are unaffected.",
+        "description": "Revoke the selected bearer link immediately after current-state confirmation. Any other links are unaffected, and prior downloads, if any, cannot be recalled.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "investor_room_metadata",
         "project_scoped": true,
         "read_only": false,
@@ -17523,11 +20506,12 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Revoke a SparkRoom share link finished",
-          "openai/toolInvocation/invoking": "Running revoke a sparkroom share link\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running revoke a sparkroom share link\u2026",
           "securitySchemes": [
             {
               "scopes": [
-                "sparkroom.share"
+                "sparkroom.share",
+                "sparkroom.read"
               ],
               "type": "oauth2"
             }
@@ -17536,11 +20520,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Revoke a SparkRoom share link"
         },
-        "description": "Revoke the selected link after current-state confirmation. Other links and prior downloads are unaffected.",
+        "description": "Revoke the selected bearer link immediately after current-state confirmation. Any other links are unaffected, and prior downloads, if any, cannot be recalled.",
         "inputSchema": {
           "additionalProperties": false,
           "properties": {
@@ -17695,7 +20679,8 @@
         "securitySchemes": [
           {
             "scopes": [
-              "sparkroom.share"
+              "sparkroom.share",
+              "sparkroom.read"
             ],
             "type": "oauth2"
           }
@@ -17723,11 +20708,12 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update SparkRoom details finished",
-          "openai/toolInvocation/invoking": "Running update sparkroom details\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update sparkroom details\u2026",
           "securitySchemes": [
             {
               "scopes": [
-                "sparkroom.write"
+                "sparkroom.write",
+                "sparkroom.read"
               ],
               "type": "oauth2"
             }
@@ -17930,7 +20916,8 @@
         "securitySchemes": [
           {
             "scopes": [
-              "sparkroom.write"
+              "sparkroom.write",
+              "sparkroom.read"
             ],
             "type": "oauth2"
           }
@@ -17940,10 +20927,10 @@
     },
     "sparkroom.update_item": {
       "contract": {
-        "description": "Change a room item title, section or order after current-state confirmation. Revision and live-source modes remain unchanged.",
+        "description": "Change a room item title, section or order after current-state confirmation. Any existing room links reflect the new presentation immediately; revision and live-source modes remain unchanged.",
         "destructive": true,
         "idempotent": true,
-        "open_world": false,
+        "open_world": true,
         "privacy_class": "investor_room_metadata",
         "project_scoped": true,
         "read_only": false,
@@ -17958,11 +20945,12 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update SparkRoom item presentation finished",
-          "openai/toolInvocation/invoking": "Running update sparkroom item presentation\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update sparkroom item presentation\u2026",
           "securitySchemes": [
             {
               "scopes": [
-                "sparkroom.write"
+                "sparkroom.write",
+                "sparkroom.read"
               ],
               "type": "oauth2"
             }
@@ -17971,11 +20959,11 @@
         "annotations": {
           "destructiveHint": true,
           "idempotentHint": true,
-          "openWorldHint": false,
+          "openWorldHint": true,
           "readOnlyHint": false,
           "title": "Update SparkRoom item presentation"
         },
-        "description": "Change a room item title, section or order after current-state confirmation. Revision and live-source modes remain unchanged.",
+        "description": "Change a room item title, section or order after current-state confirmation. Any existing room links reflect the new presentation immediately; revision and live-source modes remain unchanged.",
         "inputSchema": {
           "$defs": {
             "ItemChanges": {
@@ -18187,7 +21175,8 @@
         "securitySchemes": [
           {
             "scopes": [
-              "sparkroom.write"
+              "sparkroom.write",
+              "sparkroom.read"
             ],
             "type": "oauth2"
           }
@@ -18213,7 +21202,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create project task finished",
-          "openai/toolInvocation/invoking": "Running create project task\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create project task\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -18449,7 +21438,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Delete project task finished",
-          "openai/toolInvocation/invoking": "Running delete project task\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running delete project task\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -18662,7 +21651,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List project tasks finished",
-          "openai/toolInvocation/invoking": "Running list project tasks\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list project tasks\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -18878,7 +21867,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Update project task finished",
-          "openai/toolInvocation/invoking": "Running update project task\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running update project task\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -19192,7 +22181,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Create validation project finished",
-          "openai/toolInvocation/invoking": "Running create validation project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running create validation project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -19395,7 +22384,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Get validation project finished",
-          "openai/toolInvocation/invoking": "Running get validation project\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running get validation project\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -19568,7 +22557,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "List validation projects finished",
-          "openai/toolInvocation/invoking": "Running list validation projects\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running list validation projects\u2026",
           "securitySchemes": [
             {
               "scopes": [
@@ -19746,7 +22735,7 @@
       "descriptor": {
         "_meta": {
           "openai/toolInvocation/invoked": "Run validation analysis finished",
-          "openai/toolInvocation/invoking": "Running run validation analysis\u00e2\u20ac\u00a6",
+          "openai/toolInvocation/invoking": "Running run validation analysis\u2026",
           "securitySchemes": [
             {
               "scopes": [

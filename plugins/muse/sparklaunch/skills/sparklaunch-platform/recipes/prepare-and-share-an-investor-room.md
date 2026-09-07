@@ -20,7 +20,8 @@ names and omit identifier/version labels or columns from user-facing output.
 4. Prepare `sparkroom.add_documents` with explicit reviewed revisions, the
    current room version and a stable key. Show its confirmation preview and
    wait for approval. Submit the same arguments/key and confirmation token;
-   read back pinned contents. Existing viewers can access the additions.
+   read back pinned contents. Any existing room links may expose additions
+   according to their current permissions.
 5. If sharing was requested, review the room's named contents, changing linked
    or live sources, permission, expiry and use limit. Prepare
    `sparkroom.create_share_link`; wait for explicit approval of the preview,
@@ -30,7 +31,8 @@ names and omit identifier/version labels or columns from user-facing output.
    usage. Password-protected links and invitations stay in SparkLaunch.
 7. Use `sparkroom.get_analytics` for aggregate usage. If the user requests ending
    access, prepare `sparkroom.revoke_share_link` using fresh readback, review its
-   preview and confirm the exact action. Other links and old downloads persist.
+   preview and confirm the exact action. Any other links are unaffected; prior
+   downloads, if any, cannot be recalled.
 
 On stale state, read the room again and prepare a newly reviewed action. On an
 uncertain write, follow same-key recovery; never silently repeat link creation.

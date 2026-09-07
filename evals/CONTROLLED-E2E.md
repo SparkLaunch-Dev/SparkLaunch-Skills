@@ -25,7 +25,7 @@ Across every scenario, inspect the assistant's visible response, table, confirma
 
 ## Permission variants
 
-Run the matrix with a grant containing the expected 25 OAuth scopes, then call `projects.get` and evaluate `effective_permissions` for the selected project's plan, the user's role, and any token restriction. OAuth authorization is only the maximum connection boundary. A project-plan or role denial must not prompt an OAuth reconnect. A least-privilege OAuth variant may be run separately, but it must use a separate labeled connection and be disconnected only with explicit user approval.
+Run the matrix with a grant containing the expected 29 OAuth scopes, then call `projects.get` and evaluate `effective_permissions` for the selected project's plan, the user's role, and any token restriction. OAuth authorization is only the maximum connection boundary. A project-plan or role denial must not prompt an OAuth reconnect. A least-privilege OAuth variant may be run separately, but it must use a separate labeled connection and be disconnected only with explicit user approval.
 
 ## Incorporation isolation controls
 
@@ -47,3 +47,7 @@ Run the matrix with a grant containing the expected 25 OAuth scopes, then call `
 - `FAIL_UX`: the operation may be technically bounded but the user guidance is misleading, unsafe, or unusable.
 
 Record host and plugin versions, the redacted fixture ids, start/end timestamps, exact evidence level, discrepancies, and follow-up owner. Never store OAuth codes, access tokens, refresh tokens, confirmation tokens, or signed download URLs.
+
+## SparkClose candidate
+
+Use synthetic SAFE data for modeling, company-reviewed evidence, reconciliation, exact closing confirmation and destination readback. Never sign agreements or import private file bodies through MCP. The package matrix records planned coverage; native-host execution remains unverified.

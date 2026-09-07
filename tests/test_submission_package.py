@@ -59,6 +59,22 @@ def _validate_with_text_replaced(monkeypatch, path, old, new):
     return validate()
 
 
+def _validate_with_bytes_replaced(monkeypatch, path, old, new):
+    original_read_bytes = Path.read_bytes
+    target = path.resolve()
+
+    def read_bytes(candidate, *args, **kwargs):
+        raw = original_read_bytes(candidate, *args, **kwargs)
+        if candidate.resolve() == target:
+            text = raw.decode("utf-8")
+            assert old in text
+            return text.replace(old, new, 1).encode("utf-8")
+        return raw
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    return validate()
+
+
 def _validate_portal_evidence(
     monkeypatch,
     tmp_path,
@@ -229,6 +245,7 @@ def test_packaged_skills_are_exact_deterministic_mirrors():
         "sparklaunch-incorporation",
         "sparklaunch-sparkcap",
         "sparklaunch-sparkroom",
+        "sparklaunch-sparkclose",
     )
     assert len(expected_pairs()) > 40
     assert sync(write=False) == []
@@ -451,14 +468,14 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
         "name": REGISTRY_SERVER_NAME,
         "title": "SparkLaunch",
         "description": (
-            "Founder tools for launch, CRM, incorporation, SparkCap planning and SparkRoom sharing."
+            "Founder tools for launch, CRM, incorporation, SparkCap, SparkRoom, and SparkClose."
         ),
         "websiteUrl": "https://sparklaun.ch/",
         "remotes": [{"type": "streamable-http", "url": CANONICAL_MCP_URL}],
     }
     assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
-    assert version == "1.6.0"
+    assert version == "1.7.0"
     if BACKEND_AVAILABLE:
         application_version = run_path(BACKEND / "mcp_server_version.py")[
             "SPARKLAUNCH_MCP_SERVER_VERSION"
@@ -789,7 +806,7 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         (ROOT / "evals" / "skill-trigger-cases.json").read_text(encoding="utf-8")
     )
     cases = evaluations["cases"]
-    assert len(cases) == 36
+    assert len(cases) == 39
     expected_skills = {skill for case in cases for skill in case["expected_skills"]}
     assert expected_skills == {
         "sparklaunch-campaigns",
@@ -803,8 +820,12 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         "sparklaunch-incorporation",
         "sparklaunch-sparkcap",
         "sparklaunch-sparkroom",
+        "sparklaunch-sparkclose",
     }
-    assert sum(not case["expected_skills"] for case in cases) == 10
+    assert sum(not case["expected_skills"] for case in cases) == 11
+    assert next(
+        case for case in cases if case["id"] == "negative-generic-safe-advice"
+    )["expected_skills"] == []
     incorporation_cases = {
         case["id"]: case["expected_skills"]
         for case in cases
@@ -830,9 +851,10 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     covered_tools = {tool for case in matrix["cases"] for tool in case["tools"]}
     covered_recipes = {recipe for case in matrix["cases"] for recipe in case["recipes"]}
 
-    assert len(matrix["cases"]) == 15
+    assert len(matrix["cases"]) == 16
     assert covered_tools == set(submission["tools"])
     assert covered_recipes == {
+        "model-and-close-a-safe.md",
         "prepare-and-share-an-investor-room.md",
         "review-cap-table-and-model-a-raise.md",
         "connect-sparklaunch-to-chatgpt.md",
@@ -870,7 +892,7 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     expected_scopes = {
         contract.required_scope for contract in MCP_TOOL_CONTRACTS.values()
     }
-    assert len(expected_scopes) == 25
+    assert len(expected_scopes) == 29
     assert controls["expected_oauth_scope_count"] == len(expected_scopes)
     expected_grant_marker = f"expected {len(expected_scopes)}-scope grant"
     assert any(expected_grant_marker in case["expected"] for case in matrix["cases"])
@@ -888,7 +910,7 @@ def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
     runbook = (ROOT / "evals" / "CONTROLLED-E2E.md").read_text(encoding="utf-8")
 
     for marker in (
-        "25 OAuth scopes",
+        "29 OAuth scopes",
         "Never call Delaware, NWRA, or CorpTools",
         "zero provider calls",
         "submit to SparkLaunch Filing Operations",
@@ -1019,7 +1041,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"].startswith("0.7.0+codex.20260904")
+    assert manifest["version"].startswith("0.8.0+codex.20260906")
     assert manifest["version"] != "0.2.1+codex.20260817230400"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
@@ -1033,9 +1055,9 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     assert "sparklaunch-wordmark-light.png" in reviewer
     assert "sparklaunch-wordmark-dark.png" in reviewer
     for marker in (
-        "eleven",
+        "twelve",
         f"{len(MCP_TOOL_CONTRACTS)} tools",
-        "25 OAuth scopes",
+        "29 OAuth scopes",
         "submit to SparkLaunch Filing Operations",
         "receipt does not mean",
         "zero provider calls",
@@ -1043,6 +1065,81 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     ):
         assert marker in release_notes
         assert marker in reviewer
+
+
+@pytest.mark.parametrize(
+    ("relative_path", "injected", "category"),
+    (
+        (
+            "submission/release-notes.md",
+            "Authorization: Bearer synthetic-review-secret",
+            "authorization header",
+        ),
+        (
+            "submission/reviewer-instructions.md",
+            "client_secret=synthetic-review-secret",
+            "secret assignment",
+        ),
+        (
+            "submission/demo-recording-runbook.md",
+            "-----BEGIN PRIVATE KEY-----",
+            "private key",
+        ),
+        (
+            "submission/demo-recording-runbook.md",
+            "eyJabcdefgh.abcdefgh.abcdefgh",
+            "JWT",
+        ),
+        (
+            "submission/demo-recording-runbook.md",
+            "https://downloads.example.com/demo?X-Amz-Signature=synthetic",
+            "credential-bearing URL",
+        ),
+    ),
+)
+def test_reviewer_markdown_rejects_injected_sensitive_material(
+    monkeypatch,
+    relative_path,
+    injected,
+    category,
+):
+    path = ROOT / relative_path
+    marker = path.read_text(encoding="utf-8").splitlines()[0]
+
+    errors = _validate_with_bytes_replaced(
+        monkeypatch,
+        path,
+        marker,
+        f"{marker}\n{injected}",
+    )
+
+    assert (
+        f"reviewer-facing Markdown contains {category}: "
+        f"{path.relative_to(ROOT)}"
+    ) in errors
+
+
+@pytest.mark.parametrize(
+    "url",
+    (
+        "https://downloads.example.com/demo#access_token=synthetic",
+        (
+            "https://downloads.example.com/redirect?target="
+            "https%3A%2F%2Fvideo.example.com%2Fdemo%23session_id%3Dsynthetic"
+        ),
+    ),
+)
+def test_reviewer_markdown_url_scan_follows_fragments_and_nested_urls(url):
+    assert "credential-bearing URL" in (
+        portal_prerequisite_validator.sensitive_text_findings(url)
+    )
+
+
+def test_reviewer_markdown_url_scan_allows_benign_key_substrings():
+    url = "https://downloads.example.com/demo?design=minimal&codec=av1&monkey=capuchin"
+
+    assert portal_prerequisite_validator.sensitive_text_findings(url) == []
+    assert portal_prerequisite_validator._is_https_url(url) is True
 
 
 def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed():
@@ -1057,11 +1154,11 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 3
-    assert evidence["candidate"]["plugin_version"] == ("0.7.0+codex.20260904000000")
-    assert evidence["candidate"]["service_version"] == "1.6.0"
-    assert evidence["candidate"]["expected_tool_count"] == 86
-    assert len(MCP_TOOL_CONTRACTS) == 86
-    assert evidence["candidate"]["expected_oauth_scope_count"] == 25
+    assert evidence["candidate"]["plugin_version"] == ("0.8.0+codex.20260906000000")
+    assert evidence["candidate"]["service_version"] == "1.7.0"
+    assert evidence["candidate"]["expected_tool_count"] == 100
+    assert len(MCP_TOOL_CONTRACTS) == 100
+    assert evidence["candidate"]["expected_oauth_scope_count"] == 29
     deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
     historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
     assert evidence["public_production_readiness"]["status"] == "pending"
@@ -1074,7 +1171,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert current_public["domain_challenge_cache_control_no_store"] is True
     assert evidence["authenticated_production_scan"]["status"] == "pending"
     assert (
-        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 86
+        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 100
     )
     assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
     deployment = evidence["historical_production_deployments"][-1]
@@ -1171,7 +1268,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert direct_scan["tool_names"] == sorted(
         name
         for name in MCP_TOOL_CONTRACTS
-        if not name.startswith(("cap_table.", "sparkroom."))
+        if not name.startswith(("cap_table.", "sparkroom.", "sparkclose."))
     )
     assert direct_scan["exact_candidate_tool_name_set_match"] is True
     assert direct_scan["output_schema_root_failure_count"] == 0
@@ -1734,17 +1831,17 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
     ("old", "new", "expected_error"),
     (
         (
-            "exactly 86 tools",
+            "exactly 100 tools",
             "exactly 61 tools",
             "demo recording runbook has stale tool count",
         ),
         (
-            "service `1.6.0`",
+            "service `1.7.0`",
             "service `1.4.0`",
             "demo recording runbook has stale service version",
         ),
         (
-            "25 OAuth scopes",
+            "29 OAuth scopes",
             "18 OAuth scopes",
             "demo recording runbook has stale OAuth scope count",
         ),
@@ -1757,6 +1854,11 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
             "**Review SparkRoom.**",
             "**Review old room.**",
             "demo recording runbook has stale SparkRoom walkthrough",
+        ),
+        (
+            "**Review SparkClose.**",
+            "**Review old SAFE workflow.**",
+            "demo recording runbook has stale SparkClose walkthrough",
         ),
     ),
 )
@@ -1985,7 +2087,7 @@ def test_release_state_production_baseline_switches_atomically(
         == []
     )
 
-    release_state["runtime"]["last_verified_production"]["service_version"] = "1.6.0"
+    release_state["runtime"]["last_verified_production"]["service_version"] = "1.7.0"
     errors = _validate_portal_evidence(
         monkeypatch,
         tmp_path,
@@ -2078,6 +2180,80 @@ def test_pending_demo_cannot_retain_verified_proof(monkeypatch, tmp_path):
 
 
 @pytest.mark.parametrize(
+    ("field", "label"),
+    (
+        ("production_deployment", "candidate deployment"),
+        ("authenticated_production_scan", "authenticated production scan"),
+        ("reviewer_access", "reviewer access"),
+        ("publisher_identity", "publisher identity"),
+    ),
+)
+def test_verified_demo_requires_verified_recording_prerequisites(
+    monkeypatch,
+    tmp_path,
+    field,
+    label,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+    evidence[field]["status"] = "pending"
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert f"verified demo recording requires verified {label}" in errors
+
+
+@pytest.mark.parametrize(
+    ("field", "label"),
+    (
+        ("authenticated_production_scan", "authenticated production scan"),
+        ("reviewer_access", "reviewer access"),
+        ("publisher_identity", "publisher identity"),
+    ),
+)
+def test_verified_demo_must_postdate_recording_prerequisites(
+    monkeypatch,
+    tmp_path,
+    field,
+    label,
+):
+    evidence = json.loads(
+        (ROOT / "submission" / "portal-prerequisites.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    release_state = json.loads(
+        (ROOT / "release-state.json").read_text(encoding="utf-8")
+    )
+    evidence, release_state = _promote_candidate_evidence(evidence, release_state)
+    evidence[field]["observed_at"] = "2026-09-06T20:05:00Z"
+
+    errors = _validate_portal_evidence(
+        monkeypatch,
+        tmp_path,
+        evidence,
+        release_state,
+    )
+
+    assert (
+        f"demo recording observation must be later than {label} observation"
+        in errors
+    )
+
+
+@pytest.mark.parametrize(
     ("url", "expected"),
     (
         ("https://demo.sparklaun.ch/demo", True),
@@ -2097,6 +2273,20 @@ def test_pending_demo_cannot_retain_verified_proof(monkeypatch, tmp_path):
         ("https://demo.sparklaun.ch:0/demo", False),
         ("https://demo.sparklaun.ch/demo?token=supersecretvalue", False),
         ("https://demo.sparklaun.ch/demo?signature=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?password=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?passphrase=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?passcode=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?pwd=supersecretvalue", False),
+        ("https://demo.sparklaun.ch/demo?session_id=supersecretvalue", False),
+        (
+            "https://demo.sparklaun.ch/demo?target="
+            "https%3A%2F%2Fvideo.example.com%2Fwatch%23access_token%3Dsecret",
+            False,
+        ),
+        (
+            "https://demo.sparklaun.ch/demo?design=minimal&codec=av1&monkey=capuchin",
+            True,
+        ),
     ),
 )
 def test_demo_url_must_be_credential_free_and_public(url, expected):

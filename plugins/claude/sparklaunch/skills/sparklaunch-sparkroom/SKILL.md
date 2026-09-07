@@ -29,22 +29,24 @@ omit internal identifier/version values, labels and table columns.
 
 ## Supported operations
 
-| Intent | Tools | Permission |
+| Intent | Tools | Permissions |
 | --- | --- | --- |
 | Find rooms and inspect selected contents | `sparkroom.list`, `sparkroom.get` | `sparkroom.read` |
 | Find company-library documents | `sparkroom.list_documents` | `sparkroom.read` |
-| Create an empty private room or update its details | `sparkroom.create`, `sparkroom.update` | `sparkroom.write` |
-| Add reviewed document revisions | `sparkroom.add_documents` | `sparkroom.write` |
-| Change item titles/sections/order or remove an item | `sparkroom.update_item`, `sparkroom.remove_item` | `sparkroom.write` |
+| Create an empty private room | `sparkroom.create` | `sparkroom.write` |
+| Update an existing room's details | `sparkroom.update` | `sparkroom.read` + `sparkroom.write` |
+| Add reviewed document revisions | `sparkroom.add_documents` | `sparkroom.read` + `sparkroom.write` |
+| Change item titles/sections/order or remove an item | `sparkroom.update_item`, `sparkroom.remove_item` | `sparkroom.read` + `sparkroom.write` |
 | Inspect link controls and aggregate usage | `sparkroom.list_share_links`, `sparkroom.get_analytics` | `sparkroom.read` |
-| Create or revoke a room bearer link | `sparkroom.create_share_link`, `sparkroom.revoke_share_link` | `sparkroom.share` |
+| Create or revoke a room bearer link | `sparkroom.create_share_link`, `sparkroom.revoke_share_link` | `sparkroom.read` + `sparkroom.share` |
 
 Paginate room and library inventories. A library result supplies the latest
 revision metadata; select the explicit document and revision for each addition.
 Additions are pinned to those reviewed revisions, even if a newer upload arrives.
 The tools return metadata, not file contents. Do not claim to have reviewed a
-document's contents from its title. Adding a document makes it available to
-existing room viewers. Removing an item retains its library source.
+document's contents from its title. Any existing room links may expose additions
+according to their current permissions. Removing an item retains its library
+source.
 
 Existing room items can be pinned, linked to a changing latest revision, or live
 SparkCap records. Explain those differences when reviewing a share. The tools
@@ -77,10 +79,10 @@ inventory cannot recover old bearer URLs. Show the returned link only as needed
 for the requested sharing task; do not open it just to verify it, since access
 consumes a use. Verify through private room/link readback instead.
 
-Revocation affects one selected link. Other links remain usable and previously
-downloaded copies cannot be recalled. Archiving is not a substitute for revoking
-links. A usage count is not a unique investor count, and room inventory is not a
-diligence-readiness score.
+Revocation affects one selected link. Any other links are unaffected; prior
+downloads, if any, cannot be recalled. Archiving is not a substitute for
+revoking links. A usage count is not a unique investor count, and room inventory
+is not a diligence-readiness score.
 
 For file upload/download, password-protected links, participant invitations,
 live SparkCap additions, automatic version updates, formation-document

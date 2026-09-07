@@ -3,7 +3,7 @@ name: sparklaunch-platform
 description: >
   Use when a connected SparkLaunch user wants a broad founder workflow spanning
   project setup, idea validation, branding, launch assets, campaigns, landing
-  pages, CRM, SparkRoom, SparkCap, or incorporation and the first task is choosing the right
+  pages, CRM, SparkRoom, SparkCap, SparkClose, or incorporation and the first task is choosing the right
   SparkLaunch recipe or narrower skill.
 ---
 
@@ -20,13 +20,12 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 5. For campaigns, QR, or landing pages, use `recipes/plan-and-publish-a-launch.md` with `sparklaunch-campaigns` and `sparklaunch-landing-pages`.
 6. For leads, contacts, deals, or follow-up, use `sparklaunch-sales-crm`.
 7. For post-launch evidence, use `recipes/review-launch-signals-and-follow-up.md`.
-8. For an Incorporation Package, formation case, participant Action Center, correction, cancellation, or internal Filing Operations receipt, use `sparklaunch-incorporation` and its matching incorporation recipe.
+8. For cap tables, stakeholder planning, ownership, dilution, fundraising models, or hiring impact, use `sparklaunch-sparkcap` and `recipes/review-cap-table-and-model-a-raise.md`.
+9. For investor rooms, selected library documents, room share links, or usage summaries, use `sparklaunch-sparkroom` and `recipes/prepare-and-share-an-investor-room.md`. SparkRoom requires effective Growth access; uploads and password sharing continue in SparkLaunch.
+10. For SAFE modeling, saved dilution scenarios, funding evidence, or investment closings, use `sparklaunch-sparkclose` and `recipes/model-and-close-a-safe.md`.
+11. For an Incorporation Package, formation case, participant Action Center, correction, cancellation, or internal Filing Operations receipt, use `sparklaunch-incorporation` and its matching incorporation recipe.
 
 ## Connected-App Rules
-
-For cap tables, stakeholder planning, ownership, dilution, fundraising models,
-or hiring impact, use `sparklaunch-sparkcap` and
-`recipes/review-cap-table-and-model-a-raise.md`.
 
 <!-- sparklaunch:connection:start -->
 1. Use the OAuth connection managed by Gemini CLI. Never request or accept access tokens, refresh tokens, API keys, client secrets, authorization codes, or transport headers.
@@ -54,5 +53,3 @@ Carry forward the selected project, validated wedge, brand choices, published UR
 ## Output
 
 Before substantial work, name the selected recipe or narrower skill, the current founder stage, and the next gating milestone.
-
-For investor rooms, selected library documents, room share links or usage summaries, use `sparklaunch-sparkroom` and `prepare-and-share-an-investor-room.md`. SparkRoom requires effective Growth access; uploads and password sharing continue in SparkLaunch.

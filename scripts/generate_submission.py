@@ -80,7 +80,7 @@ def build_submission(reviewer_project_id: int | None = None):
         "app_info": {
             "display_name": "SparkLaunch",
             "subtitle": "Build and operate a startup",
-            "description": "SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, manage SparkCap planning cap tables and model ownership, prepare SparkRoom investor rooms and controlled sharing, and prepare entitlement-gated incorporation cases with secure participant tasks.",
+            "description": "SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, model ownership with SparkCap, prepare controlled investor rooms with SparkRoom, model and close SAFE investments with SparkClose, and prepare entitlement-gated incorporation cases with secure participant tasks.",
             "category": "BUSINESS",
         },
         "tools": {
