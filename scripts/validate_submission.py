@@ -70,11 +70,13 @@ EXPECTED_PLUGIN_INTERFACE = {
 }
 
 EXPECTED_PLUGIN_ASSETS = {
-    "composerIcon": "./assets/sparklaunch-small.png",
+    "composerIcon": "./assets/sparklaunch-composer-48.png",
     "logo": "./assets/sparklaunch.png",
-    "logoDark": "./assets/sparklaunch.png",
+    "logoDark": "./assets/sparklaunch-directory-dark.png",
 }
 EXPECTED_PLUGIN_PNG_DIMENSIONS = {
+    "assets/sparklaunch-composer-48.png": (48, 48),
+    "assets/sparklaunch-directory-dark.png": (1024, 1024),
     "assets/sparklaunch-small.png": (192, 192),
     "assets/sparklaunch.png": (1024, 1024),
     "assets/sparklaunch-wordmark-light.png": (1338, 280),

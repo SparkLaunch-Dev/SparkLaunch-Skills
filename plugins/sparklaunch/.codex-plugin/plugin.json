@@ -40,9 +40,9 @@
       "Prepare or resume my incorporation through SparkLaunch"
     ],
     "brandColor": "#6366F1",
-    "composerIcon": "./assets/sparklaunch-small.png",
+    "composerIcon": "./assets/sparklaunch-composer-48.png",
     "logo": "./assets/sparklaunch.png",
-    "logoDark": "./assets/sparklaunch.png",
+    "logoDark": "./assets/sparklaunch-directory-dark.png",
     "screenshots": []
   }
 }

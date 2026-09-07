@@ -10,16 +10,20 @@ deployment, review, publication or customer acceptance gate.
   29 business permissions, 12 skills.
 - Apache-2.0 approved by the repository owner for this repository only. Backend
   licensing and hosted-service terms remain unchanged.
-- 460 deterministic generated files, including canonical-generated Claude and
+- 462 deterministic generated files, including canonical-generated Claude and
   Cursor catalogs and LICENSE/NOTICE in every package.
 - Seven release archives covering five hosts; Gemini receives identical archives
   named for Windows, Linux and macOS so its installer can select its own asset.
 - OpenAI ZIP SHA-256:
-  `E07DBC7879F159E14AA08E48242EAF4117A832A076204AA592756D298D81ADB8`.
+  `01184C97F915F578EDA37BA446B8E95AAC3EAE909324BC8E60E25ECDA322E716`.
+- The icon follow-up adds a transparent #F1F5F9 1024px dark-directory mark and a
+  dedicated transparent 48px composer icon. Package references and candidate
+  digests were refreshed; earlier installation observations remain historical,
+  not acceptance for this changed candidate. Portal icons have not been uploaded.
 
 ## Observed checks
 
-- Final package suite: 327 passed; six symbolic-link tests skipped because this Windows
+- Final package suite after icon updates: 329 passed; six symbolic-link tests skipped because this Windows
   session lacks symlink-creation privileges. Those tests remain enabled in Linux CI.
 - The new bounded reviewer preflight has 40 passing tests. Lint, formatting checks
   for the new files, generated-package parity and pending-evidence validation pass.

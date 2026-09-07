@@ -2380,18 +2380,23 @@ def test_plugin_brand_assets_are_canonical_and_theme_ready():
         )
     )
     interface = manifest["interface"]
-    assert interface["composerIcon"] == "./assets/sparklaunch-small.png"
+    assert interface["composerIcon"] == "./assets/sparklaunch-composer-48.png"
     assert interface["logo"] == "./assets/sparklaunch.png"
-    assert interface["logoDark"] == "./assets/sparklaunch.png"
+    assert interface["logoDark"] == "./assets/sparklaunch-directory-dark.png"
 
     assets = ROOT / "plugins" / "sparklaunch" / "assets"
     for name in (
+        "sparklaunch-composer-48.png",
+        "sparklaunch-directory-dark.png",
         "sparklaunch-small.png",
         "sparklaunch.png",
         "sparklaunch-wordmark-light.png",
         "sparklaunch-wordmark-dark.png",
     ):
         assert (assets / name).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+        assert (assets / name).read_bytes() == (
+            ROOT / "adapters/openai/assets" / name
+        ).read_bytes()
 
     expected_small = (assets / "sparklaunch-small.png").read_bytes()
     expected_large = (assets / "sparklaunch.png").read_bytes()
@@ -2422,6 +2427,8 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "LICENSE" in names
         assert "assets/sparklaunch.png" in names
         assert "assets/sparklaunch-small.png" in names
+        assert "assets/sparklaunch-composer-48.png" in names
+        assert "assets/sparklaunch-directory-dark.png" in names
         assert "assets/sparklaunch-wordmark-light.png" in names
         assert "assets/sparklaunch-wordmark-dark.png" in names
         assert "skills/sparklaunch-platform/SKILL.md" in names
@@ -2429,6 +2436,26 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
         assert "chatgpt-app-submission.json" not in names
         assert not any(name.startswith(("evals/", "submission/")) for name in names)
         assert not any("__pycache__" in name or name.endswith(".pyc") for name in names)
+
+
+@pytest.mark.parametrize(
+    ("name", "size"),
+    [("sparklaunch-composer-48.png", 48), ("sparklaunch-directory-dark.png", 1024)],
+)
+def test_icon_dimensions_reject_incorrect_size(monkeypatch, name, size):
+    asset = ROOT / "plugins/sparklaunch/assets" / name
+    original_read_bytes = Path.read_bytes
+
+    def read_bytes(candidate, *args, **kwargs):
+        content = original_read_bytes(candidate, *args, **kwargs)
+        if candidate.resolve() == asset.resolve():
+            assert content[16:20] == size.to_bytes(4, "big")
+            return content[:16] + (size + 1).to_bytes(4, "big") + content[20:]
+        return content
+
+    monkeypatch.setattr(Path, "read_bytes", read_bytes)
+    errors = validate()
+    assert any(f"assets/{name} must be {size}x{size}" in error for error in errors)
 
 
 def test_clean_checkout_builds_candidate_before_portal_validation(

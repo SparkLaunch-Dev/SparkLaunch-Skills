@@ -1,3 +1,8 @@
+---
+title: Model and close a SAFE
+summary: Model SAFE exposure, confirm funding evidence, and close one signed investment.
+---
+
 # Model and close a SAFE
 
 Use `sparklaunch-sparkclose`. Follow the [shared rules](./README.md#shared-rules)
