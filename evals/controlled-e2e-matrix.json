@@ -7,7 +7,7 @@
     "automatic_validation_typical_minutes": "10-15",
     "automatic_validation_poll_seconds": 60,
     "automatic_validation_timeout_minutes": 20,
-    "expected_oauth_scope_count": 29,
+    "expected_oauth_scope_count": 33,
     "preflight_effective_permissions": true,
     "open_and_cancel_disconnect_dialog": true,
     "never_auto_confirm": true,
@@ -58,7 +58,7 @@
         "tasks.delete"
       ],
       "live_level": "private_write_and_confirmation_preview",
-      "expected": "OAuth connects with the expected 29-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
+      "expected": "OAuth connects with the expected 33-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
     },
     {
       "id": "E2E-AUTOMATIC-VALIDATION",
@@ -294,6 +294,23 @@
       ],
       "live_level": "isolated_synthetic_investment_confirmation_and_readback",
       "expected": "Model supported SAFE exposure and save an immutable snapshot. After first-party agreement review/signing, company-reviewed approval and receipt evidence, reconciliation and exact confirmation close one investment. Changed sources reject stale approval and same-key replay never duplicates it. Check destination event status. No money moves, no agreement is signed, no private file body is exposed, and no room sharing is broadened by MCP. Local tests do not prove native-host or production execution."
+    },
+    {
+      "id": "E2E-FOUNDER-OPERATING-CYCLE",
+      "recipes": [
+        "run-monthly-founder-close.md"
+      ],
+      "tools": [
+        "founder_close.workspace",
+        "founder_close.get",
+        "founder_close.command",
+        "founder_close.room_review",
+        "founder_close.refresh_room",
+        "founder_ops.workspace",
+        "founder_ops.command"
+      ],
+      "live_level": "isolated_two_period_reporting_approval_and_internal_execution",
+      "expected": "Review source-backed evidence and explicit founder declarations, save AI-authored exact report revisions, obtain exact human approval, publish safe PDFs to Company Library, review the current room audience and selected reports, then complete the month and carry work forward. Confirmed operations create only allowlisted internal actions and recurring obligations. Stale source, scope, role, version and audience changes fail closed; identical retries converge. No recipients are contacted, no provider action or money movement occurs, and native-host or production execution is not inferred from local tests."
     }
   ]
 }

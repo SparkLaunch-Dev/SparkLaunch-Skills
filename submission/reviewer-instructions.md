@@ -1,8 +1,8 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.8.1` candidate at
+These instructions apply to the local SparkLaunch `0.9.0` candidate at
 `https://sparklaun.ch/api/mcp/`. The package contains twelve skills and declares
-100 tools under 29 OAuth scopes. The retained 1.4.0 production scan and portal
+107 tools under 33 OAuth scopes. The retained 1.4.0 production scan and portal
 prerequisites concern the previous 61-tool candidate and do not prove SparkCap, SparkRoom, or SparkClose
 availability. Deploy and scan the matching candidate before native-host review.
 The internal evidence contains 39 trigger cases and 16 controlled E2E cases;

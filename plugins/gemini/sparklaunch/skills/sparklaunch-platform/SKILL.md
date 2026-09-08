@@ -3,7 +3,7 @@ name: sparklaunch-platform
 description: >
   Use when a connected SparkLaunch user wants a broad founder workflow spanning
   project setup, idea validation, branding, launch assets, campaigns, landing
-  pages, CRM, SparkRoom, SparkCap, SparkClose, or incorporation and the first task is choosing the right
+  pages, CRM, SparkRoom, SparkCap, SparkClose, monthly reporting, obligations, or incorporation and the first task is choosing the right
   SparkLaunch recipe or narrower skill.
 ---
 
@@ -24,6 +24,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 9. For investor rooms, selected library documents, room share links, or usage summaries, use `sparklaunch-sparkroom` and `recipes/prepare-and-share-an-investor-room.md`. SparkRoom requires effective Growth access; uploads and password sharing continue in SparkLaunch.
 10. For SAFE modeling, saved dilution scenarios, funding evidence, or investment closings, use `sparklaunch-sparkclose` and `recipes/model-and-close-a-safe.md`.
 11. For an Incorporation Package, formation case, participant Action Center, correction, cancellation, or internal Filing Operations receipt, use `sparklaunch-incorporation` and its matching incorporation recipe.
+12. For a Monthly Founder Close, investor update, board package, reviewed room refresh, ongoing obligations or post-close reporting, use `recipes/run-monthly-founder-close.md`. The AI host drafts; SparkLaunch persists evidence, exact approvals and recurring work. Check the new reporting/operations permissions before accessing private report contents.
 
 ## Connected-App Rules
 

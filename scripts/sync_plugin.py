@@ -395,44 +395,6 @@ def _package_files(adapter: Adapter, *, base_version: str) -> list[ExpectedFile]
     return files
 
 
-def _legacy_files(openai: Adapter) -> list[ExpectedFile]:
-    files: list[ExpectedFile] = []
-    for skill in SKILLS:
-        source_root = SOURCE_SKILLS / skill
-        for source in _tree_files(source_root, label=f"canonical skill {skill}"):
-            relative = source.relative_to(source_root)
-            content = source.read_bytes()
-            if relative.as_posix() == "SKILL.md":
-                content = _render_connection(source.read_text(encoding="utf-8"), openai).encode(
-                    "utf-8"
-                )
-            _append(
-                files,
-                source=source,
-                target=ROOT / skill / relative,
-                content=content,
-            )
-    rendered_connection: bytes | None = None
-    for source in _tree_files(SOURCE_RECIPES, label="canonical recipes"):
-        relative = source.relative_to(SOURCE_RECIPES)
-        text = source.read_text(encoding="utf-8")
-        if CONNECTION_START in text or CONNECTION_END in text:
-            text = _render_connection(text, openai)
-        content = text.encode("utf-8")
-        if relative.as_posix() == "connect-sparklaunch.md":
-            rendered_connection = content
-        _append(files, source=source, target=ROOT / "recipes" / relative, content=content)
-    if rendered_connection is None:
-        raise ValueError("canonical connection recipe is missing")
-    _append(
-        files,
-        source=SOURCE_RECIPES / "connect-sparklaunch.md",
-        target=ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md",
-        content=rendered_connection,
-    )
-    return files
-
-
 def _catalog_files(adapters: dict[str, Adapter], base_version: str) -> list[ExpectedFile]:
     files: list[ExpectedFile] = []
     for host in ("claude", "cursor"):
@@ -459,7 +421,7 @@ def _catalog_files(adapters: dict[str, Adapter], base_version: str) -> list[Expe
 def expected_files() -> list[ExpectedFile]:
     base_version = _base_package_version()
     adapters = {host: _read_adapter(host) for host in HOSTS}
-    files = _legacy_files(adapters["openai"])
+    files: list[ExpectedFile] = []
     for host in HOSTS:
         files.extend(_package_files(adapters[host], base_version=base_version))
     files.extend(_catalog_files(adapters, base_version))
@@ -469,16 +431,8 @@ def expected_files() -> list[ExpectedFile]:
     return files
 
 
-def expected_pairs() -> list[tuple[Path, Path]]:
-    """Return source/target provenance pairs for compatibility with existing tooling."""
-
-    return [(item.source, item.target) for item in expected_files()]
-
-
 def _generated_roots() -> tuple[Path, ...]:
     return (
-        *(ROOT / skill for skill in SKILLS),
-        ROOT / "recipes",
         ROOT / "plugins" / "sparklaunch",
         ROOT / "plugins" / "claude" / "sparklaunch",
         ROOT / "plugins" / "cursor" / "sparklaunch",
@@ -551,7 +505,7 @@ def sync(*, write: bool) -> list[str]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--write", action="store_true", help="overwrite all generated mirrors and host packages"
+        "--write", action="store_true", help="overwrite generated host packages and catalogs"
     )
     args = parser.parse_args()
     try:
@@ -564,7 +518,7 @@ def main() -> int:
         return 1
     print(
         f"Validated {len(expected_files())} generated files across "
-        f"{len(HOSTS)} host packages and legacy mirrors."
+        f"{len(HOSTS)} host packages and native catalogs."
     )
     return 0
 

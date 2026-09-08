@@ -182,9 +182,13 @@ def validate() -> list[str]:
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
         errors.append(f"invalid tool contract snapshot: {exc}")
         expected_tool_count = None
-    text_roots = [ROOT / skill for skill in SKILLS] + [
-        ROOT / "recipes",
-        ROOT / "plugins" / "sparklaunch",
+    plugin = ROOT / "plugins" / "sparklaunch"
+    skills_root = plugin / "skills"
+    recipes_root = skills_root / "sparklaunch-platform" / "recipes"
+    text_roots = [
+        ROOT / "src" / "skills",
+        ROOT / "src" / "recipes",
+        plugin,
         ROOT / "submission",
     ]
     text_files = {
@@ -221,7 +225,7 @@ def validate() -> list[str]:
         )
 
     for skill in SKILLS:
-        skill_path = ROOT / skill / "SKILL.md"
+        skill_path = skills_root / skill / "SKILL.md"
         text = skill_path.read_text(encoding="utf-8")
         match = re.match(r"^---\n(.*?)\n---\n", text, re.DOTALL)
         if not match:
@@ -230,7 +234,7 @@ def validate() -> list[str]:
         data = yaml.safe_load(match.group(1))
         if set(data or {}) != {"name", "description"} or data.get("name") != skill:
             errors.append(f"frontmatter must contain only matching name and description: {skill}")
-        agent = yaml.safe_load((ROOT / skill / "agents" / "openai.yaml").read_text(encoding="utf-8"))
+        agent = yaml.safe_load((skills_root / skill / "agents" / "openai.yaml").read_text(encoding="utf-8"))
         interface = ((agent or {}).get("interface") or {})
         prompt = interface.get("default_prompt", "")
         if f"${skill}" not in prompt:
@@ -257,7 +261,7 @@ def validate() -> list[str]:
             errors.append(f"implicit invocation must be enabled: {skill}")
         for icon_key in ("icon_small", "icon_large"):
             icon = str(interface.get(icon_key, ""))
-            if not icon.startswith("./") or not (ROOT / skill / icon[2:]).is_file():
+            if not icon.startswith("./") or not (skills_root / skill / icon[2:]).is_file():
                 errors.append(f"missing {icon_key} asset: {skill}")
         if "only as internal tool-call state" not in text:
             errors.append(
@@ -265,7 +269,7 @@ def validate() -> list[str]:
             )
 
     recipe_contract = "Retain identifiers and versions only for internal tool calls"
-    for recipe in sorted((ROOT / "recipes").rglob("*.md")):
+    for recipe in sorted(recipes_root.rglob("*.md")):
         text = recipe.read_text(encoding="utf-8")
         marker = (
             "only as internal tool-call state"
@@ -278,7 +282,6 @@ def validate() -> list[str]:
                 f"{recipe.relative_to(ROOT)}"
             )
 
-    plugin = ROOT / "plugins" / "sparklaunch"
     manifest = _load_json(plugin / ".codex-plugin" / "plugin.json", errors)
     plugin_version = ""
     if manifest is not None:
@@ -344,7 +347,7 @@ def validate() -> list[str]:
             errors.append(f"missing plugin skill icon source {plugin_source.relative_to(ROOT)}: {exc}")
             continue
         for skill in SKILLS:
-            canonical_asset = ROOT / skill / "assets" / name
+            canonical_asset = ROOT / "src" / "skills" / skill / "assets" / name
             try:
                 matches_plugin = canonical_asset.read_bytes() == expected_icon
             except OSError as exc:
@@ -457,8 +460,8 @@ def validate() -> list[str]:
     matrix_cases = (matrix or {}).get("cases") or []
     if (matrix or {}).get("version") != 1:
         errors.append("controlled E2E matrix version must be 1")
-    if len(matrix_cases) != 16:
-        errors.append("controlled E2E matrix must contain exactly 16 cases")
+    if len(matrix_cases) != 17:
+        errors.append("controlled E2E matrix must contain exactly 17 cases")
     covered_tools = {
         tool
         for case in matrix_cases
@@ -525,7 +528,7 @@ def validate() -> list[str]:
             "privacy-policy",
             "terms-and-conditions",
             f"{expected_tool_count} tools",
-            "29 OAuth scopes",
+            "33 OAuth scopes",
             "submit to SparkLaunch Filing Operations",
             "zero provider calls",
         ):

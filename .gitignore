@@ -1,4 +1,33 @@
-*\local-mcp-testing.md
+# Local credentials and environment configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+local-mcp-testing.md
+
+# Build output and Python environments
 /dist/
+.venv/
+venv/
 __pycache__/
 *.py[cod]
+
+# Test, lint, and coverage output
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local agent runs and editor state
+/.codex/
+.idea/
+*.swp
+*.swo
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -11,7 +11,7 @@
     {
       "name": "sparklaunch",
       "source": "./plugins/claude/sparklaunch",
-      "version": "0.8.1",
+      "version": "0.9.0",
       "description": "Connected SparkLaunch founder workflows.",
       "license": "Apache-2.0"
     }

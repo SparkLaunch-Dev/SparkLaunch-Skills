@@ -1,43 +1,43 @@
 {
   "schema_version": 4,
   "candidate": {
-    "plugin_version": "0.8.1",
-    "built_at": "2026-09-07T18:56:26Z",
-    "service_version": "1.7.0",
+    "plugin_version": "0.9.0",
+    "built_at": "2026-09-07T20:24:26Z",
+    "service_version": "1.8.0",
     "production_mcp_url": "https://sparklaun.ch/api/mcp/",
-    "expected_tool_count": 100,
-    "expected_oauth_scope_count": 29,
-    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.8.1.zip",
-    "bundle_sha256": "72D4F4893D86D7BA198FA0A0E8345017CCFB6F476441E847EA43D6BC943B982F"
+    "expected_tool_count": 107,
+    "expected_oauth_scope_count": 33,
+    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.9.0.zip",
+    "bundle_sha256": "EB2B39F4322B727D78F1786E211D55163FD1D4152698CE95C1BDAD8AEBF40F0D"
   },
   "public_production_readiness": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1",
-    "candidate_service_version": "1.7.0",
-    "candidate_expected_oauth_scope_count": 29,
-    "proof_boundary": "The local 1.7.0 candidate has not been deployed, so public OAuth and MCP readiness for its 29-scope contract is not verified. Prior 18-scope public observations are preserved under historical_public_production_readiness and do not prove this candidate."
+    "candidate_plugin_version": "0.9.0",
+    "candidate_service_version": "1.8.0",
+    "candidate_expected_oauth_scope_count": 33,
+    "proof_boundary": "The local 1.8.0 candidate has not been deployed, so public OAuth and MCP readiness for its 33-scope contract is not verified. Prior 18-scope public observations are preserved under historical_public_production_readiness and do not prove this candidate."
   },
   "production_deployment": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1",
-    "candidate_service_version": "1.7.0",
-    "candidate_expected_tool_count": 100,
-    "proof_boundary": "No production deployment is recorded for the local 1.7.0 / 100-tool candidate. The last verified 1.4.0 deployment is preserved under historical_production_deployments and must not be reused as candidate proof."
+    "candidate_plugin_version": "0.9.0",
+    "candidate_service_version": "1.8.0",
+    "candidate_expected_tool_count": 107,
+    "proof_boundary": "No production deployment is recorded for the local 1.8.0 / 107-tool candidate. The last verified 1.4.0 deployment is preserved under historical_production_deployments and must not be reused as candidate proof."
   },
   "direct_authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1",
-    "candidate_service_version": "1.7.0",
-    "candidate_expected_tool_count": 100,
-    "proof_boundary": "No direct authenticated production scan is recorded for the local 1.7.0 / 100-tool candidate. The last verified 1.4.0 / 61-tool scan is preserved under historical_direct_authenticated_production_scans and does not prove SparkCap, SparkRoom or SparkClose availability."
+    "candidate_plugin_version": "0.9.0",
+    "candidate_service_version": "1.8.0",
+    "candidate_expected_tool_count": 107,
+    "proof_boundary": "No direct authenticated production scan is recorded for the local 1.8.0 / 107-tool candidate. The last verified 1.4.0 / 61-tool scan is preserved under historical_direct_authenticated_production_scans and does not prove SparkCap, SparkRoom or SparkClose availability."
   },
   "authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.8.1",
-    "candidate_service_version": "1.7.0",
-    "candidate_expected_tool_count": 100,
+    "candidate_plugin_version": "0.9.0",
+    "candidate_service_version": "1.8.0",
+    "candidate_expected_tool_count": 107,
     "portal_result": "pending",
-    "proof_boundary": "A fresh OpenAI portal OAuth Scan Tools pass remains pending until the matching 1.7.0 / 100-tool candidate is deployed. Historical portal observations are preserved separately and cannot satisfy this gate."
+    "proof_boundary": "A fresh OpenAI portal OAuth Scan Tools pass remains pending until the matching 1.8.0 / 107-tool candidate is deployed. Historical portal observations are preserved separately and cannot satisfy this gate."
   },
   "historical_candidates": [
     {
@@ -50,6 +50,17 @@
       "deployment_status": "verified",
       "deployed_git_revision": "058513ed28b2fadba120d5f4a0e447a723e37ddc",
       "production_tag": "prod-20260902-211542"
+    },
+    {
+      "plugin_version": "0.8.1",
+      "built_at": "2026-09-07T18:56:26Z",
+      "service_version": "1.7.0",
+      "production_mcp_url": "https://sparklaun.ch/api/mcp/",
+      "expected_tool_count": 100,
+      "expected_oauth_scope_count": 29,
+      "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.8.1.zip",
+      "bundle_sha256": "72D4F4893D86D7BA198FA0A0E8345017CCFB6F476441E847EA43D6BC943B982F",
+      "deployment_status": "not_verified"
     }
   ],
   "historical_public_production_readiness": [

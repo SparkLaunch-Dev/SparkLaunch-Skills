@@ -1,13 +1,13 @@
-# SparkLaunch 0.8.1 Release Candidate
+# SparkLaunch 0.9.0 Release Candidate
 
 - License the public skills/plugin repository under Apache-2.0; the separately hosted service and backend remain proprietary.
 - Generate Claude and Cursor repository catalogs and self-contained archives for all five hosts, with deterministic checksums and a candidate fingerprint.
 - Gate Registry and artifact publication on current evidence and authenticated full production-contract equality.
 - Add candidate-bound native-client acceptance and SparkClose policy-review evidence requirements. Pending evidence remains pending; this candidate is not a claim of native compatibility or marketplace approval.
 
-Status: the local service 1.7.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
+Status: the local service 1.8.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
 The previous production MCP service is deployed at service 1.4.0 according to the
-retained 2026-09-03 evidence; that 61-tool observation does not verify this 100-tool
+retained 2026-09-03 evidence; that 61-tool observation does not verify this 107-tool
 candidate. The package has not yet been submitted or approved by ChatGPT.
 The portal prerequisites now bind local artifact checks to this candidate while
 preserving previous production observations as immutable historical evidence.
@@ -34,11 +34,11 @@ Registry publication, and native-host invocation of the new tools remain unverif
 - Keep incorporation `draft_file` attachments address-free and move participant plus company business/mailing address entry to authenticated sparklaun.ch Action Center tasks.
 - Build a portal upload containing only the SparkLaunch plugin, with `.codex-plugin/plugin.json` at the archive root; keep internal submission evidence outside that upload.
 - Expose twelve concise founder-workflow skills through one connected SparkLaunch MCP server.
-- Generate review metadata from the application-owned registry of 100 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.
+- Generate review metadata from the application-owned registry of 107 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.
 - Add `crm.prepare_business_card_import` and `crm.get_business_card_import` for a portable, first-party business-card handoff: preparation creates no contact or attachment, import requires an authenticated explicit **Upload and import** action, and status readback returns no image or contact data.
 - Add `projects.invite_collaborator` as an owner/admin-only, idempotent, confirmation-bound email invitation that uses the canonical acceptance workflow and reports invitation persistence separately from delivery.
 - Add `tasks.list`, `tasks.create`, `tasks.update`, and `tasks.delete` for project-isolated general tasks with accepted-member email assignment, optimistic versions, idempotency, exact overwrite/delete confirmation, and stale mobile-state cleanup. CRM and GTM tasks remain outside this generic contract.
-- Add eight incorporation tools with explicit `project_id` arguments and the application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` permissions within the expected 29 OAuth scopes.
+- Add eight incorporation tools with explicit `project_id` arguments and the application-owned `incorporation.read`, `incorporation.write`, and `incorporation.submit` permissions within the expected 33 OAuth scopes.
 - Check entitlement before starting, resuming, or reporting on an incorporation case. Missing access returns safe package recovery guidance without checkout or payment collection.
 - Coordinate ordinary shared company data separately from private Action Center work. Each participant completes only their own identity/Veriff, compliance, consent, and signature tasks; another participant's private data or Action Center URL is never returned in conversation.
 - Use exact draft versions, stable idempotency keys, readback after uncertain writes, and exact one-time confirmation previews for Action Center preparation, internal submission, and cancellation.
