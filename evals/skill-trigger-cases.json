@@ -290,6 +290,22 @@
       "prompt": "Explain whether a SAFE is a good investment for me without accessing any account.",
       "expected_skills": [],
       "rationale": "Generic investment education or advice does not use SparkLaunch workspace data or trigger SparkClose."
+    },
+    {
+      "id": "sparkclose-prepare-reviewed",
+      "prompt": "Prepare an unsigned SAFE in SparkClose using the full agreement our company has reviewed. I will confirm the exact draft before you save it.",
+      "expected_skills": [
+        "sparklaunch-sparkclose"
+      ],
+      "rationale": "Preview the exact reviewed content and source mappings, then confirm unsigned preparation without signing or sharing."
+    },
+    {
+      "id": "sparkclose-missing-grant",
+      "prompt": "I own a Growth project but SparkClose reports insufficient_scope when I try to save my SAFE model.",
+      "expected_skills": [
+        "sparklaunch-sparkclose"
+      ],
+      "rationale": "A missing OAuth grant requires host reconnection and named permissions, not an inferred plan upgrade."
     }
   ]
 }

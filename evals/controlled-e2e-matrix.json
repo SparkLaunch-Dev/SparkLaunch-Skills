@@ -285,6 +285,8 @@
         "sparkclose.list_scenarios",
         "sparkclose.model_safe",
         "sparkclose.open_workflow",
+        "sparkclose.prepare_agreement",
+        "sparkclose.preview_agreement",
         "sparkclose.readiness",
         "sparkclose.reconcile_funding",
         "sparkclose.record_approval",
@@ -293,7 +295,7 @@
         "sparkclose.save_scenario"
       ],
       "live_level": "isolated_synthetic_investment_confirmation_and_readback",
-      "expected": "Model supported SAFE exposure and save an immutable snapshot. After first-party agreement review/signing, company-reviewed approval and receipt evidence, reconciliation and exact confirmation close one investment. Changed sources reject stale approval and same-key replay never duplicates it. Check destination event status. No money moves, no agreement is signed, no private file body is exposed, and no room sharing is broadened by MCP. Local tests do not prove native-host or production execution."
+      "expected": "Model supported SAFE exposure and save an immutable snapshot. With complete synthetic company-reviewed agreement text, preview selected same-project sources and confirm unsigned preparation. Read back exactly one draft; same-key replay creates no duplicate, and changed content, cap table, investor contact or private packet invalidates preparation. Missing connection permissions require renewed host consent; plan/role denial remains distinct. After first-party signing and company-reviewed approval and receipt evidence, reconcile and explicitly confirm one closing. Check destination status. MCP signs no agreement, moves no money and broadens no sharing. Agreement bodies stay out of result metadata. This matrix is a plan, not evidence of live host execution."
     },
     {
       "id": "E2E-FOUNDER-OPERATING-CYCLE",

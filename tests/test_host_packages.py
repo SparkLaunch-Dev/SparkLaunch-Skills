@@ -25,7 +25,7 @@ def test_checked_in_contract_supports_standalone_submission_generation() -> None
         (ROOT / "contracts" / "tools.snapshot.json").read_text(encoding="utf-8")
     )
     assert snapshot["tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert snapshot["server_version"] == "1.8.0"
+    assert snapshot["server_version"] == "1.9.0"
     assert {
         "crm.prepare_business_card_import",
         "crm.get_business_card_import",
@@ -100,6 +100,9 @@ def test_compound_descriptor_scope_sets_are_exact() -> None:
         "sparkclose.retry_updates": frozenset(
             {"sparkclose.read", "sparkclose.write"}
         ),
+        "sparkclose.prepare_agreement": frozenset(
+            {"sparkclose.read", "sparkclose.write"}
+        ),
         "sparkclose.save_scenario": frozenset(
             {"sparkclose.model", "sparkclose.read", "sparkclose.write"}
         ),
@@ -128,6 +131,7 @@ def test_compound_descriptor_scope_sets_are_exact() -> None:
         "sparkclose.record_receipt": "sparkclose.write",
         "sparkclose.retry_updates": "sparkclose.write",
         "sparkclose.save_scenario": "sparkclose.write",
+        "sparkclose.prepare_agreement": "sparkclose.write",
         "sparkroom.update": "sparkroom.write",
         "sparkroom.add_documents": "sparkroom.write",
         "sparkroom.update_item": "sparkroom.write",

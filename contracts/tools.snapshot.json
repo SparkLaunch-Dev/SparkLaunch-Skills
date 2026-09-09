@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "server_version": "1.8.0",
-  "tool_count": 107,
+  "server_version": "1.9.0",
+  "tool_count": 109,
   "tools": {
     "branding.generate_palette": {
       "contract": {
@@ -16088,7 +16088,7 @@
     },
     "projects.get": {
       "contract": {
-        "description": "Retrieve one accessible private SparkLaunch business project, including the current role and effective plan/role/token permissions, without changing it.",
+        "description": "Retrieve one accessible private SparkLaunch business project, its current role, effective plan/role/token permissions and connection_permissions. Missing connection permissions require reconnecting and approving access, including for an owner; null means the legacy connection has no scope restriction. Missing effective permissions alone do not identify a plan restriction. Do not probe access with a write or recommend upgrading from that list alone.",
         "destructive": false,
         "idempotent": true,
         "open_world": false,
@@ -16121,7 +16121,7 @@
           "readOnlyHint": true,
           "title": "Get SparkLaunch project"
         },
-        "description": "Retrieve one accessible private SparkLaunch business project, including the current role and effective plan/role/token permissions, without changing it.",
+        "description": "Retrieve one accessible private SparkLaunch business project, its current role, effective plan/role/token permissions and connection_permissions. Missing connection permissions require reconnecting and approving access, including for an owner; null means the legacy connection has no scope restriction. Missing effective permissions alone do not identify a plan restriction. Do not probe access with a write or recommend upgrading from that list alone.",
         "inputSchema": {
           "additionalProperties": false,
           "properties": {
@@ -16174,6 +16174,19 @@
                   "anyOf": [
                     {
                       "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "connection_permissions": {
+                  "anyOf": [
+                    {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
                     },
                     {
                       "type": "null"
@@ -16307,6 +16320,7 @@
                 "plan",
                 "project_role",
                 "effective_permissions",
+                "connection_permissions",
                 "entity_type",
                 "state",
                 "stage",
@@ -19633,6 +19647,580 @@
           }
         ],
         "title": "Continue SAFE agreement work in SparkLaunch"
+      }
+    },
+    "sparkclose.prepare_agreement": {
+      "contract": {
+        "description": "After preview_agreement and exact-intent confirmation, save the complete company-reviewed agreement as an unsigned SAFE draft. Pass the unchanged preview inputs and its current version. Requires Growth and SparkClose read/write consent. Creates or links an unsigned SAFE instrument; sends no signature request, shares no document, moves no funds and does not close the investment.",
+        "destructive": true,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": false,
+        "required_scope": "sparkclose.write",
+        "success_required": [
+          "project_id",
+          "investment",
+          "version"
+        ],
+        "title": "Prepare an unsigned SAFE agreement"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Prepare an unsigned SAFE agreement finished",
+          "openai/toolInvocation/invoking": "Running prepare an unsigned safe agreement\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.write",
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": false,
+          "title": "Prepare an unsigned SAFE agreement"
+        },
+        "description": "After preview_agreement and exact-intent confirmation, save the complete company-reviewed agreement as an unsigned SAFE draft. Pass the unchanged preview inputs and its current version. Requires Growth and SparkClose read/write consent. Creates or links an unsigned SAFE instrument; sends no signature request, shares no document, moves no funds and does not close the investment.",
+        "inputSchema": {
+          "$defs": {
+            "AgreementPreparation": {
+              "additionalProperties": false,
+              "properties": {
+                "agreement_text": {
+                  "maxLength": 150000,
+                  "minLength": 100,
+                  "title": "Agreement Text",
+                  "type": "string"
+                },
+                "allocation_index": {
+                  "default": 0,
+                  "maximum": 99,
+                  "minimum": 0,
+                  "title": "Allocation Index",
+                  "type": "integer"
+                },
+                "amount": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Amount",
+                  "type": "integer"
+                },
+                "cap": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Cap",
+                  "type": "integer"
+                },
+                "cap_table_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Cap Table Id",
+                  "type": "integer"
+                },
+                "complete_agreement_reviewed": {
+                  "const": true,
+                  "title": "Complete Agreement Reviewed",
+                  "type": "boolean"
+                },
+                "deal_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Deal Id",
+                  "type": "integer"
+                },
+                "investor_legal_name": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Investor Legal Name",
+                  "type": "string"
+                },
+                "scenario_id": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Scenario Id"
+                },
+                "source_version": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Source Version",
+                  "type": "string"
+                },
+                "stakeholder_id": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stakeholder Id"
+                },
+                "vault_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Vault Id",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "cap_table_id",
+                "source_version",
+                "deal_id",
+                "vault_id",
+                "amount",
+                "cap",
+                "agreement_text",
+                "complete_agreement_reviewed",
+                "investor_legal_name"
+              ],
+              "title": "AgreementPreparation",
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "properties": {
+            "confirmation_token": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Confirmation Token"
+            },
+            "data": {
+              "$ref": "#/$defs/AgreementPreparation"
+            },
+            "expected_version": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Expected Version",
+              "type": "string"
+            },
+            "idempotency_key": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Idempotency Key"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "data",
+            "expected_version"
+          ],
+          "title": "prepare_agreementArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.prepare_agreement",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "investment": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "investment",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.write",
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Prepare an unsigned SAFE agreement"
+      }
+    },
+    "sparkclose.preview_agreement": {
+      "contract": {
+        "description": "Validate complete company-reviewed agreement text and same-project cap table, investor deal and private packet without creating records. Use a current model_safe source_version. Return a metadata preview and version for prepare_agreement. Requires Growth. The company must explicitly confirm review; do not infer review or invent legal terms.",
+        "destructive": false,
+        "idempotent": true,
+        "open_world": false,
+        "privacy_class": "financing_metadata",
+        "project_scoped": true,
+        "read_only": true,
+        "required_scope": "sparkclose.read",
+        "success_required": [
+          "project_id",
+          "preparation",
+          "version"
+        ],
+        "title": "Preview a reviewed SAFE agreement"
+      },
+      "descriptor": {
+        "_meta": {
+          "openai/toolInvocation/invoked": "Preview a reviewed SAFE agreement finished",
+          "openai/toolInvocation/invoking": "Running preview a reviewed safe agreement\u2026",
+          "securitySchemes": [
+            {
+              "scopes": [
+                "sparkclose.read"
+              ],
+              "type": "oauth2"
+            }
+          ]
+        },
+        "annotations": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true,
+          "title": "Preview a reviewed SAFE agreement"
+        },
+        "description": "Validate complete company-reviewed agreement text and same-project cap table, investor deal and private packet without creating records. Use a current model_safe source_version. Return a metadata preview and version for prepare_agreement. Requires Growth. The company must explicitly confirm review; do not infer review or invent legal terms.",
+        "inputSchema": {
+          "$defs": {
+            "AgreementPreparation": {
+              "additionalProperties": false,
+              "properties": {
+                "agreement_text": {
+                  "maxLength": 150000,
+                  "minLength": 100,
+                  "title": "Agreement Text",
+                  "type": "string"
+                },
+                "allocation_index": {
+                  "default": 0,
+                  "maximum": 99,
+                  "minimum": 0,
+                  "title": "Allocation Index",
+                  "type": "integer"
+                },
+                "amount": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Amount",
+                  "type": "integer"
+                },
+                "cap": {
+                  "exclusiveMinimum": 0,
+                  "maximum": 2000000000,
+                  "title": "Cap",
+                  "type": "integer"
+                },
+                "cap_table_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Cap Table Id",
+                  "type": "integer"
+                },
+                "complete_agreement_reviewed": {
+                  "const": true,
+                  "title": "Complete Agreement Reviewed",
+                  "type": "boolean"
+                },
+                "deal_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Deal Id",
+                  "type": "integer"
+                },
+                "investor_legal_name": {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "title": "Investor Legal Name",
+                  "type": "string"
+                },
+                "scenario_id": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Scenario Id"
+                },
+                "source_version": {
+                  "pattern": "^[a-f0-9]{64}$",
+                  "title": "Source Version",
+                  "type": "string"
+                },
+                "stakeholder_id": {
+                  "anyOf": [
+                    {
+                      "exclusiveMinimum": 0,
+                      "type": "integer"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "default": null,
+                  "title": "Stakeholder Id"
+                },
+                "vault_id": {
+                  "exclusiveMinimum": 0,
+                  "title": "Vault Id",
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "cap_table_id",
+                "source_version",
+                "deal_id",
+                "vault_id",
+                "amount",
+                "cap",
+                "agreement_text",
+                "complete_agreement_reviewed",
+                "investor_legal_name"
+              ],
+              "title": "AgreementPreparation",
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "properties": {
+            "data": {
+              "$ref": "#/$defs/AgreementPreparation"
+            },
+            "project_id": {
+              "exclusiveMinimum": 0,
+              "title": "Project Id",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "project_id",
+            "data"
+          ],
+          "title": "preview_agreementArguments",
+          "type": "object"
+        },
+        "name": "sparkclose.preview_agreement",
+        "outputSchema": {
+          "oneOf": [
+            {
+              "additionalProperties": false,
+              "properties": {
+                "preparation": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "project_id": {
+                  "type": "integer"
+                },
+                "version": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "project_id",
+                "preparation",
+                "version"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "error": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "correlation_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "retryable"
+                  ],
+                  "type": "object"
+                },
+                "status": {
+                  "const": "error"
+                }
+              },
+              "required": [
+                "status",
+                "error"
+              ],
+              "type": "object"
+            },
+            {
+              "additionalProperties": false,
+              "properties": {
+                "confirmation": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "expires_at": {
+                      "type": "string"
+                    },
+                    "instruction": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "token",
+                    "expires_at",
+                    "instruction"
+                  ],
+                  "type": "object"
+                },
+                "preview": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "status": {
+                  "const": "confirmation_required"
+                }
+              },
+              "required": [
+                "status",
+                "confirmation",
+                "preview"
+              ],
+              "type": "object"
+            }
+          ],
+          "type": "object"
+        },
+        "securitySchemes": [
+          {
+            "scopes": [
+              "sparkclose.read"
+            ],
+            "type": "oauth2"
+          }
+        ],
+        "title": "Preview a reviewed SAFE agreement"
       }
     },
     "sparkclose.readiness": {

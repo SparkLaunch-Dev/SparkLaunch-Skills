@@ -518,7 +518,7 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
     }
     assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
-    assert version == "1.8.0"
+    assert version == "1.9.0"
     if BACKEND_AVAILABLE:
         application_version = run_path(BACKEND / "mcp_server_version.py")[
             "SPARKLAUNCH_MCP_SERVER_VERSION"
@@ -849,7 +849,7 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         (ROOT / "evals" / "skill-trigger-cases.json").read_text(encoding="utf-8")
     )
     cases = evaluations["cases"]
-    assert len(cases) == 39
+    assert len(cases) == 41
     expected_skills = {skill for case in cases for skill in case["expected_skills"]}
     assert expected_skills == {
         "sparklaunch-campaigns",
@@ -1085,7 +1085,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"] == "0.9.0"
+    assert manifest["version"] == "0.10.0"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -1116,8 +1116,8 @@ def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.9.0"',
-        '"version": "0.9.0+codex.20260907000000"',
+        '"version": "0.10.0"',
+        '"version": "0.10.0+codex.20260907000000"',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1129,8 +1129,8 @@ def test_submission_validator_rejects_whitespace_around_package_version(monkeypa
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.9.0"',
-        '"version": " 0.9.0 "',
+        '"version": "0.10.0"',
+        '"version": " 0.10.0 "',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1223,11 +1223,11 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 4
-    assert evidence["candidate"]["plugin_version"] == "0.9.0"
+    assert evidence["candidate"]["plugin_version"] == "0.10.0"
     assert evidence["candidate"]["built_at"] == release_state["generated_packages"]["built_at"]
-    assert evidence["candidate"]["service_version"] == "1.8.0"
-    assert evidence["candidate"]["expected_tool_count"] == 107
-    assert len(MCP_TOOL_CONTRACTS) == 107
+    assert evidence["candidate"]["service_version"] == "1.9.0"
+    assert evidence["candidate"]["expected_tool_count"] == 109
+    assert len(MCP_TOOL_CONTRACTS) == 109
     assert evidence["candidate"]["expected_oauth_scope_count"] == 33
     deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
     historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
@@ -1241,7 +1241,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert current_public["domain_challenge_cache_control_no_store"] is True
     assert evidence["authenticated_production_scan"]["status"] == "pending"
     assert (
-        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 107
+        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 109
     )
     assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
     deployment = evidence["historical_production_deployments"][-1]
@@ -1441,7 +1441,7 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     (
         (
             "plugin_version",
-            "0.9.0+codex.20260907000000",
+            "0.10.0+codex.20260907000000",
             "candidate plugin version must be numeric major.minor.patch",
         ),
         (
@@ -1941,12 +1941,12 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
     ("old", "new", "expected_error"),
     (
         (
-            "exactly 107 tools",
+            "exactly 109 tools",
             "exactly 61 tools",
             "demo recording runbook has stale tool count",
         ),
         (
-            "service `1.8.0`",
+            "service `1.9.0`",
             "service `1.4.0`",
             "demo recording runbook has stale service version",
         ),
@@ -2197,7 +2197,7 @@ def test_release_state_production_baseline_switches_atomically(
         == []
     )
 
-    release_state["runtime"]["last_verified_production"]["service_version"] = "1.8.0"
+    release_state["runtime"]["last_verified_production"]["service_version"] = "1.9.0"
     errors = _validate_portal_evidence(
         monkeypatch,
         tmp_path,

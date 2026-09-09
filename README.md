@@ -59,8 +59,8 @@ a hosted environment depends on its deployed version and permissions.
 
 ## Release status
 
-The working-tree candidate is **0.9.0**, with a service **1.8.0** snapshot of
-**107 tools**, **33 OAuth scopes**, and **12 skills**. Its monthly operating cycle
+The working-tree candidate is **0.10.0**, with a service **1.9.0** snapshot of
+**109 tools**, **33 OAuth scopes**, and **12 skills**. Its monthly operating cycle
 adds seven reporting and operations tools and a platform recipe: the host authors
 investor and board reports while SparkLaunch persists source snapshots, exact
 approvals, private PDF publication, reviewed room refreshes, and obligations.

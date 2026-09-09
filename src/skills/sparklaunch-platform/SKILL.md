@@ -35,7 +35,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 4. If authorization is expired or revoked, stop before any write, reconnect through the current host, and check the target before retrying an uncertain operation.
 <!-- sparklaunch:connection:end -->
 5. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
-6. Before proposing or confirming a write, use `projects.get` and verify `effective_permissions` contains the required permission. A project plan or role can further restrict execution; explain that restriction instead of asking the user to reconnect.
+6. Before proposing or confirming a write, use `projects.get` and verify `effective_permissions` contains the required permission. If the `connection_permissions` list lacks required access, reconnect through the host and approve it. A project plan or role can also restrict execution; explain an explicit denial using its stated remedy. Do not infer a plan restriction from the effective list alone.
 7. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
 8. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
 9. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.

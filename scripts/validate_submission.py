@@ -429,8 +429,8 @@ def validate() -> list[str]:
     cases = (evaluations or {}).get("cases") or []
     if (evaluations or {}).get("schema_version") != 1:
         errors.append("skill trigger evaluations schema_version must be 1")
-    if len(cases) != 39:
-        errors.append("skill trigger evaluations must contain exactly 39 cases")
+    if len(cases) != 41:
+        errors.append("skill trigger evaluations must contain exactly 41 cases")
     case_ids: set[str] = set()
     positive_counts = {skill: 0 for skill in SKILLS}
     negative_count = 0

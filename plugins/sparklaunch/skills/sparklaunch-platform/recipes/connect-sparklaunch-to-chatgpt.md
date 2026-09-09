@@ -14,7 +14,7 @@ Establish the user-managed SparkLaunch connection and select a project without c
 <!-- sparklaunch:connection:start -->
 1. Use the OAuth connection managed by ChatGPT or Codex. Never request credentials, bearer tokens, authorization codes, client secrets, or transport headers.
 2. If the required SparkLaunch actions are absent, stop before planning or claiming execution and say: **SparkLaunch isn't loaded in this conversation. Start a new ChatGPT conversation with SparkLaunch selected, or enable the SparkLaunch plugin and start a new Codex task. If it is still absent, disable and re-enable or reinstall the SparkLaunch plugin, then start another fresh session. If the host asks you to connect, complete the SparkLaunch permission screen.**
-3. If a loaded action returns an OAuth challenge, ask the user to connect or reconnect SparkLaunch through the host, then retry only after it succeeds. Never ask the user to paste a token.
+3. If a loaded action returns an OAuth challenge or `insufficient_scope`, ask the user to connect or reconnect SparkLaunch through the host and approve the named missing permissions, then retry only after it succeeds. Existing connections may lack access to newly added tools; a missing grant is not evidence of a plan restriction. Never ask the user to paste a token.
 4. If a loaded action reports an expired or revoked authorization, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Reconnect SparkLaunch through the host, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
 <!-- sparklaunch:connection:end -->
 5. Invoke `projects.list` after the host reports a usable connection.
@@ -22,6 +22,10 @@ Establish the user-managed SparkLaunch connection and select a project without c
 7. Call `projects.list` again. It returns every project accessible to the connected user.
 8. If there is one clear match, select it. Otherwise present a concise table and ask the user to choose.
 9. Call `projects.get` for the selected project and retain its `effective_permissions`. Pass the selected `project_id` argument to every project-scoped tool, and do not propose or confirm a write whose required permission is absent.
+   Check `connection_permissions` before diagnosing missing access: a list that
+   omits the required scope needs renewed host consent; `null` is an unrestricted
+   legacy connection. An absent effective permission alone is not proof of a
+   plan restriction. Explain a specific plan or role denial using its stated remedy.
 10. If the user needs a new project, require a useful business description, call `projects.create` with a stable `idempotency_key`, then retain its returned project id. Creation automatically queues the included Idea Validation research; tell the user it normally takes 10-15 minutes and do not launch a duplicate initial validation.
 11. To review or disconnect grants, direct the user to SparkLaunch **Profile > AI Agent Connections**. Warn that an open agent session may continue to show an expired or revoked connection and that SparkLaunch cannot restart the client-owned authorization automatically. Disconnecting is a separate, explicit user action; do not revoke a grant merely to diagnose a tool failure.
 

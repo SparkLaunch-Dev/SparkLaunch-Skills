@@ -40,7 +40,7 @@ def test_release_archives_are_deterministic_self_contained_and_licensed(tmp_path
         "tool_count",
         "content_sha256",
     }
-    assert first["candidate"]["plugin_version"] == "0.9.0"
+    assert first["candidate"]["plugin_version"] == "0.10.0"
     assert first["candidate"]["built_at"] == json.loads((ROOT / "release-state.json").read_text())["generated_packages"]["built_at"]
     assert all("+codex" not in asset["file"] for asset in first["assets"])
     assert {asset["host"] for asset in first["assets"]} == set(sync.HOSTS)
@@ -105,7 +105,7 @@ def test_release_identity_rejects_noncanonical_candidate_build_time(
         json.dumps(
             {
                 "generated_packages": {
-                    "version": "0.9.0",
+                    "version": "0.10.0",
                     "built_at": built_at,
                 }
             }
@@ -163,7 +163,7 @@ def test_portal_bundle_rejects_whitespace_around_version(monkeypatch, tmp_path):
 
 
 def test_catalogs_are_generated_from_host_roots():
-    assert sync._base_package_version() == "0.9.0"
+    assert sync._base_package_version() == "0.10.0"
     for host in ("claude", "cursor"):
         document = json.loads((ROOT / f".{host}-plugin/marketplace.json").read_text())
         entry = document["plugins"][0]

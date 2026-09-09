@@ -1,43 +1,43 @@
 {
   "schema_version": 4,
   "candidate": {
-    "plugin_version": "0.9.0",
-    "built_at": "2026-09-07T20:24:26Z",
-    "service_version": "1.8.0",
+    "plugin_version": "0.10.0",
+    "built_at": "2026-09-08T23:33:54Z",
+    "service_version": "1.9.0",
     "production_mcp_url": "https://sparklaun.ch/api/mcp/",
-    "expected_tool_count": 107,
+    "expected_tool_count": 109,
     "expected_oauth_scope_count": 33,
-    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.9.0.zip",
-    "bundle_sha256": "EB2B39F4322B727D78F1786E211D55163FD1D4152698CE95C1BDAD8AEBF40F0D"
+    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.10.0.zip",
+    "bundle_sha256": "31263A09929114C50BE4F63CB8AC49E32489C05A608C03C7B25C18BF82418043"
   },
   "public_production_readiness": {
     "status": "pending",
-    "candidate_plugin_version": "0.9.0",
-    "candidate_service_version": "1.8.0",
+    "candidate_plugin_version": "0.10.0",
+    "candidate_service_version": "1.9.0",
     "candidate_expected_oauth_scope_count": 33,
-    "proof_boundary": "The local 1.8.0 candidate has not been deployed, so public OAuth and MCP readiness for its 33-scope contract is not verified. Prior 18-scope public observations are preserved under historical_public_production_readiness and do not prove this candidate."
+    "proof_boundary": "The local 1.9.0 candidate has not been deployed, so public OAuth and MCP readiness for its 33-scope contract is not verified. Prior 18-scope public observations are preserved under historical_public_production_readiness and do not prove this candidate."
   },
   "production_deployment": {
     "status": "pending",
-    "candidate_plugin_version": "0.9.0",
-    "candidate_service_version": "1.8.0",
-    "candidate_expected_tool_count": 107,
-    "proof_boundary": "No production deployment is recorded for the local 1.8.0 / 107-tool candidate. The last verified 1.4.0 deployment is preserved under historical_production_deployments and must not be reused as candidate proof."
+    "candidate_plugin_version": "0.10.0",
+    "candidate_service_version": "1.9.0",
+    "candidate_expected_tool_count": 109,
+    "proof_boundary": "No production deployment is recorded for the local 1.9.0 / 109-tool candidate. The last verified 1.4.0 deployment is preserved under historical_production_deployments and must not be reused as candidate proof."
   },
   "direct_authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.9.0",
-    "candidate_service_version": "1.8.0",
-    "candidate_expected_tool_count": 107,
-    "proof_boundary": "No direct authenticated production scan is recorded for the local 1.8.0 / 107-tool candidate. The last verified 1.4.0 / 61-tool scan is preserved under historical_direct_authenticated_production_scans and does not prove SparkCap, SparkRoom or SparkClose availability."
+    "candidate_plugin_version": "0.10.0",
+    "candidate_service_version": "1.9.0",
+    "candidate_expected_tool_count": 109,
+    "proof_boundary": "No direct authenticated production scan is recorded for the local 1.9.0 / 109-tool candidate. The last verified 1.4.0 / 61-tool scan is preserved under historical_direct_authenticated_production_scans and does not prove SparkCap, SparkRoom or SparkClose availability."
   },
   "authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.9.0",
-    "candidate_service_version": "1.8.0",
-    "candidate_expected_tool_count": 107,
+    "candidate_plugin_version": "0.10.0",
+    "candidate_service_version": "1.9.0",
+    "candidate_expected_tool_count": 109,
     "portal_result": "pending",
-    "proof_boundary": "A fresh OpenAI portal OAuth Scan Tools pass remains pending until the matching 1.8.0 / 107-tool candidate is deployed. Historical portal observations are preserved separately and cannot satisfy this gate."
+    "proof_boundary": "A fresh OpenAI portal OAuth Scan Tools pass remains pending until the matching 1.9.0 / 109-tool candidate is deployed. Historical portal observations are preserved separately and cannot satisfy this gate."
   },
   "historical_candidates": [
     {

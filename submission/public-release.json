@@ -1,11 +1,11 @@
 {
   "schema_version": 2,
   "candidate": {
-    "plugin_version": "0.9.0",
-    "built_at": "2026-09-07T20:24:26Z",
-    "server_version": "1.8.0",
-    "tool_count": 107,
-    "content_sha256": "13ef6b3fd962fe9e898e0b160df59510ba35e82240fa2c8305affa59c959c867"
+    "plugin_version": "0.10.0",
+    "built_at": "2026-09-08T23:33:54Z",
+    "server_version": "1.9.0",
+    "tool_count": 109,
+    "content_sha256": "55a52d11e8483e294e869063bae7c552ef0aed8ebc60b8c44052ff67720f6df5"
   },
   "policy_review": {
     "status": "pending",

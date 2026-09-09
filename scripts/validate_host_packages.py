@@ -57,6 +57,9 @@ EXPECTED_DESCRIPTOR_SCOPE_SETS: dict[str, frozenset[str]] = {
     "sparkclose.retry_updates": frozenset(
         {"sparkclose.read", "sparkclose.write"}
     ),
+    "sparkclose.prepare_agreement": frozenset(
+        {"sparkclose.read", "sparkclose.write"}
+    ),
     "sparkclose.save_scenario": frozenset(
         {"sparkclose.model", "sparkclose.read", "sparkclose.write"}
     ),

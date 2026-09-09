@@ -807,7 +807,7 @@
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieve one accessible private SparkLaunch business project, including the current role and effective plan/role/token permissions, without changing it.",
+        "read_only_justification": "Retrieve one accessible private SparkLaunch business project, its current role, effective plan/role/token permissions and connection_permissions. Missing connection permissions require reconnecting and approving access, including for an owner; null means the legacy connection has no scope restriction. Missing effective permissions alone do not identify a plan restriction. Do not probe access with a write or recommend upgrading from that list alone.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
@@ -976,6 +976,30 @@
       },
       "justifications": {
         "read_only_justification": "Return the selected project workspace for agreement preparation, signing, signed-document import or correction. No action is executed.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
+      }
+    },
+    "sparkclose.prepare_agreement": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "After preview_agreement and exact-intent confirmation, save the complete company-reviewed agreement as an unsigned SAFE draft. Pass the unchanged preview inputs and its current version. Requires Growth and SparkClose read/write consent. Creates or links an unsigned SAFE instrument; sends no signature request, shares no document, moves no funds and does not close the investment and therefore changes SparkLaunch state.",
+        "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
+        "destructive_justification": "This can delete or overwrite existing state and requires an exact one-time confirmation before execution."
+      }
+    },
+    "sparkclose.preview_agreement": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Validate complete company-reviewed agreement text and same-project cap table, investor deal and private packet without creating records. Use a current model_safe source_version. Return a metadata preview and version for prepare_agreement. Requires Growth. The company must explicitly confirm review; do not infer review or invent legal terms.",
         "open_world_justification": "This operates within private SparkLaunch data and does not change a public or third-party system.",
         "destructive_justification": "This does not delete, revoke, or overwrite an existing user-selected record."
       }
