@@ -4,6 +4,7 @@ These recipes compose the connected SparkLaunch MCP tools into founder workflows
 
 | Recipe | Use it for |
 | --- | --- |
+| [run-monthly-founder-close.md](./run-monthly-founder-close.md) | Review monthly evidence, author investor/board reports, refresh a room and maintain recurring obligations |
 | [model-and-close-a-safe.md](./model-and-close-a-safe.md) | Model SAFE exposure, confirm funding evidence and close one signed investment |
 | [review-cap-table-and-model-a-raise.md](./review-cap-table-and-model-a-raise.md) | Inspect SparkCap ownership, confirm planning edits, and model an unsaved raise |
 | [connect-sparklaunch.md](./connect-sparklaunch.md) | Host-managed OAuth connection, accessible-project discovery, and project selection |

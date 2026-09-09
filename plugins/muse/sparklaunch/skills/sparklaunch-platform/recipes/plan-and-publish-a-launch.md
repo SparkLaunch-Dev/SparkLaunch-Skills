@@ -27,7 +27,7 @@ summary: Create confirmed public campaign surfaces, a QR file, and a measurable 
 ## Guardrails
 
 - Do not auto-confirm public actions.
-- Before presenting a write or confirmation, use `projects.get` and verify that `effective_permissions` contains the required permission. Explain a plan/role limitation without asking the user to reconnect.
+- Before presenting a write or confirmation, use `projects.get` and verify that `effective_permissions` contains the required permission. If `connection_permissions` is a list missing required access, reconnect through the host and approve it. Explain an explicit plan/role limitation using its stated remedy; do not infer that limitation from the effective list alone.
 - Do not retry an uncertain write with a new key.
 - The tool can replace a landing draft with complete generated content, but it does not expose arbitrary field-level draft patches or direct QR-theme changes; do not claim those narrower settings were persisted.
 - Never expose raw QR base64 or a data URL.

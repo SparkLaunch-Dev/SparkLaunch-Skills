@@ -232,13 +232,37 @@ def test_connection_fragment_rejects_malformed_sentinels(fragment):
         plugin_sync._connection_block(fragment)
 
 
+def test_generation_keeps_skills_and_recipes_out_of_the_repository_root():
+    root = plugin_sync.ROOT
+    package_roots = {
+        root / "plugins/sparklaunch",
+        root / "plugins/claude/sparklaunch",
+        root / "plugins/cursor/sparklaunch",
+        root / "plugins/gemini/sparklaunch",
+        root / "plugins/muse/sparklaunch",
+    }
+    assert set(plugin_sync._generated_roots()) == package_roots
+    catalogs = {
+        root / ".claude-plugin" / "marketplace.json",
+        root / ".cursor-plugin" / "marketplace.json",
+    }
+    targets = {item.target for item in plugin_sync.expected_files()}
+    assert {
+        target for target in targets
+        if not any(target.is_relative_to(package) for package in package_roots)
+    } == catalogs
+    assert not (root / "recipes").exists()
+    assert all(not (root / skill).exists() for skill in plugin_sync.SKILLS)
+
+
 def test_expected_file_plan_rejects_duplicate_targets(monkeypatch, tmp_path):
     duplicate = plugin_sync.ExpectedFile(tmp_path / "source", tmp_path / "target", b"")
     adapter = plugin_sync.Adapter("openai", tmp_path, tmp_path, "", ())
     monkeypatch.setattr(plugin_sync, "_base_package_version", lambda: "1.0.0")
     monkeypatch.setattr(plugin_sync, "_read_adapter", lambda _host: adapter)
-    monkeypatch.setattr(plugin_sync, "_legacy_files", lambda _adapter: [duplicate, duplicate])
-    monkeypatch.setattr(plugin_sync, "_package_files", lambda *_args, **_kwargs: [])
+    monkeypatch.setattr(
+        plugin_sync, "_package_files", lambda *_args, **_kwargs: [duplicate, duplicate]
+    )
     monkeypatch.setattr(plugin_sync, "_catalog_files", lambda *_args: [])
 
     with pytest.raises(ValueError, match="duplicate target files"):

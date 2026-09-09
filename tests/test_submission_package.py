@@ -4,6 +4,7 @@ import json
 import hashlib
 import os
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 from runpy import run_path
 from zipfile import ZipFile
@@ -33,7 +34,7 @@ from scripts.generate_submission import (
     build_submission,
     main as generate_submission,
 )
-from scripts.sync_plugin import SKILLS, expected_pairs, sync
+from scripts.sync_plugin import SKILLS, SOURCE_SKILLS, sync
 from scripts.validate_submission import (
     CANONICAL_MCP_URL,
     REGISTRY_SCHEMA_URL,
@@ -42,6 +43,10 @@ from scripts.validate_submission import (
     _validate_registry_descriptor,
     validate,
 )
+
+
+PACKAGE_SKILLS = ROOT / "plugins" / "sparklaunch" / "skills"
+PACKAGE_RECIPES = PACKAGE_SKILLS / "sparklaunch-platform" / "recipes"
 
 
 def _validate_with_text_replaced(monkeypatch, path, old, new):
@@ -115,6 +120,10 @@ def _promote_candidate_evidence(evidence, release_state):
     tool_count = candidate["expected_tool_count"]
     scope_count = candidate["expected_oauth_scope_count"]
     revision = "a" * 40
+    built_at = datetime.fromisoformat(candidate["built_at"].replace("Z", "+00:00"))
+
+    def observed(minutes):
+        return (built_at + timedelta(minutes=minutes)).isoformat().replace("+00:00", "Z")
 
     public = json.loads(
         json.dumps(evidence["historical_public_production_readiness"][-1])
@@ -125,7 +134,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_oauth_scope_count": scope_count,
-            "observed_at": "2026-09-07T20:01:00Z",
+            "observed_at": observed(2),
         }
     )
     public["evidence"]["oauth_scope_count"] = scope_count
@@ -140,7 +149,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_tool_count": tool_count,
-            "observed_at": "2026-09-07T20:00:00Z",
+            "observed_at": observed(1),
             "git_revision": revision,
             "production_tag": "prod-candidate-test",
             "service_version": service_version,
@@ -157,7 +166,7 @@ def _promote_candidate_evidence(evidence, release_state):
             "candidate_plugin_version": plugin_version,
             "candidate_service_version": service_version,
             "candidate_expected_tool_count": tool_count,
-            "observed_at": "2026-09-07T20:02:00Z",
+            "observed_at": observed(3),
             "deployed_git_revision": revision,
             "server_version": service_version,
             "tool_count": tool_count,
@@ -169,7 +178,7 @@ def _promote_candidate_evidence(evidence, release_state):
     evidence["authenticated_production_scan"].update(
         {
             "status": "verified",
-            "observed_at": "2026-09-07T20:03:00Z",
+            "observed_at": observed(4),
             "tool_count": tool_count,
             "portal_result": "successful",
         }
@@ -178,7 +187,7 @@ def _promote_candidate_evidence(evidence, release_state):
     # credential rotation. This object is written only to the test directory.
     evidence["reviewer_access"] = {
         "status": "verified",
-        "observed_at": "2026-09-07T20:03:00Z",
+        "observed_at": observed(4),
         "project_isolation_verified": True,
         "reviewer_materials_configured": True,
         "reviewer_materials_stored_outside_repository": True,
@@ -190,7 +199,7 @@ def _promote_candidate_evidence(evidence, release_state):
         {
             "status": "verified",
             "url": "https://demo.sparklaun.ch/reviewer-demo",
-            "observed_at": "2026-09-07T20:04:00Z",
+            "observed_at": observed(5),
             "reviewer_access_verified": True,
         }
     )
@@ -244,7 +253,7 @@ def _promote_candidate_evidence(evidence, release_state):
     return evidence, release_state
 
 
-def test_packaged_skills_are_exact_deterministic_mirrors():
+def test_packaged_skills_are_current_and_complete():
     assert SKILLS == (
         "sparklaunch-platform",
         "sparklaunch-projects",
@@ -259,7 +268,6 @@ def test_packaged_skills_are_exact_deterministic_mirrors():
         "sparklaunch-sparkroom",
         "sparklaunch-sparkclose",
     )
-    assert len(expected_pairs()) > 40
     assert sync(write=False) == []
 
 
@@ -272,10 +280,10 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
         "effective_permissions",
     )
     for skill in SKILLS:
-        canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
-        assert all(marker in canonical for marker in required), skill
+        packaged = (PACKAGE_SKILLS / skill / "SKILL.md").read_text(encoding="utf-8")
+        assert all(marker in packaged for marker in required), skill
 
-    recipe = (ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md").read_text(
+    recipe = (PACKAGE_RECIPES / "connect-sparklaunch-to-chatgpt.md").read_text(
         encoding="utf-8"
     )
     assert all(marker in recipe for marker in required)
@@ -284,18 +292,18 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
 
 def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
     for skill in SKILLS:
-        canonical = (ROOT / skill / "SKILL.md").read_text(encoding="utf-8")
-        assert "only as internal tool-call state" in canonical, skill
+        packaged = (PACKAGE_SKILLS / skill / "SKILL.md").read_text(encoding="utf-8")
+        assert "only as internal tool-call state" in packaged, skill
 
     recipe_contract = "Retain identifiers and versions only for internal tool calls"
-    for recipe in (ROOT / "recipes").rglob("*.md"):
+    for recipe in PACKAGE_RECIPES.rglob("*.md"):
         text = recipe.read_text(encoding="utf-8")
         if recipe.name == "README.md":
             assert "only as internal tool-call state" in text
         else:
             assert recipe_contract in text, recipe.name
 
-    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+    project_skill = (PACKAGE_SKILLS / "sparklaunch-projects" / "SKILL.md").read_text(
         encoding="utf-8"
     )
     assert "report `project_id`" not in project_skill
@@ -308,7 +316,7 @@ def test_validator_rejects_a_skill_without_the_user_output_contract(monkeypatch)
 
     errors = _validate_with_text_replaced(
         monkeypatch,
-        ROOT / skill / "SKILL.md",
+        PACKAGE_SKILLS / skill / "SKILL.md",
         "only as internal tool-call state",
         "only as opaque runtime state",
     )
@@ -321,21 +329,21 @@ def test_validator_rejects_a_skill_without_the_user_output_contract(monkeypatch)
 def test_validator_rejects_recipe_readme_without_the_user_output_contract(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
-        ROOT / "recipes" / "README.md",
+        PACKAGE_RECIPES / "README.md",
         "only as internal tool-call state",
         "only as opaque runtime state",
     )
 
     assert errors == [
         "recipe must keep identifiers and versions out of user-facing output: "
-        f"{Path('recipes') / 'README.md'}"
+        f"{(PACKAGE_RECIPES / 'README.md').relative_to(ROOT)}"
     ]
 
 
 def test_validator_rejects_an_ordinary_recipe_without_the_user_output_contract(
     monkeypatch,
 ):
-    recipe = ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md"
+    recipe = PACKAGE_RECIPES / "connect-sparklaunch-to-chatgpt.md"
 
     errors = _validate_with_text_replaced(
         monkeypatch,
@@ -426,7 +434,7 @@ def test_submission_package_is_complete():
 )
 def test_packaged_synthetic_incorporation_draft_matches_runtime_contract():
     path = (
-        ROOT
+        PACKAGE_SKILLS
         / "sparklaunch-incorporation"
         / "references"
         / "synthetic-single-founder-draft.json"
@@ -510,7 +518,7 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
     }
     assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
-    assert version == "1.7.0"
+    assert version == "1.9.0"
     if BACKEND_AVAILABLE:
         application_version = run_path(BACKEND / "mcp_server_version.py")[
             "SPARKLAUNCH_MCP_SERVER_VERSION"
@@ -538,11 +546,11 @@ def test_incorporation_tools_and_scopes_match_the_runtime_contract():
 
 
 def test_incorporation_skill_is_private_and_never_calls_filing_providers():
-    skill = (ROOT / "sparklaunch-incorporation" / "SKILL.md").read_text(
+    skill = (PACKAGE_SKILLS / "sparklaunch-incorporation" / "SKILL.md").read_text(
         encoding="utf-8"
     )
     recipes = [
-        (ROOT / "recipes" / name).read_text(encoding="utf-8")
+        (PACKAGE_RECIPES / name).read_text(encoding="utf-8")
         for name in (
             "incorporate-a-single-founder-company.md",
             "incorporate-with-collaborators.md",
@@ -578,10 +586,10 @@ def test_incorporation_skill_is_private_and_never_calls_filing_providers():
 
 def test_incorporation_service_access_and_legal_capacity_boundary_is_packaged():
     documents = (
-        ROOT / "sparklaunch-incorporation" / "SKILL.md",
-        ROOT / "recipes" / "incorporate-a-single-founder-company.md",
-        ROOT / "recipes" / "incorporate-with-collaborators.md",
-        ROOT / "recipes" / "resume-or-correct-incorporation.md",
+        SOURCE_SKILLS / "sparklaunch-incorporation" / "SKILL.md",
+        ROOT / "src" / "recipes" / "incorporate-a-single-founder-company.md",
+        ROOT / "src" / "recipes" / "incorporate-with-collaborators.md",
+        ROOT / "src" / "recipes" / "resume-or-correct-incorporation.md",
         ROOT
         / "plugins"
         / "sparklaunch"
@@ -841,7 +849,7 @@ def test_skill_trigger_evaluation_set_covers_every_skill_and_negative_boundaries
         (ROOT / "evals" / "skill-trigger-cases.json").read_text(encoding="utf-8")
     )
     cases = evaluations["cases"]
-    assert len(cases) == 39
+    assert len(cases) == 41
     expected_skills = {skill for case in cases for skill in case["expected_skills"]}
     assert expected_skills == {
         "sparklaunch-campaigns",
@@ -886,9 +894,10 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     covered_tools = {tool for case in matrix["cases"] for tool in case["tools"]}
     covered_recipes = {recipe for case in matrix["cases"] for recipe in case["recipes"]}
 
-    assert len(matrix["cases"]) == 16
+    assert len(matrix["cases"]) == 17
     assert covered_tools == set(submission["tools"])
     assert covered_recipes == {
+        "run-monthly-founder-close.md",
         "model-and-close-a-safe.md",
         "prepare-and-share-an-investor-room.md",
         "review-cap-table-and-model-a-raise.md",
@@ -927,7 +936,7 @@ def test_controlled_e2e_matrix_covers_every_tool_and_recipe():
     expected_scopes = {
         contract.required_scope for contract in MCP_TOOL_CONTRACTS.values()
     }
-    assert len(expected_scopes) == 29
+    assert len(expected_scopes) == 33
     assert controls["expected_oauth_scope_count"] == len(expected_scopes)
     expected_grant_marker = f"expected {len(expected_scopes)}-scope grant"
     assert any(expected_grant_marker in case["expected"] for case in matrix["cases"])
@@ -945,7 +954,7 @@ def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
     runbook = (ROOT / "evals" / "CONTROLLED-E2E.md").read_text(encoding="utf-8")
 
     for marker in (
-        "29 OAuth scopes",
+        "33 OAuth scopes",
         "Never call Delaware, NWRA, or CorpTools",
         "zero provider calls",
         "submit to SparkLaunch Filing Operations",
@@ -956,14 +965,14 @@ def test_controlled_e2e_runbook_preserves_the_incorporation_provider_barrier():
 
 
 def test_project_and_validation_guidance_uses_automatic_initial_research():
-    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+    project_skill = (PACKAGE_SKILLS / "sparklaunch-projects" / "SKILL.md").read_text(
         encoding="utf-8"
     )
-    validation_skill = (ROOT / "sparklaunch-idea-validation" / "SKILL.md").read_text(
+    validation_skill = (PACKAGE_SKILLS / "sparklaunch-idea-validation" / "SKILL.md").read_text(
         encoding="utf-8"
     )
     validation_recipe = (
-        ROOT / "recipes" / "validate-an-idea-and-generate-a-report.md"
+        PACKAGE_RECIPES / "validate-an-idea-and-generate-a-report.md"
     ).read_text(encoding="utf-8")
 
     for document in (project_skill, validation_skill, validation_recipe):
@@ -977,7 +986,7 @@ def test_project_and_validation_guidance_uses_automatic_initial_research():
 
 
 def test_landing_recipe_forbids_invented_social_proof():
-    launch_recipe = (ROOT / "recipes" / "plan-and-publish-a-launch.md").read_text(
+    launch_recipe = (PACKAGE_RECIPES / "plan-and-publish-a-launch.md").read_text(
         encoding="utf-8"
     )
 
@@ -986,13 +995,13 @@ def test_landing_recipe_forbids_invented_social_proof():
 
 
 def test_project_guidance_preflights_effective_permissions_before_writes():
-    project_skill = (ROOT / "sparklaunch-projects" / "SKILL.md").read_text(
+    project_skill = (PACKAGE_SKILLS / "sparklaunch-projects" / "SKILL.md").read_text(
         encoding="utf-8"
     )
-    connect_recipe = (ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md").read_text(
+    connect_recipe = (PACKAGE_RECIPES / "connect-sparklaunch-to-chatgpt.md").read_text(
         encoding="utf-8"
     )
-    launch_recipe = (ROOT / "recipes" / "plan-and-publish-a-launch.md").read_text(
+    launch_recipe = (PACKAGE_RECIPES / "plan-and-publish-a-launch.md").read_text(
         encoding="utf-8"
     )
 
@@ -1002,10 +1011,10 @@ def test_project_guidance_preflights_effective_permissions_before_writes():
 
 
 def test_logo_guidance_documents_the_selected_colors_transport_shape():
-    logo_skill = (ROOT / "sparklaunch-logo-generation" / "SKILL.md").read_text(
+    logo_skill = (PACKAGE_SKILLS / "sparklaunch-logo-generation" / "SKILL.md").read_text(
         encoding="utf-8"
     )
-    brand_recipe = (ROOT / "recipes" / "create-a-brand-foundation.md").read_text(
+    brand_recipe = (PACKAGE_RECIPES / "create-a-brand-foundation.md").read_text(
         encoding="utf-8"
     )
 
@@ -1018,7 +1027,7 @@ def test_logo_guidance_documents_the_selected_colors_transport_shape():
 
 
 def test_connection_recipe_classifies_bare_oauth_403_without_reusing_the_url():
-    recipe = (ROOT / "recipes" / "connect-sparklaunch-to-chatgpt.md").read_text(
+    recipe = (PACKAGE_RECIPES / "connect-sparklaunch-to-chatgpt.md").read_text(
         encoding="utf-8"
     )
 
@@ -1029,7 +1038,7 @@ def test_connection_recipe_classifies_bare_oauth_403_without_reusing_the_url():
 
 def test_founder_report_template_only_requests_supported_tool_evidence():
     template = (
-        ROOT / "recipes" / "templates" / "founder-workflow-report.md"
+        PACKAGE_RECIPES / "templates" / "founder-workflow-report.md"
     ).read_text(encoding="utf-8")
 
     for unsupported in (
@@ -1076,7 +1085,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"] == "0.8.1"
+    assert manifest["version"] == "0.10.0"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -1091,7 +1100,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     for marker in (
         "twelve",
         f"{len(MCP_TOOL_CONTRACTS)} tools",
-        "29 OAuth scopes",
+        "33 OAuth scopes",
         "submit to SparkLaunch Filing Operations",
         "receipt does not mean",
         "zero provider calls",
@@ -1107,8 +1116,8 @@ def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.8.1"',
-        '"version": "0.8.1+codex.20260907000000"',
+        '"version": "0.10.0"',
+        '"version": "0.10.0+codex.20260907000000"',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1120,8 +1129,8 @@ def test_submission_validator_rejects_whitespace_around_package_version(monkeypa
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.8.1"',
-        '"version": " 0.8.1 "',
+        '"version": "0.10.0"',
+        '"version": " 0.10.0 "',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1214,12 +1223,12 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 4
-    assert evidence["candidate"]["plugin_version"] == "0.8.1"
-    assert evidence["candidate"]["built_at"] == "2026-09-07T18:56:26Z"
-    assert evidence["candidate"]["service_version"] == "1.7.0"
-    assert evidence["candidate"]["expected_tool_count"] == 100
-    assert len(MCP_TOOL_CONTRACTS) == 100
-    assert evidence["candidate"]["expected_oauth_scope_count"] == 29
+    assert evidence["candidate"]["plugin_version"] == "0.10.0"
+    assert evidence["candidate"]["built_at"] == release_state["generated_packages"]["built_at"]
+    assert evidence["candidate"]["service_version"] == "1.9.0"
+    assert evidence["candidate"]["expected_tool_count"] == 109
+    assert len(MCP_TOOL_CONTRACTS) == 109
+    assert evidence["candidate"]["expected_oauth_scope_count"] == 33
     deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
     historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
     assert evidence["public_production_readiness"]["status"] == "pending"
@@ -1232,7 +1241,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert current_public["domain_challenge_cache_control_no_store"] is True
     assert evidence["authenticated_production_scan"]["status"] == "pending"
     assert (
-        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 100
+        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 109
     )
     assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
     deployment = evidence["historical_production_deployments"][-1]
@@ -1329,7 +1338,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert direct_scan["tool_names"] == sorted(
         name
         for name in MCP_TOOL_CONTRACTS
-        if not name.startswith(("cap_table.", "sparkroom.", "sparkclose."))
+        if not name.startswith(("cap_table.", "sparkroom.", "sparkclose.", "founder_close.", "founder_ops."))
     )
     assert direct_scan["exact_candidate_tool_name_set_match"] is True
     assert direct_scan["output_schema_root_failure_count"] == 0
@@ -1432,7 +1441,7 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     (
         (
             "plugin_version",
-            "0.8.1+codex.20260907000000",
+            "0.10.0+codex.20260907000000",
             "candidate plugin version must be numeric major.minor.patch",
         ),
         (
@@ -1932,17 +1941,17 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
     ("old", "new", "expected_error"),
     (
         (
-            "exactly 100 tools",
+            "exactly 109 tools",
             "exactly 61 tools",
             "demo recording runbook has stale tool count",
         ),
         (
-            "service `1.7.0`",
+            "service `1.9.0`",
             "service `1.4.0`",
             "demo recording runbook has stale service version",
         ),
         (
-            "29 OAuth scopes",
+            "33 OAuth scopes",
             "18 OAuth scopes",
             "demo recording runbook has stale OAuth scope count",
         ),
@@ -2188,7 +2197,7 @@ def test_release_state_production_baseline_switches_atomically(
         == []
     )
 
-    release_state["runtime"]["last_verified_production"]["service_version"] = "1.7.0"
+    release_state["runtime"]["last_verified_production"]["service_version"] = "1.9.0"
     errors = _validate_portal_evidence(
         monkeypatch,
         tmp_path,
@@ -2340,7 +2349,7 @@ def test_verified_demo_must_postdate_recording_prerequisites(
         (ROOT / "release-state.json").read_text(encoding="utf-8")
     )
     evidence, release_state = _promote_candidate_evidence(evidence, release_state)
-    evidence[field]["observed_at"] = "2026-09-07T20:05:00Z"
+    evidence[field]["observed_at"] = (datetime.fromisoformat(evidence["demo_recording"]["observed_at"].replace("Z", "+00:00")) + timedelta(minutes=1)).isoformat().replace("+00:00", "Z")
 
     errors = _validate_portal_evidence(
         monkeypatch,
@@ -2482,7 +2491,7 @@ def test_plugin_brand_assets_are_canonical_and_theme_ready():
     expected_small = (assets / "sparklaunch-small.png").read_bytes()
     expected_large = (assets / "sparklaunch.png").read_bytes()
     for skill in SKILLS:
-        skill_assets = ROOT / skill / "assets"
+        skill_assets = PACKAGE_SKILLS / skill / "assets"
         assert (skill_assets / "sparklaunch-small.png").read_bytes() == expected_small
         assert (skill_assets / "sparklaunch.png").read_bytes() == expected_large
 

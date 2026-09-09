@@ -6,7 +6,7 @@ Use this runbook to create the reviewer-facing demonstration required for the MC
 
 Record only after all of the following are true:
 
-- OpenAI Scan Tools has succeeded against `https://sparklaun.ch/api/mcp/` and discovered exactly 100 tools for the deployed service `1.7.0` candidate under 29 OAuth scopes. The retained 61-tool direct scan and 59-tool portal scan are historical evidence and do not satisfy this gate.
+- OpenAI Scan Tools has succeeded against `https://sparklaun.ch/api/mcp/` and discovered exactly 109 tools for the deployed service `1.9.0` candidate under 33 OAuth scopes. The retained 61-tool direct scan and 59-tool portal scan are historical evidence and do not satisfy this gate.
 - Reviewer access, project isolation, and required review materials have been verified; operational sign-in and project-binding details remain outside this repository.
 - The OpenAI portal shows the intended verified publisher identity in the same organization and project used for submission.
 - The portal candidate version and package digest match `submission/portal-prerequisites.json`.

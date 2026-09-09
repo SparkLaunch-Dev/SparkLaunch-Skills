@@ -1,8 +1,8 @@
 {
   "schema_version": 3,
   "generated_packages": {
-    "version": "0.8.1",
-    "built_at": "2026-09-07T18:56:26Z",
+    "version": "0.10.0",
+    "built_at": "2026-09-08T23:33:54Z",
     "hosts": [
       "openai",
       "claude",
@@ -13,20 +13,20 @@
     "status": "local_candidates_only"
   },
   "mcp_registry": {
-    "candidate_descriptor_version": "1.7.0",
+    "candidate_descriptor_version": "1.9.0",
     "last_known_published_version": "1.0.0",
     "last_known_version_basis": "repository release record preceding the 2026-09-02 change",
     "live_refresh_status": "not_performed_by_this_change",
     "publication_status": "not_performed_by_this_change"
   },
   "runtime": {
-    "contract_snapshot_version": "1.7.0",
+    "contract_snapshot_version": "1.9.0",
     "candidate": {
-      "plugin_version": "0.8.1",
+      "plugin_version": "0.10.0",
       "deployment_status": "not_verified_for_candidate",
       "direct_authenticated_scan_status": "pending",
       "openai_portal_rescan_status": "pending",
-      "proof_boundary": "The local 1.7.0 / 100-tool / 29-scope candidate has not been deployed or scanned in production. These status fields describe only the candidate and must not inherit the retained production baseline."
+      "proof_boundary": "The local 1.9.0 / 109-tool / 33-scope candidate has not been deployed or scanned in production. Candidate status does not inherit historical production evidence."
     },
     "last_verified_production": {
       "observed_at": "2026-09-03T04:47:05Z",
@@ -54,7 +54,7 @@
         "dynamic_client_registration_advertised": true,
         "client_id_metadata_document_advertised": false
       },
-      "proof_boundary": "These retained fields mirror the last verified 1.4.0 / 61-tool production baseline. They are historical evidence relative to the local 1.7.0 candidate and do not prove SparkCap, SparkRoom, SparkClose, candidate deployment, or current live state."
+      "proof_boundary": "These retained fields mirror the last verified 1.4.0 / 61-tool production baseline. They are historical evidence relative to the local 1.8.0 candidate and do not prove SparkCap, SparkRoom, SparkClose, candidate deployment, or current live state."
     }
   },
   "distribution": {

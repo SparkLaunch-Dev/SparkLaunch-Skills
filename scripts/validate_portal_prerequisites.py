@@ -31,6 +31,7 @@ EXPECTED_MCP_SERVER_NAME = "SparkLaunch MCP"
 # preceding release ledger. New observations belong in new array entries.
 HISTORICAL_CANDIDATE_SHA256S = (
     "5364d6e483e10125a0c6b653d908c03b9bc9fa6348ab68eb46510c8183f914ce",
+    "948d6db9347adb022dc26a6593dd6dbb4da26186f66bfb00c7e989198083dcd7",
 )
 HISTORICAL_PUBLIC_READINESS_SHA256S = (
     "2c5184a1b604988144b951e5673cd1aab53490f72b3f4eb4c9c25d8d8854aca8",
@@ -85,6 +86,8 @@ ALLOWED_KEYS = {
     },
     "$.historical_candidates[]": {
         "plugin_version",
+        "built_at",
+        "service_version",
         "production_mcp_url",
         "expected_tool_count",
         "expected_oauth_scope_count",

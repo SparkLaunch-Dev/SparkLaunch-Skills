@@ -4,7 +4,67 @@ This records local implementation proof and separately labeled operational
 observations. It does not satisfy any native OAuth, policy approval, candidate
 deployment, review, publication or customer acceptance gate.
 
-## Candidate
+## Current candidate: SparkClose preparation, 0.10.0
+
+Date: 2026-09-08. Local candidate only; service 1.9.0, 109 tools, 33 scopes.
+
+Adds reviewed unsigned agreement preview/preparation, preserves canonical SAFE
+calculation and execution gates, and makes missing connection consent distinct
+from project plan/role access. Source skills and all five host packages have
+been regenerated. Backend verification is recorded in the application repository
+at `docs/v-cycle/sparkclose-connected-preparation.md`.
+
+- Package regression suite: **364 passed, 6 skipped** (Windows/Python 3.12).
+- Backend regression suite: **216 passed, 2 PostgreSQL cases deselected**.
+- Runtime snapshot equality; generated submission; 391 generated files across
+  five hosts; host/submission validators; pending-aware portal/public release
+  validation; and all seven deterministic release archives: **PASS**.
+- Candidate content SHA-256:
+  `55a52d11e8483e294e869063bae7c552ef0aed8ebc60b8c44052ff67720f6df5`.
+- Portal ZIP: `dist/sparklaunch-chatgpt-plugin-0.10.0.zip`, SHA-256
+  `31263A09929114C50BE4F63CB8AC49E32489C05A608C03C7B25C18BF82418043`.
+
+Live ChatGPT consent, deployment and draft-preparation acceptance remain
+**NOT VERIFIED**. No customer financing records or real agreements were changed.
+The prior 0.9.0 local candidate below is historical, not evidence for this build.
+
+## Historical local candidate: Monthly Founder Close, 0.9.0
+
+The 2026-09-07 implementation adds seven typed tools and four separately
+consented permissions for monthly reporting, reviewed SparkRoom additions,
+obligations and approved internal operations. The AI host authors investor and
+board reports; SparkLaunch stores exact revisions and approvals and exports safe
+PDFs through Company Library. The recurring state lives in SparkLaunch.
+
+- Plugin 0.9.0; service contract 1.8.0; 107 tools, 33 scopes, twelve skills.
+- New canonical recipe: `src/recipes/run-monthly-founder-close.md`, included in
+  the platform skill for all five generated host packages. There are 391
+  deterministic generated files across host packages and native catalogs.
+- Runtime snapshot parity, generated-package parity, submission generation,
+  host/submission validators, and pending-mode portal/public-release evidence
+  checks pass. Pending mode explicitly does not establish publishability.
+- Package-only layout follow-up: 364 passed, 6 skipped in 42.78s. The six
+  symbolic-link cases require Windows symlink-creation privileges and remain
+  enabled in Linux CI. Standalone and sibling checks are recorded in
+  `docs/v-cycle/public-repository-cleanup.md`.
+- The new backend slice has 311 combined passing regression tests, plus isolated
+  PostgreSQL migration, concurrent command/dispatch and source-lock proofs.
+  The final frontend suite has 48 passing tests and desktop/Pixel 7 two-period
+  browser journeys. Storage is stubbed and browser APIs are synthetic.
+- OpenAI ZIP: `dist/sparklaunch-chatgpt-plugin-0.9.0.zip`, SHA-256
+  `EB2B39F4322B727D78F1786E211D55163FD1D4152698CE95C1BDAD8AEBF40F0D`.
+  All-host archives and checksums are in `dist/release/`.
+- New tools honor current effective subscriptions and revoked authority even on
+  replay. Legacy API keys also require exact confirmation. Assignee names and
+  occurrence dates remain visible in operations previews; room audiences omit
+  private identities and credentials from MCP output.
+
+No production deployment, client installation, OAuth/native-host run,
+marketplace submission, delivery or founder acceptance occurred for 0.9.0.
+Historical candidate records are preserved below and in the immutable release
+ledger; their observations cannot satisfy this changed candidate's gates.
+
+## Historical candidate: 0.8.1
 
 - Client/plugin: `0.8.1`; MCP contract: `1.7.0`, 100 tools,
   29 business permissions, 12 skills.

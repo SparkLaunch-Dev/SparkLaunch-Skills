@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import base64
 import copy
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -40,8 +40,8 @@ def test_release_archives_are_deterministic_self_contained_and_licensed(tmp_path
         "tool_count",
         "content_sha256",
     }
-    assert first["candidate"]["plugin_version"] == "0.8.1"
-    assert first["candidate"]["built_at"] == "2026-09-07T18:56:26Z"
+    assert first["candidate"]["plugin_version"] == "0.10.0"
+    assert first["candidate"]["built_at"] == json.loads((ROOT / "release-state.json").read_text())["generated_packages"]["built_at"]
     assert all("+codex" not in asset["file"] for asset in first["assets"])
     assert {asset["host"] for asset in first["assets"]} == set(sync.HOSTS)
     assert len(first["assets"]) == 7
@@ -105,7 +105,7 @@ def test_release_identity_rejects_noncanonical_candidate_build_time(
         json.dumps(
             {
                 "generated_packages": {
-                    "version": "0.8.1",
+                    "version": "0.10.0",
                     "built_at": built_at,
                 }
             }
@@ -125,7 +125,7 @@ def test_release_identity_rejects_release_state_version_drift(monkeypatch, tmp_p
             {
                 "generated_packages": {
                     "version": "0.8.0",
-                    "built_at": "2026-09-07T18:56:26Z",
+                    "built_at": json.loads((ROOT / "release-state.json").read_text())["generated_packages"]["built_at"],
                 }
             }
         ),
@@ -163,7 +163,7 @@ def test_portal_bundle_rejects_whitespace_around_version(monkeypatch, tmp_path):
 
 
 def test_catalogs_are_generated_from_host_roots():
-    assert sync._base_package_version() == "0.8.1"
+    assert sync._base_package_version() == "0.10.0"
     for host in ("claude", "cursor"):
         document = json.loads((ROOT / f".{host}-plugin/marketplace.json").read_text())
         entry = document["plugins"][0]
@@ -238,8 +238,9 @@ def verified_document(monkeypatch, tmp_path):
     monkeypatch.setattr(gate, "ROOT", tmp_path)
     identity = document["candidate"]
     monkeypatch.setattr(gate, "candidate_identity", lambda: identity)
-    observed = "2026-09-07T20:00:00+00:00"
-    now = datetime(2026, 9, 7, 21, tzinfo=timezone.utc)
+    built_at = datetime.fromisoformat(identity["built_at"].replace("Z", "+00:00"))
+    observed = (built_at + timedelta(minutes=1)).isoformat()
+    now = built_at + timedelta(hours=1)
     (tmp_path / "submission/evidence").mkdir(parents=True)
     records = {"policy": document["policy_review"], **document["hosts"]}
     for label, record in records.items():
@@ -413,7 +414,7 @@ def test_public_probe_never_claims_authenticated_acceptance(monkeypatch):
     transport, calls = transport_fixture(monkeypatch)
     result = live.verify(public_only=True, transport=transport)
     assert result["schema_version"] == 2
-    assert result["candidate"]["built_at"] == "2026-09-07T18:56:26Z"
+    assert result["candidate"]["built_at"] == json.loads((ROOT / "release-state.json").read_text())["generated_packages"]["built_at"]
     assert result["verification"] == "public_metadata_only"
     assert len(calls) == 2
 

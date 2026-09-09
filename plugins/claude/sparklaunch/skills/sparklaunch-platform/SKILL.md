@@ -3,7 +3,7 @@ name: sparklaunch-platform
 description: >
   Use when a connected SparkLaunch user wants a broad founder workflow spanning
   project setup, idea validation, branding, launch assets, campaigns, landing
-  pages, CRM, SparkRoom, SparkCap, SparkClose, or incorporation and the first task is choosing the right
+  pages, CRM, SparkRoom, SparkCap, SparkClose, monthly reporting, obligations, or incorporation and the first task is choosing the right
   SparkLaunch recipe or narrower skill.
 ---
 
@@ -24,6 +24,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 9. For investor rooms, selected library documents, room share links, or usage summaries, use `sparklaunch-sparkroom` and `recipes/prepare-and-share-an-investor-room.md`. SparkRoom requires effective Growth access; uploads and password sharing continue in SparkLaunch.
 10. For SAFE modeling, saved dilution scenarios, funding evidence, or investment closings, use `sparklaunch-sparkclose` and `recipes/model-and-close-a-safe.md`.
 11. For an Incorporation Package, formation case, participant Action Center, correction, cancellation, or internal Filing Operations receipt, use `sparklaunch-incorporation` and its matching incorporation recipe.
+12. For a Monthly Founder Close, investor update, board package, reviewed room refresh, ongoing obligations or post-close reporting, use `recipes/run-monthly-founder-close.md`. The AI host drafts; SparkLaunch persists evidence, exact approvals and recurring work. Check the new reporting/operations permissions before accessing private report contents.
 
 ## Connected-App Rules
 
@@ -34,7 +35,7 @@ Route broad founder outcomes to the smallest complete SparkLaunch workflow.
 4. If authorization is expired or revoked, stop before any write and say: **Your SparkLaunch authorization is expired or revoked. Re-authenticate SparkLaunch from `/mcp`, complete the permission screen, and then retry. I will not repeat a write until the connection is restored and any uncertain prior result is checked.**
 <!-- sparklaunch:connection:end -->
 5. Use `projects.list` to discover accessible projects. Pass the selected `project_id` argument to every project-scoped tool; do not depend on legacy project headers.
-6. Before proposing or confirming a write, use `projects.get` and verify `effective_permissions` contains the required permission. A project plan or role can further restrict execution; explain that restriction instead of asking the user to reconnect.
+6. Before proposing or confirming a write, use `projects.get` and verify `effective_permissions` contains the required permission. If the `connection_permissions` list lacks required access, reconnect through the host and approve it. A project plan or role can also restrict execution; explain an explicit denial using its stated remedy. Do not infer a plan restriction from the effective list alone.
 7. For each write, create one stable `idempotency_key` for that exact intended mutation. Never retry a write with a new key after an uncertain result.
 8. When a tool returns `confirmation_required`, show the exact preview and wait for explicit approval. Then call the same tool with the same arguments, same idempotency key, and returned confirmation token.
 9. Never expose secrets, raw base64, data URLs, internal ownership IDs, or support diagnostics.

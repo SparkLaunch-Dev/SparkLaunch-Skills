@@ -1,8 +1,8 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.8.1` candidate at
+These instructions apply to the local SparkLaunch `0.10.0` candidate at
 `https://sparklaun.ch/api/mcp/`. The package contains twelve skills and declares
-100 tools under 29 OAuth scopes. The retained 1.4.0 production scan and portal
+109 tools under 33 OAuth scopes. The retained 1.4.0 production scan and portal
 prerequisites concern the previous 61-tool candidate and do not prove SparkCap, SparkRoom, or SparkClose
 availability. Deploy and scan the matching candidate before native-host review.
 The internal evidence contains 39 trigger cases and 16 controlled E2E cases;
@@ -93,4 +93,4 @@ Stop review and contact support if OAuth redirects to an unregistered host, a pr
 
 ## SparkClose review
 
-Use `sparklaunch-sparkclose` and `model-and-close-a-safe.md` for the SAFE workflow. Review the separate read, model, write and close permissions. Verify no investment is changed by a confirmation preview, stale evidence requires a new review, and same-key replay cannot duplicate a receipt or closing. Signing and document review use first-party handoffs.
+Use `sparklaunch-sparkclose` and `model-and-close-a-safe.md` for the SAFE workflow. Review the separate read, model, write and close permissions. Inspect `projects.get.connection_permissions`: a missing grant requires reconnection and consent, including for an owner with Growth access. In the isolated synthetic project, provide complete reviewed fixture text and verify that `preview_agreement` creates no business records. Confirm `prepare_agreement` using its unchanged inputs and opaque version, then read back one unsigned draft. Stale capitalization, investor/contact, packet or agreement input must reject the action; same-key replay must not create another draft. Verify company-review attestation and confirmation are both required. Signing, external import and corrections remain first-party handoffs. Never use customer agreements or records to satisfy this test.
