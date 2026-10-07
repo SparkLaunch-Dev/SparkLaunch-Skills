@@ -33,12 +33,32 @@ HOST_MARKERS = {
 }
 RECIPE_REFERENCE = re.compile(r"recipes/([A-Za-z0-9_.-]+\.md)")
 EXPECTED_DESCRIPTOR_SCOPE_SETS: dict[str, frozenset[str]] = {
-    "founder_close.command": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.start_close": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.save_financials": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.refresh_evidence": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.review_evidence": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.save_report": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.approve_report": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.publish_report": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.complete_close": frozenset({"founder_close.read", "founder_close.write"}),
+    "founder_close.next_period": frozenset({"founder_close.read", "founder_close.write"}),
     "founder_close.refresh_room": frozenset(
         {"founder_close.read", "founder_close.write", "sparkroom.read", "sparkroom.write"}
     ),
     "founder_close.room_review": frozenset({"founder_close.read", "sparkroom.read"}),
-    "founder_ops.command": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.create_obligation": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.update_obligation": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.complete_occurrence": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.prepare_project_task": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.prepare_monthly_close": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.prepare_manual_completion": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.approve_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.execute_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.retry_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.cancel_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.enroll": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.disable_enrollment": frozenset({"founder_ops.read", "founder_ops.write"}),
+    "founder_ops.run_due": frozenset({"founder_ops.read", "founder_ops.write"}),
     "sparkclose.cancel_unsigned": frozenset(
         {"sparkclose.read", "sparkclose.write"}
     ),
@@ -155,13 +175,15 @@ def _validate_manifest_contracts(errors: list[str]) -> dict[str, str]:
     versions["openai"] = str(openai.get("version", ""))
     openai_mcp = _json(PACKAGE_ROOTS["openai"] / ".mcp.json", errors)
     if openai_mcp != {
-        "sparklaunch": {
-            "type": "http",
-            "url": CANONICAL_MCP_URL,
-            "oauth_resource": CANONICAL_MCP_URL,
+        "mcpServers": {
+            "sparklaunch": {
+                "type": "http",
+                "url": CANONICAL_MCP_URL,
+                "oauth_resource": CANONICAL_MCP_URL,
+            }
         }
     }:
-        errors.append("OpenAI MCP config must use the direct Codex server map")
+        errors.append("OpenAI MCP config must use the ChatGPT mcpServers wrapper")
 
     claude = _json(
         PACKAGE_ROOTS["claude"] / ".claude-plugin" / "plugin.json", errors

@@ -1,7 +1,9 @@
 {
-  "sparklaunch": {
-    "type": "http",
-    "url": "https://sparklaun.ch/api/mcp/",
-    "oauth_resource": "https://sparklaun.ch/api/mcp/"
+  "mcpServers": {
+    "sparklaunch": {
+      "type": "http",
+      "url": "https://sparklaun.ch/api/mcp/",
+      "oauth_resource": "https://sparklaun.ch/api/mcp/"
+    }
   }
 }

@@ -1,10 +1,47 @@
-# Local public-release verification — 2026-09-07
+# Local public-release verification — 2026-10-01
 
 This records local implementation proof and separately labeled operational
 observations. It does not satisfy any native OAuth, policy approval, candidate
 deployment, review, publication or customer acceptance gate.
 
-## Current candidate: SparkClose preparation, 0.10.0
+## Current candidate: ChatGPT reviewed operations, 0.11.0
+
+Service **1.10.0**, **129 tools**, **33 scopes**, **12 skills**. Fixes the OpenAI
+MCP wrapper and support URL and replaces two generic founder executors with 22
+individually named operations. Native clients must rediscover the tool contract.
+Canonical services, REST, persistence, authorization, exact confirmation and
+idempotency remain unchanged.
+
+- Backend selection: **125 passed, 4 PostgreSQL cases deselected**.
+- Full package regression suite: **369 passed, 6 skipped** in 416.42 seconds.
+  The six symbolic-link cases require Windows symlink-creation privileges and
+  remain enabled in Linux CI.
+- Focused Python lint: **PASS** in both repositories.
+- Five-host and submission validators, seven deterministic release archives,
+  and pending-aware portal/public-release consistency checks: **PASS**.
+  Both repository diffs passed `git diff --check`.
+- Deterministic portal ZIP:
+  `dist/sparklaunch-chatgpt-plugin-0.11.0.zip`, SHA-256
+  `6DD264947B4202BCE16AFE8F4FC65E869BDC04E71EB5820BF610C66EE77D9F76`.
+- Candidate content SHA-256:
+  `c97e2281c4792952e7010abef76eb1bc2aac626a8b1215679f8dc72e89476a27`.
+- The existing portal requires its public legacy app slug in the ZIP manifest.
+  Only that name is overridden; native packages retain `sparklaunch`.
+- OpenAI accepted draft **0.11.0** and all **12 skills passed** its checks.
+  Review status is **Not submitted**; publication is **Not published**.
+
+The fresh legacy MCP scan failed because authorization was unavailable; its
+59-tool display is retained review data. The packaged server reports Connection
+unknown without a connection control. The portal also flags category confirmation
+and incomplete review information. Matching backend deployment, a fresh 129-tool
+scan, hosted acceptance and reviewer/demo prerequisites remain unverified.
+See [portal observation](observations/2026-10-01-chatgpt-submission.md) and the
+application's `docs/v-cycle/chatgpt-submission-operations.md` for exact boundaries.
+
+No backend deployment, tool execution through the portal, final submission or
+publication was performed. No credentials or customer records were changed.
+
+## Historical local candidate: SparkClose preparation, 0.10.0
 
 Date: 2026-09-08. Local candidate only; service 1.9.0, 109 tools, 33 scopes.
 
