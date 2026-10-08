@@ -61,6 +61,7 @@ EXPECTED_PLUGIN_INTERFACE = {
     "category",
     "capabilities",
     "websiteURL",
+    "supportURL",
     "privacyPolicyURL",
     "termsOfServiceURL",
     "defaultPrompt",
@@ -302,7 +303,7 @@ def validate() -> list[str]:
             errors.append(
                 "plugin interface missing fields: " + ", ".join(sorted(missing_interface))
             )
-        for key in ("privacyPolicyURL", "termsOfServiceURL"):
+        for key in ("websiteURL", "supportURL", "privacyPolicyURL", "termsOfServiceURL"):
             if not str(interface.get(key, "")).startswith("https://"):
                 errors.append(f"plugin interface missing secure {key}")
         prompts = interface.get("defaultPrompt") or []
@@ -359,14 +360,21 @@ def validate() -> list[str]:
                     f"{skill}/assets/{name}"
                 )
     mcp = _load_json(plugin / ".mcp.json", errors)
-    server = (mcp or {}).get("sparklaunch") or {}
+    servers = (mcp or {}).get("mcpServers")
+    if not isinstance(servers, dict):
+        errors.append("plugin MCP mapping must contain an mcpServers object")
+        servers = {}
+    server = servers.get("sparklaunch") or {}
+    if not isinstance(server, dict):
+        errors.append("plugin sparklaunch MCP server must be an object")
+        server = {}
     endpoint = server.get("url")
     if endpoint != CANONICAL_MCP_URL:
         errors.append("plugin MCP mapping must use the canonical production endpoint")
     if server.get("oauth_resource") != CANONICAL_MCP_URL:
         errors.append("plugin MCP mapping must bind OAuth to the canonical production resource")
-    if set(mcp or {}) != {"sparklaunch"}:
-        errors.append("plugin MCP mapping must contain only the sparklaunch server")
+    if set(mcp or {}) != {"mcpServers"} or set(servers) != {"sparklaunch"}:
+        errors.append("plugin MCP mapping must contain only mcpServers with the sparklaunch server")
 
     marketplace = _load_json(ROOT / ".agents" / "plugins" / "marketplace.json", errors)
     entries = (marketplace or {}).get("plugins") or []

@@ -59,13 +59,14 @@ a hosted environment depends on its deployed version and permissions.
 
 ## Release status
 
-The working-tree candidate is **0.10.0**, with a service **1.9.0** snapshot of
-**109 tools**, **33 OAuth scopes**, and **12 skills**. Its monthly operating cycle
-adds seven reporting and operations tools and a platform recipe: the host authors
-investor and board reports while SparkLaunch persists source snapshots, exact
-approvals, private PDF publication, reviewed room refreshes, and obligations.
-Existing grants require new consent, and the backend requires additive Founder
-Close/Operations migrations.
+The working-tree candidate is **0.11.0**, with a service **1.10.0** snapshot of
+**129 tools**, **33 OAuth scopes**, and **12 skills**. Its monthly operating cycle
+uses individually named reporting and operations tools and a platform recipe:
+the host authors investor and board reports while SparkLaunch persists source
+snapshots, exact approvals, private PDF publication, reviewed room refreshes,
+and obligations. This candidate replaces two generic command tools with 22
+specific operations. Existing clients must rediscover tools and omit the old
+action and preparation-kind selectors; REST and persistence are unchanged.
 
 Deployment, hosted package consumption, native-host acceptance, marketplace
 publication, and real-user outcomes remain unverified for this candidate. The

@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Connected founder workflows for launch, financing, monthly reporting and ongoing operations.",
   "author": {
     "name": "SparkLaunch",
@@ -43,6 +43,7 @@
     "composerIcon": "./assets/sparklaunch-composer-48.png",
     "logo": "./assets/sparklaunch.png",
     "logoDark": "./assets/sparklaunch-directory-dark.png",
-    "screenshots": []
+    "screenshots": [],
+    "supportURL": "https://sparklaun.ch/help"
   }
 }

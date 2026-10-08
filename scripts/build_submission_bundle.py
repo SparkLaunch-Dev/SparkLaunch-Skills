@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile, ZipInfo
 
@@ -30,6 +31,22 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins" / "sparklaunch"
 FIXED_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
 PLUGIN_MANIFEST = ".codex-plugin/plugin.json"
+
+
+def _portal_plugin_name(override: str | None = None) -> str | None:
+    """Bind updates to an existing portal record without renaming native packages."""
+    if override is None:
+        evidence_path = ROOT / "submission" / "portal-prerequisites.json"
+        if evidence_path.is_file():
+            evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+            override = evidence.get("candidate", {}).get("portal_plugin_name")
+    if override is not None and (
+        not isinstance(override, str)
+        or not 1 <= len(override) <= 64
+        or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", override) is None
+    ):
+        raise ValueError("Portal plugin name must be a lowercase slug of at most 64 characters")
+    return override
 
 
 def _expected_plugin_content() -> dict[Path, bytes]:
@@ -150,9 +167,10 @@ def _archive_content(source: Path) -> bytes:
     return _normalized_content(source.read_bytes())
 
 
-def build_bundle(output: Path | None = None) -> tuple[Path, str]:
+def build_bundle(output: Path | None = None, *, portal_plugin_name: str | None = None) -> tuple[Path, str]:
     """Write the deterministic portal archive and return its path and digest."""
     sources = _plugin_files()
+    portal_plugin_name = _portal_plugin_name(portal_plugin_name)
     if output is None:
         output = ROOT / "dist" / f"sparklaunch-chatgpt-plugin-{_plugin_version()}.zip"
     output = output.resolve()
@@ -160,13 +178,18 @@ def build_bundle(output: Path | None = None) -> tuple[Path, str]:
     with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
         for source in sources:
             relative = source.relative_to(PLUGIN_ROOT).as_posix()
+            content = _archive_content(source)
+            if relative == PLUGIN_MANIFEST and portal_plugin_name is not None:
+                manifest = json.loads(content)
+                manifest["name"] = portal_plugin_name
+                content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
             info = ZipInfo(relative, date_time=FIXED_ZIP_TIME)
             info.compress_type = ZIP_DEFLATED
             info.create_system = 3
             info.external_attr = 0o100644 << 16
             archive.writestr(
                 info,
-                _archive_content(source),
+                content,
                 compress_type=ZIP_DEFLATED,
                 compresslevel=9,
             )
@@ -177,8 +200,9 @@ def build_bundle(output: Path | None = None) -> tuple[Path, str]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, help="Optional output ZIP path")
+    parser.add_argument("--portal-plugin-name", help="Existing portal plugin slug; defaults to candidate evidence binding")
     args = parser.parse_args(argv)
-    path, digest = build_bundle(args.output)
+    path, digest = build_bundle(args.output, portal_plugin_name=args.portal_plugin_name)
     print(json.dumps({"path": str(path), "sha256": digest}, sort_keys=True))
     return 0
 

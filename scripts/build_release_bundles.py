@@ -51,7 +51,8 @@ def _candidate_built_at(expected_version: str) -> str:
 def candidate_identity() -> dict:
     """Bind evidence to the complete generated content and full tool snapshot.
 
-    Evidence itself is excluded to avoid a self-referential digest. Newlines are
+    Mutable evidence claims are excluded to avoid a self-referential digest.
+    Only the portal manifest-name binding is included. Newlines are
     normalized identically to ZIP creation so Windows/Linux produce one identity.
     """
     entries = {
@@ -70,6 +71,8 @@ def candidate_identity() -> dict:
         entries[name] = hashlib.sha256(
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
+    portal_evidence = json.loads((ROOT / "submission/portal-prerequisites.json").read_text(encoding="utf-8"))
+    entries["portal_plugin_name"] = portal_evidence["candidate"].get("portal_plugin_name")
     version = sync._base_package_version()
     return {
         "plugin_version": version,
