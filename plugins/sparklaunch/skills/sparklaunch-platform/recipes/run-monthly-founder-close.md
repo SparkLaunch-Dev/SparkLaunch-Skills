@@ -28,18 +28,17 @@ approvals, published document references and recurring work.
 
 ## Review the month
 
-1. If the requested month does not exist, call `founder_close.command` with
-   `data.action="start_close"` and `data.payload.period` in `YYYY-MM` format.
-2. All subsequent close commands include the selected `close_id` and latest
+1. If the requested month does not exist, call `founder_close.start_close` with `data.payload.period` in `YYYY-MM` format.
+2. All subsequent close operations include the selected `close_id` and latest
    `expected_version` inside `data`. Refetch the close after each successful
    mutation. Keep these identifiers internal to tool calls.
 3. Ask for missing financial inputs and their reporting currency. Save confirmed
-   amounts with `save_financials`: revenue, expenses, cash_balance, headcount,
+   amounts with `founder_close.save_financials`: revenue, expenses, cash_balance, headcount,
    currency and optional notes. These are founder declarations, not connected,
    audited or independently verified financials. Never substitute zero for unknown.
-4. If source evidence changed, use `refresh_evidence` with an empty payload.
+4. If source evidence changed, use `founder_close.refresh_evidence` with an empty payload.
    Explain the source-linked evidence and remaining exceptions. Use
-   `review_evidence` only after the founder reviews each exception; supply an
+   `founder_close.review_evidence` only after the founder reviews each exception; supply an
    `exception_notes` mapping keyed by the returned exception keys. Do not invent
    review notes, resolved status, professional sign-off or evidence.
 
@@ -53,14 +52,14 @@ approvals, published document references and recurring work.
 2. A board package uses the same evidence with an agenda, operating summary,
    financial review, decisions requested, risks and action register. Label
    proposed decisions as proposals, not adopted resolutions or legal instruments.
-3. Call `founder_close.command` with `save_report` and payload
+3. Call `founder_close.save_report` with payload
    `{kind,title,markdown}`. Kind is `investor_update` or `board_package`.
    Saving another draft creates a new revision; it does not replace prior history.
-4. Read the saved report back. Before `approve_report`, show the exact text and
+4. Read the saved report back. Before `founder_close.approve_report`, show the exact text and
    evidence limitations to the founder. Supply the report's returned `report_id`,
    `content_hash` and `evidence_fingerprint`. New text or changed source evidence
    requires renewed review. Never approve your own draft on the founder's behalf.
-5. After approval, `publish_report` with the exact `report_id` saves the reviewed
+5. After approval, `founder_close.publish_report` with the exact `report_id` saves the reviewed
    package to Company Library. Confirm the canonical publication result. This
    operation does not email investors, create room access or acknowledge delivery.
 
@@ -82,29 +81,34 @@ approvals, published document references and recurring work.
 
 ## Obligations, actions and the following month
 
-1. Use `founder_ops.command` with the typed `data` action/payload shown by the tool.
+1. Use `founder_ops.create_obligation`, `founder_ops.update_obligation` or
+   `founder_ops.complete_occurrence` with the operation-specific typed `data`.
    Obligations require a title, owner, due_date and recurrence (`none`, `monthly`,
    `quarterly` or `yearly`). Select an owner from the returned project members.
    Updating an obligation or completing an occurrence requires that record's
    current `target_id` and `expected_version`.
-2. Prepare only supported internal actions: `create_project_task`,
-   `create_monthly_close`, or `record_manual_completion`. Approval and execution
-   are distinct commands against an unchanged action. Manual completion evidence
+2. Prepare internal actions with `founder_ops.prepare_project_task`,
+   `founder_ops.prepare_monthly_close` or `founder_ops.prepare_manual_completion`.
+   Each takes `data.payload={title,payload}`; the operation fixes the kind.
+   Use `founder_ops.approve_action` and `founder_ops.execute_action` against
+   the unchanged stored action. Do not supply an action or kind selector. Manual completion evidence
    is a declaration of work performed outside the adapter, not automated provider
    execution. Never use this interface to send messages, file forms or move money.
-3. Read failures before retrying. Retry only the same reviewed intended action;
+3. Read failures before `founder_ops.retry_action`; use `founder_ops.cancel_action`
+   to cancel an eligible stored action. Retry only the same reviewed intended action;
    revoked membership or an expired plan requires resolving access first.
-4. When all completion gates pass, use `complete_close`. The month becomes
-   immutable. Use `next_period` to carry pending work into the following month.
+4. When all completion gates pass, use `founder_close.complete_close`. The month becomes
+   immutable. Use `founder_close.next_period` to carry pending work into the following month.
 5. Reporting enrollment persists in SparkLaunch independently of the host
-   conversation. `enroll` requires an explicit first_due_date; existing enrollment
+   conversation. `founder_ops.enroll` requires an explicit first_due_date; existing enrollment
    changes require current target/version and a disabled enrollment. Honor a
-   founder's pause with `disable_enrollment`; do not silently re-enable it.
+   founder's pause with `founder_ops.disable_enrollment`; do not silently re-enable it.
 6. An actually completed investment may already have enrolled reporting. Read its
    state before creating anything. A signed SAFE is not completed funding.
 
 ## Confirmation, retry and output
 
+Each named write takes operation-specific `data` without an `action` selector.
 Every write uses a stable idempotency key for that exact intent. When the server
 returns `confirmation_required`, show the complete preview and wait for explicit
 approval before repeating the same arguments/key with the confirmation token.

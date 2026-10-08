@@ -26,6 +26,17 @@ generated-content fingerprint and MCP snapshot. Identical source produces identi
 bytes on Windows and Linux. Bump the package version after any published content
 change; never replace an existing release/tag or rely on a cached old install.
 
+The ChatGPT upload archive is built separately by
+`scripts/build_submission_bundle.py`. An existing legacy portal record can require
+its original package name. Set the public `candidate.portal_plugin_name` in
+`submission/portal-prerequisites.json`, or pass `--portal-plugin-name` for a
+one-off build. This changes only the ZIP manifest name; native packages retain
+`sparklaunch`. Refresh the ZIP digest and candidate content identity together
+before upload. Preserve the exact accepted MCP configuration: the existing
+portal record rejects adding, removing or replacing MCP server configurations.
+Successful ZIP upload and skill checks do not establish an authenticated tool
+scan, deployment or submission readiness.
+
 ## Production and native acceptance
 
 1. Land and deploy the reviewed backend revision through SparkLaunch's deployment

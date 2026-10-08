@@ -1,4 +1,7 @@
-# SparkLaunch 0.10.0 Release Candidate
+# SparkLaunch 0.11.0 Release Candidate
+
+- Correct the ChatGPT MCP package wrapper and add the public support URL.
+- Replace Founder Close and Founder Ops command executors with 22 separately described operations, including three fixed preparation tools. Rediscover the tool list and omit former action/kind selectors. Canonical REST workflows and business scopes remain unchanged.
 
 - Add read-only preview and confirmed preparation of complete company-reviewed
   unsigned SAFE agreements through the canonical SparkClose service. Stale
@@ -12,9 +15,9 @@
 - Gate Registry and artifact publication on current evidence and authenticated full production-contract equality.
 - Add candidate-bound native-client acceptance and SparkClose policy-review evidence requirements. Pending evidence remains pending; this candidate is not a claim of native compatibility or marketplace approval.
 
-Status: the local service 1.9.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
+Status: the local service 1.10.0 candidate adds SparkCap, SparkRoom and SparkClose and has not been deployed.
 The previous production MCP service is deployed at service 1.4.0 according to the
-retained 2026-09-03 evidence; that 61-tool observation does not verify this 109-tool
+retained 2026-09-03 evidence; that 61-tool observation does not verify this 129-tool
 candidate. The package has not yet been submitted or approved by ChatGPT.
 The portal prerequisites now bind local artifact checks to this candidate while
 preserving previous production observations as immutable historical evidence.
@@ -42,7 +45,7 @@ Registry publication, and native-host invocation of the new tools remain unverif
 - Keep incorporation `draft_file` attachments address-free and move participant plus company business/mailing address entry to authenticated sparklaun.ch Action Center tasks.
 - Build a portal upload containing only the SparkLaunch plugin, with `.codex-plugin/plugin.json` at the archive root; keep internal submission evidence outside that upload.
 - Expose twelve concise founder-workflow skills through one connected SparkLaunch MCP server.
-- Generate review metadata from the application-owned registry of 109 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.
+- Generate review metadata from the application-owned registry of 129 tools covering projects, general project tasks, owner-confirmed collaborator invitations, idea validation, palettes, logos, campaigns, QR files, landing pages, analytics, CRM, SparkCap, SparkRoom, SparkClose, and incorporation.
 - Add `crm.prepare_business_card_import` and `crm.get_business_card_import` for a portable, first-party business-card handoff: preparation creates no contact or attachment, import requires an authenticated explicit **Upload and import** action, and status readback returns no image or contact data.
 - Add `projects.invite_collaborator` as an owner/admin-only, idempotent, confirmation-bound email invitation that uses the canonical acceptance workflow and reports invitation persistence separately from delivery.
 - Add `tasks.list`, `tasks.create`, `tasks.update`, and `tasks.delete` for project-isolated general tasks with accepted-member email assignment, optimistic versions, idempotency, exact overwrite/delete confirmation, and stale mobile-state cleanup. CRM and GTM tasks remain outside this generic contract.

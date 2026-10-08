@@ -1,8 +1,8 @@
 {
   "schema_version": 3,
   "generated_packages": {
-    "version": "0.10.0",
-    "built_at": "2026-09-08T23:33:54Z",
+    "version": "0.11.0",
+    "built_at": "2026-10-01T23:08:02Z",
     "hosts": [
       "openai",
       "claude",
@@ -13,20 +13,20 @@
     "status": "local_candidates_only"
   },
   "mcp_registry": {
-    "candidate_descriptor_version": "1.9.0",
+    "candidate_descriptor_version": "1.10.0",
     "last_known_published_version": "1.0.0",
     "last_known_version_basis": "repository release record preceding the 2026-09-02 change",
     "live_refresh_status": "not_performed_by_this_change",
     "publication_status": "not_performed_by_this_change"
   },
   "runtime": {
-    "contract_snapshot_version": "1.9.0",
+    "contract_snapshot_version": "1.10.0",
     "candidate": {
-      "plugin_version": "0.10.0",
+      "plugin_version": "0.11.0",
       "deployment_status": "not_verified_for_candidate",
       "direct_authenticated_scan_status": "pending",
       "openai_portal_rescan_status": "pending",
-      "proof_boundary": "The local 1.9.0 / 109-tool / 33-scope candidate has not been deployed or scanned in production. Candidate status does not inherit historical production evidence."
+      "proof_boundary": "The local 1.10.0 / 129-tool / 33-scope candidate requires matching production deployment and authenticated scans. Local tests and package upload do not prove hosted readiness."
     },
     "last_verified_production": {
       "observed_at": "2026-09-03T04:47:05Z",

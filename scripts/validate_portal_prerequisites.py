@@ -10,6 +10,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qsl, unquote, urlparse
+from zipfile import BadZipFile, ZipFile
 
 try:
     from scripts.sync_plugin import PACKAGE_VERSION_RE
@@ -75,6 +76,7 @@ ALLOWED_KEYS = {
         "demo_recording",
     },
     "$.candidate": {
+        "portal_plugin_name",
         "plugin_version",
         "built_at",
         "service_version",
@@ -1476,6 +1478,9 @@ def validate(*, allow_pending: bool) -> list[str]:
         )
 
     bundle_relative = Path(str(candidate.get("bundle_path") or ""))
+    portal_name = candidate.get("portal_plugin_name", manifest.get("name"))
+    if not isinstance(portal_name, str) or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", portal_name) is None or len(portal_name) > 64:
+        errors.append("portal prerequisite plugin name binding is invalid")
     expected_bundle_relative = (
         Path("dist") / f"sparklaunch-chatgpt-plugin-{manifest.get('version')}.zip"
     )
@@ -1495,6 +1500,15 @@ def validate(*, allow_pending: bool) -> list[str]:
         digest = hashlib.sha256(bundle_path.read_bytes()).hexdigest().upper()
         if digest != str(candidate.get("bundle_sha256") or "").upper():
             errors.append("portal prerequisite candidate bundle digest does not match")
+        try:
+            with ZipFile(bundle_path) as archive:
+                portal_manifest = json.loads(archive.read(".codex-plugin/plugin.json"))
+            if portal_manifest.get("name") != portal_name:
+                errors.append("portal prerequisite ZIP plugin name does not match its binding")
+            if portal_manifest.get("version") != candidate.get("plugin_version"):
+                errors.append("portal prerequisite ZIP plugin version does not match the candidate")
+        except (OSError, BadZipFile, KeyError, ValueError) as exc:
+            errors.append(f"portal prerequisite ZIP manifest is unreadable: {exc}")
 
     _require_historical_snapshots(
         evidence,

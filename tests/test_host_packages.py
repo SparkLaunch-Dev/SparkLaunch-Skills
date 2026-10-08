@@ -25,7 +25,7 @@ def test_checked_in_contract_supports_standalone_submission_generation() -> None
         (ROOT / "contracts" / "tools.snapshot.json").read_text(encoding="utf-8")
     )
     assert snapshot["tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert snapshot["server_version"] == "1.9.0"
+    assert snapshot["server_version"] == "1.10.0"
     assert {
         "crm.prepare_business_card_import",
         "crm.get_business_card_import",
@@ -76,12 +76,32 @@ def test_business_card_handoff_contract_is_portable_and_truthful() -> None:
 
 def test_compound_descriptor_scope_sets_are_exact() -> None:
     expected_by_tool = {
-        "founder_close.command": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.start_close": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.save_financials": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.refresh_evidence": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.review_evidence": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.save_report": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.approve_report": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.publish_report": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.complete_close": frozenset({"founder_close.read", "founder_close.write"}),
+        "founder_close.next_period": frozenset({"founder_close.read", "founder_close.write"}),
         "founder_close.refresh_room": frozenset(
             {"founder_close.read", "founder_close.write", "sparkroom.read", "sparkroom.write"}
         ),
         "founder_close.room_review": frozenset({"founder_close.read", "sparkroom.read"}),
-        "founder_ops.command": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.create_obligation": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.update_obligation": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.complete_occurrence": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.prepare_project_task": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.prepare_monthly_close": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.prepare_manual_completion": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.approve_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.execute_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.retry_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.cancel_action": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.enroll": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.disable_enrollment": frozenset({"founder_ops.read", "founder_ops.write"}),
+        "founder_ops.run_due": frozenset({"founder_ops.read", "founder_ops.write"}),
         "sparkclose.cancel_unsigned": frozenset(
             {"sparkclose.read", "sparkclose.write"}
         ),
@@ -120,10 +140,30 @@ def test_compound_descriptor_scope_sets_are_exact() -> None:
         ),
     }
     primary_by_tool = {
-        "founder_close.command": "founder_close.write",
+        "founder_close.start_close": "founder_close.write",
+        "founder_close.save_financials": "founder_close.write",
+        "founder_close.refresh_evidence": "founder_close.write",
+        "founder_close.review_evidence": "founder_close.write",
+        "founder_close.save_report": "founder_close.write",
+        "founder_close.approve_report": "founder_close.write",
+        "founder_close.publish_report": "founder_close.write",
+        "founder_close.complete_close": "founder_close.write",
+        "founder_close.next_period": "founder_close.write",
         "founder_close.refresh_room": "founder_close.write",
         "founder_close.room_review": "founder_close.read",
-        "founder_ops.command": "founder_ops.write",
+        "founder_ops.create_obligation": "founder_ops.write",
+        "founder_ops.update_obligation": "founder_ops.write",
+        "founder_ops.complete_occurrence": "founder_ops.write",
+        "founder_ops.prepare_project_task": "founder_ops.write",
+        "founder_ops.prepare_monthly_close": "founder_ops.write",
+        "founder_ops.prepare_manual_completion": "founder_ops.write",
+        "founder_ops.approve_action": "founder_ops.write",
+        "founder_ops.execute_action": "founder_ops.write",
+        "founder_ops.retry_action": "founder_ops.write",
+        "founder_ops.cancel_action": "founder_ops.write",
+        "founder_ops.enroll": "founder_ops.write",
+        "founder_ops.disable_enrollment": "founder_ops.write",
+        "founder_ops.run_due": "founder_ops.write",
         "sparkclose.cancel_unsigned": "sparkclose.write",
         "sparkclose.close_investment": "sparkclose.close",
         "sparkclose.reconcile_funding": "sparkclose.write",
