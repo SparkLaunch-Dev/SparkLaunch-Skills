@@ -85,3 +85,60 @@ The existing App must complete MCP setup and become available to its intended
 audience before this Git candidate is merged/released. Then perform a fresh
 native install, inspect account controls, connect an account, and read projects.
 The candidate has not been installed, uploaded, submitted or published.
+
+## Private testing before public submission
+
+The user's follow-up authorizes testing in their ChatGPT account now and
+eventual public publication later. Private testing does not require public
+submission. The shared App's release gate above does not block a separately
+registered account-only test connection to the same MCP service.
+
+| ID | Parent | Requirement / acceptance | Verification |
+| --- | --- | --- | --- |
+| PROD-ACCT-003 | PRD-ACCT-001 | A private test copy shall use the existing SparkLaunch service and all twelve canonical skills in the requesting user's ChatGPT account. | T-PRIVATE-001: source read confirms USER/PRIVATE scope, exact App identity and all twelve skills; native UI shows connected-account controls. |
+| SYS-ACCT-002 | PROD-ACCT-003 | The private test shall preserve public draft identity and use only project reads for functional acceptance. | T-PRIVATE-002: private source/config readback and a native read-only project request; no public submission, writes or credential copying. |
+| IMPL-ACCT-004 | PROD-ACCT-003 | The private overlay shall preserve App-owned metadata and binding while adding the generated OpenAI skills. | T-PRIVATE-003: compare root/compatibility manifests with retrieved source, exact skill-file content parity, guarded update and source readback. |
+
+The private connection was created through ChatGPT's supported custom-MCP flow
+with USER/PRIVATE scope. Its verified identity and source readback are retained
+in ignored local artifacts under `dist/private-test/` and
+`dist/private-test-readback.json`. The public draft retains its original identity.
+These are distinct host registrations of the same verified service; the private
+ID is not substituted into the shared Git package.
+
+Catalog groups 1/2/3/5/6/7 remain applicable to account-only packaging,
+OAuth/permission boundaries, identity preservation and native acceptance.
+Group 4 remains N/A because there is no hosted runtime or load change.
+App-owned presentation is preserved even where it differs from the public
+listing. Independent skill packaging preserves the first-party authorization
+flow. Private acceptance results
+are recorded after readback; they do not constitute public-release acceptance.
+
+Private test results, 2026-10-12:
+
+- T-PRIVATE-001: PASS. Source confirms USER/PRIVATE scope and version **1.0.1**;
+  the native page shows **Apps 1** and **Skills 12**. Native settings show
+  **Connected accounts**, the owner's account marked **Primary**, and
+  **Connect another account**.
+- T-PRIVATE-002: PASS for private registration, preservation of the public
+  draft, and a read-only native test returning **31 accessible projects**.
+  The host displayed the SparkLaunch tool operation and its successful result
+  in a new conversation with SparkLaunch Test selected. No write was requested
+  or public submission made. Setup selected `projects.read` as its default,
+  but the subsequent authorization request advertised broader scopes; the
+  effective grant's exact scope set is NOT VERIFIED. This acceptance proves
+  functional project access, not a grant restricted to project reads.
+- T-PRIVATE-003: PASS. Both manifests, preserved App configuration and all twelve
+  saved skill texts were read back against the prepared overlay. The host
+  normalized a trailing slash on `skills` and added an empty keyword list; these
+  are equivalent representations. Explicit UTF-8 reads preserve Unicode text.
+- Private overlay archive:
+  `dist/sparklaunch-private-test-skills-1.0.1.zip`, SHA-256
+  `d6a9fde85859f4a7d3a79ee936084c49a14f5ec6b89be71954aba8c1e06bf2a0`.
+
+Native evidence is retained locally in
+`dist/connection-evidence/private-test-connected-accounts.png` and
+`dist/connection-evidence/private-test-project-read.png`. The shared package
+continues to have a separate intended-audience acceptance gate for release.
+The private copy is ready for account-owner testing; verification of the other
+eleven workflows and public-release acceptance remain separate work.
