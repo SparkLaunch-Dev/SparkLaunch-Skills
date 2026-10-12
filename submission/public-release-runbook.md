@@ -37,6 +37,22 @@ portal record rejects adding, removing or replacing MCP server configurations.
 Successful ZIP upload and skill checks do not establish an authenticated tool
 scan, deployment or submission readiness.
 
+The native Git package declares `apps: "./.app.json"`, pointing at the existing
+registered SparkLaunch App. `mcp/portal.json` is an inert copy of the canonical
+MCP configuration: it is neither referenced by the native manifest nor stored at
+an automatically discovered MCP path. The portal builder excludes `.app.json`,
+replaces the manifest's App reference with `mcpServers: "./.mcp.json"`, and places
+that configuration at `.mcp.json` in the upload ZIP. Keep the accepted server
+configuration and existing portal identity. Never upload the native release ZIP
+directly to the public portal.
+
+Before releasing the Git candidate, verify the registered App is available to
+its intended audience and a fresh install displays **Apps**, **Connected
+accounts**, and **Connect another account**. Complete a read-only account test
+through that connection. The 2026-10-12 App remains Draft/Not published and is
+unavailable in personal ChatGPT, so Git release and native acceptance are pending.
+See [the requirement/evidence record](../docs/v-cycle/connected-accounts.md).
+
 ## Production and native acceptance
 
 1. Land and deploy the reviewed backend revision through SparkLaunch's deployment

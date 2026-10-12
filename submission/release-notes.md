@@ -1,4 +1,9 @@
-# SparkLaunch 0.11.0 Release Candidate
+# SparkLaunch 0.11.1 Release Candidate
+
+- Restore the registered SparkLaunch App binding in the Git package so the host
+  can expose connected-account controls. Preserve the existing App identity and
+  twelve skills; the portal ZIP retains the accepted MCP configuration without
+  App references. Public App activation and native account acceptance are pending.
 
 - Correct the ChatGPT MCP package wrapper and add the public support URL.
 - Replace Founder Close and Founder Ops command executors with 22 separately described operations, including three fixed preparation tools. Rediscover the tool list and omit former action/kind selectors. Canonical REST workflows and business scopes remain unchanged.

@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Connected founder workflows for launch, financing, monthly reporting and ongoing operations.",
   "author": {
     "name": "SparkLaunch",
@@ -19,7 +19,7 @@
     "incorporation"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json",
+  "apps": "./.app.json",
   "interface": {
     "displayName": "SparkLaunch",
     "shortDescription": "Build and operate a startup",

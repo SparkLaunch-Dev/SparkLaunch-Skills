@@ -9,9 +9,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from scripts.openai_connection import PORTAL_MCP_PATH, native_connection_errors
     from scripts.sync_plugin import HOSTS, ROOT, SKILLS, sync
     from scripts.tool_contract_snapshot import load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from openai_connection import PORTAL_MCP_PATH, native_connection_errors
     from sync_plugin import HOSTS, ROOT, SKILLS, sync
     from tool_contract_snapshot import load_snapshot
 
@@ -173,7 +175,13 @@ def _validate_manifest_contracts(errors: list[str]) -> dict[str, str]:
     versions: dict[str, str] = {}
     openai = _json(PACKAGE_ROOTS["openai"] / ".codex-plugin" / "plugin.json", errors)
     versions["openai"] = str(openai.get("version", ""))
-    openai_mcp = _json(PACKAGE_ROOTS["openai"] / ".mcp.json", errors)
+    openai_apps = _json(PACKAGE_ROOTS["openai"] / ".app.json", errors)
+    errors.extend(native_connection_errors(openai, openai_apps))
+    if (PACKAGE_ROOTS["openai"] / ".mcp.json").exists() or (
+        PACKAGE_ROOTS["openai"] / "mcp.json"
+    ).exists():
+        errors.append("native SparkLaunch must not auto-discover a duplicate raw MCP server")
+    openai_mcp = _json(PACKAGE_ROOTS["openai"] / PORTAL_MCP_PATH, errors)
     if openai_mcp != {
         "mcpServers": {
             "sparklaunch": {

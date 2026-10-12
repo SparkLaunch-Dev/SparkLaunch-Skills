@@ -59,7 +59,7 @@ a hosted environment depends on its deployed version and permissions.
 
 ## Release status
 
-The working-tree candidate is **0.11.0**, with a service **1.10.0** snapshot of
+The working-tree candidate is **0.11.1**, with a service **1.10.0** snapshot of
 **129 tools**, **33 OAuth scopes**, and **12 skills**. Its monthly operating cycle
 uses individually named reporting and operations tools and a platform recipe:
 the host authors investor and board reports while SparkLaunch persists source
@@ -71,6 +71,11 @@ action and preparation-kind selectors; REST and persistence are unchanged.
 Deployment, hosted package consumption, native-host acceptance, marketplace
 publication, and real-user outcomes remain unverified for this candidate. The
 retained service 1.4.0 / 61-tool production observations are historical evidence.
+The Git package now binds SparkLaunch's registered App for host-managed connected
+accounts. Its existing App is still an unpublished draft, so this candidate must
+not be released until App availability and a fresh native account connection are
+verified. The portal upload uses the same service's MCP configuration without App
+references. See [connected-account verification](docs/v-cycle/connected-accounts.md).
 See [release state](release-state.json), [local verification](submission/local-release-verification.md),
 and [earlier candidate notes](docs/release-history.md) for the details.
 

@@ -10,6 +10,7 @@ from pathlib import Path
 from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile, ZipInfo
 
 try:
+    from scripts.openai_connection import PORTAL_MCP_PATH
     from scripts.sync_plugin import (
         PACKAGE_VERSION_RE,
         _lexical_absolute,
@@ -18,6 +19,7 @@ try:
         expected_files,
     )
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from openai_connection import PORTAL_MCP_PATH
     from sync_plugin import (
         PACKAGE_VERSION_RE,
         _lexical_absolute,
@@ -118,16 +120,34 @@ def _plugin_files() -> list[Path]:
 def portal_bundle_layout_errors(bundle: Path) -> list[str]:
     """Return portal-layout errors for a built SparkLaunch plugin archive."""
     expected = {
-        path.relative_to(PLUGIN_ROOT).as_posix()
+        _portal_path(path)
         for path in _plugin_files()
+        if path.relative_to(PLUGIN_ROOT).as_posix() != ".app.json"
     }
     try:
         with ZipFile(bundle) as archive:
             names = archive.namelist()
-    except (OSError, BadZipFile) as exc:
+            manifest = (
+                json.loads(archive.read(PLUGIN_MANIFEST))
+                if names.count(PLUGIN_MANIFEST) == 1
+                else None
+            )
+    except (OSError, BadZipFile, KeyError, ValueError) as exc:
         return [f"portal plugin ZIP is unreadable: {exc}"]
 
     errors: list[str] = []
+    if manifest is not None:
+        if not isinstance(manifest, dict):
+            errors.append("portal plugin ZIP manifest must be an object")
+        else:
+            extensions = manifest.get("extensions") or {}
+            openai = extensions.get("com.openai") if isinstance(extensions, dict) else None
+            if manifest.get("apps") is not None or (
+                isinstance(openai, dict) and openai.get("apps") is not None
+            ):
+                errors.append("portal plugin ZIP must not declare registered App references")
+            if manifest.get("mcpServers") != "./.mcp.json":
+                errors.append("portal plugin ZIP must reference ./.mcp.json")
     if names.count(PLUGIN_MANIFEST) != 1:
         errors.append(f"portal plugin ZIP must contain exactly one root {PLUGIN_MANIFEST}")
     if len(names) != len(set(names)):
@@ -167,6 +187,11 @@ def _archive_content(source: Path) -> bytes:
     return _normalized_content(source.read_bytes())
 
 
+def _portal_path(source: Path) -> str:
+    relative = source.relative_to(PLUGIN_ROOT).as_posix()
+    return ".mcp.json" if relative == PORTAL_MCP_PATH else relative
+
+
 def build_bundle(output: Path | None = None, *, portal_plugin_name: str | None = None) -> tuple[Path, str]:
     """Write the deterministic portal archive and return its path and digest."""
     sources = _plugin_files()
@@ -177,12 +202,20 @@ def build_bundle(output: Path | None = None, *, portal_plugin_name: str | None =
     output.parent.mkdir(parents=True, exist_ok=True)
     with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
         for source in sources:
-            relative = source.relative_to(PLUGIN_ROOT).as_posix()
+            if source.relative_to(PLUGIN_ROOT).as_posix() == ".app.json":
+                continue
+            relative = _portal_path(source)
             content = _archive_content(source)
-            if relative == PLUGIN_MANIFEST and portal_plugin_name is not None:
+            if relative == PLUGIN_MANIFEST:
                 manifest = json.loads(content)
-                manifest["name"] = portal_plugin_name
-                content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
+                convert_connection = manifest.get("apps") == "./.app.json"
+                if convert_connection:
+                    manifest.pop("apps")
+                    manifest["mcpServers"] = "./.mcp.json"
+                if portal_plugin_name is not None:
+                    manifest["name"] = portal_plugin_name
+                if convert_connection or portal_plugin_name is not None:
+                    content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
             info = ZipInfo(relative, date_time=FIXED_ZIP_TIME)
             info.compress_type = ZIP_DEFLATED
             info.create_system = 3

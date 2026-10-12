@@ -13,12 +13,14 @@ from typing import Any
 import yaml
 
 try:
+    from scripts.openai_connection import PORTAL_MCP_PATH, native_connection_errors
     from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
     from scripts.generate_submission import reviewer_fixture_errors
     from scripts.validate_portal_prerequisites import sensitive_text_findings
     from scripts.sync_plugin import PACKAGE_VERSION_RE, ROOT, SKILLS, sync
     from scripts.tool_contract_snapshot import load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from openai_connection import PORTAL_MCP_PATH, native_connection_errors
     from build_submission_bundle import build_bundle, portal_bundle_layout_errors
     from generate_submission import reviewer_fixture_errors
     from validate_portal_prerequisites import sensitive_text_findings
@@ -328,8 +330,10 @@ def validate() -> list[str]:
                 )
         if "TODO" in json.dumps(manifest):
             errors.append("plugin manifest contains a TODO placeholder")
-        if manifest.get("mcpServers") != "./.mcp.json":
-            errors.append("plugin manifest must reference ./.mcp.json")
+        apps = _load_json(plugin / ".app.json", errors) or {}
+        errors.extend(native_connection_errors(manifest, apps))
+        if (plugin / ".mcp.json").exists() or (plugin / "mcp.json").exists():
+            errors.append("native SparkLaunch must not auto-discover a duplicate raw MCP server")
         interface = manifest.get("interface") or {}
         long_description = str(interface.get("longDescription") or "")
         if "first protected use" not in long_description or "AI Agent Connections" not in long_description:
@@ -359,7 +363,7 @@ def validate() -> list[str]:
                     f"canonical skill icon differs from plugin branding: "
                     f"{skill}/assets/{name}"
                 )
-    mcp = _load_json(plugin / ".mcp.json", errors)
+    mcp = _load_json(plugin / PORTAL_MCP_PATH, errors)
     servers = (mcp or {}).get("mcpServers")
     if not isinstance(servers, dict):
         errors.append("plugin MCP mapping must contain an mcpServers object")

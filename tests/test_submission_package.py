@@ -51,7 +51,7 @@ PACKAGE_RECIPES = PACKAGE_SKILLS / "sparklaunch-platform" / "recipes"
 
 def test_package_cs_mcp_wrapper_and_support_url_are_required(monkeypatch):
     manifest_path = ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json"
-    mcp_path = ROOT / "plugins" / "sparklaunch" / ".mcp.json"
+    mcp_path = ROOT / "plugins" / "sparklaunch" / "mcp" / "portal.json"
     original = Path.read_text
 
     def malformed(candidate, *args, **kwargs):
@@ -308,7 +308,8 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
         encoding="utf-8"
     )
     assert all(marker in recipe for marker in required)
-    assert "disable and re-enable or reinstall" in recipe
+    assert "Connected accounts" in recipe
+    assert "Reinstalling the same package cannot repair an unavailable App" in recipe
 
 
 def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
@@ -1106,7 +1107,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"] == "0.11.0"
+    assert manifest["version"] == "0.11.1"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -1137,8 +1138,8 @@ def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.0"',
-        '"version": "0.11.0+codex.20260907000000"',
+        '"version": "0.11.1"',
+        '"version": "0.11.1+codex.20260907000000"',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1150,8 +1151,8 @@ def test_submission_validator_rejects_whitespace_around_package_version(monkeypa
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.0"',
-        '"version": " 0.11.0 "',
+        '"version": "0.11.1"',
+        '"version": " 0.11.1 "',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1244,7 +1245,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 4
-    assert evidence["candidate"]["plugin_version"] == "0.11.0"
+    assert evidence["candidate"]["plugin_version"] == "0.11.1"
     assert evidence["candidate"]["built_at"] == release_state["generated_packages"]["built_at"]
     assert evidence["candidate"]["service_version"] == "1.10.0"
     assert evidence["candidate"]["expected_tool_count"] == 129
@@ -1462,7 +1463,7 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     (
         (
             "plugin_version",
-            "0.11.0+codex.20260907000000",
+            "0.11.1+codex.20260907000000",
             "candidate plugin version must be numeric major.minor.patch",
         ),
         (
@@ -2532,6 +2533,9 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
             for path in plugin_root.rglob("*")
             if path.is_file()
         }
+        expected_names.remove(".app.json")
+        expected_names.remove("mcp/portal.json")
+        expected_names.add(".mcp.json")
         assert names == expected_names
         assert ".codex-plugin/plugin.json" in names
         assert ".mcp.json" in names
@@ -2559,6 +2563,8 @@ def test_package_cs_portal_name_binding_preserves_native_package(tmp_path):
         native = json.loads(original)
         assert portal.pop("name") == portal_name
         native.pop("name")
+        assert native.pop("apps") == "./.app.json"
+        assert portal.pop("mcpServers") == "./.mcp.json"
         assert portal == native
         assert json.loads(archive.read(".mcp.json"))["mcpServers"]["sparklaunch"]["url"] == CANONICAL_MCP_URL
     assert native_path.read_bytes() == original

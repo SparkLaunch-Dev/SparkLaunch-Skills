@@ -1,8 +1,8 @@
 {
   "schema_version": 3,
   "generated_packages": {
-    "version": "0.11.0",
-    "built_at": "2026-10-01T23:08:02Z",
+    "version": "0.11.1",
+    "built_at": "2026-10-12T21:52:21Z",
     "hosts": [
       "openai",
       "claude",
@@ -22,7 +22,7 @@
   "runtime": {
     "contract_snapshot_version": "1.10.0",
     "candidate": {
-      "plugin_version": "0.11.0",
+      "plugin_version": "0.11.1",
       "deployment_status": "not_verified_for_candidate",
       "direct_authenticated_scan_status": "pending",
       "openai_portal_rescan_status": "pending",
