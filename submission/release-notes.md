@@ -1,4 +1,30 @@
-# SparkLaunch 0.11.0 Release Candidate
+# SparkLaunch 0.11.2 Release Candidate
+
+- Import five positive and three negative review cases, release notes, commerce
+  disclosure and explicit all-country availability through supported manifest fields.
+- Prepare a server-owned public ChatGPT allowlist with 121 tools. SparkClose keeps
+  seven modeling/readiness/private-record tools; nine agreement and investment
+  execution workflows are excluded from discovery and direct calls. Unreviewed
+  future backend tools are also excluded. Public skill/recipe instructions match.
+- Retain the same App bindings, private testing audience and twelve packaged
+  SparkLaunch logo assets. The private cloud UI still needs its icon-rendering
+  issue resolved; file/package verification is not a rendered-logo claim.
+- Renew the dedicated reviewer fixture through January 10, 2027, after owner
+  authorization. Rotation remains required and blocks preflight login.
+
+The full integration snapshot is separate and currently describes 138 tools at
+service 1.11.0. The public ChatGPT candidate describes 121 tools at that source
+version and shares the canonical OAuth resource's 33 business scopes. Both are
+local source observations. The restricted endpoint has not been deployed or
+authenticated-scanned by this change. Reviewer workflows, mobile/desktop
+acceptance, a verified demo URL and public review remain pending.
+
+## Prior 0.11.1 candidate details (historical)
+
+- Restore the registered SparkLaunch App binding in the Git package so the host
+  can expose connected-account controls. Preserve the existing App identity and
+  twelve skills; the portal ZIP retains the accepted MCP configuration without
+  App references. Public App activation and native account acceptance are pending.
 
 - Correct the ChatGPT MCP package wrapper and add the public support URL.
 - Replace Founder Close and Founder Ops command executors with 22 separately described operations, including three fixed preparation tools. Rediscover the tool list and omit former action/kind selectors. Canonical REST workflows and business scopes remain unchanged.

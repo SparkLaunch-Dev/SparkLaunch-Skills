@@ -71,6 +71,10 @@ def candidate_identity() -> dict:
         entries[name] = hashlib.sha256(
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
         ).hexdigest()
+    for name in ("contracts/chatgpt-tools.snapshot.json", "submission/public-metadata.json", "scripts/chatgpt_surface.py", "scripts/build_submission_bundle.py", "scripts/generate_submission.py", "scripts/tool_contract_snapshot.py", "scripts/validate_portal_prerequisites.py", "scripts/validate_public_release.py", "scripts/verify_production_contract.py"):
+        entries[name] = hashlib.sha256(sync._normalized_content((ROOT / name).read_bytes())).hexdigest()
+    for source in sorted((ROOT / "adapters/openai/public").glob("*.md")):
+        entries[source.relative_to(ROOT).as_posix()] = hashlib.sha256(sync._normalized_content(source.read_bytes())).hexdigest()
     portal_evidence = json.loads((ROOT / "submission/portal-prerequisites.json").read_text(encoding="utf-8"))
     entries["portal_plugin_name"] = portal_evidence["candidate"].get("portal_plugin_name")
     version = sync._base_package_version()

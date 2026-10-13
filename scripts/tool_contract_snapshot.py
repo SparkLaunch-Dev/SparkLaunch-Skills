@@ -10,6 +10,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SNAPSHOT_PATH = ROOT / "contracts" / "tools.snapshot.json"
+CHATGPT_SNAPSHOT_PATH = ROOT / "contracts" / "chatgpt-tools.snapshot.json"
 
 
 @dataclass(frozen=True)

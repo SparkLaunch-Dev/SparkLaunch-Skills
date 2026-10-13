@@ -1,10 +1,70 @@
-# Local public-release verification — 2026-10-01
+# Local public-release verification
 
 This records local implementation proof and separately labeled operational
 observations. It does not satisfy any native OAuth, policy approval, candidate
 deployment, review, publication or customer acceptance gate.
 
-## Current candidate: ChatGPT reviewed operations, 0.11.0
+## Current candidate: restricted ChatGPT review preparation, 0.11.2 — 2026-10-12
+
+Service **1.11.0**, **138 full-host tools**, **121 public ChatGPT tools**,
+**33 business scopes**, **12 skills**. The native package preserves its registered
+App binding; the public portal ZIP uses the restricted MCP endpoint and excludes
+App references. SparkClose is limited to planning and private records. See
+[submission remediation](../docs/v-cycle/submission-remediation.md).
+
+Baseline candidate verification before the Copilot follow-up:
+
+- Package suite: **384 passed, 6 skipped** (Windows symlink privileges).
+- Isolated backend MCP/profile/OAuth selection: **244 passed**.
+- Prepared portal ZIP `dist/sparklaunch-chatgpt-plugin-0.11.2.zip`, SHA-256
+  `5E3D0580201A78CE37996D05124ED00B38EDE3878FED34CC8C52CB044957EF54`.
+
+The digest above identifies the baseline artifact; metadata corrections change
+the rebuilt ZIP. Deployment, restricted authenticated scans, reviewer password
+rotation/preflight, actual recording/playback and native acceptance remain pending.
+Valid logo assets are preserved, but private ChatGPT skill icons still display
+generic badges. No submission or publication is claimed.
+
+Copilot follow-up verification — 2026-10-12:
+
+- Full package suite: **412 passed, 6 skipped** in 108.83 seconds; output at
+  `dist/copilot-review-tests.txt` (local, ignored).
+- Sensitive metadata tests reject credential assignments and credential-bearing
+  URLs across supported review/publication strings and projected cases before
+  archive creation, preserve any existing archive, and omit values from errors.
+- Live-verifier tests prove restricted endpoint/descriptor equality, reject the
+  full catalog at the restricted endpoint, and reject a restricted failure even
+  when the full surface passes. These are synthetic transport tests, not live scans.
+- Five-host/submission validators, focused Ruff, diff whitespace checks and both
+  pending-aware evidence validators: **PASS**. Strict publication is still pending.
+- Replacement ZIP `dist/sparklaunch-chatgpt-plugin-0.11.2.zip`, SHA-256
+  `982F834AFB0B045F58ADD05D7CFC832BA2516ED806B89E00DF34F2EF95F3C277`.
+  A separate rebuild matched byte-for-byte. Seven host release archives rebuilt.
+- Candidate built at `2026-10-13T04:39:29Z`; content SHA-256
+  `1d16380a3e3f0d42a3e57b355264c040e56c695b1a11b435289c2b7ccc7a4407`.
+- [Demo script](demo-script.md): all five positive and three negative source
+  prompts match. Recording, safe playback and a hosted URL remain owner follow-up.
+
+## Historical local candidate: connected accounts, 0.11.1 — 2026-10-12
+
+The native Git package binds the existing registered SparkLaunch App, preserves
+all twelve skills, and no longer registers a second raw MCP connection. The
+public portal ZIP converts this binding to the unchanged accepted MCP endpoint
+and excludes App references. Verification and the public activation blocker are
+recorded in [connected accounts](../docs/v-cycle/connected-accounts.md).
+
+- Full package suite: **377 passed, 6 skipped** (Windows symlink privileges).
+- Generator, contract consumer, five-host/submission validators, focused Ruff
+  and pending-aware release-record checks: **PASS**.
+- Portal ZIP SHA-256:
+  `AECD024FCF724E1828E6B4CDE2B73FFE285CF6E130E37EBCF72EA032CB1F2F12`.
+
+This version has not been uploaded, submitted, published or installed. The
+registered App remains an unpublished draft, and personal ChatGPT returns
+Plugin not found. The public-only OAuth discovery check passed with 33 advertised
+scopes and zero business tool calls; authentication and account UI are unverified.
+
+## Historical local candidate: ChatGPT reviewed operations, 0.11.0
 
 Service **1.10.0**, **129 tools**, **33 scopes**, **12 skills**. Fixes the OpenAI
 MCP wrapper and support URL and replaces two generic founder executors with 22

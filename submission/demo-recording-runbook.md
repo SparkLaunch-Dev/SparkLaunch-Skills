@@ -2,14 +2,16 @@
 
 Use this runbook to create the reviewer-facing demonstration required for the MCP-backed SparkLaunch plugin. The recording is external review material and is never included in the portal ZIP.
 
+Use [the demo script](demo-script.md) for the core recording: exact prompts, read-aloud narration, screen cues, and expected outcomes for all five positive and three negative review cases. The additional workflow exercises below can be rehearsed separately.
+
 ## Recording gate
 
 Record only after all of the following are true:
 
-- OpenAI Scan Tools has succeeded against `https://sparklaun.ch/api/mcp/` and discovered exactly 129 tools for the deployed service `1.10.0` candidate under 33 OAuth scopes. The retained 61-tool direct scan and 59-tool portal scan are historical evidence and do not satisfy this gate.
-- Reviewer access, project isolation, and required review materials have been verified; operational sign-in and project-binding details remain outside this repository.
-- The OpenAI portal shows the intended verified publisher identity in the same organization and project used for submission.
-- The portal candidate version and package digest match `submission/portal-prerequisites.json`.
+- The restricted endpoint is deployed and an authenticated development scan discovers exactly 121 tools for service `1.11.0` under 33 OAuth scopes for business operations. The private ChatGPT test App must point to that same endpoint and load the matching skills. A full-endpoint scan does not prove this boundary.
+- Reviewer access, project isolation and synthetic test data have been verified after secure credential rotation. Stop while the preflight rotation flag is set.
+- Use the existing private test installation for recording. A public submission draft upload is a later setup step, after the recording and other materials are complete.
+- Record the candidate version and package digest from `submission/portal-prerequisites.json`; show actual prompts, tool results and the excluded signing/finalization boundary. A script is not video evidence.
 
 Never show or retain sign-in values, authorization codes, consent artifacts, private browser data, addresses, customer information, private Action Center links, confirmation tokens, signed file URLs, or provider-session details. Pause the recording while entering the reviewer sign-in values, then resume only after the consent screen is safe to display.
 
@@ -23,7 +25,7 @@ Never show or retain sign-in values, authorization codes, consent artifacts, pri
 
 ## Walkthrough
 
-1. **Introduce SparkLaunch.** State that the plugin supports private founder workflows for projects, validation, branding, launch assets, CRM, SparkCap planning, SparkRoom controlled sharing, SparkClose SAFE workflows, and incorporation preparation.
+1. **Introduce SparkLaunch.** State that the plugin supports private founder workflows for projects, validation, branding, launch assets, CRM, SparkCap planning, SparkRoom controlled sharing, SparkClose SAFE planning and private records, and incorporation preparation.
 2. **Connect in hosted ChatGPT.** Select SparkLaunch, trigger the first protected action with `projects.list`, complete OAuth off-camera, and show the consent scopes before approval. Confirm the returned project list contains only the synthetic reviewer project.
 3. **Run the five submitted positive cases.** Use the exact prompts from `chatgpt-app-submission.json` for `projects.list`, `validation.create_project`, `branding.generate_palette`, `landing.list_projects`, and `crm.prepare_business_card_import`. Show concise, human-readable results without exposing internal identifiers or versions.
 4. **Review SparkCap.** In the disposable project, create an empty planning cap table, read it back, prepare one synthetic stakeholder addition, show the exact confirmation preview, approve it, and verify the saved ownership. Run `cap_table.simulate_raise` and state that `saved: false` is an unsaved planning model, not an official ledger, issued security, signed grant, legal advice, or investment advice. Do not display internal identifiers, addresses, signatures, notes, or share tokens.

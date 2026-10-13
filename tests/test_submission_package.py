@@ -51,7 +51,7 @@ PACKAGE_RECIPES = PACKAGE_SKILLS / "sparklaunch-platform" / "recipes"
 
 def test_package_cs_mcp_wrapper_and_support_url_are_required(monkeypatch):
     manifest_path = ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json"
-    mcp_path = ROOT / "plugins" / "sparklaunch" / ".mcp.json"
+    mcp_path = ROOT / "plugins" / "sparklaunch" / "mcp" / "portal.json"
     original = Path.read_text
 
     def malformed(candidate, *args, **kwargs):
@@ -308,7 +308,8 @@ def test_every_skill_distinguishes_connector_absence_from_oauth():
         encoding="utf-8"
     )
     assert all(marker in recipe for marker in required)
-    assert "disable and re-enable or reinstall" in recipe
+    assert "Connected accounts" in recipe
+    assert "Reinstalling the same package cannot repair an unavailable App" in recipe
 
 
 def test_every_skill_and_recipe_keeps_internal_references_out_of_user_output():
@@ -431,7 +432,7 @@ def test_submission_package_is_complete():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert fixture["status"] in {"local_placeholder", "provisioned"}
+    assert fixture["status"] in {"local_placeholder", "pending_preflight", "provisioned"}
     assert isinstance(fixture["project_id"], int)
     assert fixture["project_id"] > 0
     if fixture["status"] == "local_placeholder":
@@ -539,7 +540,7 @@ def test_mcp_registry_descriptor_matches_the_public_remote_and_application_versi
     }
     assert "incorporation" in registry["description"].lower()
     assert len(registry["description"]) <= 100
-    assert version == "1.10.0"
+    assert version == "1.11.0"
     if BACKEND_AVAILABLE:
         application_version = run_path(BACKEND / "mcp_server_version.py")[
             "SPARKLAUNCH_MCP_SERVER_VERSION"
@@ -1106,7 +1107,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"] == "0.11.0"
+    assert manifest["version"] == "0.11.2"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -1137,8 +1138,8 @@ def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.0"',
-        '"version": "0.11.0+codex.20260907000000"',
+        '"version": "0.11.2"',
+        '"version": "0.11.2+codex.20260907000000"',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1150,8 +1151,8 @@ def test_submission_validator_rejects_whitespace_around_package_version(monkeypa
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.0"',
-        '"version": " 0.11.0 "',
+        '"version": "0.11.2"',
+        '"version": " 0.11.2 "',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1244,11 +1245,11 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 4
-    assert evidence["candidate"]["plugin_version"] == "0.11.0"
+    assert evidence["candidate"]["plugin_version"] == "0.11.2"
     assert evidence["candidate"]["built_at"] == release_state["generated_packages"]["built_at"]
-    assert evidence["candidate"]["service_version"] == "1.10.0"
-    assert evidence["candidate"]["expected_tool_count"] == 129
-    assert len(MCP_TOOL_CONTRACTS) == 129
+    assert evidence["candidate"]["service_version"] == "1.11.0"
+    assert evidence["candidate"]["expected_tool_count"] == 121
+    assert len(MCP_TOOL_CONTRACTS) == 121
     assert evidence["candidate"]["expected_oauth_scope_count"] == 33
     deployed_revision = "058513ed28b2fadba120d5f4a0e447a723e37ddc"
     historical_revision = "867ac0360949a81966d194ab2aaaa774e377d597"
@@ -1262,7 +1263,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert current_public["domain_challenge_cache_control_no_store"] is True
     assert evidence["authenticated_production_scan"]["status"] == "pending"
     assert (
-        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 129
+        evidence["authenticated_production_scan"]["candidate_expected_tool_count"] == 121
     )
     assert evidence["authenticated_production_scan"]["portal_result"] == "pending"
     deployment = evidence["historical_production_deployments"][-1]
@@ -1359,7 +1360,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     assert direct_scan["tool_names"] == sorted(
         name
         for name in MCP_TOOL_CONTRACTS
-        if not name.startswith(("cap_table.", "sparkroom.", "sparkclose.", "founder_close.", "founder_ops."))
+        if name != "get_profile" and not name.startswith(("cap_table.", "sparkroom.", "sparkclose.", "founder_close.", "founder_ops."))
     )
     assert direct_scan["exact_candidate_tool_name_set_match"] is True
     assert direct_scan["output_schema_root_failure_count"] == 0
@@ -1462,7 +1463,7 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     (
         (
             "plugin_version",
-            "0.11.0+codex.20260907000000",
+            "0.11.2+codex.20260907000000",
             "candidate plugin version must be numeric major.minor.patch",
         ),
         (
@@ -1962,12 +1963,12 @@ def test_portal_prerequisite_validator_requires_exact_demo_runbook(
     ("old", "new", "expected_error"),
     (
         (
-            "exactly 129 tools",
+            "exactly 121 tools",
             "exactly 61 tools",
             "demo recording runbook has stale tool count",
         ),
         (
-            "service `1.10.0`",
+            "service `1.11.0`",
             "service `1.4.0`",
             "demo recording runbook has stale service version",
         ),
@@ -2218,7 +2219,7 @@ def test_release_state_production_baseline_switches_atomically(
         == []
     )
 
-    release_state["runtime"]["last_verified_production"]["service_version"] = "1.10.0"
+    release_state["runtime"]["last_verified_production"]["service_version"] = "1.11.0"
     errors = _validate_portal_evidence(
         monkeypatch,
         tmp_path,
@@ -2532,6 +2533,9 @@ def test_submission_bundle_is_complete_and_deterministic(tmp_path):
             for path in plugin_root.rglob("*")
             if path.is_file()
         }
+        expected_names.remove(".app.json")
+        expected_names.remove("mcp/portal.json")
+        expected_names.add(".mcp.json")
         assert names == expected_names
         assert ".codex-plugin/plugin.json" in names
         assert ".mcp.json" in names
@@ -2559,8 +2563,14 @@ def test_package_cs_portal_name_binding_preserves_native_package(tmp_path):
         native = json.loads(original)
         assert portal.pop("name") == portal_name
         native.pop("name")
+        assert native.pop("apps") == "./.app.json"
+        assert portal.pop("mcpServers") == "./.mcp.json"
+        from scripts.build_submission_bundle import submission_metadata
+        from scripts.chatgpt_surface import public_description
+        assert portal.pop("extensions") == {"com.openai": submission_metadata()}
+        native["interface"]["longDescription"] = public_description(native["interface"]["longDescription"])
         assert portal == native
-        assert json.loads(archive.read(".mcp.json"))["mcpServers"]["sparklaunch"]["url"] == CANONICAL_MCP_URL
+        assert json.loads(archive.read(".mcp.json"))["mcpServers"]["sparklaunch"]["url"] == "https://sparklaun.ch/api/mcp/chatgpt/"
     assert native_path.read_bytes() == original
     assert digest == build_bundle(tmp_path / "again.zip", portal_plugin_name=portal_name)[1]
 

@@ -1,0 +1,12 @@
+{
+  "observed_at": "2026-10-13T03:00:37.087362+00:00",
+  "renewal_authorized_by_owner": true,
+  "expires_on": "2027-01-10",
+  "same_disposable_reviewer_and_project": true,
+  "existing_entitlements_preserved": true,
+  "password_changed": false,
+  "credential_rotation_required": true,
+  "business_calls": 0,
+  "verification": "secret_metadata_readback_only",
+  "proof_boundary": "No login, reviewer sample-data validation, native workflow test or review approval was performed. Rotation and secure portal synchronization remain required."
+}

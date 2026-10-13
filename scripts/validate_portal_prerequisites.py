@@ -14,17 +14,19 @@ from zipfile import BadZipFile, ZipFile
 
 try:
     from scripts.sync_plugin import PACKAGE_VERSION_RE
-    from scripts.tool_contract_snapshot import load_snapshot
+    from scripts.tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_snapshot
+    from scripts.chatgpt_surface import CHATGPT_MCP_URL
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
     from sync_plugin import PACKAGE_VERSION_RE
-    from tool_contract_snapshot import load_snapshot
+    from tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_snapshot
+    from chatgpt_surface import CHATGPT_MCP_URL
 
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_PATH = ROOT / "submission" / "portal-prerequisites.json"
 MANIFEST_PATH = ROOT / "plugins" / "sparklaunch" / ".codex-plugin" / "plugin.json"
 RELEASE_STATE_PATH = ROOT / "release-state.json"
-EXPECTED_MCP_URL = "https://sparklaun.ch/api/mcp/"
+EXPECTED_MCP_URL = CHATGPT_MCP_URL
 EXPECTED_DEMO_RUNBOOK = Path("submission/demo-recording-runbook.md")
 EXPECTED_MCP_PROTOCOL_VERSION = "2025-11-25"
 EXPECTED_MCP_SERVER_NAME = "SparkLaunch MCP"
@@ -946,6 +948,8 @@ def _require_historical_snapshots(
 
 
 def _expected_scope_count(snapshot: dict) -> int:
+    if "resource_scopes" in snapshot:
+        return len(set(snapshot["resource_scopes"]) - {"openid", "email"})
     scopes: set[str] = set()
     for name, entry in snapshot["tools"].items():
         contract = entry.get("contract") if isinstance(entry, dict) else None
@@ -1436,7 +1440,7 @@ def validate(*, allow_pending: bool) -> list[str]:
         evidence = _load_json(EVIDENCE_PATH)
         manifest = _load_json(MANIFEST_PATH)
         release_state = _load_json(RELEASE_STATE_PATH)
-        snapshot = load_snapshot()
+        snapshot = load_snapshot(CHATGPT_SNAPSHOT_PATH)
         expected_tool_count = snapshot["tool_count"]
         expected_tool_names = sorted(snapshot["tools"])
         expected_service_version = snapshot["server_version"]

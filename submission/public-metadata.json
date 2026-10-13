@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "review": {
+    "commerce": false,
+    "commerce_description": "SparkLaunch uses the connected account's existing entitlements. This plugin does not sell subscriptions or products, initiate payments, transfer funds, sign investment agreements, or finalize investments."
+  },
+  "publication": {
+    "countries": [],
+    "release_notes": "Restore connected-account App binding and include reviewer test cases in the package. Preserve the SparkLaunch logo assets; skill icons still render as generic badges in the private ChatGPT installation and that rendering issue remains unresolved. The initial public ChatGPT SparkClose surface supports modeling, saved scenarios, readiness, and private investment metadata; agreement preparation, signing and closing workflows are excluded."
+  }
+}

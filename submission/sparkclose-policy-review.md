@@ -28,7 +28,7 @@ mutations. Those controls protect the operation; they are not policy approval.
 
 ## Decision required before public submission
 
-Review against the current [OpenAI plugin guidelines](https://developers.openai.com/plugins/app-guidelines)
+Review against the current [OpenAI plugin guidelines](https://developers.openai.com/plugins/plugin-guidelines)
 and [Claude connector requirements](https://claude.com/docs/connectors/building/submission).
 OpenAI names execution of investment trades among restricted financial activities.
 Do not equate every financial calculation with trade execution; assess the complete
@@ -44,3 +44,18 @@ or pretend a client-declared host identity is an authorization control.
 Use only synthetic reviewer data and preserve the differences between model output,
 saved records, company assertions, signed documents, bank settlement, securities
 issuance, internal close state and customer acceptance in the demonstration.
+
+## October 12 owner-selected initial ChatGPT scope
+
+The owner chose planning and private records. The application now prepares a
+server-owned /api/mcp/chatgpt/ allowlist, with seven SparkClose tools: model_safe,
+save_scenario, get_scenario, list_scenarios, readiness, get_investment and
+list_investments. All nine other SparkClose tools are absent from discovery and
+return a non-retryable unsupported-tool result on direct invocation. Future
+backend additions require an explicit allowlist change and new review.
+
+Public package instructions, the 121-tool descriptor snapshot and the negative
+signing/finalization case match this boundary. The full integration endpoint
+remains separate. This resolves the owner's initial-scope decision; it does not
+claim OpenAI approval or deployment. The exact retained surface still needs the
+normal platform review after runtime, reviewer access and demo verification.

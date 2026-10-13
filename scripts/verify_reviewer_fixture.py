@@ -35,6 +35,7 @@ def validate_envelope(raw: str, *, today: date) -> dict:
             and isinstance(secret.get("tags"), list)
             and {"disposable", "production", "chatgpt-review"}.issubset(secret["tags"])
             and date.fromisoformat(secret["delete_after"]) > today
+            and secret.get("credential_rotation_required", False) is False
             and all(
                 type(secret.get(key)) is int and secret[key] > 0
                 for key in ("user_id", "project_id")
@@ -48,7 +49,7 @@ def validate_envelope(raw: str, *, today: date) -> dict:
         valid = False
     if not valid:
         raise VerificationError(
-            "Reviewer metadata is invalid, expired or not disposable"
+            "Reviewer metadata is invalid, expired, requires credential rotation or is not disposable"
         )
     return secret
 

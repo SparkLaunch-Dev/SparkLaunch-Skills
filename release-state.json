@@ -1,8 +1,8 @@
 {
   "schema_version": 3,
   "generated_packages": {
-    "version": "0.11.0",
-    "built_at": "2026-10-01T23:08:02Z",
+    "version": "0.11.2",
+    "built_at": "2026-10-13T04:39:29Z",
     "hosts": [
       "openai",
       "claude",
@@ -13,20 +13,20 @@
     "status": "local_candidates_only"
   },
   "mcp_registry": {
-    "candidate_descriptor_version": "1.10.0",
+    "candidate_descriptor_version": "1.11.0",
     "last_known_published_version": "1.0.0",
     "last_known_version_basis": "repository release record preceding the 2026-09-02 change",
     "live_refresh_status": "not_performed_by_this_change",
     "publication_status": "not_performed_by_this_change"
   },
   "runtime": {
-    "contract_snapshot_version": "1.10.0",
+    "contract_snapshot_version": "1.11.0",
     "candidate": {
-      "plugin_version": "0.11.0",
+      "plugin_version": "0.11.2",
       "deployment_status": "not_verified_for_candidate",
       "direct_authenticated_scan_status": "pending",
       "openai_portal_rescan_status": "pending",
-      "proof_boundary": "The local 1.10.0 / 129-tool / 33-scope candidate requires matching production deployment and authenticated scans. Local tests and package upload do not prove hosted readiness."
+      "proof_boundary": "The public ChatGPT candidate uses the server-owned 121-tool allowlist at /api/mcp/chatgpt/. The full integration snapshot is separate. Neither local source, tests nor a private skill update prove deployment or a portal scan."
     },
     "last_verified_production": {
       "observed_at": "2026-09-03T04:47:05Z",

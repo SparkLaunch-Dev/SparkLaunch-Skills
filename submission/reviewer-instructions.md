@@ -1,14 +1,19 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.11.0` candidate at
-`https://sparklaun.ch/api/mcp/`. The package contains twelve skills and declares
-129 tools under 33 OAuth scopes. The retained 1.4.0 production scan and portal
+These instructions apply to the local SparkLaunch `0.11.2` candidate at
+`https://sparklaun.ch/api/mcp/chatgpt/`. The package contains twelve skills and declares
+121 tools in the public surface, sharing a protected resource with 33 OAuth scopes for business operations;
+the profile tool separately requires openid and email consent. The full-client
+snapshot has 138 tools and is not the public ChatGPT review surface.
+The retained 1.4.0 production scan and portal
 prerequisites concern the previous 61-tool candidate and do not prove SparkCap, SparkRoom, or SparkClose
 availability. Deploy and scan the matching candidate before native-host review.
-The internal evidence contains 39 trigger cases and 16 controlled E2E cases;
+The internal plans contain 41 trigger cases and 17 controlled E2E cases;
 the new real-database SparkCap, SparkRoom, and SparkClose acceptance tests are in the application repository.
 
 ## Access
+
+The owner renewed the existing dedicated reviewer fixture through January 10, 2027. Its credential still requires secure rotation; preflight refuses login while that flag is set. After rotation, synchronize the approved secret store and secure portal fields, then verify account/project isolation before binding or running review cases. No credentials belong in the ZIP.
 
 1. Use the synthetic reviewer account supplied through the approved private reviewer channel. Credentials and authorization artifacts must never be added to this file, a prompt, a screenshot, or retained evidence.
 2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. First protected use starts SparkLaunch OAuth; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.
@@ -17,7 +22,7 @@ the new real-database SparkCap, SparkRoom, and SparkClose acceptance tests are i
 5. For `projects.invite_collaborator`, use only a synthetic `example.com` recipient and stop at the exact project/email/role confirmation preview. Do not confirm it during review; no email or collaborator membership should be created.
 6. For general task coverage, use `tasks.create` with synthetic private content and a stable idempotency key, verify it with `tasks.list`, and use only an active owner or accepted collaborator email for assignment. Stop `tasks.update` and `tasks.delete` at their exact version-bound confirmation previews unless a disposable mutation is explicitly approved.
 
-The checked-in five positive prompts use local placeholder project `42`, recorded in `submission/reviewer-fixture.json`. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Before final import, bind the approved disposable reviewer project with `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
+The five positive prompts are bound to project `99`, the dedicated fixture reference in the approved secret store. Its status is `pending_preflight`: this binding does not claim current login, entitlement, project isolation or sample-data acceptance. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. After secure rotation and a passing preflight, confirm the verified binding with `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
 
 ### Environment binding
 
@@ -75,7 +80,7 @@ SparkLaunch service access begins at age 13. Users below their local age of majo
 
 ## Negative review
 
-Run all three negative prompts in `chatgpt-app-submission.json`. SparkLaunch must not trigger for generic startup education, unrelated calendar management, or financial transactions. Also verify the incorporation trigger boundary: a request to add a general project collaborator remains with `sparklaunch-projects`.
+Run all three negative prompts in `chatgpt-app-submission.json`. SparkLaunch must not trigger for generic startup education, signing/finalizing an investment, or bank transfers. Also verify the incorporation trigger boundary: a request to add a general project collaborator remains with `sparklaunch-projects`.
 
 Do not approve or infer unsupported behavior. The candidate has no banking access, calendar management, arbitrary internet browsing, direct provider filing tool, participant impersonation, custom widget, business-name generation, direct QR-theme editor, or arbitrary landing-draft editor.
 
@@ -91,6 +96,6 @@ Record the candidate revision, package digest, service version, redacted fixture
 
 Stop review and contact support if OAuth redirects to an unregistered host, a project outside the reviewer account becomes visible, a private participant value appears, a write cannot be safely reconciled, or any provider call occurs.
 
-## SparkClose review
+## SparkClose public planning review
 
-Use `sparklaunch-sparkclose` and `model-and-close-a-safe.md` for the SAFE workflow. Review the separate read, model, write and close permissions. Inspect `projects.get.connection_permissions`: a missing grant requires reconnection and consent, including for an owner with Growth access. In the isolated synthetic project, provide complete reviewed fixture text and verify that `preview_agreement` creates no business records. Confirm `prepare_agreement` using its unchanged inputs and opaque version, then read back one unsigned draft. Stale capitalization, investor/contact, packet or agreement input must reject the action; same-key replay must not create another draft. Verify company-review attestation and confirmation are both required. Signing, external import and corrections remain first-party handoffs. Never use customer agreements or records to satisfy this test.
+Use only the seven public modeling, saved-scenario, readiness and investment-metadata tools listed in the public contract snapshot. Verify confirmed scenario saving, stale-source rejection and readback in the dedicated synthetic project. Agreement preparation, signing, funding-evidence changes, cancellation, reconciliation, closing and retrying destination updates are outside this public surface. Direct excluded calls return a non-retryable unsupported-tool result without business execution. Do not switch to the full endpoint or a REST route.

@@ -82,7 +82,11 @@ def test_bundle_normalizes_text_line_endings(tmp_path, monkeypatch):
     output, _digest = submission_bundle.build_bundle(tmp_path / "candidate.zip")
 
     with ZipFile(output) as archive:
-        assert archive.read(".codex-plugin/plugin.json") == manifest_content
+        actual = archive.read(".codex-plugin/plugin.json")
+        assert b"\r" not in actual
+        document = json.loads(actual)
+        document.pop("extensions")
+        assert document == json.loads(manifest_content)
 
 
 def _isolated_sync_roots(tmp_path: Path, monkeypatch) -> Path:

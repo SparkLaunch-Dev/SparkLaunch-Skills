@@ -37,22 +37,43 @@ portal record rejects adding, removing or replacing MCP server configurations.
 Successful ZIP upload and skill checks do not establish an authenticated tool
 scan, deployment or submission readiness.
 
+The native Git package declares `apps: "./.app.json"`, pointing at the existing
+registered SparkLaunch App. `mcp/portal.json` is an inert copy of the canonical
+MCP configuration: it is neither referenced by the native manifest nor stored at
+an automatically discovered MCP path. The portal builder excludes `.app.json`,
+replaces the manifest's App reference with `mcpServers: "./.mcp.json"`, and places
+that configuration at `.mcp.json` in the upload ZIP. Keep the accepted server
+configuration and existing portal identity. Never upload the native release ZIP
+directly to the public portal.
+
+Before releasing the Git candidate, verify the registered App is available to
+its intended audience and a fresh install displays **Apps**, **Connected
+accounts**, and **Connect another account**. Complete a read-only account test
+through that connection. The 2026-10-12 App remains Draft/Not published and is
+unavailable in personal ChatGPT, so Git release and native acceptance are pending.
+See [the requirement/evidence record](../docs/v-cycle/connected-accounts.md).
+
 ## Production and native acceptance
 
 1. Land and deploy the reviewed backend revision through SparkLaunch's deployment
    process. Apply its required migrations before serving that revision. Verify
    every deployment target, health and migration head; do not infer deployment
    from the Skills repository's tool snapshot or a previous deployment statement.
-2. Run `python scripts/verify_production_contract.py --public-only`. It checks the
-   canonical issuer/resource, all 29 business scopes and UserInfo discovery with
+2. Run `python scripts/verify_production_contract.py --chatgpt --public-only`. It checks the
+   canonical issuer/resource, all 33 business scopes and UserInfo discovery with
    the two optional identity scopes. It executes no business tool.
 3. Obtain a short-lived delegated MCP OAuth access token using the normal browser
    consent flow. Provide it securely as `SPARKLAUNCH_MCP_ACCESS_TOKEN` in the
    verifier's process environment. Never paste it into chat, arguments, package
-   files, logs or evidence. Run `python scripts/verify_production_contract.py`.
+   files, logs or evidence. Run `python scripts/verify_production_contract.py --chatgpt`
+   for the restricted 121-tool ChatGPT endpoint, and
+   `python scripts/verify_production_contract.py` for the full 138-tool host endpoint.
    It follows no redirects, sends only initialize/initialized/tools-list, handles
    bounded pagination, and compares every complete descriptor with the snapshot.
    No bearer value, user data, response body or session identifier is reported.
+   The shared publication gate, `python scripts/validate_public_release.py --live`,
+   requires both comparisons. A passing full-endpoint scan cannot establish the
+   restricted ChatGPT boundary.
 4. Use a dedicated synthetic reviewer project with all required entitlements. Bind
    the real reviewer fixture via the existing submission generator, regenerate,
    rebuild and update candidate digests. Do not reuse project 42 as a claimed real

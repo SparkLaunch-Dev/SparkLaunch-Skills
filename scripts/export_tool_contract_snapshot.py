@@ -33,7 +33,7 @@ def _isolate_import_environment(database_path: Path) -> None:
     )
 
 
-def build_snapshot(backend: Path = DEFAULT_BACKEND) -> dict[str, object]:
+def build_snapshot(backend: Path = DEFAULT_BACKEND, *, surface: str = "full") -> dict[str, object]:
     backend = backend.resolve()
     if not (backend / "mcp_server.py").is_file():
         raise ValueError(f"SparkLaunch backend not found: {backend}")
@@ -45,9 +45,16 @@ def build_snapshot(backend: Path = DEFAULT_BACKEND) -> dict[str, object]:
             from mcp_server_version import SPARKLAUNCH_MCP_SERVER_VERSION
             from mcp_tool_contracts import MCP_TOOL_CONTRACTS
 
-            descriptors = asyncio.run(
-                create_mcp_server(streamable_http_path="/").list_tools()
-            )
+            if surface == "chatgpt":
+                from mcp_chatgpt_surface import CHATGPT_TOOL_NAMES, create_chatgpt_mcp_server
+                server = create_chatgpt_mcp_server(streamable_http_path="/")
+                expected_names = set(CHATGPT_TOOL_NAMES)
+            elif surface == "full":
+                server = create_mcp_server(streamable_http_path="/")
+                expected_names = set(MCP_TOOL_CONTRACTS)
+            else:
+                raise ValueError("Unsupported MCP surface")
+            descriptors = asyncio.run(server.list_tools())
         finally:
             database_module = sys.modules.get("database")
             if database_module is not None:
@@ -59,10 +66,10 @@ def build_snapshot(backend: Path = DEFAULT_BACKEND) -> dict[str, object]:
                 sys.path.pop(0)
 
     descriptor_by_name = {tool.name: tool for tool in descriptors}
-    if set(descriptor_by_name) != set(MCP_TOOL_CONTRACTS):
+    if set(descriptor_by_name) != expected_names:
         raise ValueError("runtime descriptors do not match MCP_TOOL_CONTRACTS")
     tools: dict[str, object] = {}
-    for name in sorted(MCP_TOOL_CONTRACTS):
+    for name in sorted(expected_names):
         contract = MCP_TOOL_CONTRACTS[name]
         tools[name] = {
             "contract": {
@@ -81,31 +88,37 @@ def build_snapshot(backend: Path = DEFAULT_BACKEND) -> dict[str, object]:
                 by_alias=True, exclude_none=True
             ),
         }
-    return {
+    snapshot = {
         "schema_version": 1,
         "server_version": SPARKLAUNCH_MCP_SERVER_VERSION,
         "tool_count": len(tools),
         "tools": tools,
     }
+    if surface == "chatgpt":
+        from mcp_oauth_service import MCP_OAUTH_TOOL_SCOPES
+        snapshot["resource_scopes"] = sorted(MCP_OAUTH_TOOL_SCOPES)
+    return snapshot
 
 
-def _serialized(backend: Path) -> str:
-    return json.dumps(build_snapshot(backend), indent=2, sort_keys=True) + "\n"
+def _serialized(backend: Path, surface: str = "full") -> str:
+    return json.dumps(build_snapshot(backend, surface=surface), indent=2, sort_keys=True) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--backend", type=Path, default=DEFAULT_BACKEND)
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--surface", choices=("full", "chatgpt"), default="full")
     args = parser.parse_args(argv)
+    output = ROOT / "contracts/chatgpt-tools.snapshot.json" if args.surface == "chatgpt" else OUTPUT
     try:
-        expected = _serialized(args.backend)
+        expected = _serialized(args.backend, args.surface)
     except (ImportError, OSError, RuntimeError, ValueError) as exc:
         print(f"Unable to export runtime contracts: {exc}", file=sys.stderr)
         return 1
     if args.check:
         try:
-            current = OUTPUT.read_text(encoding="utf-8")
+            current = output.read_text(encoding="utf-8")
         except (OSError, UnicodeError) as exc:
             print(f"Tool contract snapshot is missing or unreadable: {exc}", file=sys.stderr)
             return 1
@@ -117,9 +130,9 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         print("Tool contract snapshot matches the sibling runtime.")
         return 0
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(expected, encoding="utf-8")
-    print(f"Wrote {OUTPUT.relative_to(ROOT)}.")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(expected, encoding="utf-8")
+    print(f"Wrote {output.relative_to(ROOT)}.")
     return 0
 
 

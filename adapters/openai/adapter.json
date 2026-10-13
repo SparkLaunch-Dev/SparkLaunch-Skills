@@ -10,8 +10,13 @@
       "render_package_version": false
     },
     {
+      "source": "templates/.app.json",
+      "destination": ".app.json",
+      "render_package_version": false
+    },
+    {
       "source": "templates/.mcp.json",
-      "destination": ".mcp.json",
+      "destination": "mcp/portal.json",
       "render_package_version": false
     }
   ]
