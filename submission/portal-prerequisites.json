@@ -267,7 +267,7 @@
   ],
   "reviewer_access": {
     "status": "pending",
-    "proof_boundary": "The disposable account passed login, isolation, analytics exclusion and non-billing Growth/incorporation setup on 2026-09-07. Reviewer approval remains pending: owner credential rotation, private store and portal synchronization, retention suitable for ongoing review, candidate fixture binding and all supplied test cases are still required. Historical access and partial observations are preserved in submission/observations/2026-09-07-release-follow-up.json."
+    "proof_boundary": "The owner renewed the same synthetic fixture through 2027-01-10 and approved password rotation and portal credential synchronization on 2026-10-13. Old password rejection, new login, seven setup checks including regular-user role, outside-project denial, secure portal save/reopen and encrypted-store readback passed. The verified fixture is bound as provisioned. Reviewer acceptance stays pending until sample content, native OAuth and all eight supplied cases pass on the matching candidate. Credential-free setup observations are in submission/observations/2026-10-13-reviewer-rotation.json."
   },
   "publisher_identity": {
     "status": "verified",

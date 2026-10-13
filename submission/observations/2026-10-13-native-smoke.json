@@ -19,7 +19,10 @@
     "same_key_replay": true,
     "no_duplicate_after_replay": true,
     "stale_version_denied": true,
-    "unchanged_after_stale_version_denial": true
+    "unchanged_after_stale_version_denial": true,
+    "metadata_refresh_attempted": true,
+    "post_refresh_project_read": true,
+    "primary_account_preserved": true
   },
   "file": {
     "format": "markdown",

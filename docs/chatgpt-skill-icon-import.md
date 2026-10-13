@@ -73,3 +73,28 @@ A concrete support report is staged locally at
 repair and migration of the existing App's full MCP URL to the reviewed endpoint
 while preserving App/account identity. Sending it requires the owner's explicit
 authorization. No support response or resolution is claimed.
+
+## Online reports — October 13
+
+Two original reports in OpenAI's Codex repository remain open:
+
+- [Issue 16307](https://github.com/openai/codex/issues/16307), opened March 31:
+  Windows users report generic skill icons despite valid `icon_small` metadata;
+  subsequent probes find resolved image paths.
+- [Issue 40224](https://github.com/openai/codex/issues/40224), opened August 23:
+  the desktop picker reporter finds loaded image metadata but generic icons,
+  across PNG and SVG assets and after reloads.
+
+These are related desktop reports, not confirmation of the same internal defect
+on our web plugin page. The similarity and our direct generic-SVG observation
+support a host rendering diagnosis. Neither report documents a shipped repair.
+The packaged images already meet the official metadata contract. Do not repeat
+unsupported packaging variants or modify a signed desktop bundle.
+
+The owner requested this research before any support contact; the report remains
+unsent. Official [refresh instructions](https://developers.openai.com/plugins/deploy/connect-chatgpt#refresh-metadata)
+describe refreshing an existing connection's metadata, without documenting an
+existing-App URL editor. A
+[developer discussion](https://community.openai.com/t/clarification-on-mcp-server-url-and-versioning-during-chatgpt-app-update-submission/1379705)
+says URLs can differ between submitted app versions, but gives no verified
+migration procedure for our current App-backed private installation.

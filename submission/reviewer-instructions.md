@@ -13,7 +13,7 @@ the new real-database SparkCap, SparkRoom, and SparkClose acceptance tests are i
 
 ## Access
 
-The owner renewed the existing dedicated reviewer fixture through January 10, 2027 and authorized password rotation on October 13. The old password was rejected, the new password passed login, and the approved encrypted store was read back. All seven setup checks pass, including regular-user role, one owned project, analytics exclusion, Growth access and incorporation entitlement. A real outside-project request was denied. OpenAI portal credential synchronization and native OAuth/test cases remain separate pending checks. No credentials belong in the ZIP.
+The owner renewed the existing dedicated reviewer fixture through January 10, 2027 and authorized password rotation on October 13. The old password was rejected, the new password passed login, and the approved encrypted store was read back. All seven setup checks pass, including regular-user role, one owned project, analytics exclusion, Growth access and incorporation entitlement. A real outside-project request was denied. The owner-authorized OpenAI reviewer fields were saved and reopened with a masked password; encrypted-store synchronization metadata was read back. Native OAuth, sample content and test cases remain pending. No credentials belong in the ZIP.
 
 1. Use the synthetic reviewer account supplied through the approved private reviewer channel. Credentials and authorization artifacts must never be added to this file, a prompt, a screenshot, or retained evidence.
 2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. First protected use starts SparkLaunch OAuth; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.

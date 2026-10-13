@@ -4,7 +4,8 @@
   projects, and bind the reviewer preflight implementation to candidate evidence.
 - Record owner-approved reviewer password rotation, seven passing setup checks
   and a real outside-project denial. Credentials stay in the approved encrypted
-  store; OpenAI portal synchronization and all native reviewer cases remain pending.
+  store and owner-approved secure OpenAI reviewer fields. All native reviewer
+  cases remain pending.
 - Record actual private App project reads, synthetic task create/readback,
   confirmation-only update and file retrieval. These full-endpoint observations
   do not satisfy restricted-public acceptance.

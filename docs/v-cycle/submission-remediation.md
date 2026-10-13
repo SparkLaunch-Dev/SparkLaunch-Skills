@@ -184,8 +184,11 @@ October 13 reviewer/native execution results:
   checks and the regular reviewer is denied access to an outside project. The
   same one synthetic project, entitlements and January 10 expiry are preserved.
   The temporary TLS-verified SSM tunnel is closed and the shared AWS registry
-  and zero-error full inventory were updated. Portal synchronization remains
-  pending; no credentials or tokens are retained in evidence.
+  and zero-error full inventory were updated. The owner-approved portal fields
+  were subsequently saved and reopened with masked password display; guarded
+  encrypted-store sync metadata readback and affected Secrets Manager inventory
+  refresh passed. Native reviewer cases remain pending. No password or token is
+  retained in evidence.
 - T-NATIVE-READWRITE: actual private App project reads, synthetic task
   create/readback and private Markdown retrieval passed. Update stopped at the
   exact confirmation preview. Same-key creation replay produced no duplicate;
@@ -195,9 +198,16 @@ October 13 reviewer/native execution results:
   account and permissions are preserved.
 - T-ICON-SUBFIX: fresh DOM inspection finds the generic five-colour SVG and no
   image element. Correct canonical PNGs remain packaged; logo acceptance FAIL.
-  The report is staged for owner-authorized OpenAI support. Existing private
+  Related open desktop icon reports were found in online research; they support
+  but do not prove a shared cause in our web UI. The owner requested research
+  before support contact, so the report remains unsent. Existing private
   and public App UIs expose no MCP URL editor, leaving migration unresolved.
 
 The 0.11.3 candidate binds the verified setup fixture as provisioned while native,
 policy, demo and deployed-contract evidence remain pending. The unchanged public
 draft is not submitted or published. Owner retains backend deployment.
+
+Local package regression passes 416 tests with six Windows symlink-privilege
+skips; generated parity, all package validators, focused Ruff and pending-mode
+evidence consistency pass. Current fixture setup observations do not satisfy any
+native, policy, demo or deployed-contract gate.
