@@ -124,10 +124,11 @@ Private test results, 2026-10-12:
   draft, and a read-only native test returning **31 accessible projects**.
   The host displayed the SparkLaunch tool operation and its successful result
   in a new conversation with SparkLaunch Test selected. No write was requested
-  or public submission made. Setup selected `projects.read` as its default,
-  but the subsequent authorization request advertised broader scopes; the
-  effective grant's exact scope set is NOT VERIFIED. This acceptance proves
-  functional project access, not a grant restricted to project reads.
+  or public submission made. Setup selected `projects.read` as its default.
+  Follow-up native project inspection confirmed that initial grant contained
+  only `projects.read`. After owner reconnection, a new project read verified
+  both `projects.read` and `projects.write` in connection and effective
+  permissions. No grant is inferred from advertised OAuth metadata.
 - T-PRIVATE-003: PASS. Both manifests, preserved App configuration and all twelve
   saved skill texts were read back against the prepared overlay. The host
   normalized a trailing slash on `skills` and added an empty keyword list; these
@@ -142,3 +143,30 @@ Native evidence is retained locally in
 continues to have a separate intended-audience acceptance gate for release.
 The private copy is ready for account-owner testing; verification of the other
 eleven workflows and public-release acceptance remain separate work.
+
+### Follow-up tool loading and project-write access
+
+The user reported a conversation with the Projects skill but no project or
+invitation tools. This local task also lacks SparkLaunch actions in its enabled
+tool catalog. The existing connected account remained present. Refreshing
+tools in ChatGPT completed, and a fresh browser ChatGPT conversation launched
+with the private plugin successfully called `projects.list` and `projects.get`.
+The invitation action was available there; the initial effective grant still
+lacked `projects.write`.
+
+After the owner completed reconnection on 2026-10-12, a new `projects.get`
+read verified `projects.read` and `projects.write` in both
+`connection_permissions` and `effective_permissions` for the selected project.
+The invitation action remains available in the tested conversation. This
+extends T-PRIVATE-002 with real permission-recovery evidence; no invitation
+or other mutation was used to test authorization. Invitation creation, email
+delivery and recipient acceptance are not verified by this read-only test.
+
+The reason actions were omitted from the reported/local conversation is
+not verified. Native browser ChatGPT tool loading and project access are
+verified; local task tool availability is a separate acceptance boundary.
+Screenshots and the private diagnostic record are retained in ignored local
+artifacts:
+`dist/connection-evidence/private-test-write-scope-diagnostic.png`,
+`dist/connection-evidence/private-test-project-write-verified.png`, and
+`dist/connection-evidence/tool-loading-diagnostic.md`.
