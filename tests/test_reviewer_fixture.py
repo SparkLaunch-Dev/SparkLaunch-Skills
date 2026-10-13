@@ -87,6 +87,7 @@ def test_reviewer_preflight_is_bounded_and_does_not_emit_credentials():
         {"project_id": 0},
         {"email": ""},
         {"password": None},
+        {"credential_rotation_required": True},
     ],
 )
 def test_bad_envelope_never_attempts_login(change):

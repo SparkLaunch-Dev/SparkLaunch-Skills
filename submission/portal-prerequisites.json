@@ -1,44 +1,44 @@
 {
   "schema_version": 4,
   "candidate": {
-    "plugin_version": "0.11.1",
-    "built_at": "2026-10-12T21:52:21Z",
-    "service_version": "1.10.0",
-    "production_mcp_url": "https://sparklaun.ch/api/mcp/",
-    "expected_tool_count": 129,
+    "plugin_version": "0.11.2",
+    "built_at": "2026-10-13T02:59:07Z",
+    "service_version": "1.11.0",
+    "production_mcp_url": "https://sparklaun.ch/api/mcp/chatgpt/",
+    "expected_tool_count": 121,
     "expected_oauth_scope_count": 33,
-    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.11.1.zip",
-    "bundle_sha256": "AECD024FCF724E1828E6B4CDE2B73FFE285CF6E130E37EBCF72EA032CB1F2F12",
+    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.11.2.zip",
+    "bundle_sha256": "5E3D0580201A78CE37996D05124ED00B38EDE3878FED34CC8C52CB044957EF54",
     "portal_plugin_name": "app-6a963bde250881918591112eac13b307"
   },
   "public_production_readiness": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.1",
-    "candidate_service_version": "1.10.0",
+    "candidate_plugin_version": "0.11.2",
+    "candidate_service_version": "1.11.0",
     "candidate_expected_oauth_scope_count": 33,
-    "proof_boundary": "The 2026-10-12 public-only verifier passed OAuth discovery with 33 advertised scopes and zero business tool calls. Matching deployed service identity and authenticated readiness remain unverified; this metadata-only check does not close the candidate readiness gate."
+    "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "production_deployment": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.1",
-    "candidate_service_version": "1.10.0",
-    "candidate_expected_tool_count": 129,
-    "proof_boundary": "No production deployment is recorded for the local 1.10.0 / 129-tool candidate. The last verified 1.4.0 deployment is preserved under historical_production_deployments and must not be reused as candidate proof."
+    "candidate_plugin_version": "0.11.2",
+    "candidate_service_version": "1.11.0",
+    "candidate_expected_tool_count": 121,
+    "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "direct_authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.1",
-    "candidate_service_version": "1.10.0",
-    "candidate_expected_tool_count": 129,
-    "proof_boundary": "No direct authenticated production scan is recorded for the local 1.10.0 / 129-tool candidate. The last verified 1.4.0 / 61-tool scan is preserved under historical_direct_authenticated_production_scans and does not prove SparkCap, SparkRoom or SparkClose availability."
+    "candidate_plugin_version": "0.11.2",
+    "candidate_service_version": "1.11.0",
+    "candidate_expected_tool_count": 121,
+    "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.1",
-    "candidate_service_version": "1.10.0",
-    "candidate_expected_tool_count": 129,
+    "candidate_plugin_version": "0.11.2",
+    "candidate_service_version": "1.11.0",
+    "candidate_expected_tool_count": 121,
     "portal_result": "pending",
-    "proof_boundary": "The retained 2026-10-01 upload accepted 0.11.0; it does not prove this 0.11.1 candidate. On 2026-10-12 the existing registered App was still Draft/Not published/Not submitted with Complete MCP setup. The owner sign-in popup closed, but a fresh portal read still required setup. No authorization approval was clicked; grant outcome and authenticated discovery remain unverified. See submission/observations/2026-10-12-connected-accounts.md. A current complete 129-tool scan and public App activation remain pending."
+    "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "historical_candidates": [
     {

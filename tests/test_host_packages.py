@@ -24,8 +24,9 @@ def test_checked_in_contract_supports_standalone_submission_generation() -> None
     snapshot = json.loads(
         (ROOT / "contracts" / "tools.snapshot.json").read_text(encoding="utf-8")
     )
-    assert snapshot["tool_count"] == len(MCP_TOOL_CONTRACTS)
-    assert snapshot["server_version"] == "1.10.0"
+    assert snapshot["tool_count"] == 138
+    assert len(MCP_TOOL_CONTRACTS) == 121
+    assert snapshot["server_version"] == "1.11.0"
     assert {
         "crm.prepare_business_card_import",
         "crm.get_business_card_import",
@@ -180,6 +181,8 @@ def test_compound_descriptor_scope_sets_are_exact() -> None:
         "sparkroom.revoke_share_link": "sparkroom.share",
     }
 
+    expected_by_tool["get_profile"] = frozenset({"openid", "email"})
+    primary_by_tool["get_profile"] = "openid"
     assert EXPECTED_DESCRIPTOR_SCOPE_SETS == expected_by_tool
     for name, expected in expected_by_tool.items():
         primary = primary_by_tool[name]

@@ -13,19 +13,21 @@ from typing import Any
 import yaml
 
 try:
+    from scripts.chatgpt_surface import is_public_tool
     from scripts.openai_connection import PORTAL_MCP_PATH, native_connection_errors
     from scripts.build_submission_bundle import build_bundle, portal_bundle_layout_errors
     from scripts.generate_submission import reviewer_fixture_errors
     from scripts.validate_portal_prerequisites import sensitive_text_findings
     from scripts.sync_plugin import PACKAGE_VERSION_RE, ROOT, SKILLS, sync
-    from scripts.tool_contract_snapshot import load_snapshot
+    from scripts.tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_snapshot
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from chatgpt_surface import is_public_tool
     from openai_connection import PORTAL_MCP_PATH, native_connection_errors
     from build_submission_bundle import build_bundle, portal_bundle_layout_errors
     from generate_submission import reviewer_fixture_errors
     from validate_portal_prerequisites import sensitive_text_findings
     from sync_plugin import PACKAGE_VERSION_RE, ROOT, SKILLS, sync
-    from tool_contract_snapshot import load_snapshot
+    from tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_snapshot
 
 
 FORBIDDEN = {
@@ -407,10 +409,10 @@ def validate() -> list[str]:
             errors.append("submission must contain exactly three negative test cases")
         if (
             expected_tool_count is not None
-            and len(submission.get("tools") or {}) != expected_tool_count
+            and set(submission.get("tools") or {}) != set(load_snapshot(CHATGPT_SNAPSHOT_PATH)["tools"])
         ):
             errors.append(
-                f"submission must cover all {expected_tool_count} MCP tools"
+                "submission must cover exactly the public ChatGPT MCP tools"
             )
         for tool_name, tool in (submission.get("tools") or {}).items():
             annotations = tool.get("annotations") or {}

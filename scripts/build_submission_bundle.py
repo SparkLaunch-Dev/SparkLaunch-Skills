@@ -10,6 +10,8 @@ from pathlib import Path
 from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile, ZipInfo
 
 try:
+    from scripts.chatgpt_surface import CHATGPT_MCP_URL, public_description
+    from scripts.generate_submission import build_submission
     from scripts.openai_connection import PORTAL_MCP_PATH
     from scripts.sync_plugin import (
         PACKAGE_VERSION_RE,
@@ -19,6 +21,8 @@ try:
         expected_files,
     )
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
+    from chatgpt_surface import CHATGPT_MCP_URL, public_description
+    from generate_submission import build_submission
     from openai_connection import PORTAL_MCP_PATH
     from sync_plugin import (
         PACKAGE_VERSION_RE,
@@ -33,6 +37,73 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugins" / "sparklaunch"
 FIXED_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
 PLUGIN_MANIFEST = ".codex-plugin/plugin.json"
+PUBLIC_METADATA_PATH = ROOT / "submission/public-metadata.json"
+
+
+def submission_metadata() -> dict:
+    """Project supported metadata into the upload, keeping secure fields out."""
+    metadata = json.loads(PUBLIC_METADATA_PATH.read_text(encoding="utf-8"))
+    if set(metadata) != {"schema_version", "review", "publication"} or metadata["schema_version"] != 1:
+        raise ValueError("Public metadata schema is invalid")
+    review, publication = metadata["review"], metadata["publication"]
+    if not isinstance(review, dict) or not {"commerce", "commerce_description"} <= set(review) or set(review) - {"commerce", "commerce_description", "demo_recording_url"}:
+        raise ValueError("Public review metadata contains unsupported or missing fields")
+    if type(review["commerce"]) is not bool or not isinstance(review["commerce_description"], str) or not review["commerce_description"].strip():
+        raise ValueError("Public commerce fields are invalid")
+    if "demo_recording_url" in review:
+        from urllib.parse import urlparse
+        if not isinstance(review["demo_recording_url"], str):
+            raise ValueError("Demo recording URL must be a string")
+        url = urlparse(review["demo_recording_url"])
+        if url.scheme != "https" or not url.netloc or url.username or url.password:
+            raise ValueError("Demo recording must use a public HTTPS URL without credentials")
+    if not isinstance(publication, dict) or set(publication) != {"countries", "release_notes"}:
+        raise ValueError("Public publication metadata is invalid")
+    if not isinstance(publication["countries"], list) or any(not isinstance(c, str) or re.fullmatch(r"[A-Z]{2}", c) is None for c in publication["countries"]):
+        raise ValueError("Countries must be a list of country codes; [] means all countries")
+    if not isinstance(publication["release_notes"], str) or not publication["release_notes"].strip():
+        raise ValueError("Release notes must be nonempty")
+    submission = build_submission()
+    cases = {}
+    for kind, key, count in (("positive", "test_cases", 5), ("negative", "negative_test_cases", 3)):
+        items = submission[key]
+        if not isinstance(items, list) or len(items) != count:
+            raise ValueError(f"Expected exactly {count} {kind} cases")
+        projected = []
+        for item in items:
+            fields = {"description": item.get("description"), "prompt": item.get("user_prompt")}
+            if kind == "positive":
+                fields.update(tools_triggered=item.get("tools_triggered"), expected_behavior=item.get("expected_output"))
+                if fields["tools_triggered"] not in submission["tools"]:
+                    raise ValueError("Review case references an unavailable public tool")
+            if any(not isinstance(v, str) or not v.strip() for v in fields.values()):
+                raise ValueError("Review case fields must be nonempty strings")
+            projected.append(fields)
+        cases[kind] = projected
+    return {"review": {**review, "test_cases": cases}, "publication": publication}
+
+
+def _public_content(relative: str, content: bytes) -> bytes:
+    if relative == ".mcp.json":
+        document = json.loads(content)
+        document["mcpServers"]["sparklaunch"]["url"] = CHATGPT_MCP_URL
+        return (json.dumps(document, indent=2) + "\n").encode("utf-8")
+    if relative.endswith(".md") or relative.endswith("agents/openai.yaml"):
+        text = content.decode("utf-8")
+        if relative == "skills/sparklaunch-sparkclose/SKILL.md":
+            connection = re.search(r"<!-- sparklaunch:connection:start -->.*?<!-- sparklaunch:connection:end -->", text, re.DOTALL)
+            if connection is None:
+                raise ValueError("Public skill requires the canonical connection instructions")
+            text = (ROOT / "adapters/openai/public/sparklaunch-sparkclose.md").read_text(encoding="utf-8").replace("{{CONNECTION}}", connection.group())
+        elif relative == "skills/sparklaunch-platform/recipes/model-and-close-a-safe.md":
+            text = (ROOT / "adapters/openai/public/model-and-close-a-safe.md").read_text(encoding="utf-8")
+        text = text.replace("https://sparklaun.ch/api/mcp/", CHATGPT_MCP_URL)
+        text = text.replace("Model and close a SAFE", "Model and save a SAFE scenario")
+        text = text.replace("Model SAFEs and manage confirmed investment closings", "Model SAFEs and inspect private investment records")
+        text = text.replace("model a SAFE and review the steps to close its investment", "model a SAFE and inspect my saved scenarios and private investment records")
+        text = public_description(text)
+        return text.encode("utf-8")
+    return content
 
 
 def _portal_plugin_name(override: str | None = None) -> str | None:
@@ -195,6 +266,7 @@ def _portal_path(source: Path) -> str:
 def build_bundle(output: Path | None = None, *, portal_plugin_name: str | None = None) -> tuple[Path, str]:
     """Write the deterministic portal archive and return its path and digest."""
     sources = _plugin_files()
+    metadata = submission_metadata()
     portal_plugin_name = _portal_plugin_name(portal_plugin_name)
     if output is None:
         output = ROOT / "dist" / f"sparklaunch-chatgpt-plugin-{_plugin_version()}.zip"
@@ -214,8 +286,12 @@ def build_bundle(output: Path | None = None, *, portal_plugin_name: str | None =
                     manifest["mcpServers"] = "./.mcp.json"
                 if portal_plugin_name is not None:
                     manifest["name"] = portal_plugin_name
-                if convert_connection or portal_plugin_name is not None:
-                    content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
+                interface = manifest.get("interface")
+                if isinstance(interface, dict) and isinstance(interface.get("longDescription"), str):
+                    interface["longDescription"] = public_description(interface["longDescription"])
+                manifest["extensions"] = {"com.openai": metadata}
+                content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
+            content = _public_content(relative, content)
             info = ZipInfo(relative, date_time=FIXED_ZIP_TIME)
             info.compress_type = ZIP_DEFLATED
             info.create_system = 3

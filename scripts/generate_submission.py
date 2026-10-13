@@ -10,12 +10,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 try:
-    from scripts.tool_contract_snapshot import load_tool_contracts
+    from scripts.tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_tool_contracts
+    from scripts.chatgpt_surface import is_public_tool, public_description
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
-    from tool_contract_snapshot import load_tool_contracts
+    from tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_tool_contracts
+    from chatgpt_surface import is_public_tool, public_description
 
 
-MCP_TOOL_CONTRACTS = load_tool_contracts()
+MCP_TOOL_CONTRACTS = load_tool_contracts(CHATGPT_SNAPSHOT_PATH)
 
 
 REVIEWER_FIXTURE_PATH = ROOT / "submission" / "reviewer-fixture.json"
@@ -32,6 +34,7 @@ def reviewer_fixture_errors(
     errors = []
     allowed_statuses = {"provisioned"} if require_provisioned else {
         "local_placeholder",
+        "pending_preflight",
         "provisioned",
     }
     if fixture.get("status") not in allowed_statuses:
@@ -105,12 +108,13 @@ def build_submission(reviewer_project_id: int | None = None):
         "app_info": {
             "display_name": "SparkLaunch",
             "subtitle": "Build and operate a startup",
-            "description": "SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, model ownership with SparkCap, prepare controlled investor rooms with SparkRoom, model and close SAFE investments with SparkClose, prepare entitlement-gated incorporation cases with secure participant tasks, and run monthly Founder Close reporting, reviewed room refreshes, obligations, and approved internal operations.",
+            "description": public_description("SparkLaunch helps founders select or create a business project, manage and assign general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect performance, operate private CRM workflows, model ownership with SparkCap, prepare controlled investor rooms with SparkRoom, model and close SAFE investments with SparkClose, prepare entitlement-gated incorporation cases with secure participant tasks, and run monthly Founder Close reporting, reviewed room refreshes, obligations, and approved internal operations."),
             "category": "BUSINESS",
         },
         "tools": {
             name: _tool_entry(name, contract)
             for name, contract in sorted(MCP_TOOL_CONTRACTS.items())
+            if is_public_tool(name)
         },
         "test_cases": [
             {
@@ -164,11 +168,11 @@ def build_submission(reviewer_project_id: int | None = None):
                 "expected_output_url": None,
             },
             {
-                "description": "Do not trigger for unrelated calendar management.",
-                "user_prompt": "Move my meeting tomorrow from 2 PM to 3 PM.",
+                "description": "Do not invoke tools for excluded investment execution. Explain that signing and finalizing investments are unavailable through this plugin; do not claim completion.",
+                "user_prompt": "Sign my SAFE agreement and close the investment in SparkLaunch.",
                 "file_attachment_urls": None,
                 "tools_triggered": None,
-                "expected_output": "Does not invoke SparkLaunch because calendar management is outside its supported workflows.",
+                "expected_output": "Does not invoke SparkLaunch because signing and finalizing investments are excluded from this public plugin.",
                 "expected_output_url": None,
             },
             {

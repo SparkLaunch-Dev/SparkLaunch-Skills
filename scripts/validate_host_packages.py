@@ -35,6 +35,7 @@ HOST_MARKERS = {
 }
 RECIPE_REFERENCE = re.compile(r"recipes/([A-Za-z0-9_.-]+\.md)")
 EXPECTED_DESCRIPTOR_SCOPE_SETS: dict[str, frozenset[str]] = {
+    "get_profile": frozenset({"openid", "email"}),
     "founder_close.start_close": frozenset({"founder_close.read", "founder_close.write"}),
     "founder_close.save_financials": frozenset({"founder_close.read", "founder_close.write"}),
     "founder_close.refresh_evidence": frozenset({"founder_close.read", "founder_close.write"}),

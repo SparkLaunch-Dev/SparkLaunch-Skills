@@ -47,6 +47,7 @@
         "connect-sparklaunch-to-chatgpt.md"
       ],
       "tools": [
+        "get_profile",
         "projects.list",
         "projects.create",
         "projects.get",
@@ -58,7 +59,7 @@
         "tasks.delete"
       ],
       "live_level": "private_write_and_confirmation_preview",
-      "expected": "OAuth connects with the expected 33-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery."
+      "expected": "OAuth connects with the expected 33-scope grant, accessible projects list, creation returns an explicit project id, get matches the declared contract and exposes project_role plus effective_permissions, the Profile disconnect dialog opens and cancels without revocation, a synthetic general task can be idempotently created and read back, accepted-member assignment is project-isolated, and project update, task update/delete, plus a synthetic collaborator invitation stop at exact confirmation previews without approval or email delivery. Identify the credential subject only after explicit openid and email consent."
     },
     {
       "id": "E2E-AUTOMATIC-VALIDATION",
@@ -277,25 +278,16 @@
         "model-and-close-a-safe.md"
       ],
       "tools": [
-        "sparkclose.cancel_unsigned",
-        "sparkclose.close_investment",
         "sparkclose.get_investment",
         "sparkclose.get_scenario",
         "sparkclose.list_investments",
         "sparkclose.list_scenarios",
         "sparkclose.model_safe",
-        "sparkclose.open_workflow",
-        "sparkclose.prepare_agreement",
-        "sparkclose.preview_agreement",
         "sparkclose.readiness",
-        "sparkclose.reconcile_funding",
-        "sparkclose.record_approval",
-        "sparkclose.record_receipt",
-        "sparkclose.retry_updates",
         "sparkclose.save_scenario"
       ],
       "live_level": "isolated_synthetic_investment_confirmation_and_readback",
-      "expected": "Model supported SAFE exposure and save an immutable snapshot. With complete synthetic company-reviewed agreement text, preview selected same-project sources and confirm unsigned preparation. Read back exactly one draft; same-key replay creates no duplicate, and changed content, cap table, investor contact or private packet invalidates preparation. Missing connection permissions require renewed host consent; plan/role denial remains distinct. After first-party signing and company-reviewed approval and receipt evidence, reconcile and explicitly confirm one closing. Check destination status. MCP signs no agreement, moves no money and broadens no sharing. Agreement bodies stay out of result metadata. This matrix is a plan, not evidence of live host execution."
+      "expected": "Model supported SAFE scenarios and save reviewed private snapshots after confirmation. Read investment milestones. Do not prepare agreements, sign, change funding evidence or finalize investments; direct excluded calls must fail without execution."
     },
     {
       "id": "E2E-FOUNDER-OPERATING-CYCLE",

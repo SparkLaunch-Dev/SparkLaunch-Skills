@@ -21,10 +21,12 @@ import urllib.request
 
 try:
     from scripts.build_release_bundles import candidate_identity
-    from scripts.tool_contract_snapshot import load_snapshot
+    from scripts.tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_snapshot
+    from scripts.chatgpt_surface import CHATGPT_MCP_URL
 except ImportError:
     from build_release_bundles import candidate_identity
-    from tool_contract_snapshot import load_snapshot
+    from tool_contract_snapshot import CHATGPT_SNAPSHOT_PATH, load_snapshot
+    from chatgpt_surface import CHATGPT_MCP_URL
 
 ORIGIN = "https://sparklaun.ch"
 ENDPOINT = ORIGIN + "/api/mcp/"
@@ -138,13 +140,15 @@ def request_json(
 
 
 def required_scopes(snapshot: dict) -> set[str]:
+    if "resource_scopes" in snapshot:
+        return set(snapshot["resource_scopes"]) - {"openid", "email"}
     return {
         scope
         for entry in snapshot["tools"].values()
         for scheme in entry["descriptor"].get("securitySchemes", [])
         if scheme.get("type") == "oauth2"
         for scope in scheme.get("scopes", [])
-    }
+    } - {"openid", "email"}
 
 
 def compare_descriptors(snapshot: dict, descriptors: list[dict]) -> None:
@@ -169,8 +173,9 @@ def compare_descriptors(snapshot: dict, descriptors: list[dict]) -> None:
         )
 
 
-def verify(*, public_only: bool = False, transport=request_json) -> dict:
-    snapshot = load_snapshot()
+def verify(*, public_only: bool = False, chatgpt: bool = False, transport=request_json) -> dict:
+    snapshot = load_snapshot(CHATGPT_SNAPSHOT_PATH) if chatgpt else load_snapshot()
+    endpoint = CHATGPT_MCP_URL if chatgpt else ENDPOINT
     expected_scopes = required_scopes(snapshot)
     # Fixed URLs prevent a supplied evidence document from choosing where a
     # release token is transmitted. Discovery redirects also fail closed.
@@ -206,12 +211,14 @@ def verify(*, public_only: bool = False, transport=request_json) -> dict:
         "schema_version": 2,
         "candidate": candidate_identity(),
         "observed_at": datetime.now(timezone.utc).isoformat(),
-        "endpoint": ENDPOINT,
+        "endpoint": endpoint,
+        "surface_contract": {"tool_count": snapshot["tool_count"], "server_version": snapshot["server_version"]},
         "scope_count": len(expected_scopes),
         "business_tool_calls": 0,
         "verification": "public_metadata_only",
     }
     if public_only:
+        result["endpoint_verified"] = False
         return result
     token = os.environ.get("SPARKLAUNCH_MCP_ACCESS_TOKEN", "")
     _validate_access_token(token)
@@ -219,7 +226,7 @@ def verify(*, public_only: bool = False, transport=request_json) -> dict:
 
     def rpc(method: str, params: dict | None, request_id: int) -> tuple[dict, dict]:
         payload, response_headers = transport(
-            ENDPOINT,
+            endpoint,
             body={
                 "jsonrpc": "2.0",
                 "id": request_id,
@@ -268,7 +275,7 @@ def verify(*, public_only: bool = False, transport=request_json) -> dict:
             raise VerificationError("MCP returned an invalid session header")
         headers["Mcp-Session-Id"] = session
     transport(
-        ENDPOINT,
+        endpoint,
         body={"jsonrpc": "2.0", "method": "notifications/initialized"},
         headers=headers,
     )
@@ -310,9 +317,10 @@ def main() -> int:
         action="store_true",
         help="Verify only discovery metadata, never sufficient for publication",
     )
+    parser.add_argument("--chatgpt", action="store_true", help="Verify the restricted public ChatGPT surface")
     args = parser.parse_args()
     try:
-        print(json.dumps(verify(public_only=args.public_only), indent=2))
+        print(json.dumps(verify(public_only=args.public_only, chatgpt=args.chatgpt), indent=2))
     except VerificationError as exc:
         print(str(exc))
         return 1

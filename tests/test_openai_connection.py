@@ -59,9 +59,9 @@ def test_acct_contract_002_public_zip_contains_only_mcp_connection(tmp_path):
         manifest = json.loads(archive.read(".codex-plugin/plugin.json"))
         assert "apps" not in manifest
         assert manifest["mcpServers"] == "./.mcp.json"
-        assert json.loads(archive.read(".mcp.json")) == json.loads(
-            (native / "mcp/portal.json").read_text()
-        )
+        expected = json.loads((native / "mcp/portal.json").read_text())
+        expected["mcpServers"]["sparklaunch"]["url"] = "https://sparklaun.ch/api/mcp/chatgpt/"
+        assert json.loads(archive.read(".mcp.json")) == expected
         assert len([p for p in archive.namelist() if p.endswith("/SKILL.md")]) == 12
     assert (native / ".codex-plugin/plugin.json").read_bytes() == before
 
