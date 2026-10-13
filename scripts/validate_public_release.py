@@ -291,7 +291,7 @@ def main() -> int:
     parser.add_argument(
         "--live",
         action="store_true",
-        help="Require a fresh authenticated full-contract production comparison",
+        help="Require fresh authenticated full and restricted ChatGPT production comparisons",
     )
     args = parser.parse_args()
     if args.allow_pending and args.live:
@@ -311,9 +311,11 @@ def main() -> int:
                 )
         if args.live:
             try:
-                result = verify()
-                if result.get("verification") != "authenticated_full_contract":
-                    errors.append("Live release verification was not authenticated")
+                for chatgpt in (False, True):
+                    result = verify(chatgpt=chatgpt)
+                    if result.get("verification") != "authenticated_full_contract":
+                        surface = "restricted ChatGPT" if chatgpt else "full"
+                        errors.append(f"Live {surface} release verification was not authenticated")
             except VerificationError as exc:
                 errors.append(str(exc))
         if not args.allow_pending and not args.live:

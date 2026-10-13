@@ -23,6 +23,20 @@ implementation, and matching verification; unrun hosted checks remain open.
 | SYS-SUBFIX-003 / PRD-SUBFIX-001 | Release evidence shall distinguish current candidate proof from historical results and owner-dependent checks. | Readiness records and runbooks | T-GATES-SUBFIX: strict gates reject pending demo/access/runtime evidence |
 | IMPL-SUBFIX-001 / SYS-SUBFIX-001 | The builder shall reject malformed review fields and keep credentials and registered App references out of the public upload. | Builder/validators | T-METADATA-SUBFIX: valid projection and malformed field/archive regression tests |
 | IMPL-SUBFIX-002 / PROD-SUBFIX-001 | Skill image references shall resolve to real packaged SparkLaunch image assets. | Canonical skills and generated OpenAI package | T-ICON-SUBFIX: all twelve paths/files; hosted rendering is separate proof |
+| IMPL-SUBFIX-003 / IMPL-SUBFIX-001 | The builder shall reject sensitive values in every projected public metadata string before creating or overwriting an archive. | Recursive use of existing sensitive-text checks | T-SECRET-SUBFIX: credential assignments and credential-bearing URLs in commerce, release notes, demo URL and all case text; no output archive on rejection |
+| IMPL-SUBFIX-004 / SYS-SUBFIX-003, ARCH-SUBFIX-001 | The live release gate shall verify both the full host contract and the restricted ChatGPT contract, rejecting a failure in either surface. | Explicit verifier modes in shared release CLI and runbook | T-LIVE-SUBFIX: exact endpoint/descriptors, both CLI calls, restricted failure with full success |
+
+October 12 follow-up: the owner requested review of Copilot's five findings
+before merging, asked for a recording script, and retained backend deployment.
+The findings identify unscanned free-form metadata, an unwired restricted live
+verifier, an incorrect icon-restoration claim and two stale version records.
+All are applicable to the catalog groups above; no new infrastructure, provider
+workflow, performance target, consent expansion or migration is introduced.
+Update the existing privacy and evidence requirements rather than relaxing any
+submission gate. The demo script is guidance only, with all eight source prompts
+checked for parity; recording and hosted playback remain separate acceptance.
+The candidate fingerprint includes the shared sensitive-text validator and live
+release verifiers, so changing these safety gates invalidates prior evidence.
 
 ## Architecture and rollout
 
@@ -71,6 +85,16 @@ public mount; no database migration or authorization expansion is required.
 ## Evidence
 
 Implementation and verification results are recorded below as work completes.
+
+- T-SECRET-SUBFIX / T-LIVE-SUBFIX: full package regression **412 passed, 6
+  skipped** in 108.83 seconds. Credential assignment, direct/nested URL, demo URL
+  and positive/negative case regressions reject values before archive creation
+  and preserve existing output. Synthetic live transports prove the restricted
+  endpoint and 121 descriptors; CLI tests require both full and restricted modes
+  and reject a restricted failure after a full pass. No real authenticated scan
+  is claimed. Focused Ruff, all package validators and pending-mode evidence
+  consistency pass. Rebuilt ZIP equality and current identity are recorded in
+  `submission/local-release-verification.md`.
 
 - T-METADATA-SUBFIX: supported manifest metadata and restricted instructions pass
   the package tests. The ZIP contains five positive and three negative cases,

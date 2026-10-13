@@ -1,5 +1,6 @@
 """T-METADATA-SUBFIX: supported review fields and server surface agree in the ZIP."""
 
+import copy
 import json
 from zipfile import ZipFile
 
@@ -59,3 +60,66 @@ def test_public_snapshot_matches_the_server_allowlist_when_backend_available():
     if not backend.exists():
         pytest.skip("Sibling backend unavailable; run export --surface chatgpt --check there")
     assert set(json.loads(backend.read_text(encoding="utf-8"))["tools"]) == set(load_snapshot(CHATGPT_SNAPSHOT_PATH)["tools"])
+
+
+@pytest.mark.parametrize("section,field", [
+    ("review", "commerce_description"), ("publication", "release_notes"),
+])
+@pytest.mark.parametrize("payload", [
+    "password=synthetic-secret", "https://example.com/video?access_token=synthetic-secret",
+    "https://example.com/video?redirect=https%3A%2F%2Fexample.com%2F%3Ftoken%3Dsynthetic-secret",
+])
+@pytest.mark.parametrize("existing_archive", [False, True])
+def test_sensitive_metadata_text_cannot_create_or_overwrite_an_archive(
+    monkeypatch, tmp_path, section, field, payload, existing_archive,
+):
+    source = json.loads(bundle.PUBLIC_METADATA_PATH.read_text(encoding="utf-8"))
+    source[section][field] = payload
+    metadata = tmp_path / "metadata.json"
+    metadata.write_text(json.dumps(source), encoding="utf-8")
+    monkeypatch.setattr(bundle, "PUBLIC_METADATA_PATH", metadata)
+    target = tmp_path / "rejected.zip"
+    if existing_archive:
+        target.write_bytes(b"previous archive")
+    with pytest.raises(ValueError, match="sensitive material") as error:
+        bundle.build_bundle(target)
+    assert "synthetic-secret" not in str(error.value)
+    if existing_archive:
+        assert target.read_bytes() == b"previous archive"
+    else:
+        assert not target.exists()
+
+
+@pytest.mark.parametrize("url", [
+    "https://example.com/video?token=synthetic-secret",
+    "https://example.com/video#access_token=synthetic-secret",
+])
+def test_credential_bearing_demo_url_is_rejected(monkeypatch, tmp_path, url):
+    source = json.loads(bundle.PUBLIC_METADATA_PATH.read_text(encoding="utf-8"))
+    source["review"]["demo_recording_url"] = url
+    metadata = tmp_path / "metadata.json"
+    metadata.write_text(json.dumps(source), encoding="utf-8")
+    monkeypatch.setattr(bundle, "PUBLIC_METADATA_PATH", metadata)
+    target = tmp_path / "rejected.zip"
+    with pytest.raises(ValueError, match="sensitive material"):
+        bundle.build_bundle(target)
+    assert not target.exists()
+
+
+@pytest.mark.parametrize("kind,field", [
+    ("test_cases", "description"), ("test_cases", "user_prompt"),
+    ("test_cases", "expected_output"), ("negative_test_cases", "description"),
+    ("negative_test_cases", "user_prompt"),
+])
+@pytest.mark.parametrize("payload", [
+    "password=synthetic-secret", "https://example.com/action?token=synthetic-secret",
+])
+def test_sensitive_projected_review_cases_are_rejected(monkeypatch, tmp_path, kind, field, payload):
+    submission = copy.deepcopy(build_submission())
+    submission[kind][0][field] = payload
+    monkeypatch.setattr(bundle, "build_submission", lambda: submission)
+    target = tmp_path / "rejected.zip"
+    with pytest.raises(ValueError, match="sensitive material") as error:
+        bundle.build_bundle(target)
+    assert "synthetic-secret" not in str(error.value)
+    assert not target.exists()

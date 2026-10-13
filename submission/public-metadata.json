@@ -6,6 +6,6 @@
   },
   "publication": {
     "countries": [],
-    "release_notes": "Restore connected-account App binding and SparkLaunch skill branding. Include reviewer test cases in the package. The initial public ChatGPT SparkClose surface supports modeling, saved scenarios, readiness, and private investment metadata; agreement preparation, signing and closing workflows are excluded."
+    "release_notes": "Restore connected-account App binding and include reviewer test cases in the package. Preserve the SparkLaunch logo assets; skill icons still render as generic badges in the private ChatGPT installation and that rendering issue remains unresolved. The initial public ChatGPT SparkClose surface supports modeling, saved scenarios, readiness, and private investment metadata; agreement preparation, signing and closing workflows are excluded."
   }
 }

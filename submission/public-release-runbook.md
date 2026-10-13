@@ -59,16 +59,21 @@ See [the requirement/evidence record](../docs/v-cycle/connected-accounts.md).
    process. Apply its required migrations before serving that revision. Verify
    every deployment target, health and migration head; do not infer deployment
    from the Skills repository's tool snapshot or a previous deployment statement.
-2. Run `python scripts/verify_production_contract.py --public-only`. It checks the
-   canonical issuer/resource, all 29 business scopes and UserInfo discovery with
+2. Run `python scripts/verify_production_contract.py --chatgpt --public-only`. It checks the
+   canonical issuer/resource, all 33 business scopes and UserInfo discovery with
    the two optional identity scopes. It executes no business tool.
 3. Obtain a short-lived delegated MCP OAuth access token using the normal browser
    consent flow. Provide it securely as `SPARKLAUNCH_MCP_ACCESS_TOKEN` in the
    verifier's process environment. Never paste it into chat, arguments, package
-   files, logs or evidence. Run `python scripts/verify_production_contract.py`.
+   files, logs or evidence. Run `python scripts/verify_production_contract.py --chatgpt`
+   for the restricted 121-tool ChatGPT endpoint, and
+   `python scripts/verify_production_contract.py` for the full 138-tool host endpoint.
    It follows no redirects, sends only initialize/initialized/tools-list, handles
    bounded pagination, and compares every complete descriptor with the snapshot.
    No bearer value, user data, response body or session identifier is reported.
+   The shared publication gate, `python scripts/validate_public_release.py --live`,
+   requires both comparisons. A passing full-endpoint scan cannot establish the
+   restricted ChatGPT boundary.
 4. Use a dedicated synthetic reviewer project with all required entitlements. Bind
    the real reviewer fixture via the existing submission generator, regenerate,
    rebuild and update candidate digests. Do not reuse project 42 as a claimed real

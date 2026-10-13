@@ -331,8 +331,8 @@ def test_verified_host_evidence_rejects_staleness_traversal_and_tampering(
     assert gate.validate(document, now=now)
 
 
-def transport_fixture(monkeypatch, *, mismatch=None, paginate=False):
-    snapshot = live.load_snapshot()
+def transport_fixture(monkeypatch, *, mismatch=None, paginate=False, chatgpt=False):
+    snapshot = live.load_snapshot(live.CHATGPT_SNAPSHOT_PATH) if chatgpt else live.load_snapshot()
     scopes = sorted(live.required_scopes(snapshot))
     descriptors = [
         copy.deepcopy(entry["descriptor"]) for entry in snapshot["tools"].values()
@@ -408,6 +408,22 @@ def test_live_probe_rejects_scope_or_full_schema_mismatch(monkeypatch, mismatch)
     transport, _ = transport_fixture(monkeypatch, mismatch=mismatch)
     with pytest.raises(live.VerificationError, match="differ"):
         live.verify(transport=transport)
+
+
+def test_restricted_probe_reads_the_chatgpt_endpoint_and_exact_contract(monkeypatch):
+    transport, calls = transport_fixture(monkeypatch, chatgpt=True, paginate=True)
+    result = live.verify(chatgpt=True, transport=transport)
+    assert result["verification"] == "authenticated_full_contract"
+    assert result["endpoint"] == live.CHATGPT_MCP_URL
+    assert result["surface_contract"]["tool_count"] == 121
+    assert result["business_tool_calls"] == 0
+    assert all(url == live.CHATGPT_MCP_URL for url, body in calls if body)
+
+
+def test_restricted_probe_rejects_the_full_catalog(monkeypatch):
+    transport, _ = transport_fixture(monkeypatch)
+    with pytest.raises(live.VerificationError, match="differ"):
+        live.verify(chatgpt=True, transport=transport)
 
 
 def test_public_probe_never_claims_authenticated_acceptance(monkeypatch):
@@ -509,12 +525,37 @@ def test_publication_cli_requires_a_provisioned_reviewer(
     monkeypatch.setattr(gate, "ROOT", tmp_path)
     monkeypatch.setattr(gate, "validate", lambda *args, **kwargs: [])
     monkeypatch.setattr(
-        gate, "verify", lambda: {"verification": "authenticated_full_contract"}
+        gate, "verify", lambda **kwargs: {"verification": "authenticated_full_contract"}
     )
     monkeypatch.setattr("sys.argv", ["validate_public_release.py", "--live"])
     assert gate.main() == int(should_fail)
     output = capsys.readouterr().out
     assert ("provider-disabled reviewer fixture is required" in output) == should_fail
+
+
+@pytest.mark.parametrize("restricted_failure", [False, True])
+def test_live_release_gate_requires_both_surfaces(monkeypatch, tmp_path, restricted_failure, capsys):
+    (tmp_path / "submission").mkdir()
+    (tmp_path / "submission/public-release.json").write_text("{}")
+    (tmp_path / "submission/reviewer-fixture.json").write_text(json.dumps({
+        "status": "provisioned", "project_id": 42,
+        "incorporation_data": "synthetic_only", "provider_calls_allowed": False,
+    }))
+    monkeypatch.setattr(gate, "ROOT", tmp_path)
+    monkeypatch.setattr(gate, "validate", lambda *args, **kwargs: [])
+    surfaces = []
+
+    def verify(*, chatgpt):
+        surfaces.append(chatgpt)
+        if chatgpt and restricted_failure:
+            raise live.VerificationError("Restricted contract differs")
+        return {"verification": "authenticated_full_contract"}
+
+    monkeypatch.setattr(gate, "verify", verify)
+    monkeypatch.setattr("sys.argv", ["validate_public_release.py", "--live"])
+    assert gate.main() == int(restricted_failure)
+    assert surfaces == [False, True]
+    assert ("Restricted contract differs" in capsys.readouterr().out) == restricted_failure
 
 
 def test_publishing_workflows_require_shared_readiness_and_main():

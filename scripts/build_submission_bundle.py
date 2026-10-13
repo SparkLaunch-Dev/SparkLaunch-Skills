@@ -13,6 +13,7 @@ try:
     from scripts.chatgpt_surface import CHATGPT_MCP_URL, public_description
     from scripts.generate_submission import build_submission
     from scripts.openai_connection import PORTAL_MCP_PATH
+    from scripts.validate_portal_prerequisites import sensitive_text_findings
     from scripts.sync_plugin import (
         PACKAGE_VERSION_RE,
         _lexical_absolute,
@@ -24,6 +25,7 @@ except ModuleNotFoundError:  # Direct execution from the scripts directory.
     from chatgpt_surface import CHATGPT_MCP_URL, public_description
     from generate_submission import build_submission
     from openai_connection import PORTAL_MCP_PATH
+    from validate_portal_prerequisites import sensitive_text_findings
     from sync_plugin import (
         PACKAGE_VERSION_RE,
         _lexical_absolute,
@@ -38,6 +40,20 @@ PLUGIN_ROOT = ROOT / "plugins" / "sparklaunch"
 FIXED_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
 PLUGIN_MANIFEST = ".codex-plugin/plugin.json"
 PUBLIC_METADATA_PATH = ROOT / "submission/public-metadata.json"
+
+
+def _validate_public_text(value: object) -> None:
+    """Reject sensitive leaf strings without echoing their values in errors."""
+    if isinstance(value, str):
+        findings = sensitive_text_findings(value)
+        if findings:
+            raise ValueError("Public metadata contains sensitive material: " + ", ".join(findings))
+    elif isinstance(value, dict):
+        for item in value.values():
+            _validate_public_text(item)
+    elif isinstance(value, list):
+        for item in value:
+            _validate_public_text(item)
 
 
 def submission_metadata() -> dict:
@@ -80,7 +96,9 @@ def submission_metadata() -> dict:
                 raise ValueError("Review case fields must be nonempty strings")
             projected.append(fields)
         cases[kind] = projected
-    return {"review": {**review, "test_cases": cases}, "publication": publication}
+    projected_metadata = {"review": {**review, "test_cases": cases}, "publication": publication}
+    _validate_public_text(projected_metadata)
+    return projected_metadata
 
 
 def _public_content(relative: str, content: bytes) -> bytes:

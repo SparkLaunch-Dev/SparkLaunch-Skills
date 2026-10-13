@@ -2,6 +2,8 @@
 
 Use this runbook to create the reviewer-facing demonstration required for the MCP-backed SparkLaunch plugin. The recording is external review material and is never included in the portal ZIP.
 
+Use [the demo script](demo-script.md) for the core recording: exact prompts, read-aloud narration, screen cues, and expected outcomes for all five positive and three negative review cases. The additional workflow exercises below can be rehearsed separately.
+
 ## Recording gate
 
 Record only after all of the following are true:
@@ -23,7 +25,7 @@ Never show or retain sign-in values, authorization codes, consent artifacts, pri
 
 ## Walkthrough
 
-1. **Introduce SparkLaunch.** State that the plugin supports private founder workflows for projects, validation, branding, launch assets, CRM, SparkCap planning, SparkRoom controlled sharing, SparkClose SAFE workflows, and incorporation preparation.
+1. **Introduce SparkLaunch.** State that the plugin supports private founder workflows for projects, validation, branding, launch assets, CRM, SparkCap planning, SparkRoom controlled sharing, SparkClose SAFE planning and private records, and incorporation preparation.
 2. **Connect in hosted ChatGPT.** Select SparkLaunch, trigger the first protected action with `projects.list`, complete OAuth off-camera, and show the consent scopes before approval. Confirm the returned project list contains only the synthetic reviewer project.
 3. **Run the five submitted positive cases.** Use the exact prompts from `chatgpt-app-submission.json` for `projects.list`, `validation.create_project`, `branding.generate_palette`, `landing.list_projects`, and `crm.prepare_business_card_import`. Show concise, human-readable results without exposing internal identifiers or versions.
 4. **Review SparkCap.** In the disposable project, create an empty planning cap table, read it back, prepare one synthetic stakeholder addition, show the exact confirmation preview, approve it, and verify the saved ownership. Run `cap_table.simulate_raise` and state that `saved: false` is an unsaved planning model, not an official ledger, issued security, signed grant, legal advice, or investment advice. Do not display internal identifiers, addresses, signatures, notes, or share tokens.
