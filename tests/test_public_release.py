@@ -40,7 +40,7 @@ def test_release_archives_are_deterministic_self_contained_and_licensed(tmp_path
         "tool_count",
         "content_sha256",
     }
-    assert first["candidate"]["plugin_version"] == "0.11.2"
+    assert first["candidate"]["plugin_version"] == "0.11.3"
     assert first["candidate"]["built_at"] == json.loads((ROOT / "release-state.json").read_text())["generated_packages"]["built_at"]
     assert all("+codex" not in asset["file"] for asset in first["assets"])
     assert {asset["host"] for asset in first["assets"]} == set(sync.HOSTS)
@@ -105,7 +105,7 @@ def test_release_identity_rejects_noncanonical_candidate_build_time(
         json.dumps(
             {
                 "generated_packages": {
-                    "version": "0.11.2",
+                    "version": "0.11.3",
                     "built_at": built_at,
                 }
             }
@@ -137,6 +137,24 @@ def test_release_identity_rejects_release_state_version_drift(monkeypatch, tmp_p
         bundles.candidate_identity()
 
 
+def test_reviewer_verifier_change_invalidates_candidate_evidence(monkeypatch):
+    before = bundles.candidate_identity()
+    original_read = Path.read_bytes
+
+    def changed_read(path):
+        content = original_read(path)
+        if path == ROOT / "scripts/verify_reviewer_fixture.py":
+            return content + b"\n# changed reviewer acceptance rule\n"
+        return content
+
+    monkeypatch.setattr(Path, "read_bytes", changed_read)
+    after = bundles.candidate_identity()
+    assert after["content_sha256"] != before["content_sha256"]
+    assert {key: value for key, value in after.items() if key != "content_sha256"} == {
+        key: value for key, value in before.items() if key != "content_sha256"
+    }
+
+
 def test_portal_bundle_rejects_non_numeric_three_part_version(monkeypatch, tmp_path):
     plugin_root = tmp_path / "plugin"
     manifest = plugin_root / ".codex-plugin/plugin.json"
@@ -163,7 +181,7 @@ def test_portal_bundle_rejects_whitespace_around_version(monkeypatch, tmp_path):
 
 
 def test_catalogs_are_generated_from_host_roots():
-    assert sync._base_package_version() == "0.11.2"
+    assert sync._base_package_version() == "0.11.3"
     for host in ("claude", "cursor"):
         document = json.loads((ROOT / f".{host}-plugin/marketplace.json").read_text())
         entry = document["plugins"][0]

@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.11.2` candidate at
+These instructions apply to the local SparkLaunch `0.11.3` candidate at
 `https://sparklaun.ch/api/mcp/chatgpt/`. The package contains twelve skills and declares
 121 tools in the public surface, sharing a protected resource with 33 OAuth scopes for business operations;
 the profile tool separately requires openid and email consent. The full-client
@@ -13,7 +13,7 @@ the new real-database SparkCap, SparkRoom, and SparkClose acceptance tests are i
 
 ## Access
 
-The owner renewed the existing dedicated reviewer fixture through January 10, 2027. Its credential still requires secure rotation; preflight refuses login while that flag is set. After rotation, synchronize the approved secret store and secure portal fields, then verify account/project isolation before binding or running review cases. No credentials belong in the ZIP.
+The owner renewed the existing dedicated reviewer fixture through January 10, 2027 and authorized password rotation on October 13. The old password was rejected, the new password passed login, and the approved encrypted store was read back. All seven setup checks pass, including regular-user role, one owned project, analytics exclusion, Growth access and incorporation entitlement. A real outside-project request was denied. OpenAI portal credential synchronization and native OAuth/test cases remain separate pending checks. No credentials belong in the ZIP.
 
 1. Use the synthetic reviewer account supplied through the approved private reviewer channel. Credentials and authorization artifacts must never be added to this file, a prompt, a screenshot, or retained evidence.
 2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. First protected use starts SparkLaunch OAuth; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.
@@ -22,7 +22,7 @@ The owner renewed the existing dedicated reviewer fixture through January 10, 20
 5. For `projects.invite_collaborator`, use only a synthetic `example.com` recipient and stop at the exact project/email/role confirmation preview. Do not confirm it during review; no email or collaborator membership should be created.
 6. For general task coverage, use `tasks.create` with synthetic private content and a stable idempotency key, verify it with `tasks.list`, and use only an active owner or accepted collaborator email for assignment. Stop `tasks.update` and `tasks.delete` at their exact version-bound confirmation previews unless a disposable mutation is explicitly approved.
 
-The five positive prompts are bound to project `99`, the dedicated fixture reference in the approved secret store. Its status is `pending_preflight`: this binding does not claim current login, entitlement, project isolation or sample-data acceptance. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. After secure rotation and a passing preflight, confirm the verified binding with `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
+The five positive prompts are bound to project `99`, the dedicated fixture reference in the approved secret store. Its status is `provisioned` following the October 13 setup verification. This does not claim sample-data, native OAuth or scenario acceptance. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Bind or change a verified project through `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
 
 ### Environment binding
 

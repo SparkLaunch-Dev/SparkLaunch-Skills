@@ -24,8 +24,9 @@ candidate's native acceptance record.
   account/tool tests, including applicable desktop/mobile acceptance.
 - OpenAI importer/rendering resolution for skill logos; source parity alone is
   insufficient.
-- Secure owner rotation of the reviewer password, approved-store/portal sync,
-  then fresh synthetic-project isolation, entitlements and all eight test cases.
+- Synchronize the rotated reviewer credential with the secure portal fields,
+  then complete native OAuth, fixture-content and all eight test cases. Account
+  setup and outside-project denial were verified separately below.
 - Owner demo recording using `submission/demo-script.md`, verified hosted playback,
   and final candidate-bound portal/policy readiness evidence before submission.
 
@@ -40,3 +41,32 @@ the existing opt-in loopback flag. The full OAuth/CIMD/deployment suites pass
 registration, consent or public-catalog acceptance. The local Inspector session
 was stopped after the failed registration; its temporary local launch credential
 was removed, and no delegated OAuth credentials were obtained or retained.
+
+## Subsequent native and reviewer verification
+
+The existing private Test App's actual tool results are now available. Project
+listing, project/effective-permission reads, private task creation and exact
+readback succeeded in a pre-existing controlled synthetic QA project. Task update
+returned an exact confirmation preview and was not committed. A private Markdown
+export downloaded successfully with HTTP 200 and matched its artifact metadata.
+The owner/admin connection and full endpoint remain unchanged; these observations
+cannot establish restricted-public or reviewer native acceptance. Sanitized
+results are in `2026-10-13-native-smoke.json`.
+Repeating task creation with the original key returned the same task/version and
+left one audit task. An update with a stale version returned a non-retryable
+error directing a fresh task read. Readback confirms pending state and version
+were unchanged after the preview and stale request.
+
+The owner-approved reviewer password rotation completed against the same account
+and single synthetic project, with expiry and entitlements unchanged. The old
+password is rejected, the encrypted current version was verified, and all seven
+setup checks pass. Preflight now rejects administrator or missing-role identities
+before project reads. The regular reviewer was separately denied access to an
+outside project. `2026-10-13-reviewer-rotation.json` contains credential-free
+evidence. Portal synchronization, new OAuth and native review cases remain pending.
+
+The fresh skill DOM renders the generic five-colour SVG rather than an image.
+The correct PNGs and metadata are already packaged. A support report is prepared;
+host resolution and supported App URL migration remain unresolved. The existing
+public draft remains 0.11.0, unsubmitted and unpublished. No duplicate App was
+created and no backend deployment was performed.

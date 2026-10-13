@@ -79,7 +79,7 @@ public mount; no database migration or authorization expansion is required.
 |---|---|---|---|
 | SUBFIX-G1 | PROD-SUBFIX-001 | Existing valid YAML/images show generic badges in the cloud UI. | Diagnose importer/rendering; do not claim fixed from files alone. |
 | SUBFIX-G2 | SYS-SUBFIX-003 | Demo recording and verified hosted URL are owner supplied. | Open; leave absent until provided and verified. |
-| SUBFIX-G3 | SYS-SUBFIX-003 | Reviewer fixture, credential rotation/retention and current deployment scans are not verified. | Resolve independent preparation; obtain secure owner action where required. |
+| SUBFIX-G3 | SYS-SUBFIX-003 | Reviewer rotation, regular-user isolation and entitlements are verified; portal sync, native cases and current deployment scans remain unverified. | Retain each remaining operational gate separately. |
 | SUBFIX-G4 | PRD-SUBFIX-001 | Desktop action loading and native mobile testing remain separate host acceptance. | Verify available environments; explicitly retain unavailable checks. |
 
 ## Evidence
@@ -97,6 +97,34 @@ permission to replace the App or register another plugin. Verify the probe's
 visible icon, then read back cleanup with exactly twelve skills and no probe files.
 Public release metadata and its candidate identity remain unchanged.
 
+October 13 reviewer/native follow-up: the owner explicitly authorized password
+rotation and continued acceptance work. SYS-SUBFIX-003 / T-REVIEWER-ROTATE requires
+the same disposable reviewer and single synthetic project, unchanged entitlements
+and expiry, no plaintext credential in commands/logs/evidence, and successful new
+login before promoting the guarded secret version. Use the existing account
+service over the documented SSM database tunnel because no authenticated
+password-change API exists and the fixture uses a synthetic reviewer mail domain.
+Stage the generated credential in the approved secret only, verify the exact
+old secret version and database identity before mutation, then read back the new
+secret and run the standard preflight. Preserve an encrypted recoverable stage
+if a post-database verification fails. Portal synchronization and native OAuth
+remain separately verified; do not mark them passed from a password rotation.
+T-REVIEWER-ROLE additionally requires a regular `user_type=user` identity before
+project reads. An administrator may own only one fixture while retaining access
+to other projects, so the single-project list cannot by itself prove isolation.
+Reject admin and missing role metadata before fetching projects; verify a real
+outside-project denial using the reviewer account, separately from the owner's
+administrator connection. Match this requirement to reviewer preflight regressions
+and sanitized live role/isolation evidence.
+T-REVIEWER-FINGERPRINT requires reviewer-preflight implementation changes to
+invalidate candidate evidence; include that verifier in the existing fingerprint
+and prove a changed verifier changes the content digest without changing the
+declared service contract. Native and policy gates remain pending.
+T-NATIVE-READWRITE checks the existing full-endpoint App against a pre-existing
+controlled synthetic QA fixture. Create/readback and private file retrieval may
+proceed; overwrite/delete remain at their exact confirmation previews. Account
+and App identities, primary connection and public candidate inputs stay intact.
+
 T-ICON-CREATE-SUBFIX result: FAIL for visible skill logos. The 1.0.8 creation
 probe displays its imported metadata but the generic badge. Cleanup readback and
 fresh UI confirm 1.0.9, 85 files, twelve skills and zero probe files, with the same
@@ -111,6 +139,8 @@ metadata discovery passes for 33 business scopes, while unauthenticated
 authenticated 121-tool public contract. Official Inspector 2.10.1 fails DCR with
 `invalid_redirect_uri` for its exact native `/oauth/callback`; a narrow backend
 compatibility repair is being prepared separately. Owner retains deployment.
+
+Historical October 12 package evidence:
 
 - T-SECRET-SUBFIX / T-LIVE-SUBFIX: full package regression **412 passed, 6
   skipped** in 108.83 seconds. Credential assignment, direct/nested URL, demo URL
@@ -144,6 +174,30 @@ compatibility repair is being prepared separately. Owner retains deployment.
   actual mobile workflow acceptance remain unverified, separate from browser UI.
 
 The isolated backend branch contains only related MCP/profile work; the original
-checkout's unrelated edits are preserved. Deployment, portal setup after demo,
-credential rotation and native acceptance remain operational follow-up. The ZIP
-is a prepared draft and is not ready for submission.
+checkout's unrelated edits are preserved. The ZIP is a prepared draft and is not
+ready for submission.
+
+October 13 reviewer/native execution results:
+
+- T-REVIEWER-ROTATE / T-REVIEWER-ROLE: old password rejected; new login and
+  encrypted current-version readback passed. Fresh preflight passes all seven
+  checks and the regular reviewer is denied access to an outside project. The
+  same one synthetic project, entitlements and January 10 expiry are preserved.
+  The temporary TLS-verified SSM tunnel is closed and the shared AWS registry
+  and zero-error full inventory were updated. Portal synchronization remains
+  pending; no credentials or tokens are retained in evidence.
+- T-NATIVE-READWRITE: actual private App project reads, synthetic task
+  create/readback and private Markdown retrieval passed. Update stopped at the
+  exact confirmation preview. Same-key creation replay produced no duplicate;
+  stale-version update was denied and readback showed no state change.
+  This is the owner/admin connection on the full
+  endpoint, not reviewer or restricted-public acceptance. App identity, primary
+  account and permissions are preserved.
+- T-ICON-SUBFIX: fresh DOM inspection finds the generic five-colour SVG and no
+  image element. Correct canonical PNGs remain packaged; logo acceptance FAIL.
+  The report is staged for owner-authorized OpenAI support. Existing private
+  and public App UIs expose no MCP URL editor, leaving migration unresolved.
+
+The 0.11.3 candidate binds the verified setup fixture as provisioned while native,
+policy, demo and deployed-contract evidence remain pending. The unchanged public
+draft is not submitted or published. Owner retains backend deployment.

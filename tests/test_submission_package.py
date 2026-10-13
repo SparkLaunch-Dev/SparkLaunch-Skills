@@ -1107,7 +1107,7 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"] == "0.11.2"
+    assert manifest["version"] == "0.11.3"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
@@ -1138,8 +1138,8 @@ def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.2"',
-        '"version": "0.11.2+codex.20260907000000"',
+        '"version": "0.11.3"',
+        '"version": "0.11.3+codex.20260907000000"',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1151,8 +1151,8 @@ def test_submission_validator_rejects_whitespace_around_package_version(monkeypa
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.2"',
-        '"version": " 0.11.2 "',
+        '"version": "0.11.3"',
+        '"version": " 0.11.3 "',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1245,7 +1245,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 4
-    assert evidence["candidate"]["plugin_version"] == "0.11.2"
+    assert evidence["candidate"]["plugin_version"] == "0.11.3"
     assert evidence["candidate"]["built_at"] == release_state["generated_packages"]["built_at"]
     assert evidence["candidate"]["service_version"] == "1.11.0"
     assert evidence["candidate"]["expected_tool_count"] == 121
@@ -1463,7 +1463,7 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     (
         (
             "plugin_version",
-            "0.11.2+codex.20260907000000",
+            "0.11.3+codex.20260907000000",
             "candidate plugin version must be numeric major.minor.patch",
         ),
         (

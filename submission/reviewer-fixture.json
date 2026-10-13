@@ -1,5 +1,5 @@
 {
-  "status": "pending_preflight",
+  "status": "provisioned",
   "project_id": 99,
   "incorporation_data": "synthetic_only",
   "provider_calls_allowed": false

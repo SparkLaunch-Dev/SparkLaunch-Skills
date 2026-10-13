@@ -59,3 +59,17 @@ Private screenshots and source readback are retained under the ignored
 `dist/connection-evidence/` directory, outside public release artifacts.
 October 13 crops are in `dist/audit-2026-10-13/new-skill-icon-probe.png` and
 `private-restored.png`; these ignored local files are not public review evidence.
+
+## Current DOM diagnosis — October 13
+
+The restored 1.0.9 skill row contains no `img` element. It renders a 24x24 generic
+SVG with fills `#FFD400`, `#F75858`, `#8166E1`, `#BDAAFF`, and `#FFA43D`.
+The current screenshot `dist/audit-2026-10-13/skill-icons-still-generic.png`
+confirms the correct App/header rocket beside generic skill badges. This is
+direct rendering evidence, not an inference from source validation.
+
+A concrete support report is staged locally at
+`dist/audit-2026-10-13/openai-support-report.md`. It requests a supported icon
+repair and migration of the existing App's full MCP URL to the reviewed endpoint
+while preserving App/account identity. Sending it requires the owner's explicit
+authorization. No support response or resolution is claimed.

@@ -1,40 +1,40 @@
 {
   "schema_version": 4,
   "candidate": {
-    "plugin_version": "0.11.2",
-    "built_at": "2026-10-13T04:39:29Z",
+    "plugin_version": "0.11.3",
+    "built_at": "2026-10-13T20:53:45Z",
     "service_version": "1.11.0",
     "production_mcp_url": "https://sparklaun.ch/api/mcp/chatgpt/",
     "expected_tool_count": 121,
     "expected_oauth_scope_count": 33,
-    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.11.2.zip",
-    "bundle_sha256": "982F834AFB0B045F58ADD05D7CFC832BA2516ED806B89E00DF34F2EF95F3C277",
+    "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.11.3.zip",
+    "bundle_sha256": "3F379ADD1F1F9E88D36D1B02A4D42A0564EB55EA8977C465059F8B0EB2B48A14",
     "portal_plugin_name": "app-6a963bde250881918591112eac13b307"
   },
   "public_production_readiness": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.2",
+    "candidate_plugin_version": "0.11.3",
     "candidate_service_version": "1.11.0",
     "candidate_expected_oauth_scope_count": 33,
     "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "production_deployment": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.2",
+    "candidate_plugin_version": "0.11.3",
     "candidate_service_version": "1.11.0",
     "candidate_expected_tool_count": 121,
     "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "direct_authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.2",
+    "candidate_plugin_version": "0.11.3",
     "candidate_service_version": "1.11.0",
     "candidate_expected_tool_count": 121,
     "proof_boundary": "The new restricted ChatGPT surface requires current deployment, authenticated descriptor equality and portal verification. Earlier full-endpoint/private connection observations are retained history and do not prove this candidate."
   },
   "authenticated_production_scan": {
     "status": "pending",
-    "candidate_plugin_version": "0.11.2",
+    "candidate_plugin_version": "0.11.3",
     "candidate_service_version": "1.11.0",
     "candidate_expected_tool_count": 121,
     "portal_result": "pending",

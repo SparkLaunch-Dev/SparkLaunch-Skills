@@ -4,7 +4,23 @@ This records local implementation proof and separately labeled operational
 observations. It does not satisfy any native OAuth, policy approval, candidate
 deployment, review, publication or customer acceptance gate.
 
-## Current candidate: restricted ChatGPT review preparation, 0.11.2 — 2026-10-12
+## Current candidate: reviewer setup hardening, 0.11.3 — 2026-10-13
+
+The candidate retains service **1.11.0**, **138 full-host tools**, **121 public
+ChatGPT tools**, **33 business scopes** and **12 skills**. Reviewer preflight now
+requires a regular-user account before project reads and participates in the
+candidate fingerprint. Password rotation, seven setup checks and an outside
+project denial were verified against the same isolated synthetic fixture.
+Native private App reads, synthetic task creation/readback, confirmation preview
+and Markdown file retrieval succeeded. Details are in
+[the live audit](observations/2026-10-13-live-audit.md).
+
+OpenAI credential-field synchronization, restricted endpoint migration, native
+reviewer scenarios, profile/refresh/disconnect/mobile acceptance and rendered
+skill logos remain pending. The public draft is still 0.11.0. No public draft
+upload, submission, publication or backend deployment is claimed.
+
+## Historical candidate: restricted ChatGPT review preparation, 0.11.2 — 2026-10-12
 
 Service **1.11.0**, **138 full-host tools**, **121 public ChatGPT tools**,
 **33 business scopes**, **12 skills**. The native package preserves its registered

@@ -2,7 +2,7 @@
 
 An approximately 8–12 minute recording of the five positive and three negative cases in `chatgpt-app-submission.json`. Read the **Say** passages aloud; paste the **Prompt** text into ChatGPT. Timing is a guide: allow time to read each actual result and pause during long waits.
 
-This is a recording script, not evidence that the cases have passed. The current candidate is `0.11.2`; consult `portal-prerequisites.json` for the current package digest and readiness status before filming.
+This is a recording script, not evidence that the cases have passed. The current candidate is `0.11.3`; consult `portal-prerequisites.json` for the current package digest and readiness status before filming.
 
 ## Before recording
 
