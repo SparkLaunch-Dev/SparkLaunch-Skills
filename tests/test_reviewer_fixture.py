@@ -25,6 +25,7 @@ LOGIN = {
     "user": {
         "id": 7,
         "is_active": True,
+        "user_type": "user",
         "analytics_excluded": True,
     },
 }
@@ -115,6 +116,8 @@ def test_malformed_envelope_is_safe(raw):
         {**LOGIN, "access_token": "bad\nheader"},
         {**LOGIN, "user": {**LOGIN["user"], "id": 8}},
         {**LOGIN, "user": {**LOGIN["user"], "is_active": False}},
+        {**LOGIN, "user": {**LOGIN["user"], "user_type": "admin"}},
+        {**LOGIN, "user": {**LOGIN["user"], "user_type": None}},
     ],
 )
 def test_wrong_login_does_not_fetch_projects(login):
@@ -127,6 +130,18 @@ def test_wrong_login_does_not_fetch_projects(login):
 
     with pytest.raises(reviewer.VerificationError):
         reviewer.verify(json.dumps(ENVELOPE), transport=transport, now=NOW)
+
+
+def test_missing_reviewer_role_does_not_fetch_projects():
+    login = copy.deepcopy(LOGIN)
+    del login["user"]["user_type"]
+
+    def login_only(*args, **kwargs):
+        assert args[0].endswith("/api/auth/login")
+        return login, {}
+
+    with pytest.raises(reviewer.VerificationError, match="regular-user role"):
+        reviewer.verify(json.dumps(ENVELOPE), transport=login_only, now=NOW)
 
 
 @pytest.mark.parametrize(

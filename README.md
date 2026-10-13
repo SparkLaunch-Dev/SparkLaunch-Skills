@@ -59,7 +59,7 @@ a hosted environment depends on its deployed version and permissions.
 
 ## Release status
 
-The working-tree candidate is **0.11.2**, with a service **1.11.0** snapshot of
+The working-tree candidate is **0.11.3**, with a service **1.11.0** snapshot of
 **138 full-host tools**, **121 public ChatGPT tools**, **33 business OAuth scopes**,
 and **12 skills**. The public ChatGPT endpoint excludes agreement preparation,
 signing and investment finalization; SparkClose supports planning and private

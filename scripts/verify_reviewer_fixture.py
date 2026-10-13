@@ -69,13 +69,14 @@ def verify(raw: str, *, transport=request_json, now: datetime | None = None) -> 
         type(user.get("id")) is not int
         or user["id"] != secret["user_id"]
         or user.get("is_active") is not True
+        or user.get("user_type") != "user"
         or not isinstance(token, str)
         or not 0 < len(token) <= 8192
         or any(character.isspace() for character in token)
         or any(ord(character) < 32 or ord(character) >= 127 for character in token)
     ):
         raise VerificationError(
-            "Reviewer identity, active status or login token is invalid"
+            "Reviewer identity, active status, regular-user role or login token is invalid"
         )
     projects, _ = transport(
         ORIGIN + "/api/projects/", headers={"Authorization": "Bearer " + token}
@@ -111,6 +112,7 @@ def verify(raw: str, *, transport=request_json, now: datetime | None = None) -> 
     checks = {
         "password_login_without_secondary_step": True,
         "active_expected_account": True,
+        "non_admin_reviewer": True,
         "one_expected_owned_project": True,
         "analytics_excluded": user.get("analytics_excluded") is True,
         "growth_access": project.get("effective_plan") == "growth",

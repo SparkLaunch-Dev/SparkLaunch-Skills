@@ -4,7 +4,36 @@ This records local implementation proof and separately labeled operational
 observations. It does not satisfy any native OAuth, policy approval, candidate
 deployment, review, publication or customer acceptance gate.
 
-## Current candidate: restricted ChatGPT review preparation, 0.11.2 — 2026-10-12
+## Current candidate: reviewer setup hardening, 0.11.3 — 2026-10-13
+
+The candidate retains service **1.11.0**, **138 full-host tools**, **121 public
+ChatGPT tools**, **33 business scopes** and **12 skills**. Reviewer preflight now
+requires a regular-user account before project reads and participates in the
+candidate fingerprint. Password rotation, seven setup checks and an outside
+project denial were verified against the same isolated synthetic fixture.
+Native private App reads, synthetic task creation/readback, confirmation preview
+and Markdown file retrieval succeeded. Details are in
+[the live audit](observations/2026-10-13-live-audit.md).
+
+The rotated credentials were saved to the existing OpenAI reviewer fields after
+owner approval and reopened with a masked password. The encrypted store's sync
+metadata was updated and read back. No plaintext password is retained in evidence.
+
+Restricted endpoint migration, native
+reviewer scenarios, profile/refresh/disconnect/mobile acceptance and rendered
+skill logos remain pending. The public draft is still 0.11.0. No public draft
+upload, submission, publication or backend deployment is claimed.
+
+Local verification: **416 passed, 6 skipped** in 406.00 seconds; six Windows
+symlink-privilege skips remain enabled in Linux CI. Focused Ruff, all host and
+submission validators, generated parity and pending-mode evidence consistency
+pass. Candidate built at `2026-10-13T20:53:45Z`; content SHA256
+`a7d6b43a704a8b2fb7407f04d787dc6f63f57660e794a22c913084b7d7fb8777`.
+Portal ZIP `dist/sparklaunch-chatgpt-plugin-0.11.3.zip` SHA256
+`3F379ADD1F1F9E88D36D1B02A4D42A0564EB55EA8977C465059F8B0EB2B48A14`.
+The prepared archive remains local and unsubmitted.
+
+## Historical candidate: restricted ChatGPT review preparation, 0.11.2 — 2026-10-12
 
 Service **1.11.0**, **138 full-host tools**, **121 public ChatGPT tools**,
 **33 business scopes**, **12 skills**. The native package preserves its registered

@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-10-13T20:57:57Z",
+  "verification": "existing_private_app_native_smoke",
+  "public_candidate_acceptance": false,
+  "endpoint": "https://sparklaun.ch/api/mcp/",
+  "private_plugin_version": "1.0.9",
+  "project_fixture": "preexisting_controlled_synthetic_qa",
+  "business_provider_calls": 0,
+  "checks": {
+    "actions_available": true,
+    "project_list": true,
+    "project_permissions_read": true,
+    "task_create": true,
+    "task_readback": true,
+    "task_update_preview": true,
+    "task_update_committed": false,
+    "validation_export": true,
+    "file_retrieval": true,
+    "same_key_replay": true,
+    "no_duplicate_after_replay": true,
+    "stale_version_denied": true,
+    "unchanged_after_stale_version_denial": true,
+    "metadata_refresh_attempted": true,
+    "post_refresh_project_read": true,
+    "primary_account_preserved": true
+  },
+  "file": {
+    "format": "markdown",
+    "http_status": 200,
+    "size_bytes": 34182,
+    "sha256": "449ec7d6121080dfbd580165973df85805d349de63fcf703aec50f75cf7ee7bf"
+  },
+  "unverified": [
+    "restricted_public_endpoint",
+    "profile_identity_consent",
+    "new_reviewer_oauth_connection",
+    "scope_escalation",
+    "refresh",
+    "disconnect_reconnect",
+    "native_mobile",
+    "all_eight_review_prompts"
+  ],
+  "proof_boundary": "Real private App actions and synthetic fixture only. The full endpoint and owner/admin connection cannot establish restricted public candidate acceptance or reviewer isolation. No confirmation token, private file URL, project contents or internal identifiers are retained."
+}

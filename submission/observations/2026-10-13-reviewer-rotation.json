@@ -1,0 +1,32 @@
+{
+  "observed_at": "2026-10-13T20:11:20.534107Z",
+  "verification": "reviewer_credential_rotation_and_preflight",
+  "owner_authorized": true,
+  "same_account_and_single_synthetic_project": true,
+  "old_password_rejected": true,
+  "new_password_login_verified": true,
+  "secret_current_readback_verified": true,
+  "credential_rotation_required": false,
+  "expires_on": "2027-01-10",
+  "preflight_checks": {
+    "password_login_without_secondary_step": true,
+    "active_expected_account": true,
+    "non_admin_reviewer": true,
+    "one_expected_owned_project": true,
+    "analytics_excluded": true,
+    "growth_access": true,
+    "incorporation_entitlement": true
+  },
+  "portal_sync_verified": true,
+  "business_tool_calls": 0,
+  "proof_boundary": "Credential rotation, account setup, outside-project denial and approved portal credential synchronization only. Native OAuth, fixture content and all review cases remain separate.",
+  "reviewer_regular_user_verified": true,
+  "outside_project_access_denied": true,
+  "preflight_observed_at": "2026-10-13T20:31:20.231026Z",
+  "portal_sync_observed_at": "2026-10-13T21:07:47.873862Z",
+  "portal_fields_reopened": true,
+  "portal_password_display": "masked",
+  "portal_store_metadata_readback_verified": true,
+  "public_draft_not_submitted": true,
+  "public_draft_not_published": true
+}
