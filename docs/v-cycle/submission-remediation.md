@@ -86,6 +86,32 @@ public mount; no database migration or authorization expansion is required.
 
 Implementation and verification results are recorded below as work completes.
 
+October 13 live follow-up plans T-ICON-CREATE-SUBFIX against PROD-SUBFIX-001:
+compare one temporary, non-implicit icon-only skill with the twelve existing
+skills in the same private App. Preserve the App identity, connection, audience,
+permissions, existing source and image bytes; remove the probe after inspection.
+The current owned 1.0.7 archive contains 85 files and all 24 PNGs are byte-identical
+to canonical assets at 192x192 and 1024x1024. This experiment distinguishes
+existing-skill update caching from a creation/import rendering failure. It is not
+permission to replace the App or register another plugin. Verify the probe's
+visible icon, then read back cleanup with exactly twelve skills and no probe files.
+Public release metadata and its candidate identity remain unchanged.
+
+T-ICON-CREATE-SUBFIX result: FAIL for visible skill logos. The 1.0.8 creation
+probe displays its imported metadata but the generic badge. Cleanup readback and
+fresh UI confirm 1.0.9, 85 files, twelve skills and zero probe files, with the same
+App identity/audience/account. This narrows the diagnosis beyond existing-skill
+update caching; it is not a host fix. See `docs/chatgpt-skill-icon-import.md`.
+
+October 13 live connection follow-up: native ordinary Chat reports a successful
+read of 25 accessible active projects. Raw tool results were not captured, and
+the private App still points to the full `/api/mcp/` endpoint. Public-only
+metadata discovery passes for 33 business scopes, while unauthenticated
+`/api/mcp/chatgpt/` initialization returns 401. Neither observation proves the
+authenticated 121-tool public contract. Official Inspector 2.10.1 fails DCR with
+`invalid_redirect_uri` for its exact native `/oauth/callback`; a narrow backend
+compatibility repair is being prepared separately. Owner retains deployment.
+
 - T-SECRET-SUBFIX / T-LIVE-SUBFIX: full package regression **412 passed, 6
   skipped** in 108.83 seconds. Credential assignment, direct/nested URL, demo URL
   and positive/negative case regressions reject values before archive creation

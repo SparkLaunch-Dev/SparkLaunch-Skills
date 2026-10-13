@@ -1,6 +1,6 @@
 # Private ChatGPT skill icon rendering
 
-Observed October 12, 2026 in the owner's existing App-backed private test plugin.
+Observed October 12–13, 2026 in the owner's existing App-backed private test plugin.
 The App/header logo displays correctly. All twelve skill rows display the generic
 colored cube despite packaged SparkLaunch icons.
 
@@ -28,5 +28,34 @@ unsupported frontmatter keys, change App identity, or create another plugin to
 conceal the issue. An OpenAI host fix or a supported importer repair is required
 before the logo acceptance requirement can be marked passed.
 
+## Creation probe — October 13
+
+Downloaded the owner's stored 1.0.7 archive and inspected its actual gzip/tar
+contents: 85 files, twelve `SKILL.md` files and 24 real PNGs. All image bytes
+match `src/skills/<skill>/assets/`; small/large images are 192x192 and 1024x1024.
+The assets meet the documented size, format and contained relative-path contract.
+
+Added one temporary `sl-icon-probe` skill to the same private App through an
+App-preserving overlay. Its only instruction was an explicitly invoked icon
+diagnostic, implicit invocation was disabled, and it used copies of the same
+canonical PNGs with `./assets/` paths in `agents/openai.yaml`. Version 1.0.8
+rendered thirteen skills and the diagnostic's correct display name/description,
+but both the new skill and the existing skills retained generic badges. This
+rules out an issue confined to updating previously imported skills. It does not
+identify the host's internal failure or prove a public submission behaves alike.
+
+Removed all four diagnostic files with a guarded overlay and restored the two
+manifests at version 1.0.9. Fresh source readback contains 85 files, exactly twelve
+skills and zero probe paths. The UI confirms twelve skills/version 1.0.9. App
+identity, private audience and connected account were preserved. The App/header
+rocket still renders; skill-logo acceptance remains FAIL.
+
+For an owner-authorized OpenAI support report, provide this reproduction, the
+metadata reference above and the sanitized screenshots. Do not send an owned
+archive URL, OAuth state/code, account credentials or customer project contents.
+No support message has been sent.
+
 Private screenshots and source readback are retained under the ignored
 `dist/connection-evidence/` directory, outside public release artifacts.
+October 13 crops are in `dist/audit-2026-10-13/new-skill-icon-probe.png` and
+`private-restored.png`; these ignored local files are not public review evidence.
