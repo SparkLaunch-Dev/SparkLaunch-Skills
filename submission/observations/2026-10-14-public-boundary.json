@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "verification": "authenticated_catalogs_and_public_tool_boundary",
+  "status": "verified",
+  "candidate": {
+    "plugin_version": "0.11.3",
+    "built_at": "2026-10-13T20:53:45Z",
+    "server_version": "1.11.0",
+    "tool_count": 138,
+    "content_sha256": "a7d6b43a704a8b2fb7407f04d787dc6f63f57660e794a22c913084b7d7fb8777"
+  },
+  "observed_at": "2026-10-14T18:09:01.581515+00:00",
+  "catalogs": {
+    "full": {
+      "observed_at": "2026-10-14T18:04:25.895226+00:00",
+      "endpoint": "https://sparklaun.ch/api/mcp/",
+      "tool_count": 138,
+      "server_version": "1.11.0",
+      "full_descriptor_equality": true,
+      "descriptor_sha256": "7d71812bbebea12242ca8e8c2565a3f1557871ba2fe9b099709f65f3a56f2514"
+    },
+    "public": {
+      "observed_at": "2026-10-14T18:04:30.920600+00:00",
+      "endpoint": "https://sparklaun.ch/api/mcp/chatgpt/",
+      "tool_count": 121,
+      "server_version": "1.11.0",
+      "full_descriptor_equality": true,
+      "descriptor_sha256": "ffdf78d081cc02c914fe8858e4c19a653b5cd386d66f97380c29a2a1e295fda7"
+    }
+  },
+  "excluded_tools": {
+    "call_count": 17,
+    "sparkclose_call_count": 9,
+    "validation_call_count": 8,
+    "exact_unsupported_tool_denials": true,
+    "all_non_retryable": true,
+    "oauth_challenges": 0,
+    "argument_data": "empty objects only"
+  },
+  "oauth": {
+    "client_type": "temporary standard native public audit client",
+    "native_callback_registration": "passed",
+    "requested_scopes": [
+      "projects.read",
+      "openid",
+      "email"
+    ],
+    "reviewer_identity_verified": true,
+    "access_token_lifetime_seconds": 900,
+    "refresh": {
+      "status": "passed",
+      "same_reviewer_identity": true,
+      "after_access_token_expiry": false
+    },
+    "revocation": {
+      "audit_grant_revoked": true,
+      "access_denied_after_revoke": true,
+      "refresh_denied_after_revoke": true,
+      "refresh_http_status": 400
+    },
+    "owned_listeners_closed": true,
+    "reviewer_browser_signed_out": true
+  },
+  "supplementary_reads": {
+    "profile_identity": "passed before the supplementary assertion",
+    "single_fixture_project_listing": "passed before the supplementary assertion",
+    "project_detail_structured_response": "received before the supplementary assertion",
+    "detailed_role_and_permission_assertion": "not verified; helper expected Owner instead of the documented owner role"
+  },
+  "business_mutations": 0,
+  "source_evidence": "submission/observations/2026-10-14-oauth-audit.json",
+  "source_evidence_canonical_sha256": "75142499e04db529e32479168f0d3a05467e64a9bb698b931daab246f2d1d204",
+  "source_evidence_digest_encoding": "JSON, sorted keys, compact separators, UTF-8",
+  "proof_boundary": "Direct standard-client runtime verification only. No native ChatGPT acceptance, actual token-expiry refresh, complete reviewer walkthrough, instance-by-instance deployment proof, submission or publication is claimed. The raw helper status records its separate failed role assertion."
+}

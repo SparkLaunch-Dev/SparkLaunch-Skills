@@ -211,3 +211,64 @@ Local package regression passes 416 tests with six Windows symlink-privilege
 skips; generated parity, all package validators, focused Ruff and pending-mode
 evidence consistency pass. Current fixture setup observations do not satisfy any
 native, policy, demo or deployed-contract gate.
+
+October 14 owner-deployed follow-up: the owner requests authenticated catalog
+verification and the existing Test App reviewer rehearsal. Reuse T-BOUNDARY-SUBFIX,
+T-PRIVATE-SUBFIX, T-REVIEWER-ROLE and T-NATIVE-READWRITE. Public discovery passes
+33 business scopes, but authenticated descriptors remain unverified. Fresh UI
+still shows the same private App/full URL and no endpoint editor. Native
+get_profile requests the missing openid/email consent. Do not alter App-owned
+configuration through the skill archive or create a duplicate App.
+
+T-OAUTH-AUDIT-14 requires a standard public native client with exact loopback
+/oauth/callback, S256 PKCE, canonical resource and state validation, using the
+same synthetic reviewer. Bind a temporary listener only to 127.0.0.1; credentials,
+verifier, authorization code, access/refresh tokens and callback queries stay in
+process memory, with HTTP request logging disabled. Request only projects.read,
+openid and email initially. Obtain action-time consent before granting access.
+Reject the wrong reviewer identity before catalog checks. Compare both complete
+catalogs through the existing verifier, then call excluded names with empty
+arguments and require unsupported-tool denial before any business execution.
+Retain only sanitized outcomes; stop the owned listener and revoke its audit
+grant after tests. Existing App/account/permissions remain intact.
+
+The existing catalog groups apply: product/native readiness; functional OAuth,
+profile and tool denial; architecture compatibility and contained loopback;
+privacy, token lifetime, consent and fixture isolation; unchanged data/contract;
+and separate deployed versus native evidence. New performance, accessibility,
+localization, infrastructure and migration targets are N/A for this temporary
+operational harness. No production code/configuration, provider call, filing,
+financial transaction, submission or publication is introduced. Source/ZIP
+validation cannot satisfy the unresolved existing-App endpoint migration.
+
+T-OAUTH-AUDIT-14 first approved grant: both complete catalogs match the candidate
+at service 1.11.0 (138 full, 121 public). The normal native-code exchange and
+reviewer UserInfo guard passed. Immediate refresh preserves reviewer identity;
+revocation succeeds and subsequent refresh is rejected. This is direct-service
+proof, not native ChatGPT or actual access-expiry proof. A helper dictionary/list
+mistake stopped the run before excluded calls; catalog observations are retained
+and the corrected helper checks all seventeen omitted names before read-only
+profile/project calls. Require exact non-retryable unsupported-tool errors with
+no OAuth challenge for each omitted name. Require reviewer profile identity,
+exactly the fixture project, owner role and the three approved grant permissions
+for those bounded reads; retain only booleans and counts, no profile email or
+project content. The owner approved replacement consent; all seventeen omitted
+names return exact non-retryable unsupported-tool results with no OAuth
+challenge. Both repeated catalogs match. Profile identity and the single fixture
+listing pass before a separate helper assertion incorrectly expects `Owner`
+instead of the documented `owner` role. That expectation is corrected for future
+runs; the detailed role/grant assertion remains unverified and the raw failure
+is preserved. No third grant is created. Refresh preserves reviewer identity;
+revocation is followed by access 401 and refresh 400. Both owned listeners are
+closed and the reviewer browser is signed out.
+
+Official OpenAI submission documentation now corroborates the App URL blocker:
+existing MCP URL changes require support and the update flow does not support
+them. The owner explicitly keeps the migration/icon report as a draft, observing
+the same generic badges on other approved skills. Intended host badge design is
+unconfirmed; no support message or additional icon probe is sent. Supported URL
+migration is still required before restricted native reviewer acceptance.
+The private primary account, public draft and all native/publication gates remain
+intact. Pending-mode portal and public-release validators pass; this validates
+evidence consistency only. Credential-free contract results are preserved in
+the October 14 observation files.
