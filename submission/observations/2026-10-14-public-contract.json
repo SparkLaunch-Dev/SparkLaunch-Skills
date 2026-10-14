@@ -1,0 +1,20 @@
+{
+  "schema_version": 2,
+  "candidate": {
+    "plugin_version": "0.11.3",
+    "built_at": "2026-10-13T20:53:45Z",
+    "server_version": "1.11.0",
+    "tool_count": 138,
+    "content_sha256": "a7d6b43a704a8b2fb7407f04d787dc6f63f57660e794a22c913084b7d7fb8777"
+  },
+  "observed_at": "2026-10-14T18:04:30.920600+00:00",
+  "endpoint": "https://sparklaun.ch/api/mcp/chatgpt/",
+  "surface_contract": {
+    "tool_count": 121,
+    "server_version": "1.11.0"
+  },
+  "scope_count": 33,
+  "business_tool_calls": 0,
+  "verification": "authenticated_full_contract",
+  "descriptor_sha256": "ffdf78d081cc02c914fe8858e4c19a653b5cd386d66f97380c29a2a1e295fda7"
+}
