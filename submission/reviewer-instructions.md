@@ -76,7 +76,7 @@ SparkLaunch service access begins at age 13. Users below their local age of majo
 3. For multiple participants, direct each person to their own private Action Center. A collaborator sees safe progress only and cannot complete another person's task.
 4. Use stable idempotency keys, exact versions, readback after uncertainty, and each confirmation token exactly once.
 5. Block every external provider adapter and require zero provider calls. Never call Delaware, NWRA, or CorpTools, and never perform filing, registered-agent, email, identity-provider, or background-worker actions from this review.
-6. The confirmed action may only **submit to SparkLaunch Filing Operations**. Require this warning: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof.
+6. The confirmed action may only **submit to SparkLaunch Filing Operations**. Require this customer-facing confirmation: **Your incorporation information has been submitted to SparkLaunch and is in process. We'll contact you if anything else is needed.** Verify that the saved receipt records only the internal SparkLaunch handoff; the receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof. Keep internal processing and recovery details out of the customer response, and do not ask for resubmission when a receipt already exists.
 
 ## Negative review
 
