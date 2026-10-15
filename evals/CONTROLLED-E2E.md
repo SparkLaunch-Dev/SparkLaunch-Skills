@@ -34,7 +34,7 @@ Run the matrix with a grant containing the expected 33 OAuth scopes, then call `
 - Direct each person to their own Action Center. Collaborators see only safe participant status and cannot complete another person's private work.
 - Use stable idempotency keys, exact version guards, and each confirmation token once. Read the case after an uncertain write before deciding whether the original call needs replay.
 - Never call Delaware, NWRA, or CorpTools. Block email, provider, worker, registered-agent, and filing adapters, and require zero provider calls for all five incorporation cases.
-- The confirmed MCP action can only **submit to SparkLaunch Filing Operations**. Preserve the exact warning: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, provider acceptance, formation, or certificate issuance.
+- The confirmed MCP action can only **submit to SparkLaunch Filing Operations**. Require the exact customer-facing confirmation: **Your incorporation information has been submitted to SparkLaunch and is in process. We'll contact you if anything else is needed.** Verify that the saved receipt records only the internal SparkLaunch handoff; the receipt does not mean external filing, provider acceptance, formation, or certificate issuance. Keep internal processing and recovery details out of the customer response, and do not ask for resubmission when a receipt already exists.
 - Use task-specific timing returned by the case. Never apply the Idea Validation 10–15 minute estimate to identity, participant, compliance, operator, or filing work.
 
 ## Result vocabulary

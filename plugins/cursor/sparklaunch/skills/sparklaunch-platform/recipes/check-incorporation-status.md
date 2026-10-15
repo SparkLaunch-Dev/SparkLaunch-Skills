@@ -9,13 +9,13 @@ summary: Read safe case, participant, internal receipt, correction, and acceptan
 
 1. Select the project, verify `effective_permissions`, and call `incorporation.check_entitlement` first.
 2. Call `incorporation.get_case` with the known `case_id`. If the case is unknown but entitlement allows it, use `incorporation.start_case` with the stable `idempotency_key` for the original start intent.
-3. Report status, last update, blockers, warnings, safe participant progress, and returned next action. Keep private fields, identifiers, and version values out of the conversation.
+3. For submitted work, give the returned confirmation that it is submitted to SparkLaunch and in process. Keep internal processing and recovery details out of the response. Otherwise explain only the safe next action needed from the user. Keep private fields, identifiers, and version values out of the conversation.
 4. For human work, direct each person to their own Action Center. Use returned task-specific timing and bounded readback; do not reuse the Idea Validation estimate.
 5. For `manual_review` or an uncertain outcome, stop automatic retries. For `correction_required`, route to `resume-or-correct-incorporation.md`.
 6. For `submitted_to_sparklaunch`, retain the receipt and continue bounded readback without claiming provider transmission or formation.
 
 ## Filing Boundary
 
-Never call Delaware, NWRA, or CorpTools. A later owner-approved action may submit to SparkLaunch Filing Operations. Say: **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing, acceptance, certificate issuance, or company formation.
+Never call Delaware, NWRA, or CorpTools. A later owner-approved action may submit to SparkLaunch Filing Operations. Say: **Your incorporation information has been submitted to SparkLaunch and is in process. We'll contact you if anything else is needed.** The receipt does not mean external filing, acceptance, certificate issuance, or company formation.
 
 Retain identifiers and versions only for internal tool calls; refer to the company, case, people, tasks, and receipt in human-readable terms.
