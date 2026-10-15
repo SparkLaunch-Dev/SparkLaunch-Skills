@@ -19,6 +19,6 @@ SparkLaunch service access begins at age 13. Users below their local age of majo
 
 ## Filing Boundary
 
-Never call Delaware, NWRA, or CorpTools. Keep private participant fields out of the conversation and direct each person to their own Action Center. Any confirmed final handoff must submit to SparkLaunch Filing Operations. **Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.** The receipt does not mean external filing was stopped, completed, or accepted.
+Never call Delaware, NWRA, or CorpTools. Keep private participant fields out of the conversation and direct each person to their own Action Center. Any confirmed final handoff must submit to SparkLaunch Filing Operations. **Your incorporation information has been submitted to SparkLaunch and is in process. We'll contact you if anything else is needed.** The receipt does not mean external filing was stopped, completed, or accepted.
 
 Retain identifiers and versions only for internal tool calls; refer to the company, case, tasks, and receipt in human-readable terms.

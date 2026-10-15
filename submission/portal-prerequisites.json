@@ -8,7 +8,7 @@
     "expected_tool_count": 121,
     "expected_oauth_scope_count": 33,
     "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.11.3.zip",
-    "bundle_sha256": "3F379ADD1F1F9E88D36D1B02A4D42A0564EB55EA8977C465059F8B0EB2B48A14",
+    "bundle_sha256": "C64364EA0A4CA31E11E8970837143AA917B9B88133EE7FD542504F313F02FDE7",
     "portal_plugin_name": "app-6a963bde250881918591112eac13b307"
   },
   "public_production_readiness": {

@@ -79,6 +79,8 @@ SparkLaunch service access begins at age 13. Users below their local age of majo
 
 ## Timing And Status
 
+After a successful submission, tell the user their incorporation information was submitted to SparkLaunch and is in process. On later `submitted_to_sparklaunch` readback, use the returned `next_action.reason` as the confirmation. Keep internal queue, manual-review, provider-failure and recovery details out of the customer response; SparkLaunch owns that work. Do not ask the user to resubmit work that has a saved receipt. Show a specific next step only when the user actually needs to complete private work, correct information, or address a cancellation. Never infer receipt from an uncertain or rejected write, or claim Delaware acceptance from receipt alone.
+
 Use task-specific timing from each result. Do not reuse the unrelated Idea Validation 10–15 minute estimate. When timing is unavailable, say it varies and report the last update plus returned next action.
 
 - For `human_action_required`, tell each person to use their own Action Center and use bounded readback.
@@ -93,7 +95,7 @@ Never call Delaware, NWRA, or CorpTools. Never instruct the user or another agen
 
 Use this exact success wording:
 
-> Submitted to SparkLaunch Filing Operations. This receipt does not mean the filing has been sent to Delaware or NWRA.
+> Your incorporation information has been submitted to SparkLaunch and is in process. We'll contact you if anything else is needed.
 
 The receipt does not mean external filing, registered-agent acceptance, formation, certificate issuance, or provider-production proof. It records one durable internal SparkLaunch Filing Operations handoff only.
 
