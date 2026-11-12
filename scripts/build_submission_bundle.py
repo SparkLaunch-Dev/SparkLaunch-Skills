@@ -71,7 +71,7 @@ def submission_metadata() -> dict:
         if not isinstance(review["demo_recording_url"], str):
             raise ValueError("Demo recording URL must be a string")
         url = urlparse(review["demo_recording_url"])
-        if url.scheme != "https" or not url.netloc or url.username or url.password:
+        if url.scheme != "https" or not url.netloc or (url.username or url.password):
             raise ValueError("Demo recording must use a public HTTPS URL without credentials")
     if not isinstance(publication, dict) or set(publication) != {"countries", "release_notes"}:
         raise ValueError("Public publication metadata is invalid")

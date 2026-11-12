@@ -53,6 +53,13 @@ Rollback restores the preceding candidate; it does not change service data.
 
 ## Results
 
+November 12 pre-landing review extends T-SEC-AUDIT to recognized text files in
+unsupported encodings, multiline assignments, and JSON credential values. These
+inputs shall fail without disclosing their values; reviewed exact synthetic lines
+remain exempt. T-CONTRACT-AUDIT also covers the public SparkClose dependency
+description while preserving full-host descriptions. The original November 10
+results below are historical; fresh validation is required for this follow-up.
+
 Verified locally on November 10, 2026, with Python 3.12.8:
 
 | Verification / requirements | Result and evidence |
@@ -65,7 +72,7 @@ Verified locally on November 10, 2026, with Python 3.12.8:
 | T-ACCEPT-AUDIT / PRD-AUDIT-001 | PASS for local preparation: generated parity, submission generation, five-host validation, public archive inspection, focused Ruff and git diff --check pass. No hosted acceptance is inferred. |
 | Complete regression suite | python -m pytest -q -ra: **425 passed, 6 skipped in 607.59 seconds**. The six skips require Windows symbolic-link privileges; those checks remain enabled for Linux CI. |
 
-The public ZIP is `dist/sparklaunch-chatgpt-plugin-0.11.4.zip`, SHA256
+The historical November 10 public ZIP was `dist/sparklaunch-chatgpt-plugin-0.11.4.zip`, SHA256
 `3DFEDC4BF37B4C79D670AAB6CF2425FB2FF0FEA7BF42148F703AFDF852961C4A`.
 Archives for all five hosts and their release manifest are retained locally under
 `dist/readiness-fixes-2026-11-10/hosts/`. An independent public ZIP rebuild matched
@@ -78,3 +85,24 @@ An unsent migration request is prepared locally with the existing App identity
 and exact endpoints. No public upload, support message, account change,
 deployment, submission, publication, Git history rewrite or remote source update
 was performed.
+
+## November 12 pre-landing verification
+
+Independent review identified unsupported text encodings, multiline/JSON secret
+assignments, a stale SparkClose dependency description and outdated operator
+handoff prose. These are corrected within the existing privacy and public-scope
+requirements. Full-host skill descriptions and immutable historical JSON are
+unchanged. Detailed original handoff records are retained privately.
+
+Fresh Python 3.12 validation: **431 passed, 6 Windows symbolic-link permission
+skips in 307.98 seconds**. The nine focused privacy regressions and actual public
+ZIP dependency assertions pass. Generated parity, all host/submission validators,
+public repository checks, focused Ruff, deterministic builds and both pending-mode
+readiness validators pass. Independent code and documentation re-review found no
+remaining source-merge blockers. Native-host/publication acceptance remains open.
+
+The current public ZIP SHA256 is
+`F40034A3F66B13476A2F9E9214DAB63A4C27B4FDE064E7DB71BDA1726B90ED5A`.
+The current candidate fingerprint is recorded in `submission/public-release.json`.
+This evidence covers source preparation and pre-landing checks, not plugin
+publication or a backend deployment.

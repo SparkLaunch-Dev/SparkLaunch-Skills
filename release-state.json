@@ -2,7 +2,7 @@
   "schema_version": 3,
   "generated_packages": {
     "version": "0.11.4",
-    "built_at": "2026-11-10T22:36:44Z",
+    "built_at": "2026-11-12T17:04:25Z",
     "hosts": [
       "openai",
       "claude",

@@ -22,6 +22,7 @@ def public_description(text: str) -> str:
         ("model a SAFE and review the steps to close its investment", "model a SAFE and inspect my saved scenarios and private investment records"),
         ("For SAFE modeling, saved dilution scenarios, funding evidence, or investment closings", "For SAFE modeling, saved dilution scenarios, financing readiness, or private investment records"),
         ("Model SAFE exposure, confirm funding evidence and close one signed investment", "Model SAFE exposure and save a private planning scenario"),
+        ("Connected SparkLaunch SAFE modeling and closing tools", "Connected SparkLaunch SAFE planning and private-record tools"),
     )
     for full, public in replacements:
         text = text.replace(full, public)
@@ -31,7 +32,7 @@ def public_description(text: str) -> str:
 def public_scope_findings(text: str) -> list[str]:
     """Reject unsupported positive claims in public skill/recipe descriptions."""
     pattern = re.compile(
-        r"\b(?:investment closings|confirm funding evidence|"
+        r"\b(?:investment closings|modeling and closing tools|confirm funding evidence|"
         r"close (?:one|a|an|the) (?:signed )?investment|"
         r"model and close (?:a )?SAFE|prepare (?:a |an |the )?(?:reviewed )?unsigned SAFE agreement)\b",
         re.IGNORECASE,

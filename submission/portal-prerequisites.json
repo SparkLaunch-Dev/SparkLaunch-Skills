@@ -2,13 +2,13 @@
   "schema_version": 4,
   "candidate": {
     "plugin_version": "0.11.4",
-    "built_at": "2026-11-10T22:36:44Z",
+    "built_at": "2026-11-12T17:04:25Z",
     "service_version": "1.11.0",
     "production_mcp_url": "https://sparklaun.ch/api/mcp/chatgpt/",
     "expected_tool_count": 121,
     "expected_oauth_scope_count": 33,
     "bundle_path": "dist/sparklaunch-chatgpt-plugin-0.11.4.zip",
-    "bundle_sha256": "3DFEDC4BF37B4C79D670AAB6CF2425FB2FF0FEA7BF42148F703AFDF852961C4A",
+    "bundle_sha256": "F40034A3F66B13476A2F9E9214DAB63A4C27B4FDE064E7DB71BDA1726B90ED5A",
     "portal_plugin_name": "app-6a963bde250881918591112eac13b307"
   },
   "public_production_readiness": {

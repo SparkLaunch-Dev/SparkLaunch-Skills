@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import re
 import subprocess
 
 try:
@@ -15,6 +16,28 @@ except ModuleNotFoundError:
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCEPTIONS_PATH = ROOT / "contracts/public-safety-exceptions.json"
+TEXT_SUFFIXES = frozenset({
+    ".md", ".json", ".yaml", ".yml", ".py", ".txt", ".tsv", ".csv",
+    ".ini", ".toml", ".cfg", ".cjs", ".js", ".ts", ".tsx", ".svg",
+    ".html", ".css", ".sh", ".env",
+})
+TEXT_NAMES = frozenset({"LICENSE", "NOTICE", ".gitignore"})
+SECRET_KEY = re.compile(
+    r"(?:api[_-]?key|client[_-]?secret|password|access[_-]?token|refresh[_-]?token)",
+    re.IGNORECASE,
+)
+
+
+def _json_has_secret(value: object) -> bool:
+    if isinstance(value, dict):
+        return any(
+            (SECRET_KEY.fullmatch(key) and isinstance(item, str) and bool(item.strip()))
+            or _json_has_secret(item)
+            for key, item in value.items()
+        )
+    if isinstance(value, list):
+        return any(_json_has_secret(item) for item in value)
+    return False
 
 
 def line_digest(line: str) -> str:
@@ -30,18 +53,33 @@ def validate_files(root: Path, paths: list[str], exceptions: dict) -> list[str]:
             errors.append(f"{name}: linked public file requires review")
             continue
         try:
-            text = path.read_text(encoding="utf-8")
+            text = path.read_text(encoding="utf-8-sig")
         except UnicodeDecodeError:
+            if path.suffix.casefold() in TEXT_SUFFIXES or path.name in TEXT_NAMES:
+                errors.append(f"{name}: public text must use UTF-8 encoding")
             continue
         except OSError:
             errors.append(f"{name}: public file could not be read")
             continue
+        if "\0" in text and (path.suffix.casefold() in TEXT_SUFFIXES or path.name in TEXT_NAMES):
+            errors.append(f"{name}: public text must use UTF-8 encoding")
+            continue
         allowed = exceptions.get(name, {})
+        unexempted = []
+        reported = set()
         for number, line in enumerate(text.splitlines(), 1):
             findings = set(sensitive_text_findings(line))
-            findings -= set(allowed.get(line_digest(line), []))
+            exempt = set(allowed.get(line_digest(line), []))
+            findings -= exempt
+            unexempted.append("" if exempt else line)
             if findings:
                 errors.append(f"{name}:{number}: " + ", ".join(sorted(findings)))
+                reported.update(findings)
+        multiline = set(sensitive_text_findings("\n".join(unexempted))) - reported
+        if multiline:
+            errors.append(f"{name}: " + ", ".join(sorted(multiline)))
+        if path.suffix.casefold() == ".json" and _json_has_secret(json.loads(text)):
+            errors.append(f"{name}: JSON credential value is prohibited")
         if name == "submission/reviewer-fixture.json":
             policy = json.loads(text)
             if "project_id" in policy or "user_id" in policy:

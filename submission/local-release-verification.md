@@ -4,7 +4,7 @@ Current preparation candidate: **0.11.4**, service contract **1.11.0**, twelve s
 138 full-host tools and 121 public ChatGPT tools. Package and current verification
 results are recorded in [the audit-fix requirements](../docs/v-cycle/public-readiness-follow-up.md).
 
-Current local verification: **425 passed, 6 skipped** in 607.59 seconds. Generated
+Current local verification on November 12: **431 passed, 6 skipped** in 307.98 seconds. Generated
 parity, submission/host validators, public text checks, focused Ruff, deterministic
 archives and pending-mode readiness consistency pass. The six skips require
 Windows symbolic-link privileges. Strict release checks continue rejecting the

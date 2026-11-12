@@ -96,7 +96,10 @@ Registry publication, and native-host invocation of the new tools remain unverif
 ## Compatibility
 
 - Clients that sent inline CRM/project locations or address-bearing incorporation drafts must migrate to the location-safe schemas, the non-address incorporation `draft_file`, and protected Action Center address tasks.
-- The public ChatGPT skills and reviewer workflow use OAuth and the canonical `https://sparklaun.ch/api/mcp/` endpoint only.
+- The public ChatGPT skills and reviewer workflow use host-managed OAuth and the
+  restricted `https://sparklaun.ch/api/mcp/chatgpt/` endpoint. The canonical
+  `https://sparklaun.ch/api/mcp/` URL remains the OAuth protected resource and
+  the separate full-host integration endpoint.
 - OAuth scopes are the maximum connection authority; project membership, role, plan, entitlement, case version, participant readiness, and confirmation still gate each action.
 
 ## Review boundaries

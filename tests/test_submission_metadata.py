@@ -32,6 +32,10 @@ def test_zip_imports_supported_review_publication_and_the_restricted_surface(tmp
         names = set(load_snapshot(CHATGPT_SNAPSHOT_PATH)["tools"])
         assert set(build_submission()["tools"]) == names
         assert {n for n in names if n.startswith("sparkclose.")} == CHATGPT_SPARKCLOSE_TOOLS
+        dependency = archive.read("skills/sparklaunch-sparkclose/agents/openai.yaml").decode()
+        assert "SAFE planning and private-record tools" in dependency
+        native = (bundle.PLUGIN_ROOT / "skills/sparklaunch-sparkclose/agents/openai.yaml").read_text()
+        assert "SAFE modeling and closing tools" in native
         excluded = {"sparkclose." + n for n in ("close_investment", "open_workflow", "prepare_agreement", "preview_agreement", "record_approval", "record_receipt", "reconcile_funding", "retry_updates", "cancel_unsigned")}
         for name in archive.namelist():
             if name.endswith((".md", ".yaml")):
