@@ -25,11 +25,21 @@ your role, granted permissions, and plan or purchased entitlement.
 | Gemini CLI | [Gemini package](plugins/gemini/sparklaunch/) | [Setup and account compatibility](adapters/gemini/README.md) |
 | Muse Code | [Muse skills](plugins/muse/sparklaunch/) | [Skill installation](adapters/muse/README.md); protected MCP is disabled in this adapter |
 
-Enabled packages use the same Streamable HTTP endpoint:
+The Claude Code, Cursor and Gemini CLI MCP configurations use the full
+Streamable HTTP endpoint:
 
 ```text
 https://sparklaun.ch/api/mcp/
 ```
+
+The OpenAI Git package binds the registered SparkLaunch App; its configured
+endpoint determines the available tools. The public ChatGPT submission declares
+`https://sparklaun.ch/api/mcp/chatgpt/`, a restricted profile of the same service.
+Its existing App must be migrated through the supported process before that
+profile can be verified in the host. Recheck the App-bound Codex package against
+that catalog after migration; a full-host skill description cannot establish
+tool availability. Uploading skills alone does not change the App's endpoint.
+See the [public release runbook](submission/public-release-runbook.md).
 
 The packages contain no credentials. Use your host's sign-in flow; do not paste
 bearer tokens, API keys, client secrets, or authorization headers into skills or
@@ -61,7 +71,7 @@ a hosted environment depends on its deployed version and permissions.
 
 ## Release status
 
-The working-tree candidate is **0.11.4**, with a service **1.11.0** snapshot of
+The working-tree candidate is **0.11.5**, with a service **1.11.0** snapshot of
 **138 full-host tools**, **121 public ChatGPT tools**, **33 business OAuth scopes**,
 and **12 skills**. The public ChatGPT endpoint excludes agreement preparation,
 signing and investment finalization; SparkClose supports planning and private

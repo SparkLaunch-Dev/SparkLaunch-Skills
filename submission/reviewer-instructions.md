@@ -1,6 +1,6 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.11.4` candidate at
+These instructions apply to the local SparkLaunch `0.11.5` candidate at
 `https://sparklaun.ch/api/mcp/chatgpt/`. The package contains twelve skills and declares
 121 tools in the public surface, sharing a protected resource with 33 OAuth scopes for business operations;
 the profile tool separately requires openid and email consent. The full-client
@@ -39,7 +39,7 @@ Staging credentials and reviewer projects are provisioned outside this package a
 
 ## Positive review
 
-Run the five positive prompts in `chatgpt-app-submission.json`. Confirm each invokes only its declared tool and that persisted state belongs to the disposable reviewer project.
+Run the five positive prompts in `chatgpt-app-submission.json`. Each case names its primary operation. Necessary `projects.list` / `projects.get` setup and permission reads, and the relevant saved-state readback, are permitted. No unrelated write is permitted. Confirm persisted state belongs to the disposable reviewer project. For the creation-only validation case, `validation.start_analysis` is a failure even if workspace creation succeeds. Use [the case checklist](reviewer-case-checklist.md) to record the actual calls and outcomes.
 
 Also exercise these boundaries:
 

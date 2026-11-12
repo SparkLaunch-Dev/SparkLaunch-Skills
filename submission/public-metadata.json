@@ -6,6 +6,6 @@
   },
   "publication": {
     "countries": [],
-    "release_notes": "Align public SparkClose instructions with planning and private records. Use discovery-based reviewer project selection and complete-directory manual installation guidance. Preserve host-managed account connections and separate public ChatGPT tools from full-host capabilities."
+    "release_notes": "Keep validation workspace creation separate from explicitly requested research. Clarify creation-only review prompts, required permission checks and saved-state verification. Retain the restricted public ChatGPT surface and host-managed connections."
   }
 }
