@@ -1,14 +1,9 @@
-# SparkLaunch 0.11.3 Release Candidate
+# SparkLaunch 0.11.4 Release Candidate
 
-- Reject administrator and missing-role reviewer accounts before reading
-  projects, and bind the reviewer preflight implementation to candidate evidence.
-- Record owner-approved reviewer password rotation, seven passing setup checks
-  and a real outside-project denial. Credentials stay in the approved encrypted
-  store and owner-approved secure OpenAI reviewer fields. All native reviewer
-  cases remain pending.
-- Record actual private App project reads, synthetic task create/readback,
-  confirmation-only update and file retrieval. These full-endpoint observations
-  do not satisfy restricted-public acceptance.
+- Align public SparkClose routing and recipe summaries with planning and private records.
+- Select the synthetic reviewer project through projects.list; keep account and project bindings out of public prompts and policy files.
+- Reject the former identifier-writing generator option and scan public repository text with exact reviewed synthetic-fixture exceptions.
+- Document complete-directory manual skill installation and preserve pending live acceptance gates.
 
 ## Retained 0.11.2 preparation
 
@@ -21,9 +16,8 @@
 - Retain the same App bindings, private testing audience and twelve packaged
   SparkLaunch logo assets. The private cloud UI still needs its icon-rendering
   issue resolved; file/package verification is not a rendered-logo claim.
-- Renew the dedicated reviewer fixture through January 10, 2027, after owner
-  authorization. The October 13 rotation and setup verification above supersede
-  the earlier rotation-required flag.
+- Keep reviewer access and retention details in private review instructions.
+  Fresh isolated-account preflight and native-case acceptance remain required.
 
 The full integration snapshot is separate and currently describes 138 tools at
 service 1.11.0. The public ChatGPT candidate describes 121 tools at that source

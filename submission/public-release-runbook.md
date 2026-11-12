@@ -75,9 +75,10 @@ See [the requirement/evidence record](../docs/v-cycle/connected-accounts.md).
    requires both comparisons. A passing full-endpoint scan cannot establish the
    restricted ChatGPT boundary.
 4. Use a dedicated synthetic reviewer project with all required entitlements. Bind
-   the real reviewer fixture via the existing submission generator, regenerate,
-   rebuild and update candidate digests. Do not reuse project 42 as a claimed real
-   reviewer environment. Never run a customer mutation to satisfy acceptance.
+   only the selection method and safety policy in the public reviewer fixture.
+   Actual account/project bindings stay in the private preflight envelope; select
+   the project with projects.list before each scoped review case. Regenerate,
+   rebuild and update candidate digests after source changes. Never run a customer mutation to satisfy acceptance.
    Run `python scripts/verify_reviewer_fixture.py` with the approved secret-store
    envelope supplied only in its process environment as
    `SPARKLAUNCH_REVIEWER_SECRET_JSON`. It checks metadata expiry/isolation before

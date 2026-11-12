@@ -1,19 +1,20 @@
 # SparkLaunch ChatGPT Reviewer Instructions
 
-These instructions apply to the local SparkLaunch `0.11.3` candidate at
+These instructions apply to the local SparkLaunch `0.11.4` candidate at
 `https://sparklaun.ch/api/mcp/chatgpt/`. The package contains twelve skills and declares
 121 tools in the public surface, sharing a protected resource with 33 OAuth scopes for business operations;
 the profile tool separately requires openid and email consent. The full-client
 snapshot has 138 tools and is not the public ChatGPT review surface.
-The retained 1.4.0 production scan and portal
-prerequisites concern the previous 61-tool candidate and do not prove SparkCap, SparkRoom, or SparkClose
-availability. Deploy and scan the matching candidate before native-host review.
+The retained 1.4.0 production scan concerns the previous 61-tool candidate and
+does not prove current SparkCap, SparkRoom, or SparkClose availability. Current
+portal prerequisites remain pending. Verify the deployed contract and scan the
+matching public surface before native-host review.
 The internal plans contain 41 trigger cases and 17 controlled E2E cases;
 the new real-database SparkCap, SparkRoom, and SparkClose acceptance tests are in the application repository.
 
 ## Access
 
-The owner renewed the existing dedicated reviewer fixture through January 10, 2027 and authorized password rotation on October 13. The old password was rejected, the new password passed login, and the approved encrypted store was read back. All seven setup checks pass, including regular-user role, one owned project, analytics exclusion, Growth access and incorporation entitlement. A real outside-project request was denied. The owner-authorized OpenAI reviewer fields were saved and reopened with a masked password; encrypted-store synchronization metadata was read back. Native OAuth, sample content and test cases remain pending. No credentials belong in the ZIP.
+Current reviewer access and workflow acceptance remain pending. Verify the dedicated synthetic account through the private preflight envelope and supply access instructions only in secure review fields. Public records contain no account or project binding.
 
 1. Use the synthetic reviewer account supplied through the approved private reviewer channel. Credentials and authorization artifacts must never be added to this file, a prompt, a screenshot, or retained evidence.
 2. Invoke `projects.list` from hosted ChatGPT or Codex desktop. First protected use starts SparkLaunch OAuth; it must not ask for a long-lived credential, JWT, authorization code, PKCE verifier, or custom header.
@@ -22,7 +23,7 @@ The owner renewed the existing dedicated reviewer fixture through January 10, 20
 5. For `projects.invite_collaborator`, use only a synthetic `example.com` recipient and stop at the exact project/email/role confirmation preview. Do not confirm it during review; no email or collaborator membership should be created.
 6. For general task coverage, use `tasks.create` with synthetic private content and a stable idempotency key, verify it with `tasks.list`, and use only an active owner or accepted collaborator email for assignment. Stop `tasks.update` and `tasks.delete` at their exact version-bound confirmation previews unless a disposable mutation is explicitly approved.
 
-The five positive prompts are bound to project `99`, the dedicated fixture reference in the approved secret store. Its status is `provisioned` following the October 13 setup verification. This does not claim sample-data, native OAuth or scenario acceptance. The fixture permits synthetic incorporation data only and sets `provider_calls_allowed` to false. Bind or change a verified project through `python scripts/generate_submission.py --reviewer-project-id <actual-id>` and rebuild the bundle; never hand-edit generated tool schemas or prompts.
+The five positive prompts select the reviewer project through `projects.list`. Run that setup before each scoped case, verify it matches the private review instructions, and keep its returned identifier only as tool-call state. The selected reviewer project permits synthetic incorporation data only and requires zero provider calls. `reviewer-fixture.json` records the selection method and safety policy; provisioning details remain private. Generate public cases with `python scripts/generate_submission.py`; the former identifier-binding option is rejected.
 
 ### Environment binding
 
@@ -86,7 +87,7 @@ Do not approve or infer unsupported behavior. The candidate has no banking acces
 
 ## Expected evidence
 
-Record the candidate revision, package digest, service version, redacted fixture ids, observation time, exact scenario outcome, provider-call counter, and any discrepancy. Do not retain credentials, authorization artifacts, confirmation tokens, private customer data, provider session details, signed URLs, or raw uploaded/generated files. Distinguish package validity, deployment, internal persistence, internal receipt, external filing, provider acceptance, formation, published state, traffic, leads, and conversion.
+Record the candidate revision, package digest, service version, a credential-free fixture-isolation result, observation time, exact scenario outcome, provider-call counter, and any discrepancy. Do not retain credentials, authorization artifacts, confirmation tokens, private customer data, provider session details, signed URLs, or raw uploaded/generated files. Distinguish package validity, deployment, internal persistence, internal receipt, external filing, provider acceptance, formation, published state, traffic, leads, and conversion.
 
 ## Support and legal
 

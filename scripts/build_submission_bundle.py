@@ -10,7 +10,7 @@ from pathlib import Path
 from zipfile import BadZipFile, ZIP_DEFLATED, ZipFile, ZipInfo
 
 try:
-    from scripts.chatgpt_surface import CHATGPT_MCP_URL, public_description
+    from scripts.chatgpt_surface import CHATGPT_MCP_URL, public_description, public_scope_findings
     from scripts.generate_submission import build_submission
     from scripts.openai_connection import PORTAL_MCP_PATH
     from scripts.validate_portal_prerequisites import sensitive_text_findings
@@ -22,7 +22,7 @@ try:
         expected_files,
     )
 except ModuleNotFoundError:  # Direct execution from the scripts directory.
-    from chatgpt_surface import CHATGPT_MCP_URL, public_description
+    from chatgpt_surface import CHATGPT_MCP_URL, public_description, public_scope_findings
     from generate_submission import build_submission
     from openai_connection import PORTAL_MCP_PATH
     from validate_portal_prerequisites import sensitive_text_findings
@@ -116,10 +116,9 @@ def _public_content(relative: str, content: bytes) -> bytes:
         elif relative == "skills/sparklaunch-platform/recipes/model-and-close-a-safe.md":
             text = (ROOT / "adapters/openai/public/model-and-close-a-safe.md").read_text(encoding="utf-8")
         text = text.replace("https://sparklaun.ch/api/mcp/", CHATGPT_MCP_URL)
-        text = text.replace("Model and close a SAFE", "Model and save a SAFE scenario")
-        text = text.replace("Model SAFEs and manage confirmed investment closings", "Model SAFEs and inspect private investment records")
-        text = text.replace("model a SAFE and review the steps to close its investment", "model a SAFE and inspect my saved scenarios and private investment records")
         text = public_description(text)
+        if public_scope_findings(text):
+            raise ValueError(f"Public package advertises an excluded capability: {relative}")
         return text.encode("utf-8")
     return content
 
@@ -290,26 +289,31 @@ def build_bundle(output: Path | None = None, *, portal_plugin_name: str | None =
         output = ROOT / "dist" / f"sparklaunch-chatgpt-plugin-{_plugin_version()}.zip"
     output = output.resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
+    prepared: list[tuple[str, bytes]] = []
+    for source in sources:
+        if source.relative_to(PLUGIN_ROOT).as_posix() == ".app.json":
+            continue
+        relative = _portal_path(source)
+        content = _archive_content(source)
+        if relative == PLUGIN_MANIFEST:
+            manifest = json.loads(content)
+            convert_connection = manifest.get("apps") == "./.app.json"
+            if convert_connection:
+                manifest.pop("apps")
+                manifest["mcpServers"] = "./.mcp.json"
+            if portal_plugin_name is not None:
+                manifest["name"] = portal_plugin_name
+            interface = manifest.get("interface")
+            if isinstance(interface, dict) and isinstance(interface.get("longDescription"), str):
+                interface["longDescription"] = public_description(interface["longDescription"])
+                if public_scope_findings(interface["longDescription"]):
+                    raise ValueError("Public listing advertises an excluded capability")
+            manifest["extensions"] = {"com.openai": metadata}
+            content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
+        content = _public_content(relative, content)
+        prepared.append((relative, content))
     with ZipFile(output, "w", compression=ZIP_DEFLATED, compresslevel=9) as archive:
-        for source in sources:
-            if source.relative_to(PLUGIN_ROOT).as_posix() == ".app.json":
-                continue
-            relative = _portal_path(source)
-            content = _archive_content(source)
-            if relative == PLUGIN_MANIFEST:
-                manifest = json.loads(content)
-                convert_connection = manifest.get("apps") == "./.app.json"
-                if convert_connection:
-                    manifest.pop("apps")
-                    manifest["mcpServers"] = "./.mcp.json"
-                if portal_plugin_name is not None:
-                    manifest["name"] = portal_plugin_name
-                interface = manifest.get("interface")
-                if isinstance(interface, dict) and isinstance(interface.get("longDescription"), str):
-                    interface["longDescription"] = public_description(interface["longDescription"])
-                manifest["extensions"] = {"com.openai": metadata}
-                content = (json.dumps(manifest, indent=2) + "\n").encode("utf-8")
-            content = _public_content(relative, content)
+        for relative, content in prepared:
             info = ZipInfo(relative, date_time=FIXED_ZIP_TIME)
             info.compress_type = ZIP_DEFLATED
             info.create_system = 3

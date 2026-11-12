@@ -35,6 +35,8 @@ The packages contain no credentials. Use your host's sign-in flow; do not paste
 bearer tokens, API keys, client secrets, or authorization headers into skills or
 MCP configuration. See [host compatibility and portable inputs](docs/compatibility.md)
 for attachment handling and OAuth evidence boundaries.
+For individual skills, follow the [manual installation guide](docs/manual-installation.md)
+and preserve each complete generated directory.
 
 ## What you can do
 
@@ -59,7 +61,7 @@ a hosted environment depends on its deployed version and permissions.
 
 ## Release status
 
-The working-tree candidate is **0.11.3**, with a service **1.11.0** snapshot of
+The working-tree candidate is **0.11.4**, with a service **1.11.0** snapshot of
 **138 full-host tools**, **121 public ChatGPT tools**, **33 business OAuth scopes**,
 and **12 skills**. The public ChatGPT endpoint excludes agreement preparation,
 signing and investment finalization; SparkClose supports planning and private
@@ -90,6 +92,7 @@ using the checked-in tool snapshot:
 ```sh
 python -m pip install -r requirements-dev.txt
 python scripts/sync_plugin.py
+python scripts/validate_public_repository.py
 python scripts/generate_submission.py --check
 python scripts/validate_host_packages.py
 python scripts/validate_submission.py

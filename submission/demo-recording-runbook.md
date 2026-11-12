@@ -9,7 +9,7 @@ Use [the demo script](demo-script.md) for the core recording: exact prompts, rea
 Record only after all of the following are true:
 
 - The restricted endpoint is deployed and an authenticated development scan discovers exactly 121 tools for service `1.11.0` under 33 OAuth scopes for business operations. The private ChatGPT test App must point to that same endpoint and load the matching skills. A full-endpoint scan does not prove this boundary.
-- Reviewer access, project isolation and synthetic test data have been verified after secure credential rotation. Stop while the preflight rotation flag is set.
+- Verify current reviewer access, project isolation and synthetic test data using the private preflight envelope. Stop on any unresolved preflight blocker.
 - Use the existing private test installation for recording. A public submission draft upload is a later setup step, after the recording and other materials are complete.
 - Record the candidate version and package digest from `submission/portal-prerequisites.json`; show actual prompts, tool results and the excluded signing/finalization boundary. A script is not video evidence.
 

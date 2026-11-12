@@ -1,6 +1,6 @@
 {
   "name": "sparklaunch",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "description": "Connected founder workflows for launch, financing, monthly reporting and ongoing operations.",
   "author": {
     "name": "SparkLaunch",
@@ -25,7 +25,7 @@
     "shortDescription": "Build and operate a startup",
     "longDescription": "Connect SparkLaunch to select or create a business project, manage general project tasks, validate an idea, generate brand assets, publish measurable campaigns and landing pages, inspect analytics, operate private CRM workflows, model ownership with SparkCap, prepare controlled investor rooms with SparkRoom, model and close SAFE investments with SparkClose, and prepare an entitlement-gated incorporation case with private Action Center tasks and an internal Filing Operations handoff. Authentication starts on first protected use. Disconnect in SparkLaunch Profile under AI Agent Connections. Review monthly Founder Closes, author and save investor updates or board packages, refresh reviewed rooms, and manage recurring obligations through separately consented reporting and operations tools.",
     "developerName": "SparkLaunch",
-    "category": "Productivity",
+    "category": "Business & Operations",
     "capabilities": [
       "Interactive",
       "Read",

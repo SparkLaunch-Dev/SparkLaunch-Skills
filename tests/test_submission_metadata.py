@@ -37,6 +37,41 @@ def test_zip_imports_supported_review_publication_and_the_restricted_surface(tmp
             if name.endswith((".md", ".yaml")):
                 text = archive.read(name).decode("utf-8")
                 assert not any(n in text for n in excluded), name
+                from scripts.chatgpt_surface import public_scope_findings
+                assert public_scope_findings(text) == [], name
+
+
+def test_public_projection_keeps_full_host_operations_and_rejects_unhandled_claims():
+    from scripts.chatgpt_surface import public_description, public_scope_findings
+    routing = (bundle.ROOT / "src/skills/sparklaunch-platform/SKILL.md").read_text()
+    catalog = (bundle.ROOT / "src/recipes/README.md").read_text()
+    assert "investment closings" in routing
+    assert "close one signed investment" in catalog
+    assert public_scope_findings(public_description(routing + catalog)) == []
+    with pytest.raises(ValueError, match="excluded capability"):
+        bundle._public_content("skills/example/SKILL.md", b"Close a signed investment for the user.")
+
+
+@pytest.mark.parametrize("existing", [False, True])
+def test_unhandled_public_claim_does_not_create_or_replace_archive(tmp_path, monkeypatch, existing):
+    original = bundle._archive_content
+
+    def content(source):
+        data = original(source)
+        if source.relative_to(bundle.PLUGIN_ROOT).as_posix() == "skills/sparklaunch-platform/SKILL.md":
+            return data + b"\nClose a signed investment for the user.\n"
+        return data
+
+    monkeypatch.setattr(bundle, "_archive_content", content)
+    path = tmp_path / "candidate.zip"
+    if existing:
+        path.write_bytes(b"preceding archive")
+    with pytest.raises(ValueError, match="excluded capability"):
+        bundle.build_bundle(path)
+    if existing:
+        assert path.read_bytes() == b"preceding archive"
+    else:
+        assert not path.exists()
 
 
 @pytest.mark.parametrize("change", [

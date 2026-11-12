@@ -2,13 +2,13 @@
 
 An approximately 8–12 minute recording of the five positive and three negative cases in `chatgpt-app-submission.json`. Read the **Say** passages aloud; paste the **Prompt** text into ChatGPT. Timing is a guide: allow time to read each actual result and pause during long waits.
 
-This is a recording script, not evidence that the cases have passed. The current candidate is `0.11.3`; consult `portal-prerequisites.json` for the current package digest and readiness status before filming.
+This is a recording script, not evidence that the cases have passed. The current candidate is `0.11.4`; consult `portal-prerequisites.json` for the current package digest and readiness status before filming.
 
 ## Before recording
 
 - Use the existing private development installation or preview, with the skills and restricted tool surface corresponding to the packaged public candidate. Its endpoint must be `https://sparklaun.ch/api/mcp/chatgpt/`, with the verified 121-tool inventory. The existing full-endpoint test connection alone does not establish this. Deployment and authenticated verification remain prerequisites.
-- Rotate the dedicated reviewer password securely and complete reviewer preflight. Select that account and confirm it can access only its synthetic project. Do not film from your ordinary founder account.
-- The exact review prompts below currently reference synthetic project **99**. Verify that this is the reviewer project. If preflight establishes a different project, update and regenerate the review cases and this script together before filming.
+- Complete fresh reviewer preflight using the approved private account details. Select that account and confirm it can access only its synthetic project. Do not film from your ordinary founder account.
+- Select the single synthetic reviewer project through `projects.list` before each scoped case. Keep the private account binding and returned identifiers off screen.
 - Rehearse once. Creating the validation workspace and generating the palette save private records. Check for earlier successful attempts before repeating either write after a timeout. Do not reset or delete records simply to improve a take.
 - Record at 1080p or better. Enlarge the browser text, hide other tabs, close notifications, and crop the account/sidebar area. Pause for sign-in, consent, and any private handoff.
 - Keep passwords, email addresses, tokens, authorization codes, raw tool payloads, private Action Center URLs, signed download URLs, and customer data out of the capture. Scene 6 needs a crop or opaque mask over the action link **before it appears**. Do not rely on blur for secrets.
@@ -56,7 +56,7 @@ If additional projects appear, stop and fix account isolation before recording f
 **Prompt — positive case 2:**
 
 ```text
-Create a validation project for an AI bookkeeping assistant for independent contractors in project 99.
+Create a validation project for an AI bookkeeping assistant for independent contractors in the selected reviewer project.
 ```
 
 **Show:** Any necessary confirmation and the actual `validation.create_project` result, including the workspace's human-readable name and status. Keep internal identifiers and versions out of the displayed response.
@@ -76,7 +76,7 @@ If ChatGPT requests a required detail, supply synthetic data and leave that exch
 **Prompt — positive case 3:**
 
 ```text
-Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 99.
+Generate a trustworthy, modern color palette for my contractor bookkeeping product in the selected reviewer project.
 ```
 
 **Show:** The actual `branding.generate_palette` result: saved palette names, color values, and feeling labels. Hold the result on screen long enough to read it.
@@ -96,7 +96,7 @@ Point to one real option and read its name and two actual hex values. Do not use
 **Prompt — positive case 4:**
 
 ```text
-List the landing-page projects in SparkLaunch project 99.
+List the landing-page projects in the selected reviewer project.
 ```
 
 **Show:** The actual `landing.list_projects` response. An honest empty result is valid; do not create or publish a page for this scene.
@@ -120,7 +120,7 @@ List the landing-page projects in SparkLaunch project 99.
 **Prompt — positive case 5:**
 
 ```text
-Prepare a secure business-card import for project 99, but do not import anything until I explicitly upload it in SparkLaunch.
+Prepare a secure business-card import for the selected reviewer project, but do not import anything until I explicitly upload it in SparkLaunch.
 ```
 
 **Show:** The safe `crm.prepare_business_card_import` call label and readable confirmation that the handoff was prepared and nothing was imported. Keep the actual expiring URL hidden. Do not open it, upload an image, or complete an import in this scene.

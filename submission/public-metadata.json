@@ -6,6 +6,6 @@
   },
   "publication": {
     "countries": [],
-    "release_notes": "Restore connected-account App binding and include reviewer test cases in the package. Preserve the SparkLaunch logo assets; skill icons still render as generic badges in the private ChatGPT installation and that rendering issue remains unresolved. The initial public ChatGPT SparkClose surface supports modeling, saved scenarios, readiness, and private investment metadata; agreement preparation, signing and closing workflows are excluded."
+    "release_notes": "Align public SparkClose instructions with planning and private records. Use discovery-based reviewer project selection and complete-directory manual installation guidance. Preserve host-managed account connections and separate public ChatGPT tools from full-host capabilities."
   }
 }

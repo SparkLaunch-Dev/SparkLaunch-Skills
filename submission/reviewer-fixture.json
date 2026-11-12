@@ -1,6 +1,6 @@
 {
-  "status": "provisioned",
-  "project_id": 99,
+  "status": "pending_preflight",
+  "project_selection": "projects.list",
   "incorporation_data": "synthetic_only",
   "provider_calls_allowed": false
 }

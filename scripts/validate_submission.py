@@ -396,7 +396,7 @@ def validate() -> list[str]:
             "authentication": "ON_USE",
         }:
             errors.append("marketplace sparklaunch policy is invalid")
-        if entry.get("category") != "Productivity":
+        if entry.get("category") != "Business & Operations":
             errors.append("marketplace sparklaunch category is invalid")
 
     submission = _load_json(ROOT / "chatgpt-app-submission.json", errors)
@@ -496,16 +496,15 @@ def validate() -> list[str]:
         ROOT / "submission" / "reviewer-fixture.json", errors
     )
     if reviewer_fixture is not None:
-        fixture_project_id = reviewer_fixture.get("project_id")
         errors.extend(reviewer_fixture_errors(reviewer_fixture))
-        if type(fixture_project_id) is int and fixture_project_id > 0:
+        if reviewer_fixture.get("project_selection") == "projects.list":
             scoped_cases = [
                 case
                 for case in (submission or {}).get("test_cases", [])
                 if case.get("tools_triggered") != "projects.list"
             ]
             if len(scoped_cases) != 4 or any(
-                f"project {fixture_project_id}" not in str(case.get("user_prompt", ""))
+                "selected reviewer project" not in str(case.get("user_prompt", ""))
                 for case in scoped_cases
             ):
                 errors.append("scoped submission prompts do not match the reviewer fixture")
@@ -548,11 +547,8 @@ def validate() -> list[str]:
         ):
             if marker not in reviewer:
                 errors.append(f"reviewer instructions missing marker: {marker}")
-        fixture_project_id = (reviewer_fixture or {}).get("project_id")
-        if isinstance(fixture_project_id, int) and f"project `{fixture_project_id}`" not in reviewer:
-            errors.append("reviewer instructions do not match the reviewer fixture")
-        if (reviewer_fixture or {}).get("status") == "local_placeholder" and "--reviewer-project-id" not in reviewer:
-            errors.append("reviewer instructions must explain how to replace the local fixture")
+        if "selected reviewer project" not in reviewer:
+            errors.append("reviewer instructions must explain discovery-based project selection")
 
     license_path = ROOT / "plugins" / "sparklaunch" / "LICENSE"
     try:
