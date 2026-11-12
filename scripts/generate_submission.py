@@ -130,11 +130,11 @@ def build_submission():
                 "expected_output_url": None,
             },
             {
-                "description": REVIEWER_PROJECT_SETUP + "Create a private idea-validation workspace in the selected project.",
-                "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in the selected reviewer project.",
+                "description": REVIEWER_PROJECT_SETUP + "Create only a private idea-validation workspace; do not invoke validation.start_analysis or claim completed research. Permission checks and saved-state readback are permitted.",
+                "user_prompt": "Create a validation workspace named Contractor Books Review for an AI bookkeeping assistant for independent contractors in the selected reviewer project. Do not start analysis.",
                 "file_attachment_urls": None,
                 "tools_triggered": "validation.create_project",
-                "expected_output": "Creates one validation record in the selected project and reports its human-readable name and status without exposing internal identifiers or versions.",
+                "expected_output": "Creates one validation record named Contractor Books Review in the selected project and reports its human-readable name and actual status without exposing internal identifiers or versions. Does not start analysis or claim completed research.",
                 "expected_output_url": None,
             },
             {

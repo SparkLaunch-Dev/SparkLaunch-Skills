@@ -2,7 +2,7 @@
 
 An approximately 8–12 minute recording of the five positive and three negative cases in `chatgpt-app-submission.json`. Read the **Say** passages aloud; paste the **Prompt** text into ChatGPT. Timing is a guide: allow time to read each actual result and pause during long waits.
 
-This is a recording script, not evidence that the cases have passed. The current candidate is `0.11.4`; consult `portal-prerequisites.json` for the current package digest and readiness status before filming.
+This is a recording script, not evidence that the cases have passed. The current candidate is `0.11.5`; consult `portal-prerequisites.json` for the current package digest and readiness status before filming.
 
 ## Before recording
 
@@ -56,7 +56,7 @@ If additional projects appear, stop and fix account isolation before recording f
 **Prompt — positive case 2:**
 
 ```text
-Create a validation project for an AI bookkeeping assistant for independent contractors in the selected reviewer project.
+Create a validation workspace named Contractor Books Review for an AI bookkeeping assistant for independent contractors in the selected reviewer project. Do not start analysis.
 ```
 
 **Show:** Any necessary confirmation and the actual `validation.create_project` result, including the workspace's human-readable name and status. Keep internal identifiers and versions out of the displayed response.

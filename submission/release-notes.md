@@ -1,4 +1,12 @@
-# SparkLaunch 0.11.4 Release Candidate
+# SparkLaunch 0.11.5 Release Candidate
+
+- Keep workspace creation separate from explicitly requested validation research.
+- Give the creation-only reviewer case a concrete synthetic name and prohibit starting analysis.
+- Permit necessary permission checks and saved-state reads during rehearsal; prohibit unrelated writes.
+- Add a schema-checked rehearsal checklist and distinguish native/public endpoints in setup guidance.
+- Keep authenticated checks, migration, demo and publication gates pending.
+
+## Retained 0.11.4 preparation
 
 - Align public SparkClose routing and recipe summaries with planning and private records.
 - Select the synthetic reviewer project through projects.list; keep account and project bindings out of public prompts and policy files.

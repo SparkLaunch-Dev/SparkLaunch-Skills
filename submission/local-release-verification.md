@@ -1,14 +1,19 @@
 # Local public release verification
 
-Current preparation candidate: **0.11.4**, service contract **1.11.0**, twelve skills,
+Current preparation candidate: **0.11.5**, service contract **1.11.0**, twelve skills,
 138 full-host tools and 121 public ChatGPT tools. Package and current verification
-results are recorded in [the audit-fix requirements](../docs/v-cycle/public-readiness-follow-up.md).
+results are recorded in [the rehearsal requirements](../docs/v-cycle/reviewer-workspace-boundary.md).
 
-Current local verification on November 12: **431 passed, 6 skipped** in 307.98 seconds. Generated
-parity, submission/host validators, public text checks, focused Ruff, deterministic
-archives and pending-mode readiness consistency pass. The six skips require
-Windows symbolic-link privileges. Strict release checks continue rejecting the
-outstanding live prerequisites.
+Current 0.11.5 local verification on November 12: **431 passed, 6 skipped** in
+640.09 seconds. The 61 release-specific tests also pass. Generated parity,
+submission/host validators, public text checks, focused Ruff, deterministic
+archives, archive links/tool references and pending-mode readiness consistency
+pass. The six skips require Windows symbolic-link privileges. Strict release
+checks continue rejecting the outstanding live prerequisites.
+
+The preceding 0.11.4 candidate passed 431 tests with six Windows symbolic-link
+privilege skips in 307.98 seconds. Its source and portal archive are preserved;
+its results do not establish 0.11.5 native-host acceptance.
 
 The preceding 0.11.3 candidate passed 416 local tests with six Windows symbolic-link
 privilege skips during the November 10 audit. Its passing tests and historical

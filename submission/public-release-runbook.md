@@ -182,7 +182,7 @@ Sources checked 2026-09-07: [OpenAI submission](https://developers.openai.com/pl
 
 ## Current operator handoff
 
-The 0.11.4 candidate is prepared for source review only. Current reviewer access,
+The 0.11.5 candidate is prepared for source review only. Current reviewer access,
 synthetic fixture content and native review cases remain pending. Keep account
 bindings, access instructions, retention and maintenance records in the approved
 private reviewer channel; the public policy records only project discovery and

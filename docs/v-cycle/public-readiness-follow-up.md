@@ -1,5 +1,9 @@
 # Public release audit fixes
 
+This record covers the 0.11.4 preparation and its historical verification. The
+subsequent 0.11.5 instruction/rehearsal correction is tracked in
+[reviewer-workspace-boundary.md](reviewer-workspace-boundary.md).
+
 Effective request: November 10, 2026. Fix locally actionable findings from the
 repository and existing ChatGPT listing audit. This change prepares a candidate;
 endpoint migration, account changes, support messages, deployment, review
