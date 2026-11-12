@@ -121,7 +121,7 @@ Private test results, 2026-10-12:
   **Connected accounts**, the owner's account marked **Primary**, and
   **Connect another account**.
 - T-PRIVATE-002: PASS for private registration, preservation of the public
-  draft, and a read-only native test returning **31 accessible projects**.
+  draft, and a read-only native project-discovery test.
   The host displayed the SparkLaunch tool operation and its successful result
   in a new conversation with SparkLaunch Test selected. No write was requested
   or public submission made. Setup selected `projects.read` as its default.

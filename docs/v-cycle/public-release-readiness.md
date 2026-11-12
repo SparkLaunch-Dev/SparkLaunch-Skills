@@ -56,37 +56,17 @@ the new release tooling; it did not expand product behavior or weaken acceptance
 
 ## Follow-up: effective production and reviewer baseline
 
-Observed 2026-09-07: both live backend targets report revision
-`0916f9fa16e55ebbf3ad84fe3e07232461553181`, migration
-`formation_consent_actor_01`, and an active service. This revision precedes
-SparkClose MCP registration. Public metadata still lacks its four permissions.
-The retained disposable reviewer credential is current through 2026-09-11;
-password login succeeds and only its expected project is visible. Its analytics
-exclusion was false before the approved setup. T-REL-REVIEWER automates this account-only preflight;
-successful login does not prove entitlement completeness, native OAuth, fixture
-contents, policy acceptance or candidate deployment. No production mutation is
-part of this verifier. Deployment remains held until the uncommitted backend
-changes have a reviewed PR. Fresh browser tabs recovered portal/documentation
-access after the original tab's repeated CDP timeouts.
+Historical observations on September 7, 2026 showed that the deployed service
+preceded SparkClose MCP registration and lacked its four business permissions.
+Those observations did not establish the later candidate's deployed contract.
 
-The owner subsequently approved non-billing Growth/incorporation access and
-analytics exclusion for the existing synthetic reviewer only. Read-only database
-preflight found a regular active user, exactly one owned project, null subscription
-lifecycle, no Stripe customer/subscription, a free project, and no incorporation
-entitlement. The project-level legacy plan fallback is the existing supported
-mechanism for this no-subscription account. The operator transaction must lock
-both rows and recheck those preconditions, change only analytics exclusion and
-project entitlement fields, leave paid-at and verified-email timestamps unchanged,
-and report row counts. The retained fixture expires 2026-09-11; no customer plan
-or recurring billing subscription is part of this authorization.
-
-T-REL-SETUP completed: the first guard query failed before writes and rolled back;
-the corrected query reads the real collaborator association table. The successful
-atomic transaction changed exactly one user and one project, preserved all billing,
-paid-at and email-verification fields, and made zero provider calls. All six live
-preflight checks passed at 2026-09-07T05:31:59Z. The verifier reads project detail for
-the server-calculated effective plan because the list serializer leaves it null;
-it never equates a stored plan with access. Forty focused verifier tests passed.
+T-REL-REVIEWER and T-REL-SETUP recorded guarded synthetic-account preflight and
+setup checks with zero provider calls. Detailed account, access, maintenance and
+transaction records are retained privately. Account-only preflight does not prove
+native OAuth, fixture contents, policy acceptance or candidate deployment. The
+verifier reads project detail for the server-calculated effective plan; it never
+equates a stored or list-serialized plan with access. Forty focused verifier tests
+passed for that historical implementation.
 
 Fresh isolated Claude Code 2.1.207 and Gemini CLI 0.58.0 installs each discovered
 twelve skills and one MCP server. These are installation observations only, not
@@ -95,19 +75,16 @@ and Muse binaries were unavailable. Muse's current official configuration and MC
 pages were read successfully, but they did not establish protected OAuth lifecycle
 support. Its disabled adapter remains unchanged.
 
-The OpenAI draft still contains 59 tools, a stale fifth positive test, an empty demo
-recording URL and an enterprise-domain restriction warning. No draft values were
-changed and no scan or publication occurred. A stored disposable reviewer credential
-appeared in portal inspection output. Owner rotation is now required, followed by
-private credential-store/portal synchronization and a fresh preflight. Reviewer
-acceptance has been reset to pending; historical evidence is preserved separately.
-The fixed 2026-09-11 fixture retention also needs an owner-approved ongoing-review
-plan. Account provisioning does not resolve these independent gates.
+The historical OpenAI draft contained 59 tools and incomplete review materials.
+No draft update, scan or publication occurred during that observation; reviewer
+acceptance remained pending. Historical setup results do not establish current
+review access or workflow acceptance. Current account bindings and maintenance
+instructions are retained privately.
 
-See `submission/observations/2026-09-07-release-follow-up.json` for sanitized partial
-observations. The V-cycle skill kept account requirements, guarded changes and
-proof boundaries explicit; the code-simplifier pass kept the verifier small and
-separated list isolation from authoritative detail access.
+See `submission/observations/2026-09-07-release-follow-up.json` for the retained
+historical partial observations. Use the current release state and runbook for
+candidate-specific requirements. Guarded account setup and authoritative detail
+access remain separate from native-host and public-release acceptance.
 
 Final local regression: 327 passed, six Windows symlink-privilege skips. The four
 tests that assumed historical reviewer approval was permanently current now use

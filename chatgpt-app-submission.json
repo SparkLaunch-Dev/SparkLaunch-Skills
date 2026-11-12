@@ -1471,32 +1471,32 @@
       "expected_output_url": null
     },
     {
-      "description": "Create a private idea-validation workspace in a selected project.",
-      "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in project 99.",
+      "description": "Setup: sign in with the dedicated synthetic reviewer account, run projects.list, and select its single reviewer project before this prompt. Retain its returned identifier only as tool-call state; stop if the account or project differs from the privately supplied reviewer instructions. Create a private idea-validation workspace in the selected project.",
+      "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in the selected reviewer project.",
       "file_attachment_urls": null,
       "tools_triggered": "validation.create_project",
       "expected_output": "Creates one validation record in the selected project and reports its human-readable name and status without exposing internal identifiers or versions.",
       "expected_output_url": null
     },
     {
-      "description": "Generate saved brand palette options from a concrete brief.",
-      "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in project 99.",
+      "description": "Setup: sign in with the dedicated synthetic reviewer account, run projects.list, and select its single reviewer project before this prompt. Retain its returned identifier only as tool-call state; stop if the account or project differs from the privately supplied reviewer instructions. Generate saved brand palette options from a concrete brief.",
+      "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in the selected reviewer project.",
       "file_attachment_urls": null,
       "tools_triggered": "branding.generate_palette",
       "expected_output": "Returns saved palette options by name, hex values, and feeling labels without exposing internal identifiers or versions.",
       "expected_output_url": null
     },
     {
-      "description": "List private landing-page projects without requiring seeded records.",
-      "user_prompt": "List the landing-page projects in SparkLaunch project 99.",
+      "description": "Setup: sign in with the dedicated synthetic reviewer account, run projects.list, and select its single reviewer project before this prompt. Retain its returned identifier only as tool-call state; stop if the account or project differs from the privately supplied reviewer instructions. List private landing-page projects without requiring seeded records.",
+      "user_prompt": "List the landing-page projects in the selected reviewer project.",
       "file_attachment_urls": null,
       "tools_triggered": "landing.list_projects",
       "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without exposing internal identifiers or versions; no records are changed.",
       "expected_output_url": null
     },
     {
-      "description": "Prepare a first-party business-card import without importing an image.",
-      "user_prompt": "Prepare a secure business-card import for project 99, but do not import anything until I explicitly upload it in SparkLaunch.",
+      "description": "Setup: sign in with the dedicated synthetic reviewer account, run projects.list, and select its single reviewer project before this prompt. Retain its returned identifier only as tool-call state; stop if the account or project differs from the privately supplied reviewer instructions. Prepare a first-party business-card import without importing an image.",
+      "user_prompt": "Prepare a secure business-card import for the selected reviewer project, but do not import anything until I explicitly upload it in SparkLaunch.",
       "file_attachment_urls": null,
       "tools_triggered": "crm.prepare_business_card_import",
       "expected_output": "Returns an expiring first-party SparkLaunch action link and clearly states that nothing has been imported yet, without exposing internal identifiers or versions.",

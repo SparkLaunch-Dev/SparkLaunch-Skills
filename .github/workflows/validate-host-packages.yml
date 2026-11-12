@@ -19,6 +19,8 @@ jobs:
           python-version: "3.12"
       - name: Install validation dependencies
         run: python -m pip install -r requirements-dev.txt
+      - name: Check public text and reviewed synthetic fixtures
+        run: python scripts/validate_public_repository.py
       - name: Check generated packages
         run: python scripts/sync_plugin.py
       - name: Check standalone contract consumers

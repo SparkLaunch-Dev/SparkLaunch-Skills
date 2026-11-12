@@ -18,11 +18,17 @@ except ModuleNotFoundError:  # Direct execution from the scripts directory.
 
 
 MCP_TOOL_CONTRACTS = load_tool_contracts(CHATGPT_SNAPSHOT_PATH)
+REVIEWER_PROJECT_SETUP = (
+    "Setup: sign in with the dedicated synthetic reviewer account, run projects.list, "
+    "and select its single reviewer project before this prompt. Retain its returned "
+    "identifier only as tool-call state; stop if the account or project differs "
+    "from the privately supplied reviewer instructions. "
+)
 
 
 REVIEWER_FIXTURE_PATH = ROOT / "submission" / "reviewer-fixture.json"
 REVIEWER_FIXTURE_KEYS = frozenset(
-    {"status", "project_id", "incorporation_data", "provider_calls_allowed"}
+    {"status", "project_selection", "incorporation_data", "provider_calls_allowed"}
 )
 
 
@@ -39,9 +45,8 @@ def reviewer_fixture_errors(
     }
     if fixture.get("status") not in allowed_statuses:
         errors.append("reviewer fixture status is invalid")
-    project_id = fixture.get("project_id")
-    if type(project_id) is not int or project_id <= 0:
-        errors.append("reviewer fixture project_id must be a positive integer")
+    if fixture.get("project_selection") != "projects.list":
+        errors.append("reviewer fixture must select the private project through projects.list")
     if fixture.get("incorporation_data") != "synthetic_only":
         errors.append("reviewer fixture must use synthetic incorporation data")
     if fixture.get("provider_calls_allowed") is not False:
@@ -49,12 +54,11 @@ def reviewer_fixture_errors(
     return errors
 
 
-def _reviewer_project_id() -> int:
+def _validate_reviewer_policy() -> None:
     fixture = json.loads(REVIEWER_FIXTURE_PATH.read_text(encoding="utf-8"))
     errors = reviewer_fixture_errors(fixture)
     if errors:
         raise ValueError("reviewer-fixture.json is invalid: " + "; ".join(errors))
-    return fixture["project_id"]
 
 
 def _tool_entry(name, contract):
@@ -100,8 +104,8 @@ def _tool_entry(name, contract):
     }
 
 
-def build_submission(reviewer_project_id: int | None = None):
-    project_id = reviewer_project_id or _reviewer_project_id()
+def build_submission():
+    _validate_reviewer_policy()
     return {
         "$schema": "https://developers.openai.com/plugins/schemas/chatgpt-app-submission.v1.json",
         "schema_version": 1,
@@ -126,32 +130,32 @@ def build_submission(reviewer_project_id: int | None = None):
                 "expected_output_url": None,
             },
             {
-                "description": "Create a private idea-validation workspace in a selected project.",
-                "user_prompt": f"Create a validation project for an AI bookkeeping assistant for independent contractors in project {project_id}.",
+                "description": REVIEWER_PROJECT_SETUP + "Create a private idea-validation workspace in the selected project.",
+                "user_prompt": "Create a validation project for an AI bookkeeping assistant for independent contractors in the selected reviewer project.",
                 "file_attachment_urls": None,
                 "tools_triggered": "validation.create_project",
                 "expected_output": "Creates one validation record in the selected project and reports its human-readable name and status without exposing internal identifiers or versions.",
                 "expected_output_url": None,
             },
             {
-                "description": "Generate saved brand palette options from a concrete brief.",
-                "user_prompt": f"Generate a trustworthy, modern color palette for my contractor bookkeeping product in project {project_id}.",
+                "description": REVIEWER_PROJECT_SETUP + "Generate saved brand palette options from a concrete brief.",
+                "user_prompt": "Generate a trustworthy, modern color palette for my contractor bookkeeping product in the selected reviewer project.",
                 "file_attachment_urls": None,
                 "tools_triggered": "branding.generate_palette",
                 "expected_output": "Returns saved palette options by name, hex values, and feeling labels without exposing internal identifiers or versions.",
                 "expected_output_url": None,
             },
             {
-                "description": "List private landing-page projects without requiring seeded records.",
-                "user_prompt": f"List the landing-page projects in SparkLaunch project {project_id}.",
+                "description": REVIEWER_PROJECT_SETUP + "List private landing-page projects without requiring seeded records.",
+                "user_prompt": "List the landing-page projects in the selected reviewer project.",
                 "file_attachment_urls": None,
                 "tools_triggered": "landing.list_projects",
                 "expected_output": "Returns the landing-page projects visible in the selected SparkLaunch project without exposing internal identifiers or versions; no records are changed.",
                 "expected_output_url": None,
             },
             {
-                "description": "Prepare a first-party business-card import without importing an image.",
-                "user_prompt": f"Prepare a secure business-card import for project {project_id}, but do not import anything until I explicitly upload it in SparkLaunch.",
+                "description": REVIEWER_PROJECT_SETUP + "Prepare a first-party business-card import without importing an image.",
+                "user_prompt": "Prepare a secure business-card import for the selected reviewer project, but do not import anything until I explicitly upload it in SparkLaunch.",
                 "file_attachment_urls": None,
                 "tools_triggered": "crm.prepare_business_card_import",
                 "expected_output": "Returns an expiring first-party SparkLaunch action link and clearly states that nothing has been imported yet, without exposing internal identifiers or versions.",
@@ -187,8 +191,8 @@ def build_submission(reviewer_project_id: int | None = None):
     }
 
 
-def _serialized_submission(reviewer_project_id: int | None = None) -> str:
-    return json.dumps(build_submission(reviewer_project_id), indent=2) + "\n"
+def _serialized_submission() -> str:
+    return json.dumps(build_submission(), indent=2) + "\n"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -201,13 +205,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--reviewer-project-id",
         type=int,
-        help="Bind scoped positive prompts to a provisioned disposable reviewer project.",
+        help=argparse.SUPPRESS,
     )
     args = parser.parse_args(argv)
-    if args.reviewer_project_id is not None and args.reviewer_project_id <= 0:
-        parser.error("--reviewer-project-id must be a positive integer")
+    if args.reviewer_project_id is not None:
+        parser.error("Project identifiers belong in the private preflight envelope; review prompts select the project through projects.list.")
     output = ROOT / "chatgpt-app-submission.json"
-    expected = _serialized_submission(args.reviewer_project_id)
+    expected = _serialized_submission()
     if args.check:
         try:
             current = output.read_text(encoding="utf-8")
@@ -224,20 +228,6 @@ def main(argv: list[str] | None = None) -> int:
             f"Validated {output.name} against {len(MCP_TOOL_CONTRACTS)} runtime tools."
         )
         return 0
-    if args.reviewer_project_id is not None:
-        REVIEWER_FIXTURE_PATH.write_text(
-            json.dumps(
-                {
-                    "status": "provisioned",
-                    "project_id": args.reviewer_project_id,
-                    "incorporation_data": "synthetic_only",
-                    "provider_calls_allowed": False,
-                },
-                indent=2,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
     output.write_text(expected, encoding="utf-8")
     print(f"Wrote {output.name} with {len(MCP_TOOL_CONTRACTS)} tools.")
     return 0

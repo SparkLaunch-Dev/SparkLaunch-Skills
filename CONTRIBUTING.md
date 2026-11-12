@@ -70,6 +70,7 @@ used by [package validation in CI](.github/workflows/validate-host-packages.yml)
 
 ```sh
 python scripts/sync_plugin.py
+python scripts/validate_public_repository.py
 python scripts/generate_submission.py --check
 python scripts/validate_host_packages.py
 python scripts/validate_submission.py
@@ -126,6 +127,12 @@ run and distinguish local validation from deployment or native-host acceptance.
 
 Keep credentials, customer data, signed URLs, recordings with private content,
 and local agent-session output out of commits. Use synthetic test fixtures.
+Keep production reviewer bindings and detailed operator records outside this
+repository. Public review prompts select the project through `projects.list`;
+the private preflight envelope supplies the actual account and project binding.
+The public-text check scans tracked and non-ignored new files. Its exceptions
+are exact line fingerprints for reviewed synthetic fixtures, not whole-file
+exclusions. Review any new exception as carefully as a security-test change.
 See the [shared safety contract](README.md#shared-safety-contract) before changing
 workflow instructions or tool contracts.
 

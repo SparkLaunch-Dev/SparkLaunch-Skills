@@ -97,18 +97,8 @@ permission to replace the App or register another plugin. Verify the probe's
 visible icon, then read back cleanup with exactly twelve skills and no probe files.
 Public release metadata and its candidate identity remain unchanged.
 
-October 13 reviewer/native follow-up: the owner explicitly authorized password
-rotation and continued acceptance work. SYS-SUBFIX-003 / T-REVIEWER-ROTATE requires
-the same disposable reviewer and single synthetic project, unchanged entitlements
-and expiry, no plaintext credential in commands/logs/evidence, and successful new
-login before promoting the guarded secret version. Use the existing account
-service over the documented SSM database tunnel because no authenticated
-password-change API exists and the fixture uses a synthetic reviewer mail domain.
-Stage the generated credential in the approved secret only, verify the exact
-old secret version and database identity before mutation, then read back the new
-secret and run the standard preflight. Preserve an encrypted recoverable stage
-if a post-database verification fails. Portal synchronization and native OAuth
-remain separately verified; do not mark them passed from a password rotation.
+Historical reviewer account maintenance is recorded privately. Current acceptance requires guarded regular-user preflight and independent native-case verification; credential maintenance does not establish either outcome.
+
 T-REVIEWER-ROLE additionally requires a regular `user_type=user` identity before
 project reads. An administrator may own only one fixture while retaining access
 to other projects, so the single-project list cannot by itself prove isolation.
@@ -132,7 +122,7 @@ App identity/audience/account. This narrows the diagnosis beyond existing-skill
 update caching; it is not a host fix. See `docs/chatgpt-skill-icon-import.md`.
 
 October 13 live connection follow-up: native ordinary Chat reports a successful
-read of 25 accessible active projects. Raw tool results were not captured, and
+read of accessible projects. Raw tool results were not captured, and
 the private App still points to the full `/api/mcp/` endpoint. Public-only
 metadata discovery passes for 33 business scopes, while unauthenticated
 `/api/mcp/chatgpt/` initialization returns 401. Neither observation proves the
@@ -179,16 +169,7 @@ ready for submission.
 
 October 13 reviewer/native execution results:
 
-- T-REVIEWER-ROTATE / T-REVIEWER-ROLE: old password rejected; new login and
-  encrypted current-version readback passed. Fresh preflight passes all seven
-  checks and the regular reviewer is denied access to an outside project. The
-  same one synthetic project, entitlements and January 10 expiry are preserved.
-  The temporary TLS-verified SSM tunnel is closed and the shared AWS registry
-  and zero-error full inventory were updated. The owner-approved portal fields
-  were subsequently saved and reopened with masked password display; guarded
-  encrypted-store sync metadata readback and affected Secrets Manager inventory
-  refresh passed. Native reviewer cases remain pending. No password or token is
-  retained in evidence.
+- T-REVIEWER-ROTATE / T-REVIEWER-ROLE: historical guarded account preflight and isolation checks were recorded privately. They are not current reviewer-case or native-host acceptance.
 - T-NATIVE-READWRITE: actual private App project reads, synthetic task
   create/readback and private Markdown retrieval passed. Update stopped at the
   exact confirmation preview. Same-key creation replay produced no duplicate;

@@ -433,10 +433,8 @@ def test_submission_package_is_complete():
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
     assert fixture["status"] in {"local_placeholder", "pending_preflight", "provisioned"}
-    assert isinstance(fixture["project_id"], int)
-    assert fixture["project_id"] > 0
-    if fixture["status"] == "local_placeholder":
-        assert fixture["project_id"] == 42
+    assert fixture["project_selection"] == "projects.list"
+    assert "project_id" not in fixture
     assert fixture["incorporation_data"] == "synthetic_only"
     assert fixture["provider_calls_allowed"] is False
     scoped = [
@@ -446,7 +444,8 @@ def test_submission_package_is_complete():
     ]
     assert len(scoped) == 4
     assert all(
-        f"project {fixture['project_id']}" in case["user_prompt"] for case in scoped
+        "selected reviewer project" in case["user_prompt"]
+        and "projects.list" in case["description"] for case in scoped
     )
 
 
@@ -484,7 +483,7 @@ def test_packaged_synthetic_incorporation_draft_matches_runtime_contract():
         assert forbidden not in serialized
 
 
-def test_reviewer_project_regeneration_preserves_incorporation_safety_controls(
+def test_reviewer_project_binding_cannot_write_identifiers_to_public_source(
     tmp_path, monkeypatch
 ):
     fixture_path = tmp_path / "submission" / "reviewer-fixture.json"
@@ -492,20 +491,19 @@ def test_reviewer_project_regeneration_preserves_incorporation_safety_controls(
     monkeypatch.setattr(submission_generator, "ROOT", tmp_path)
     monkeypatch.setattr(submission_generator, "REVIEWER_FIXTURE_PATH", fixture_path)
 
-    assert submission_generator.main(["--reviewer-project-id", "123"]) == 0
-    assert json.loads(fixture_path.read_text(encoding="utf-8")) == {
-        "status": "provisioned",
-        "project_id": 123,
-        "incorporation_data": "synthetic_only",
-        "provider_calls_allowed": False,
-    }
+    with pytest.raises(SystemExit) as exc:
+        submission_generator.main(["--reviewer-project-id", "123"])
+    assert exc.value.code == 2
+    assert not fixture_path.exists()
+    assert not (tmp_path / "chatgpt-app-submission.json").exists()
 
 
 @pytest.mark.parametrize(
     "mutation",
     (
         lambda fixture: fixture.update(unexpected="value"),
-        lambda fixture: fixture.update(project_id=True),
+        lambda fixture: fixture.update(project_selection="untrusted"),
+        lambda fixture: fixture.update(project_id=123),
         lambda fixture: fixture.update(incorporation_data="live"),
         lambda fixture: fixture.update(provider_calls_allowed=True),
     ),
@@ -513,7 +511,7 @@ def test_reviewer_project_regeneration_preserves_incorporation_safety_controls(
 def test_reviewer_fixture_contract_rejects_extra_or_unsafe_fields(mutation):
     fixture = {
         "status": "provisioned",
-        "project_id": 123,
+        "project_selection": "projects.list",
         "incorporation_data": "synthetic_only",
         "provider_calls_allowed": False,
     }
@@ -1107,12 +1105,13 @@ def test_reviewer_documents_are_credential_free_and_candidate_bounded():
     fixture = json.loads(
         (ROOT / "submission" / "reviewer-fixture.json").read_text(encoding="utf-8")
     )
-    assert manifest["version"] == "0.11.3"
+    assert manifest["version"] == "0.11.4"
     assert manifest["version"] in release_notes
     assert manifest["version"] in reviewer
     assert "production MCP service is deployed" in release_notes
     assert "has not yet been submitted or approved by ChatGPT" in release_notes
-    assert f"project `{fixture['project_id']}`" in reviewer
+    assert fixture["project_selection"] == "projects.list"
+    assert "selected reviewer project" in reviewer
     assert "supplied through the approved private reviewer channel" in reviewer
     assert "must never be added to this file" in reviewer
     assert "support@sparklaun.ch" in reviewer
@@ -1138,8 +1137,8 @@ def test_submission_validator_rejects_non_numeric_package_version(monkeypatch):
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.3"',
-        '"version": "0.11.3+codex.20260907000000"',
+        '"version": "0.11.4"',
+        '"version": "0.11.4+codex.20260907000000"',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1151,8 +1150,8 @@ def test_submission_validator_rejects_whitespace_around_package_version(monkeypa
     errors = _validate_with_text_replaced(
         monkeypatch,
         manifest_path,
-        '"version": "0.11.3"',
-        '"version": " 0.11.3 "',
+        '"version": "0.11.4"',
+        '"version": " 0.11.4 "',
     )
 
     assert "plugin version must be numeric major.minor.patch" in errors
@@ -1245,7 +1244,7 @@ def test_portal_prerequisites_are_credential_free_and_pending_gates_fail_closed(
     )
 
     assert evidence["schema_version"] == 4
-    assert evidence["candidate"]["plugin_version"] == "0.11.3"
+    assert evidence["candidate"]["plugin_version"] == "0.11.4"
     assert evidence["candidate"]["built_at"] == release_state["generated_packages"]["built_at"]
     assert evidence["candidate"]["service_version"] == "1.11.0"
     assert evidence["candidate"]["expected_tool_count"] == 121
@@ -1463,7 +1462,7 @@ def test_portal_prerequisite_validator_rejects_candidate_identity_drift(
     (
         (
             "plugin_version",
-            "0.11.3+codex.20260907000000",
+            "0.11.4+codex.20260907000000",
             "candidate plugin version must be numeric major.minor.patch",
         ),
         (

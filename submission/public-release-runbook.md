@@ -75,9 +75,10 @@ See [the requirement/evidence record](../docs/v-cycle/connected-accounts.md).
    requires both comparisons. A passing full-endpoint scan cannot establish the
    restricted ChatGPT boundary.
 4. Use a dedicated synthetic reviewer project with all required entitlements. Bind
-   the real reviewer fixture via the existing submission generator, regenerate,
-   rebuild and update candidate digests. Do not reuse project 42 as a claimed real
-   reviewer environment. Never run a customer mutation to satisfy acceptance.
+   only the selection method and safety policy in the public reviewer fixture.
+   Actual account/project bindings stay in the private preflight envelope; select
+   the project with projects.list before each scoped review case. Regenerate,
+   rebuild and update candidate digests after source changes. Never run a customer mutation to satisfy acceptance.
    Run `python scripts/verify_reviewer_fixture.py` with the approved secret-store
    envelope supplied only in its process environment as
    `SPARKLAUNCH_REVIEWER_SECRET_JSON`. It checks metadata expiry/isolation before
@@ -181,19 +182,19 @@ Sources checked 2026-09-07: [OpenAI submission](https://developers.openai.com/pl
 
 ## Current operator handoff
 
-See `observations/2026-09-07-release-follow-up.json`. The existing synthetic reviewer
-passed all six account setup checks after the owner's narrow non-billing approval.
-Do not extend its 2026-09-11 retention automatically. Arrange owner-approved access
-that lasts through ongoing review, as the portal requires.
+The 0.11.4 candidate is prepared for source review only. Current reviewer access,
+synthetic fixture content and native review cases remain pending. Keep account
+bindings, access instructions, retention and maintenance records in the approved
+private reviewer channel; the public policy records only project discovery and
+safety requirements. Complete fresh private preflight before reviewer use.
 
-A stored reviewer credential appeared in browser inspection output. The owner
-must rotate it before further reviewer use, synchronize the approved private
-credential store and portal, then repeat the preflight. Never retain its value in
-source or evidence. When inspecting the Testing page, do not emit an unfiltered
-accessibility tree or screenshot; the credentials are rendered as plain text.
+Supply reviewer access only through secure portal fields. Do not emit unfiltered
+accessibility trees or screenshots of credential fields, or retain credentials
+and authorization artifacts in source or public evidence.
 
-The portal's domain warning is still unresolved. The local UserInfo implementation
-is not proof that OpenAI accepts its discovery metadata. After the matching
-deployment, verify the portal's metadata detection and an actually verified mailbox
-in a domain-restricted workspace. Do not mark the synthetic account's unverified
-email as verified or claim a full OIDC provider without implementing its contract.
+Migrate the existing App through the supported process to the restricted
+`https://sparklaun.ch/api/mcp/chatgpt/` endpoint, preserving its identity. Then
+verify the matching draft, current authenticated discovery, domain and identity
+requirements, native account lifecycle and all reviewer cases. A verified demo
+and policy review remain separate release gates. Historical observations cannot
+establish those outcomes for this candidate.

@@ -25,6 +25,7 @@ jobs:
       - run: python -m pip install -r requirements-dev.txt
       - name: Validate exact candidate source
         run: |
+          python scripts/validate_public_repository.py
           python scripts/sync_plugin.py
           python scripts/generate_submission.py --check
           python scripts/validate_host_packages.py

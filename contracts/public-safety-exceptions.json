@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "reason": "Exact reviewed synthetic security-test literals and the canonical synthetic participant fixture; changed lines are not exempt.",
+  "files": {
+    "tests/test_packaging_safety.py": {
+      "b430a90a47a023032ee6a7ed00f85c84e2f70c6506b5ca2d35d6b819d1fcbbb0": [
+        "infrastructure identifier"
+      ],
+      "12702770e15eecbb4d8a90cb57ca2afaaf46bfb1d12dd17fba3ba6b25b864c0c": [
+        "operational UUID"
+      ]
+    },
+    "tests/test_submission_metadata.py": {
+      "639ac1ddae4d77c8be0ac557a2e9e44cf78661f0936b3376f47d1288bd9a8034": [
+        "credential-bearing URL",
+        "secret assignment"
+      ],
+      "d10997f8cb5bafec56e04ace5ef1b7089c45d80140c3fd9006a220c457808baa": [
+        "credential-bearing URL"
+      ],
+      "858303e3ba6fb5274161137c9cc643fd847f8e4533e78f718448d9559a65a893": [
+        "credential-bearing URL"
+      ],
+      "ad73540b9c561921830f0e3983b32ea31750c3f41de1914f23ac3197b3247816": [
+        "credential-bearing URL",
+        "secret assignment"
+      ],
+      "b9f0dcfe1566a54eb1b42a01614b6616b6af4afbb202bbc7c6a743f01ac9871d": [
+        "credential-bearing URL",
+        "secret assignment"
+      ]
+    },
+    "tests/test_submission_package.py": {
+      "ab38a7a5c80bcbc19ec3fb9bbd81204104da5d1fc34d295756b61b8f01932f89": [
+        "authorization header"
+      ],
+      "e6cfbb5078be923ff5fe92999fa54e8cf182269520872db3a782bc78c2a83b86": [
+        "secret assignment"
+      ],
+      "ae2260d5177a9f774d9cb9b58ce86126b83761066874be8f0f32ffd70b334994": [
+        "private key"
+      ],
+      "584073de56ae5762c934b199a1778681c21358a1d162a81e46fd1bc65fe79198": [
+        "JWT"
+      ],
+      "438fa0b4cda6767fb6f6617b3bf2a6e7fd8efff8811db3b7214ec960721cd30d": [
+        "credential-bearing URL"
+      ],
+      "ae3ad8e81dca161280769c8ff53b25c588bf52d4c5d013110ce572f804e70a78": [
+        "credential-bearing URL",
+        "secret assignment"
+      ],
+      "48fa8db1482a8e1bec9b0a322815d1f35201bec9795f83c47e381d18fb8a9a45": [
+        "credential-bearing URL"
+      ],
+      "76bc8d41e49719fc31f0357d05700bac245bf40e0f24cc6a39240ddaaba6ad0f": [
+        "credential-bearing URL"
+      ],
+      "79082987600a663d992f3001df06735332cf2d14df8b16c0e7d38969f0c0fd54": [
+        "credential-bearing URL",
+        "secret assignment"
+      ],
+      "138a14ed0aa74f2392aacc8f669f537da8e9a08687b34b49e6b800cdd646b72a": [
+        "credential-bearing URL"
+      ],
+      "91305846ce3c0c7b700e26b1394e4708fb78210f7a69a41c9799c8914191cc74": [
+        "credential-bearing URL"
+      ],
+      "489b18814f2922fead85928fa15f0222fea6518157cf66b80735a1856856c8b1": [
+        "credential-bearing URL"
+      ],
+      "2cb4ecae4adef413dfd2459519c7e7ea093a8efc27b72a96acf035543d9ac326": [
+        "credential-bearing URL"
+      ]
+    },
+    "src/skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json": {
+      "c12a6138b3f6476c33f96dec5f7e2aac3bdb1bed44a8d3590eab3593db90d5be": [
+        "operational UUID"
+      ],
+      "d83933fd1fee5e0837e8512baf46f33c2ff87fbc99469febb349ced305125a95": [
+        "operational UUID"
+      ],
+      "dde44165e463bc016b82443a1c75b3520af886703ba059b0d089a8bcbf6aa20d": [
+        "operational UUID"
+      ],
+      "cb73a87bd7eab10e9c80ca433b97c26177e6e14451544a8bbd5f5987f994b9d9": [
+        "operational UUID"
+      ],
+      "1e81a3626a4018fb6667fcf281e58e4a9c5f38635b5c00ee86e13076e3c23860": [
+        "operational UUID"
+      ],
+      "18ce1daa99e1b220cce69eb07a8bbbc38ac1ced0343872fa532ed35b4724147c": [
+        "operational UUID"
+      ],
+      "5fbf9600f418fd8d1cb0f698a3f95c552285b666794bd804568c6e654ce60d00": [
+        "operational UUID"
+      ],
+      "7c1a1758e1032b7abc795e11f01ec6a1967d4daecd663d735bf8898557361e8f": [
+        "operational UUID"
+      ],
+      "2048560489143c76375e531971144d331101c4209060ca77466fba1ec3a73b9c": [
+        "operational UUID"
+      ]
+    },
+    "plugins/sparklaunch/skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json": {
+      "c12a6138b3f6476c33f96dec5f7e2aac3bdb1bed44a8d3590eab3593db90d5be": [
+        "operational UUID"
+      ],
+      "d83933fd1fee5e0837e8512baf46f33c2ff87fbc99469febb349ced305125a95": [
+        "operational UUID"
+      ],
+      "dde44165e463bc016b82443a1c75b3520af886703ba059b0d089a8bcbf6aa20d": [
+        "operational UUID"
+      ],
+      "cb73a87bd7eab10e9c80ca433b97c26177e6e14451544a8bbd5f5987f994b9d9": [
+        "operational UUID"
+      ],
+      "1e81a3626a4018fb6667fcf281e58e4a9c5f38635b5c00ee86e13076e3c23860": [
+        "operational UUID"
+      ],
+      "18ce1daa99e1b220cce69eb07a8bbbc38ac1ced0343872fa532ed35b4724147c": [
+        "operational UUID"
+      ],
+      "5fbf9600f418fd8d1cb0f698a3f95c552285b666794bd804568c6e654ce60d00": [
+        "operational UUID"
+      ],
+      "7c1a1758e1032b7abc795e11f01ec6a1967d4daecd663d735bf8898557361e8f": [
+        "operational UUID"
+      ],
+      "2048560489143c76375e531971144d331101c4209060ca77466fba1ec3a73b9c": [
+        "operational UUID"
+      ]
+    },
+    "plugins/claude/sparklaunch/skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json": {
+      "c12a6138b3f6476c33f96dec5f7e2aac3bdb1bed44a8d3590eab3593db90d5be": [
+        "operational UUID"
+      ],
+      "d83933fd1fee5e0837e8512baf46f33c2ff87fbc99469febb349ced305125a95": [
+        "operational UUID"
+      ],
+      "dde44165e463bc016b82443a1c75b3520af886703ba059b0d089a8bcbf6aa20d": [
+        "operational UUID"
+      ],
+      "cb73a87bd7eab10e9c80ca433b97c26177e6e14451544a8bbd5f5987f994b9d9": [
+        "operational UUID"
+      ],
+      "1e81a3626a4018fb6667fcf281e58e4a9c5f38635b5c00ee86e13076e3c23860": [
+        "operational UUID"
+      ],
+      "18ce1daa99e1b220cce69eb07a8bbbc38ac1ced0343872fa532ed35b4724147c": [
+        "operational UUID"
+      ],
+      "5fbf9600f418fd8d1cb0f698a3f95c552285b666794bd804568c6e654ce60d00": [
+        "operational UUID"
+      ],
+      "7c1a1758e1032b7abc795e11f01ec6a1967d4daecd663d735bf8898557361e8f": [
+        "operational UUID"
+      ],
+      "2048560489143c76375e531971144d331101c4209060ca77466fba1ec3a73b9c": [
+        "operational UUID"
+      ]
+    },
+    "plugins/cursor/sparklaunch/skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json": {
+      "c12a6138b3f6476c33f96dec5f7e2aac3bdb1bed44a8d3590eab3593db90d5be": [
+        "operational UUID"
+      ],
+      "d83933fd1fee5e0837e8512baf46f33c2ff87fbc99469febb349ced305125a95": [
+        "operational UUID"
+      ],
+      "dde44165e463bc016b82443a1c75b3520af886703ba059b0d089a8bcbf6aa20d": [
+        "operational UUID"
+      ],
+      "cb73a87bd7eab10e9c80ca433b97c26177e6e14451544a8bbd5f5987f994b9d9": [
+        "operational UUID"
+      ],
+      "1e81a3626a4018fb6667fcf281e58e4a9c5f38635b5c00ee86e13076e3c23860": [
+        "operational UUID"
+      ],
+      "18ce1daa99e1b220cce69eb07a8bbbc38ac1ced0343872fa532ed35b4724147c": [
+        "operational UUID"
+      ],
+      "5fbf9600f418fd8d1cb0f698a3f95c552285b666794bd804568c6e654ce60d00": [
+        "operational UUID"
+      ],
+      "7c1a1758e1032b7abc795e11f01ec6a1967d4daecd663d735bf8898557361e8f": [
+        "operational UUID"
+      ],
+      "2048560489143c76375e531971144d331101c4209060ca77466fba1ec3a73b9c": [
+        "operational UUID"
+      ]
+    },
+    "plugins/gemini/sparklaunch/skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json": {
+      "c12a6138b3f6476c33f96dec5f7e2aac3bdb1bed44a8d3590eab3593db90d5be": [
+        "operational UUID"
+      ],
+      "d83933fd1fee5e0837e8512baf46f33c2ff87fbc99469febb349ced305125a95": [
+        "operational UUID"
+      ],
+      "dde44165e463bc016b82443a1c75b3520af886703ba059b0d089a8bcbf6aa20d": [
+        "operational UUID"
+      ],
+      "cb73a87bd7eab10e9c80ca433b97c26177e6e14451544a8bbd5f5987f994b9d9": [
+        "operational UUID"
+      ],
+      "1e81a3626a4018fb6667fcf281e58e4a9c5f38635b5c00ee86e13076e3c23860": [
+        "operational UUID"
+      ],
+      "18ce1daa99e1b220cce69eb07a8bbbc38ac1ced0343872fa532ed35b4724147c": [
+        "operational UUID"
+      ],
+      "5fbf9600f418fd8d1cb0f698a3f95c552285b666794bd804568c6e654ce60d00": [
+        "operational UUID"
+      ],
+      "7c1a1758e1032b7abc795e11f01ec6a1967d4daecd663d735bf8898557361e8f": [
+        "operational UUID"
+      ],
+      "2048560489143c76375e531971144d331101c4209060ca77466fba1ec3a73b9c": [
+        "operational UUID"
+      ]
+    },
+    "plugins/muse/sparklaunch/skills/sparklaunch-incorporation/references/synthetic-single-founder-draft.json": {
+      "c12a6138b3f6476c33f96dec5f7e2aac3bdb1bed44a8d3590eab3593db90d5be": [
+        "operational UUID"
+      ],
+      "d83933fd1fee5e0837e8512baf46f33c2ff87fbc99469febb349ced305125a95": [
+        "operational UUID"
+      ],
+      "dde44165e463bc016b82443a1c75b3520af886703ba059b0d089a8bcbf6aa20d": [
+        "operational UUID"
+      ],
+      "cb73a87bd7eab10e9c80ca433b97c26177e6e14451544a8bbd5f5987f994b9d9": [
+        "operational UUID"
+      ],
+      "1e81a3626a4018fb6667fcf281e58e4a9c5f38635b5c00ee86e13076e3c23860": [
+        "operational UUID"
+      ],
+      "18ce1daa99e1b220cce69eb07a8bbbc38ac1ced0343872fa532ed35b4724147c": [
+        "operational UUID"
+      ],
+      "5fbf9600f418fd8d1cb0f698a3f95c552285b666794bd804568c6e654ce60d00": [
+        "operational UUID"
+      ],
+      "7c1a1758e1032b7abc795e11f01ec6a1967d4daecd663d735bf8898557361e8f": [
+        "operational UUID"
+      ],
+      "2048560489143c76375e531971144d331101c4209060ca77466fba1ec3a73b9c": [
+        "operational UUID"
+      ]
+    }
+  }
+}
